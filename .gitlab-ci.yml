@@ -1,0 +1,71 @@
+stages:
+  - build
+
+variables:
+    IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
+    GIT_STRATEGY: fetch
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_DEPTH: "1"
+
+.setup_idf: &setup_idf
+    # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
+    - git clone --recursive --branch release/v4.3 --depth 1 https://github.com/espressif/esp-idf.git
+    - cd esp-idf
+    - ./install.sh
+    - . export.sh
+
+.setup_matter: &setup_matter
+    - cd $ESP_MATTER_PATH
+    - source connectedhomeip/connectedhomeip/scripts/bootstrap.sh
+    - . export.sh
+
+.build_matter_examples: &build_matter_examples
+    - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
+    - cd $MATTER_EXAMPLES_PATH/all-clusters-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/temperature-measurement-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/lock-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/pigweed-app/esp32
+    - idf.py build
+    - cd $MATTER_EXAMPLES_PATH/persistent-storage/esp32
+    - idf.py build
+
+.build_examples: &build_examples
+    - cd $ESP_MATTER_PATH/examples/light
+    - idf.py build
+    - cd $REPOS_PATH
+    - git clone --depth 1 --single-branch --recursive https://github.com/espressif/esp-rainmaker.git
+    - export ESP_RMAKER_PATH=$PWD/esp-rainmaker
+    - cd $ESP_MATTER_PATH/examples/rainmaker_light
+    - idf.py build
+
+build_esp_matter_examples:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
+    tags:
+      - build
+
+    script:
+        - export ESP_MATTER_PATH=$PWD
+        - mkdir repos
+        - export REPOS_PATH=$PWD/repos
+        - *setup_idf
+        - *setup_matter
+        - *build_examples
+
+build_all_examples:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
+    tags:
+      - build
+    when: manual
+    script:
+        - export ESP_MATTER_PATH=$PWD
+        - mkdir repos
+        - export REPOS_PATH=$PWD/repos
+        - *setup_idf
+        - *setup_matter
+        - *build_matter_examples
+        - *build_examples

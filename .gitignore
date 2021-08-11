@@ -1,0 +1,7 @@
+.cache
+.clang-format
+compile_commands.json
+*.swp
+build/
+sdkconfig
+sdkconfig.old
