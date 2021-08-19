@@ -6,10 +6,9 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <string.h>
-
 #include "esp_matter.h"
 #include "esp_matter_standard.h"
+#include "esp_matter_console.h"
 #include "app_driver.h"
 #include "app_qrcode.h"
 #include "app_matter.h"
@@ -24,42 +23,6 @@
 
 #define APP_MAIN_NAME "Main"
 static const char *TAG = "app_main";
-
-#if CONFIG_ENABLE_CHIP_SHELL
-void ChipShellTask(void *args)
-{
-    chip::Shell::Engine::Root().RunMainLoop();
-}
-
-CHIP_ERROR app_cli_common_handler(int argc, char** argv)
-{
-    /* This common handler is added to avoid adding `CHIP_ERROR` and its component requirements in other esp-matter components */
-    if (argc <= 0) {
-        ESP_LOGE(TAG, "Incorrect arguments");
-        return CHIP_ERROR_INVALID_ARGUMENT;
-    }
-    if (strncmp(argv[0], "driver", sizeof("driver")) == 0) {
-        app_driver_cli_handler(argc - 1, &argv[1]);
-    } else {
-        ESP_LOGE(TAG, "Incorrect arguments");
-        return CHIP_ERROR_INVALID_ARGUMENT;
-    }
-    return CHIP_NO_ERROR;
-}
-
-static void app_cli_register_commands()
-{
-    static chip::Shell::shell_command_t cmds[] = {
-        {
-            .cmd_func = &app_cli_common_handler,
-            .cmd_name = "esp",
-            .cmd_help = "driver: This can be used to simulate on-device control. Usage: chip esp driver <set|get> <endpoint_name> <attribute_name> [value]. Example1: chip esp driver set Light Power 1. Example2: chip esp driver get Light Power.",
-        },
-    };
-    int cmds_num = sizeof(cmds) / sizeof(chip::Shell::shell_command_t);
-    chip::Shell::Engine::Root().RegisterCommands(cmds, cmds_num);
-}
-#endif // CONFIG_ENABLE_CHIP_SHELL
 
 static esp_err_t app_main_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
 {
@@ -113,7 +76,6 @@ extern "C" void app_main()
     esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_SATURATION, esp_matter_int(DEFAULT_SATURATION));
 
 #if CONFIG_ENABLE_CHIP_SHELL
-    xTaskCreate(&ChipShellTask, "chip_shell", 2048, NULL, 5, NULL);
-    app_cli_register_commands();
+    esp_matter_console_init();
 #endif
 }
