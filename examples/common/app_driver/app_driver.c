@@ -10,8 +10,8 @@
 #include <esp_log.h>
 
 #include <app_driver.h>
-#include <board.h>
-#include <led_driver.h>
+#include <device.h>
+#include <light_driver.h>
 
 typedef struct driver_src {
     char name[SRC_MAX_NAMELEN];
@@ -24,7 +24,7 @@ static driver_src_t *s_driver_src = NULL;
 
 esp_err_t app_driver_init()
 {
-    return board_init();
+    return device_init();
 }
 
 esp_err_t app_driver_register_src(const char *name, app_driver_param_callback_t *callbacks)
@@ -58,7 +58,7 @@ esp_err_t app_driver_update_and_report_power(bool power, const char *src)
     driver_src_t *cur_src = s_driver_src;
 
     /* Update */
-    ret = led_driver_set_power(power);
+    ret = light_driver_set_power(power);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -81,7 +81,7 @@ esp_err_t app_driver_update_and_report_brightness(uint8_t brightness, const char
     driver_src_t *cur_src = s_driver_src;
 
     /* Update */
-    ret = led_driver_set_brightness(brightness);
+    ret = light_driver_set_brightness(brightness);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -104,7 +104,7 @@ esp_err_t app_driver_update_and_report_hue(uint16_t hue, const char *src)
     driver_src_t *cur_src = s_driver_src;
     
     /* Update */
-    ret = led_driver_set_hue(hue);
+    ret = light_driver_set_hue(hue);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -127,7 +127,7 @@ esp_err_t app_driver_update_and_report_saturation(uint8_t saturation, const char
     driver_src_t *cur_src = s_driver_src;
 
     /* Update */
-    ret = led_driver_set_saturation(saturation);
+    ret = light_driver_set_saturation(saturation);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -150,7 +150,7 @@ esp_err_t app_driver_update_and_report_temperature(uint32_t temperature, const c
     driver_src_t *cur_src = s_driver_src;
 
     /* Update */
-    ret = led_driver_set_temperature(temperature);
+    ret = light_driver_set_temperature(temperature);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -169,25 +169,25 @@ esp_err_t app_driver_update_and_report_temperature(uint32_t temperature, const c
 
 bool app_driver_get_power()
 {
-    return led_driver_get_power();
+    return light_driver_get_power();
 }
 
 uint8_t app_driver_get_brightness()
 {
-    return led_driver_get_brightness();
+    return light_driver_get_brightness();
 }
 
 uint16_t app_driver_get_hue()
 {
-    return led_driver_get_hue();
+    return light_driver_get_hue();
 }
 
 uint8_t app_driver_get_saturation()
 {
-    return led_driver_get_saturation();
+    return light_driver_get_saturation();
 }
 
 uint32_t app_driver_get_temperature()
 {
-    return led_driver_get_temperature();
+    return light_driver_get_temperature();
 }
