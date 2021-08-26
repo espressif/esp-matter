@@ -5,7 +5,6 @@ variables:
     IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
     GIT_STRATEGY: fetch
     GIT_SUBMODULE_STRATEGY: recursive
-    GIT_DEPTH: "1"
 
 .setup_idf: &setup_idf
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
