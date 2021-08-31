@@ -43,18 +43,18 @@ $ export ESPPORT=/dev/cu.SLAB_USBtoUART (or /dev/ttyUSB0 or /dev/ttyUSB1 on Linu
 
 ### Building and Flashing the Firmware
 
-Selecting board:
+Choose IDF target.
 ```
-$ idf.py menuconfig
+idf.py set-target esp32c3 (or esp32 or other supported targets)
 ```
-*   menuconfig -> ESP Matter Board Selection -> Select the supported board
-    *   The boards here are dependent on the IDF_TARGET. If your board uses a different chip, set the correct target and try again.
+
+*   The default device for `esp32`/`esp32c3` is `esp32-devkit-c`/`esp32c3-devkit-m`. If you want to use another device, you can export `ESP_MATTER_DEVICE_PATH` after choosing correct target, e.g for `m5stack` device:
     ```
-    idf.py set-target esp32c3 (or esp32 or other supported targets)
+    $ export ESP_MATTER_DEVICE_PATH=/path/to/esp_matter/device_hal/device/m5stack
     ```
-    *   The other peripheral components like led_driver, button_driver, etc are selected based on the board selected.
-    *   The configuration of the peripheral components can be found in `esp-matter/components/board/<board_name>/board.c`.
-    *   If the board that you have is of a different revision, and is not working as expected, the GPIO and other configuration can be changed in the `board.c` file.
+    *   If the device that you have is of a different revision, and is not working as expected, you can create a new device and export your device path.
+    *   The other peripheral components like led_driver, button_driver, etc are selected based on the device selected.
+    *   The configuration of the peripheral components can be found in `$ESP_MATTER_DEVICE_PATH/esp_matter_device.cmake`.
 
 Build and flash:
 ```

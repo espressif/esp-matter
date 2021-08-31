@@ -5,6 +5,15 @@ cmake_minimum_required(VERSION 3.5)
 if(NOT DEFINED ENV{ESP_MATTER_PATH})
     message(FATAL_ERROR "Please set ESP_MATTER_PATH to the path of esp-matter repo")
 endif(NOT DEFINED ENV{ESP_MATTER_PATH})
+if(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
+    if("${IDF_TARGET}" STREQUAL "esp32")
+        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32_devkit_c)
+    elseif("${IDF_TARGET}" STREQUAL "esp32c3")
+        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32c3_devkit_m)
+    else()
+        message(FATAL_ERROR "Unsupported IDF_TARGET")
+    endif()
+endif(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
 set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
 set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 
@@ -14,24 +23,15 @@ endif(NOT DEFINED ENV{ESP_RMAKER_PATH})
 
 # This should be done before using the IDF_TARGET variable.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
 set(EXTRA_COMPONENT_DIRS
     "../common"
     "${MATTER_SDK_PATH}/config/esp32/components"
     "${ESP_MATTER_PATH}/components"
+    "${ESP_MATTER_PATH}/device_hal/device"
     "$ENV{ESP_RMAKER_PATH}/components"
-)
-
-if(${IDF_TARGET} STREQUAL "esp32")
-    list(APPEND EXTRA_COMPONENT_DIRS
-        "${MATTER_SDK_PATH}/examples/common/m5stack-tft/repo/components/tft"
-        "${MATTER_SDK_PATH}/examples/common/m5stack-tft/repo/components/spidriver"
-    )
-elseif(${IDF_TARGET} STREQUAL "esp32c3")
-    list(APPEND EXTRA_COMPONENT_DIRS
-        "$ENV{IDF_PATH}/examples/peripherals/rmt/led_strip/components"
-    )
-endif()
+    ${extra_components_dirs_append})
 
 project(rainmaker_light)
 

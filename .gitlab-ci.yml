@@ -33,11 +33,15 @@ variables:
 
 .build_examples: &build_examples
     - cd $ESP_MATTER_PATH/examples/light
+    - idf.py set-target esp32
+    - idf.py build
+    - idf.py set-target esp32c3
     - idf.py build
     - cd $REPOS_PATH
     - git clone --depth 1 --single-branch --recursive https://github.com/espressif/esp-rainmaker.git
     - export ESP_RMAKER_PATH=$PWD/esp-rainmaker
     - cd $ESP_MATTER_PATH/examples/rainmaker_light
+    - idf.py set-target esp32
     - idf.py build
 
 build_esp_matter_examples:
