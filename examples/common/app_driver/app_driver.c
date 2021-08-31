@@ -10,6 +10,7 @@
 #include <esp_log.h>
 
 #include <esp_matter.h>
+#include <esp_matter_standard.h>
 #include <app_driver.h>
 #include <device.h>
 #include <light_driver.h>
@@ -49,19 +50,19 @@ static void app_driver_print_attr_val(const char *endpoint, const char *attribut
 
 int app_driver_cli_handler(int argc, char** argv)
 {
-    if (argc == 4 && strcmp(argv[0], "set") == 0) {
+    if (argc == 4 && strncmp(argv[0], "set", sizeof("set")) == 0) {
         char *endpoint_name = argv[1];
         char *attribute_name = argv[2];
         int value = atoi(argv[3]);
         esp_matter_attr_val_t val = esp_matter_int(value);
 
         /* Change val if bool */
-        if (strcmp(attribute_name, "Power") == 0) {
+        if (strncmp(attribute_name, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
             val.type = ESP_MATTER_VAL_TYPE_BOOLEAN;
             val.val.b = (bool)value;
         }
         app_driver_attribute_set(endpoint_name, attribute_name, val);
-    } else if (argc == 3 && strcmp(argv[0], "get") == 0) {
+    } else if (argc == 3 && strncmp(argv[0], "get", sizeof("get")) == 0) {
         char *endpoint_name = argv[1];
         char *attribute_name = argv[2];
         esp_matter_attr_val_t val = app_driver_attribute_get(endpoint_name, attribute_name);
@@ -75,16 +76,16 @@ int app_driver_cli_handler(int argc, char** argv)
 
 static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, const char *attribute)
 {
-    if (strcmp(endpoint, "Light") == 0) {
-        if (strcmp(attribute, "Power") == 0) {
+    if (strncmp(endpoint, ESP_MATTER_ENDPOINT_LIGHT, sizeof(ESP_MATTER_ENDPOINT_LIGHT)) == 0) {
+        if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
             return esp_matter_bool(light_driver_get_power());
-        } else if (strcmp(attribute, "Brightness") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
             return esp_matter_int(light_driver_get_brightness());
-        } else if (strcmp(attribute, "Hue") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
             return esp_matter_int(light_driver_get_hue());
-        } else if (strcmp(attribute, "Saturation") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
             return esp_matter_int(light_driver_get_saturation());
-        } else if (strcmp(attribute, "Temperature") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
             return esp_matter_int(light_driver_get_temperature());
         } else {
             ESP_LOGI(TAG, "Attribute update not handled: %s", attribute);
@@ -101,16 +102,16 @@ static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, cons
 static esp_err_t app_driver_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
-    if (strcmp(endpoint, "Light") == 0) {
-        if (strcmp(attribute, "Power") == 0) {
+    if (strncmp(endpoint, ESP_MATTER_ENDPOINT_LIGHT, sizeof(ESP_MATTER_ENDPOINT_LIGHT)) == 0) {
+        if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
             err = light_driver_set_power(val.val.b);
-        } else if (strcmp(attribute, "Brightness") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
             err = light_driver_set_brightness(val.val.i);
-        } else if (strcmp(attribute, "Hue") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
             err = light_driver_set_hue(val.val.i);
-        } else if (strcmp(attribute, "Saturation") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
             err = light_driver_set_saturation(val.val.i);
-        } else if (strcmp(attribute, "Temperature") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
             err = light_driver_set_temperature(val.val.i);
         } else {
             ESP_LOGI(TAG, "Attribute update not handled: %s", attribute);

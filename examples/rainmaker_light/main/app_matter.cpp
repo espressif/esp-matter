@@ -7,6 +7,7 @@
 */
 
 #include "esp_matter.h"
+#include "esp_matter_standard.h"
 #include "app_matter.h"
 #include "app_constants.h"
 
@@ -56,27 +57,27 @@ static const char *TAG = "app_matter";
 int app_matter_remap(char *attribute, int value, app_matter_remap_t remap)
 {
     if (remap == REMAP_MATTER_TO_STANDARD) {
-        if (strcmp(attribute, "Power") == 0) {
+        if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
             return value;
-        } else if (strcmp(attribute, "Brightness") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
             return REMAP_TO_RANGE(value, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
-        } else if (strcmp(attribute, "Hue") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
             return REMAP_TO_RANGE(value, MATTER_HUE, STANDARD_HUE);
-        } else if (strcmp(attribute, "Saturation") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
             return REMAP_TO_RANGE(value, MATTER_SATURATION, STANDARD_SATURATION);
-        } else if (strcmp(attribute, "Temperature") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
             return REMAP_TO_RANGE(value, MATTER_TEMPERATURE, STANDARD_TEMPERATURE);
         }
     } else if (remap == REMAP_STANDARD_TO_MATTER) {
-        if (strcmp(attribute, "Power") == 0) {
+        if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
             return value;
-        } else if (strcmp(attribute, "Brightness") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
             return REMAP_TO_RANGE(value, STANDARD_BRIGHTNESS, MATTER_BRIGHTNESS);
-        } else if (strcmp(attribute, "Hue") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
             return REMAP_TO_RANGE(value, STANDARD_HUE, MATTER_HUE);
-        } else if (strcmp(attribute, "Saturation") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
             return REMAP_TO_RANGE(value, STANDARD_SATURATION, MATTER_SATURATION);
-        } else if (strcmp(attribute, "Temperature") == 0) {
+        } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
             return REMAP_TO_RANGE(value, STANDARD_TEMPERATURE, MATTER_TEMPERATURE);
         }
     }
@@ -85,7 +86,7 @@ int app_matter_remap(char *attribute, int value, app_matter_remap_t remap)
 
 static EndpointId app_matter_get_endpoint_id(const char *endpoint)
 {
-    if (strcmp(endpoint, "Light") == 0) {
+    if (strncmp(endpoint, ESP_MATTER_ENDPOINT_LIGHT, sizeof(ESP_MATTER_ENDPOINT_LIGHT)) == 0) {
         return 1;
     }
     return 0;
@@ -94,22 +95,22 @@ static EndpointId app_matter_get_endpoint_id(const char *endpoint)
 static const char *app_matter_get_endpoint_name(EndpointId endpoint)
 {
     if (endpoint == 1) {
-        return "Light";
+        return ESP_MATTER_ENDPOINT_LIGHT;
     }
     return NULL;
 }
 
 static ClusterId app_matter_get_cluster_id(const char *attribute)
 {
-    if (strcmp(attribute, "Power") == 0) {
+    if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
         return ZCL_ON_OFF_CLUSTER_ID;
-    } else if (strcmp(attribute, "Brightness") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
         return ZCL_LEVEL_CONTROL_CLUSTER_ID;
-    } else if (strcmp(attribute, "Hue") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
         return ZCL_COLOR_CONTROL_CLUSTER_ID;
-    } else if (strcmp(attribute, "Saturation") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
         return ZCL_COLOR_CONTROL_CLUSTER_ID;
-    } else if (strcmp(attribute, "Temperature") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
         return ZCL_COLOR_CONTROL_CLUSTER_ID;
     }
     return 0;
@@ -117,15 +118,15 @@ static ClusterId app_matter_get_cluster_id(const char *attribute)
 
 static AttributeId app_matter_get_attribute_id(const char *attribute)
 {
-    if (strcmp(attribute, "Power") == 0) {
+    if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
         return ZCL_ON_OFF_ATTRIBUTE_ID;
-    } else if (strcmp(attribute, "Brightness") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
         return ZCL_CURRENT_LEVEL_ATTRIBUTE_ID;
-    } else if (strcmp(attribute, "Hue") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
         return ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID;
-    } else if (strcmp(attribute, "Saturation") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
         return ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID;
-    } else if (strcmp(attribute, "Temperature") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
         return ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID;
     }
     return 0;
@@ -134,16 +135,16 @@ static AttributeId app_matter_get_attribute_id(const char *attribute)
 static const char *app_matter_get_attribute_name(ClusterId cluster, AttributeId attribute)
 {
     if (cluster == ZCL_ON_OFF_CLUSTER_ID) {
-        return "Power";
+        return ESP_MATTER_ATTR_POWER;
     } else if (cluster == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        return "Brightness";
+        return ESP_MATTER_ATTR_BRIGHTNESS;
     } else if (cluster == ZCL_COLOR_CONTROL_CLUSTER_ID) {
         if (attribute == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
-            return "Hue";
+            return ESP_MATTER_ATTR_HUE;
         } else if (attribute == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
-            return "Saturation";
+            return ESP_MATTER_ATTR_SATURATION;
         } else if (attribute == ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID) {
-            return "Temperature";
+            return ESP_MATTER_ATTR_TEMPERATURE;
         }
     }
     return NULL;
@@ -171,15 +172,15 @@ static int app_matter_get_attribute_value(esp_matter_attr_val_t val)
 
 static esp_matter_attr_val_t app_matter_get_attribute_val(char *attribute, int value)
 {
-    if (strcmp(attribute, "Power") == 0) {
+    if (strncmp(attribute, ESP_MATTER_ATTR_POWER, sizeof(ESP_MATTER_ATTR_POWER)) == 0) {
         return esp_matter_bool((bool)value);
-    } else if (strcmp(attribute, "Brightness") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_BRIGHTNESS, sizeof(ESP_MATTER_ATTR_BRIGHTNESS)) == 0) {
         return esp_matter_int(value);
-    } else if (strcmp(attribute, "Hue") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_HUE, sizeof(ESP_MATTER_ATTR_HUE)) == 0) {
         return esp_matter_int(value);
-    } else if (strcmp(attribute, "Saturation") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_SATURATION, sizeof(ESP_MATTER_ATTR_SATURATION)) == 0) {
         return esp_matter_int(value);
-    } else if (strcmp(attribute, "Temperature") == 0) {
+    } else if (strncmp(attribute, ESP_MATTER_ATTR_TEMPERATURE, sizeof(ESP_MATTER_ATTR_TEMPERATURE)) == 0) {
         return esp_matter_int(value);
     }
     return esp_matter_int(value);

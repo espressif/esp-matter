@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "esp_matter.h"
+#include "esp_matter_standard.h"
 #include "app_driver.h"
 #include "app_matter.h"
 #include "app_constants.h"
@@ -110,10 +111,10 @@ extern "C" void app_main()
     app_rainmaker_init();
 
     /* Set the default attribute values */
-    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Power", esp_matter_bool(DEFAULT_POWER));
-    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Brightness", esp_matter_int(DEFAULT_BRIGHTNESS));
-    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Hue", esp_matter_int(DEFAULT_HUE));
-    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Saturation", esp_matter_int(DEFAULT_SATURATION));
+    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_POWER, esp_matter_bool(DEFAULT_POWER));
+    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_BRIGHTNESS, esp_matter_int(DEFAULT_BRIGHTNESS));
+    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_HUE, esp_matter_int(DEFAULT_HUE));
+    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_SATURATION, esp_matter_int(DEFAULT_SATURATION));
 
 #if CONFIG_ENABLE_CHIP_SHELL
     xTaskCreate(&ChipShellTask, "chip_shell", 2048, NULL, 5, NULL);

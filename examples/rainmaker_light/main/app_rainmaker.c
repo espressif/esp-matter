@@ -21,6 +21,7 @@
 #include <esp_rmaker_user_mapping.h>
 
 #include <esp_matter.h>
+#include <esp_matter_standard.h>
 #include <app_rainmaker.h>
 #include "app_constants.h"
 
@@ -31,7 +32,7 @@ esp_rmaker_device_t *light_device;
 
 int app_rainmaker_cli_handler(int argc, char** argv)
 {
-    if (argc == 3 && strcmp(argv[0], "add-user") == 0) {
+    if (argc == 3 && strncmp(argv[0], "add-user", sizeof("add-user")) == 0) {
         printf("%s: Starting user-node mapping\n", TAG);
         if (esp_rmaker_start_user_node_mapping(argv[1], argv[2]) != ESP_OK) {
             return -1;
@@ -135,14 +136,14 @@ esp_err_t app_rainmaker_init()
     }
 
     /* Create a device and add the relevant parameters to it */
-    light_device = esp_rmaker_lightbulb_device_create("Light", NULL, DEFAULT_POWER);
+    light_device = esp_rmaker_lightbulb_device_create(ESP_MATTER_ENDPOINT_LIGHT, NULL, DEFAULT_POWER);
     esp_rmaker_device_add_cb(light_device, write_cb, NULL);
 
-    esp_rmaker_device_add_param(light_device, esp_rmaker_brightness_param_create(ESP_RMAKER_DEF_BRIGHTNESS_NAME, DEFAULT_BRIGHTNESS));
+    esp_rmaker_device_add_param(light_device, esp_rmaker_brightness_param_create(ESP_MATTER_ATTR_BRIGHTNESS, DEFAULT_BRIGHTNESS));
 
-    esp_rmaker_device_add_param(light_device, esp_rmaker_hue_param_create(ESP_RMAKER_DEF_HUE_NAME, DEFAULT_HUE));
+    esp_rmaker_device_add_param(light_device, esp_rmaker_hue_param_create(ESP_MATTER_ATTR_HUE, DEFAULT_HUE));
 
-    esp_rmaker_device_add_param(light_device, esp_rmaker_saturation_param_create(ESP_RMAKER_DEF_SATURATION_NAME, DEFAULT_SATURATION));
+    esp_rmaker_device_add_param(light_device, esp_rmaker_saturation_param_create(ESP_MATTER_ATTR_SATURATION, DEFAULT_SATURATION));
 
     esp_rmaker_node_add_device(node, light_device);
 

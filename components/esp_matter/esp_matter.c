@@ -118,7 +118,7 @@ esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, co
     /* Callback */
     esp_matter_attr_cb_t *current_callback = esp_matter->callbacks;
     while (current_callback) {
-        if (strcmp(current_callback->name, name) != 0) {
+        if (strncmp(current_callback->name, name, NAME_MAX_LEN) != 0) {
             if (current_callback->callback) {
                 current_callback->callback(endpoint, attribute, val, current_callback->priv_data);
             }
@@ -177,7 +177,7 @@ esp_err_t esp_matter_attribute_callback_remove(const char *name)
     esp_matter_attr_cb_t *previous_callback = NULL;
     esp_matter_attr_cb_t *current_callback = esp_matter->callbacks;
     while (current_callback) {
-        if (strcmp(current_callback->name, name) == 0) {
+        if (strncmp(current_callback->name, name, NAME_MAX_LEN) == 0) {
             break;
         }
         previous_callback = current_callback;
