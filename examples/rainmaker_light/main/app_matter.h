@@ -10,11 +10,9 @@
 
 #include "esp_err.h"
 
-/**
- * @brief Initializes the matter stack.
+/** Initialize the matter stack
  *
- * @return
- *      - ESP_OK on success
- *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
 esp_err_t app_matter_init(void);

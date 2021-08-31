@@ -9,185 +9,130 @@
 #include <string.h>
 #include <esp_log.h>
 
+#include <esp_matter.h>
 #include <app_driver.h>
 #include <device.h>
 #include <light_driver.h>
 
-typedef struct driver_src {
-    char name[SRC_MAX_NAMELEN];
-    struct app_driver_param_callback callbacks;
-    struct driver_src *next;
-} driver_src_t;
-
+#define APP_DRIVER_NAME "Driver"
 static const char *TAG = "app_driver";
-static driver_src_t *s_driver_src = NULL;
 
-esp_err_t app_driver_init()
+static esp_err_t app_driver_attribute_set(const char *endpoint, const char *attribute, esp_matter_attr_val_t val);
+static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, const char *attribute);
+
+static void app_driver_print_attr_val(const char *endpoint, const char *attribute, esp_matter_attr_val_t val)
 {
-    return device_init();
+    switch(val.type) {
+        case ESP_MATTER_VAL_TYPE_BOOLEAN:
+            ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.b);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_INTEGER:
+            ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.i);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_FLOAT:
+            ESP_LOGI(TAG, "%s's %s is %f", endpoint, attribute, val.val.f);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_STRING:
+        case ESP_MATTER_VAL_TYPE_OBJECT:
+        case ESP_MATTER_VAL_TYPE_ARRAY:
+            ESP_LOGI(TAG, "%s's %s is %s", endpoint, attribute, val.val.s);
+            break;
+
+        default:
+            ESP_LOGI(TAG, "%s's %s is <invalid value>", endpoint, attribute);
+            break;
+    }
 }
 
-esp_err_t app_driver_register_src(const char *name, app_driver_param_callback_t *callbacks)
+int app_driver_cli_handler(int argc, char** argv)
 {
-    driver_src_t *new_src = NULL;
+    if (argc == 4 && strcmp(argv[0], "set") == 0) {
+        char *endpoint_name = argv[1];
+        char *attribute_name = argv[2];
+        int value = atoi(argv[3]);
+        esp_matter_attr_val_t val = esp_matter_int(value);
 
-    if (name == NULL || callbacks == NULL) {
-        ESP_LOGE(TAG, "Invalid arguments");
-        return ESP_ERR_INVALID_ARG;
+        /* Change val if bool */
+        if (strcmp(attribute_name, "Power") == 0) {
+            val.type = ESP_MATTER_VAL_TYPE_BOOLEAN;
+            val.val.b = (bool)value;
+        }
+        app_driver_attribute_set(endpoint_name, attribute_name, val);
+    } else if (argc == 3 && strcmp(argv[0], "get") == 0) {
+        char *endpoint_name = argv[1];
+        char *attribute_name = argv[2];
+        esp_matter_attr_val_t val = app_driver_attribute_get(endpoint_name, attribute_name);
+        app_driver_print_attr_val(endpoint_name, attribute_name, val);
+    } else {
+        ESP_LOGE(TAG, "Incorrect arguments");
+        return -1;
     }
+    return 0;
+}
 
-    new_src = (driver_src_t *)malloc(sizeof(driver_src_t));
-    if (new_src == NULL) {
-        ESP_LOGE(TAG, "Failed to allocate memory for driver_src_t");
-        return ESP_ERR_NO_MEM;
+static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, const char *attribute)
+{
+    if (strcmp(endpoint, "Light") == 0) {
+        if (strcmp(attribute, "Power") == 0) {
+            return esp_matter_bool(light_driver_get_power());
+        } else if (strcmp(attribute, "Brightness") == 0) {
+            return esp_matter_int(light_driver_get_brightness());
+        } else if (strcmp(attribute, "Hue") == 0) {
+            return esp_matter_int(light_driver_get_hue());
+        } else if (strcmp(attribute, "Saturation") == 0) {
+            return esp_matter_int(light_driver_get_saturation());
+        } else if (strcmp(attribute, "Temperature") == 0) {
+            return esp_matter_int(light_driver_get_temperature());
+        } else {
+            ESP_LOGI(TAG, "Attribute update not handled: %s", attribute);
+        }
+    } else {
+        ESP_LOGI(TAG, "Endpoint not handled");
     }
+    esp_matter_attr_val_t val = {
+        .type = ESP_MATTER_VAL_TYPE_INVALID,
+    };
+    return val;
+}
 
-    memset(new_src, 0, sizeof(driver_src_t));
-    strncpy(new_src->name, name, strnlen(name, SRC_MAX_NAMELEN));
-    memcpy(&new_src->callbacks, callbacks, sizeof(app_driver_param_callback_t));
+static esp_err_t app_driver_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+{
+    esp_err_t err = ESP_OK;
+    if (strcmp(endpoint, "Light") == 0) {
+        if (strcmp(attribute, "Power") == 0) {
+            err = light_driver_set_power(val.val.b);
+        } else if (strcmp(attribute, "Brightness") == 0) {
+            err = light_driver_set_brightness(val.val.i);
+        } else if (strcmp(attribute, "Hue") == 0) {
+            err = light_driver_set_hue(val.val.i);
+        } else if (strcmp(attribute, "Saturation") == 0) {
+            err = light_driver_set_saturation(val.val.i);
+        } else if (strcmp(attribute, "Temperature") == 0) {
+            err = light_driver_set_temperature(val.val.i);
+        } else {
+            ESP_LOGI(TAG, "Attribute update not handled: %s", attribute);
+            err = ESP_ERR_NOT_FOUND;
+        }
+    } else {
+        ESP_LOGI(TAG, "Endpoint not handled");
+        err = ESP_ERR_NOT_FOUND;
+    }
+    return err;
+}
 
-    new_src->next = s_driver_src;
-    s_driver_src = new_src;
-
+static esp_err_t app_driver_attribute_set(const char *endpoint, const char *attribute, esp_matter_attr_val_t val)
+{
+    app_driver_attribute_update(endpoint, attribute, val, NULL);
+    esp_matter_attribute_notify(APP_DRIVER_NAME, endpoint, attribute, val);
     return ESP_OK;
 }
 
-esp_err_t app_driver_update_and_report_power(bool power, const char *src)
+esp_err_t app_driver_init()
 {
-    esp_err_t ret;
-    driver_src_t *cur_src = s_driver_src;
-
-    /* Update */
-    ret = light_driver_set_power(power);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    /* Report to other sources */
-    ESP_LOGI(TAG, "Power (OnOff) set to: %d", power);
-    while (cur_src) {
-        if (strncmp(cur_src->name, src, strnlen(src, SRC_MAX_NAMELEN)) != 0 &&
-                cur_src->callbacks.update_power != NULL) {
-            cur_src->callbacks.update_power(power);
-        }
-        cur_src = cur_src->next;
-    }
-    return ret;
-}
-
-esp_err_t app_driver_update_and_report_brightness(uint8_t brightness, const char *src)
-{
-    esp_err_t ret;
-    driver_src_t *cur_src = s_driver_src;
-
-    /* Update */
-    ret = light_driver_set_brightness(brightness);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    /* Report to other sources */
-    ESP_LOGI(TAG, "Brightness set to: %d percent", brightness * 100 / 254);
-    while (cur_src) {
-        if (strncmp(cur_src->name, src, strnlen(src, SRC_MAX_NAMELEN)) != 0 &&
-                cur_src->callbacks.update_brightness != NULL) {
-            cur_src->callbacks.update_brightness(brightness);
-        }
-        cur_src = cur_src->next;
-    }
-    return ret;
-}
-
-esp_err_t app_driver_update_and_report_hue(uint16_t hue, const char *src)
-{
-    esp_err_t ret;
-    driver_src_t *cur_src = s_driver_src;
-    
-    /* Update */
-    ret = light_driver_set_hue(hue);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    /* Report to other sources */
-    ESP_LOGI(TAG, "Hue set to: %d degree", hue);
-    while (cur_src) {
-        if (strncmp(cur_src->name, src, strnlen(src, SRC_MAX_NAMELEN)) != 0 &&
-                cur_src->callbacks.update_hue != NULL) {
-            cur_src->callbacks.update_hue(hue);
-        }
-        cur_src = cur_src->next;
-    }
-    return ret;
-}
-
-esp_err_t app_driver_update_and_report_saturation(uint8_t saturation, const char *src)
-{
-    esp_err_t ret;
-    driver_src_t *cur_src = s_driver_src;
-
-    /* Update */
-    ret = light_driver_set_saturation(saturation);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    /* Report to other sources */
-    ESP_LOGI(TAG, "Saturation set to: %d percent", saturation);
-    while (cur_src) {
-        if (strncmp(cur_src->name, src, strnlen(src, SRC_MAX_NAMELEN)) != 0 &&
-                cur_src->callbacks.update_saturation != NULL) {
-            cur_src->callbacks.update_saturation(saturation);
-        }
-        cur_src = cur_src->next;
-    }
-    return ret;
-}
-
-esp_err_t app_driver_update_and_report_temperature(uint32_t temperature, const char *src)
-{
-    esp_err_t ret;
-    driver_src_t *cur_src = s_driver_src;
-
-    /* Update */
-    ret = light_driver_set_temperature(temperature);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    /* Report to other sources */
-    ESP_LOGI(TAG, "Color Temperature set to: %d kelvin", temperature);
-    while (cur_src) {
-        if (strncmp(cur_src->name, src, strnlen(src, SRC_MAX_NAMELEN)) != 0 &&
-                cur_src->callbacks.update_temperature != NULL) {
-            cur_src->callbacks.update_temperature(temperature);
-        }
-        cur_src = cur_src->next;
-    }   
-    return ret;
-}
-
-bool app_driver_get_power()
-{
-    return light_driver_get_power();
-}
-
-uint8_t app_driver_get_brightness()
-{
-    return light_driver_get_brightness();
-}
-
-uint16_t app_driver_get_hue()
-{
-    return light_driver_get_hue();
-}
-
-uint8_t app_driver_get_saturation()
-{
-    return light_driver_get_saturation();
-}
-
-uint32_t app_driver_get_temperature()
-{
-    return light_driver_get_temperature();
+    device_init();
+    esp_matter_attribute_callback_add(APP_DRIVER_NAME, app_driver_attribute_update, NULL);
+    return ESP_OK;
 }

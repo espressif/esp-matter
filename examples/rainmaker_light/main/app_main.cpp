@@ -6,12 +6,14 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+#include <string.h>
+
+#include "esp_matter.h"
 #include "app_driver.h"
 #include "app_matter.h"
 #include "app_constants.h"
 #include "app_rainmaker.h"
 
-#include "esp_console.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
@@ -19,87 +21,102 @@
 #include "freertos/task.h"
 #include "lib/shell/Engine.h"
 
-typedef enum param_type {
-    PARAM_TYPE_POWER = 0,
-    PARAM_TYPE_BRIGHTNESS,
-    PARAM_TYPE_MAX,
-} param_type_t;
-
-static int cli_handler(int argc, char *argv[])
-{
-    if (argc != 3) {
-        ESP_LOGE(APP_LOG_TAG, "Incorrect arguments");
-        return 0;
-    }
-    param_type_t param_type = (param_type_t)atoi(argv[1]);
-    int value = atoi(argv[2]);
-
-    if (param_type == PARAM_TYPE_POWER) {
-        app_driver_update_and_report_power(value, APP_DRIVER_SRC_LOCAL);
-    } else if (param_type == PARAM_TYPE_BRIGHTNESS) {
-        app_driver_update_and_report_brightness(value, APP_DRIVER_SRC_LOCAL);
-    } else {
-        ESP_LOGE(APP_LOG_TAG, "Param type not handled: %d", param_type);
-    }
-    return 0;
-}
-
-static esp_console_cmd_t driver_cmds[] = {
-    {
-        .command = "driver",
-        .help = "This can be used to simulate on-device control. Usage: driver <param_type> <value>",
-        .hint = NULL,
-        .func = cli_handler,
-        .argtable = NULL
-    },
-};
-
-static esp_err_t cli_init()
-{
-    int cmds_num = sizeof(driver_cmds) / sizeof(esp_console_cmd_t);
-    int i;
-    for (i = 0; i < cmds_num; i++) {
-        ESP_LOGI(APP_LOG_TAG, "Registering command: %s", driver_cmds[i].command);
-        esp_console_cmd_register(&driver_cmds[i]);
-    }
-    return ESP_OK;
-}
+#define APP_MAIN_NAME "Main"
+static const char *TAG = "app_main";
 
 #if CONFIG_ENABLE_CHIP_SHELL
 void ChipShellTask(void *args)
 {
     chip::Shell::Engine::Root().RunMainLoop();
 }
+
+CHIP_ERROR app_cli_common_handler(int argc, char** argv)
+{
+    /* This common handler is added to avoid adding `CHIP_ERROR` and its component requirements in other esp-matter components */
+    if (argc <= 0) {
+        ESP_LOGE(TAG, "Incorrect arguments");
+        return CHIP_ERROR_INVALID_ARGUMENT;
+    }
+    if (strncmp(argv[0], "driver", sizeof("driver")) == 0) {
+        app_driver_cli_handler(argc - 1, &argv[1]);
+    } else if (strncmp(argv[0], "rainmaker", sizeof("rainmaker")) == 0) {
+        app_rainmaker_cli_handler(argc - 1, &argv[1]);
+    } else {
+        ESP_LOGE(TAG, "Incorrect arguments");
+        return CHIP_ERROR_INVALID_ARGUMENT;
+    }
+    return CHIP_NO_ERROR;
+}
+
+static void app_cli_register_commands()
+{
+    static chip::Shell::shell_command_t cmds[] = {
+        {
+            .cmd_func = &app_cli_common_handler,
+            .cmd_name = "esp",
+            .cmd_help = "command1: driver: This can be used to simulate on-device control. Usage: chip esp driver <set|get> <endpoint_name> <attribute_name> [value]. Example1: chip esp driver set Light Power 1. Example2: chip esp driver get Light Power. command2: rainmaker: Initiate ESP RainMaker User-Node mapping from the node. Usage: chip esp rainmaker add-user <user_id> <secret_key>",
+        },
+    };
+    int cmds_num = sizeof(cmds) / sizeof(chip::Shell::shell_command_t);
+    chip::Shell::Engine::Root().RegisterCommands(cmds, cmds_num);
+}
 #endif // CONFIG_ENABLE_CHIP_SHELL
+
+static esp_err_t app_main_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+{
+    /* Just adding this callback to notify the application */
+    switch(val.type) {
+        case ESP_MATTER_VAL_TYPE_BOOLEAN:
+            ESP_LOGD(TAG, "%s's %s is %d", endpoint, attribute, val.val.b);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_INTEGER:
+            ESP_LOGD(TAG, "%s's %s is %d", endpoint, attribute, val.val.i);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_FLOAT:
+            ESP_LOGD(TAG, "%s's %s is %f", endpoint, attribute, val.val.f);
+            break;
+
+        case ESP_MATTER_VAL_TYPE_STRING:
+        case ESP_MATTER_VAL_TYPE_OBJECT:
+        case ESP_MATTER_VAL_TYPE_ARRAY:
+            ESP_LOGD(TAG, "%s's %s is %s", endpoint, attribute, val.val.s);
+            break;
+
+        default:
+            ESP_LOGD(TAG, "%s's %s is <invalid value>", endpoint, attribute);
+            break;
+    }
+    return ESP_OK;
+}
 
 extern "C" void app_main()
 {
-    // Initialize the ESP NVS layer.
+    /* Initialize the ESP NVS layer */
     ESP_ERROR_CHECK(nvs_flash_init());
 
-    /* Initialize and set the default params */
-    app_driver_init();
+    /* Initialize esp_matter */
+    esp_matter_init();
+    esp_matter_attribute_callback_add(APP_MAIN_NAME, app_main_attribute_update, NULL);
 
-    ESP_LOGI(APP_LOG_TAG, "==================================================");
-    ESP_LOGI(APP_LOG_TAG, "esp-matter-rainmaker-light example starting");
-    ESP_LOGI(APP_LOG_TAG, "==================================================");
+    /* Initialize driver */
+    app_driver_init();
 
     /* Initialize chip */
     ESP_ERROR_CHECK(app_matter_init());
 
     /* Initialize rainmaker */
-    app_rmaker_init();
+    app_rainmaker_init();
 
-    app_driver_update_and_report_power(DEFAULT_POWER, APP_DRIVER_SRC_LOCAL);
-    app_driver_update_and_report_brightness(DEFAULT_BRIGHTNESS, APP_DRIVER_SRC_LOCAL);
-    app_driver_update_and_report_hue(DEFAULT_HUE, APP_DRIVER_SRC_LOCAL);
-    app_driver_update_and_report_saturation(DEFAULT_SATURATION, APP_DRIVER_SRC_LOCAL);
-
-    /* Register CLI commands with esp_console (indirectly, rainmaker's console). */
-    cli_init();
+    /* Set the default attribute values */
+    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Power", esp_matter_bool(DEFAULT_POWER));
+    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Brightness", esp_matter_int(DEFAULT_BRIGHTNESS));
+    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Hue", esp_matter_int(DEFAULT_HUE));
+    esp_matter_attribute_notify(APP_MAIN_NAME, "Light", "Saturation", esp_matter_int(DEFAULT_SATURATION));
 
 #if CONFIG_ENABLE_CHIP_SHELL
-    /* Rainmaker console is enabled. So disabling this. */
-    // xTaskCreate(&ChipShellTask, "chip_shell", 2048, NULL, 5, NULL);
+    xTaskCreate(&ChipShellTask, "chip_shell", 2048, NULL, 5, NULL);
+    app_cli_register_commands();
 #endif
 }

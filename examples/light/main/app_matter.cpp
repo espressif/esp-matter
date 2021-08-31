@@ -6,7 +6,7 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "app_driver.h"
+#include "esp_matter.h"
 #include "app_matter.h"
 #include "app_constants.h"
 
@@ -38,46 +38,193 @@ using chip::DeviceLayer::PlatformMgr;
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
 
-static void on_on_off_attribute_changed(chip::EndpointId endpoint, chip::AttributeId attribute, uint8_t *value, size_t size)
+typedef enum {
+    REMAP_MATTER_TO_STANDARD,
+    REMAP_STANDARD_TO_MATTER,
+} app_matter_remap_t;
+
+#define STANDARD_BRIGHTNESS 100
+#define STANDARD_HUE 360
+#define STANDARD_SATURATION 100
+#define STANDARD_TEMPERATURE 100
+
+#define MATTER_BRIGHTNESS 255
+#define MATTER_HUE 255
+#define MATTER_SATURATION 255
+#define MATTER_TEMPERATURE 255
+
+#define APP_MATTER_NAME "Matter"
+static const char *TAG = "app_matter";
+
+int app_matter_remap(char *attribute, int value, app_matter_remap_t remap)
 {
-    if (attribute == ZCL_ON_OFF_ATTRIBUTE_ID) {
-        app_driver_update_and_report_power(*value, APP_DRIVER_SRC_MATTER);
-    } else {
-        ESP_LOGW(APP_LOG_TAG, "Unknown attribute in OnOff cluster: %d", attribute);
+    if (remap == REMAP_MATTER_TO_STANDARD) {
+        if (strcmp(attribute, "Power") == 0) {
+            return value;
+        } else if (strcmp(attribute, "Brightness") == 0) {
+            return REMAP_TO_RANGE(value, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
+        } else if (strcmp(attribute, "Hue") == 0) {
+            return REMAP_TO_RANGE(value, MATTER_HUE, STANDARD_HUE);
+        } else if (strcmp(attribute, "Saturation") == 0) {
+            return REMAP_TO_RANGE(value, MATTER_SATURATION, STANDARD_SATURATION);
+        } else if (strcmp(attribute, "Temperature") == 0) {
+            return REMAP_TO_RANGE(value, MATTER_TEMPERATURE, STANDARD_TEMPERATURE);
+        }
+    } else if (remap == REMAP_STANDARD_TO_MATTER) {
+        if (strcmp(attribute, "Power") == 0) {
+            return value;
+        } else if (strcmp(attribute, "Brightness") == 0) {
+            return REMAP_TO_RANGE(value, STANDARD_BRIGHTNESS, MATTER_BRIGHTNESS);
+        } else if (strcmp(attribute, "Hue") == 0) {
+            return REMAP_TO_RANGE(value, STANDARD_HUE, MATTER_HUE);
+        } else if (strcmp(attribute, "Saturation") == 0) {
+            return REMAP_TO_RANGE(value, STANDARD_SATURATION, MATTER_SATURATION);
+        } else if (strcmp(attribute, "Temperature") == 0) {
+            return REMAP_TO_RANGE(value, STANDARD_TEMPERATURE, MATTER_TEMPERATURE);
+        }
     }
+    return value;
 }
 
-static void on_level_control_atrribute_changed(chip::EndpointId endpoint, chip::AttributeId attribute, uint8_t *value,
-        size_t size)
+static EndpointId app_matter_get_endpoint_id(const char *endpoint)
 {
-    if (attribute == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
-        app_driver_update_and_report_brightness(*value, APP_DRIVER_SRC_MATTER);
-    } else {
-        ESP_LOGW(APP_LOG_TAG, "Unknown attribute in level control cluster: %d", attribute);
+    if (strcmp(endpoint, "Light") == 0) {
+        return 1;
     }
+    return 0;
 }
 
-static void on_color_control_attribute_changed(chip::EndpointId endpoint, chip::AttributeId attribute, uint8_t *value,
-        size_t size)
+static const char *app_matter_get_endpoint_name(EndpointId endpoint)
 {
-    if (attribute == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
-        // remap hue to [0, 359]
-        uint16_t hue = REMAP_TO_RANGE(static_cast<uint16_t>(*value), HUE_ATTRIBUTE_MAX, HUE_MAX);
-        app_driver_update_and_report_hue(hue, APP_DRIVER_SRC_MATTER);
-    } else if (attribute == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
-        // remap saturation to [0, 100]
-        uint8_t saturation = REMAP_TO_RANGE(static_cast<uint16_t>(*value), SATURATION_ATTRIBUTE_MAX, SATURATION_MAX);
-        app_driver_update_and_report_saturation(saturation, APP_DRIVER_SRC_MATTER);
-    } else if (attribute == ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID) {
-        // color temperature (kelvins) = 10000000 / temperatureMireds
-        uint16_t temp_mireds;
-        emberAfReadServerAttribute(endpoint, ZCL_COLOR_CONTROL_CLUSTER_ID, ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID,
-                                   reinterpret_cast<uint8_t *>(&temp_mireds), sizeof(uint16_t));
-        uint32_t color_temp = 1000000 / (temp_mireds == 0 ? 1 : temp_mireds);
-        app_driver_update_and_report_temperature(color_temp, APP_DRIVER_SRC_MATTER);
-    } else {
-        ESP_LOGW(APP_LOG_TAG, "Unknown attribute in color control cluster: %d", attribute);
+    if (endpoint == 1) {
+        return "Light";
     }
+    return NULL;
+}
+
+static ClusterId app_matter_get_cluster_id(const char *attribute)
+{
+    if (strcmp(attribute, "Power") == 0) {
+        return ZCL_ON_OFF_CLUSTER_ID;
+    } else if (strcmp(attribute, "Brightness") == 0) {
+        return ZCL_LEVEL_CONTROL_CLUSTER_ID;
+    } else if (strcmp(attribute, "Hue") == 0) {
+        return ZCL_COLOR_CONTROL_CLUSTER_ID;
+    } else if (strcmp(attribute, "Saturation") == 0) {
+        return ZCL_COLOR_CONTROL_CLUSTER_ID;
+    } else if (strcmp(attribute, "Temperature") == 0) {
+        return ZCL_COLOR_CONTROL_CLUSTER_ID;
+    }
+    return 0;
+}
+
+static AttributeId app_matter_get_attribute_id(const char *attribute)
+{
+    if (strcmp(attribute, "Power") == 0) {
+        return ZCL_ON_OFF_ATTRIBUTE_ID;
+    } else if (strcmp(attribute, "Brightness") == 0) {
+        return ZCL_CURRENT_LEVEL_ATTRIBUTE_ID;
+    } else if (strcmp(attribute, "Hue") == 0) {
+        return ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID;
+    } else if (strcmp(attribute, "Saturation") == 0) {
+        return ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID;
+    } else if (strcmp(attribute, "Temperature") == 0) {
+        return ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID;
+    }
+    return 0;
+}
+
+static const char *app_matter_get_attribute_name(ClusterId cluster, AttributeId attribute)
+{
+    if (cluster == ZCL_ON_OFF_CLUSTER_ID) {
+        return "Power";
+    } else if (cluster == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
+        return "Brightness";
+    } else if (cluster == ZCL_COLOR_CONTROL_CLUSTER_ID) {
+        if (attribute == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+            return "Hue";
+        } else if (attribute == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+            return "Saturation";
+        } else if (attribute == ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID) {
+            return "Temperature";
+        }
+    }
+    return NULL;
+}
+
+static EmberAfAttributeType app_matter_get_attribute_type(esp_matter_attr_val_t val)
+{
+    if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+        return ZCL_BOOLEAN_ATTRIBUTE_TYPE;
+    } else if (val.type == ESP_MATTER_VAL_TYPE_INTEGER) {
+        return ZCL_INT8U_ATTRIBUTE_TYPE;
+    }
+    return 0;
+}
+
+static int app_matter_get_attribute_value(esp_matter_attr_val_t val)
+{
+    if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+        return (int)val.val.b;
+    } else if (val.type == ESP_MATTER_VAL_TYPE_INTEGER) {
+        return val.val.i;
+    }
+    return 0;
+}
+
+static esp_matter_attr_val_t app_matter_get_attribute_val(char *attribute, int value)
+{
+    if (strcmp(attribute, "Power") == 0) {
+        return esp_matter_bool((bool)value);
+    } else if (strcmp(attribute, "Brightness") == 0) {
+        return esp_matter_int(value);
+    } else if (strcmp(attribute, "Hue") == 0) {
+        return esp_matter_int(value);
+    } else if (strcmp(attribute, "Saturation") == 0) {
+        return esp_matter_int(value);
+    } else if (strcmp(attribute, "Temperature") == 0) {
+        return esp_matter_int(value);
+    }
+    return esp_matter_int(value);
+}
+
+static esp_err_t app_matter_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+{
+    EndpointId endpoint_id = app_matter_get_endpoint_id(endpoint);
+    ClusterId cluster_id = app_matter_get_cluster_id(attribute);
+    AttributeId attribute_id = app_matter_get_attribute_id(attribute);
+    EmberAfAttributeType attribute_type = app_matter_get_attribute_type(val);
+    int value = app_matter_get_attribute_value(val);
+    uint8_t value_remap = (uint8_t)app_matter_remap((char *)attribute, value, REMAP_STANDARD_TO_MATTER);
+    ESP_LOGD(TAG, "Changing %s from standard: %d, to matter: %d\n", attribute, value, value_remap);
+
+    EmberAfStatus status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, CLUSTER_MASK_SERVER, (uint8_t *)&value_remap, attribute_type);
+    if (status != EMBER_ZCL_STATUS_SUCCESS) {
+        ESP_LOGE(TAG, "Error updating attribute to matter");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+void emberAfPostAttributeChangeCallback(EndpointId endpoint, ClusterId cluster, AttributeId attribute, uint8_t mask, uint16_t manufacturer, uint8_t type, uint16_t size, uint8_t *value)
+{
+    char *endpoint_name = (char *)app_matter_get_endpoint_name(endpoint);
+    char *attribute_name = (char *)app_matter_get_attribute_name(cluster, attribute);
+    if (endpoint_name == NULL || attribute_name == NULL) {
+        return;
+    }
+    int value_remap = app_matter_remap(attribute_name, (int)*value, REMAP_MATTER_TO_STANDARD);
+    esp_matter_attr_val_t val = app_matter_get_attribute_val(attribute_name, value_remap);
+    ESP_LOGD(TAG, "Changing %s from matter: %d, to standard: %d\n", attribute_name, *value, value_remap);
+
+    esp_matter_attribute_notify(APP_MATTER_NAME, endpoint_name, attribute_name, val);
+}
+
+esp_err_t app_matter_attribute_set(const char *endpoint, const char *attribute, esp_matter_attr_val_t val)
+{
+    app_matter_attribute_update(endpoint, attribute, val, NULL);
+    esp_matter_attribute_notify(APP_MATTER_NAME, endpoint, attribute, val);
+    return ESP_OK;
 }
 
 static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
@@ -85,93 +232,23 @@ static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
         chip::app::Mdns::StartServer();
     }
-    ESP_LOGI(APP_LOG_TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
-}
-
-static void update_matter_power(bool power)
-{
-    EmberAfStatus status;
-
-    status = emberAfWriteAttribute(1, ZCL_ON_OFF_CLUSTER_ID, ZCL_ON_OFF_ATTRIBUTE_ID, CLUSTER_MASK_SERVER,
-                                   (uint8_t *)&power, ZCL_BOOLEAN_ATTRIBUTE_TYPE);
-    assert(status == EMBER_ZCL_STATUS_SUCCESS);
-}
-
-static void update_matter_brightness(uint8_t brightness)
-{
-    EmberAfStatus status;
-
-    status = emberAfWriteAttribute(1, ZCL_LEVEL_CONTROL_CLUSTER_ID, ZCL_CURRENT_LEVEL_ATTRIBUTE_ID, CLUSTER_MASK_SERVER,
-                                   &brightness, ZCL_INT8U_ATTRIBUTE_TYPE);
-    assert(status == EMBER_ZCL_STATUS_SUCCESS);
-}
-
-static void update_matter_hue(uint16_t hue)
-{
-    EmberAfStatus status;
-    uint8_t hue_attribute = REMAP_TO_RANGE(hue, HUE_MAX, HUE_ATTRIBUTE_MAX);
-    
-    status = emberAfWriteAttribute(1, ZCL_COLOR_CONTROL_CLUSTER_ID, ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID,
-                                   CLUSTER_MASK_SERVER, &hue_attribute, ZCL_INT8U_ATTRIBUTE_TYPE);
-    assert(status == EMBER_ZCL_STATUS_SUCCESS); 
-}
-
-static void update_matter_saturation(uint8_t saturation)
-{
-    EmberAfStatus status;
-    uint8_t saturation_attribute = REMAP_TO_RANGE(static_cast<uint16_t>(saturation), SATURATION_MAX, SATURATION_ATTRIBUTE_MAX);
-
-    status = emberAfWriteAttribute(1, ZCL_COLOR_CONTROL_CLUSTER_ID, ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID,
-                                   CLUSTER_MASK_SERVER, &saturation_attribute, ZCL_INT8U_ATTRIBUTE_TYPE);
-    assert(status == EMBER_ZCL_STATUS_SUCCESS);
-}
-
-static void update_matter_temperature(uint32_t temperature)
-{
-   EmberAfStatus status;
-   uint16_t temp_mireds;
-   assert(temperature >= 18); // temperatureMireds limited in [0, 0xfeff]
-   temp_mireds = 1000000 / temperature;
-   status = emberAfWriteAttribute(1, ZCL_COLOR_CONTROL_CLUSTER_ID, ZCL_COLOR_CONTROL_COLOR_TEMPERATURE_ATTRIBUTE_ID,
-                                  CLUSTER_MASK_SERVER, reinterpret_cast<uint8_t *>(&temp_mireds), ZCL_INT16U_ATTRIBUTE_TYPE);
-   assert(status == EMBER_ZCL_STATUS_SUCCESS);
-}
-
-void emberAfPostAttributeChangeCallback(EndpointId endpoint, ClusterId cluster, AttributeId attribute, uint8_t mask,
-                                        uint16_t manufacturer, uint8_t type, uint16_t size, uint8_t *value)
-{
-    ESP_LOGI(APP_LOG_TAG, "Handle cluster ID: %d", cluster);
-    if (cluster == ZCL_ON_OFF_CLUSTER_ID) {
-        on_on_off_attribute_changed(endpoint, attribute, value, size);
-    } else if (cluster == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        on_level_control_atrribute_changed(endpoint, attribute, value, size);
-    } else if (cluster == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        on_color_control_attribute_changed(endpoint, attribute, value, size);
-    }
+    ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
 esp_err_t app_matter_init()
 {
-    app_driver_param_callback_t callbacks = {
-        .update_power = update_matter_power,
-        .update_brightness = update_matter_brightness,
-        .update_hue = update_matter_hue,
-        .update_saturation = update_matter_saturation,
-        .update_temperature = update_matter_temperature,
-    };
-
     if (PlatformMgr().InitChipStack() != CHIP_NO_ERROR) {
-        ESP_LOGE(APP_LOG_TAG, "Failed to initialize CHIP stack");
+        ESP_LOGE(TAG, "Failed to initialize CHIP stack");
         return ESP_FAIL;
     }
     ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
-        ESP_LOGE(APP_LOG_TAG, "Failed to initialize CHIP memory pool");
+        ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
         return ESP_ERR_NO_MEM;
     }
     if (PlatformMgr().StartEventLoopTask() != CHIP_NO_ERROR) {
         chip::Platform::MemoryShutdown();
-        ESP_LOGE(APP_LOG_TAG, "Failed to launch Matter main task");
+        ESP_LOGE(TAG, "Failed to launch Matter main task");
         return ESP_FAIL;
     }
     PlatformMgr().AddEventHandler(on_device_event, static_cast<intptr_t>(NULL));
@@ -190,7 +267,7 @@ esp_err_t app_matter_init()
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     chip::app::Mdns::StartServer();
 #endif
-    app_driver_register_src(APP_DRIVER_SRC_MATTER, &callbacks);
 
+    esp_matter_attribute_callback_add(APP_MATTER_NAME, app_matter_attribute_update, NULL);
     return ESP_OK;
 }
