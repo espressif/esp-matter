@@ -45,8 +45,7 @@ void copyListMember(uint8_t * dest, uint8_t * src, bool write, uint16_t * offset
     *offset = static_cast<uint16_t>(*offset + length);
 }
 
-uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, bool write, uint8_t * dest, uint8_t * src,
-                         int32_t index)
+uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, bool write, uint8_t * dest, uint8_t * src, int32_t index)
 {
     if (index == -1)
     {
@@ -59,12 +58,12 @@ uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, boo
         if (write)
         {
             // src is a pointer to native-endian uint16_t, dest is pointer to buffer that should hold little-endian value
-            emberAfCopyInt16u(dest, 0, *reinterpret_cast<uint16_t *>(src));
+            emberAfCopyInt16u(dest, 0, *reinterpret_cast<uint16_t*>(src));
         }
         else
         {
             // src is pointer to buffer holding little-endian value, dest is a pointer to native-endian uint16_t
-            *reinterpret_cast<uint16_t *>(dest) = emberAfGetInt16u(src, 0, kSizeLengthInBytes);
+            *reinterpret_cast<uint16_t*>(dest) = emberAfGetInt16u(src, 0, kSizeLengthInBytes);
         }
         return kSizeLengthInBytes;
     }
@@ -78,64 +77,117 @@ uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, boo
     uint16_t entryLength = 0;
     switch (clusterId)
     {
+    case 0x001D: // Descriptor Cluster
+    {
+        uint16_t entryOffset = kSizeLengthInBytes;
+        switch (am->attributeId)
+        {
+            case 0x0000: // device list
+            {
+                entryLength  = 6;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                // Struct _DeviceType
+                _DeviceType * entry = reinterpret_cast<_DeviceType *>(write ? src : dest);
+                copyListMember(write ? dest : (uint8_t *)&entry->type, write ? (uint8_t *)&entry->type : src, write, &entryOffset, sizeof(entry->type)); // DEVTYPE_ID
+                copyListMember(write ? dest : (uint8_t *)&entry->revision, write ? (uint8_t *)&entry->revision : src, write, &entryOffset, sizeof(entry->revision)); // INT16U
+                break;
+            }
+            case 0x0001: // server list
+            {
+                entryLength  = 4;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                copyListMember(dest, src, write, &entryOffset, entryLength); // CLUSTER_ID
+                break;
+            }
+            case 0x0002: // client list
+            {
+                entryLength  = 4;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                copyListMember(dest, src, write, &entryOffset, entryLength); // CLUSTER_ID
+                break;
+            }
+            case 0x0003: // parts list
+            {
+                entryLength  = 2;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                copyListMember(dest, src, write, &entryOffset, entryLength); // ENDPOINT_NO
+                break;
+            }
+      }
+      break;
+    }
     case 0x0030: // General Commissioning Cluster
     {
         uint16_t entryOffset = kSizeLengthInBytes;
         switch (am->attributeId)
         {
-        case 0x0001: // BasicCommissioningInfoList
-        {
-            entryLength = 4;
-            if (((index - 1) * entryLength) > (am->size - entryLength))
+            case 0x0001: // BasicCommissioningInfoList
             {
-                ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
-                return 0;
+                entryLength  = 4;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                // Struct _BasicCommissioningInfoType
+                _BasicCommissioningInfoType * entry = reinterpret_cast<_BasicCommissioningInfoType *>(write ? src : dest);
+                copyListMember(write ? dest : (uint8_t *)&entry->FailSafeExpiryLengthMs, write ? (uint8_t *)&entry->FailSafeExpiryLengthMs : src, write, &entryOffset, sizeof(entry->FailSafeExpiryLengthMs)); // INT32U
+                break;
             }
-            entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
-            // Struct _BasicCommissioningInfoType
-            _BasicCommissioningInfoType * entry = reinterpret_cast<_BasicCommissioningInfoType *>(write ? src : dest);
-            copyListMember(write ? dest : (uint8_t *) &entry->FailSafeExpiryLengthMs,
-                           write ? (uint8_t *) &entry->FailSafeExpiryLengthMs : src, write, &entryOffset,
-                           sizeof(entry->FailSafeExpiryLengthMs)); // INT32U
-            break;
-        }
-        }
-        break;
+      }
+      break;
     }
     case 0x003E: // Operational Credentials Cluster
     {
         uint16_t entryOffset = kSizeLengthInBytes;
         switch (am->attributeId)
         {
-        case 0x0001: // fabrics list
-        {
-            entryLength = 52;
-            if (((index - 1) * entryLength) > (am->size - entryLength))
+            case 0x0001: // fabrics list
             {
-                ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
-                return 0;
+                entryLength  = 52;
+                if (((index - 1) * entryLength) > (am->size - entryLength))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+                // Struct _FabricDescriptor
+                _FabricDescriptor * entry = reinterpret_cast<_FabricDescriptor *>(write ? src : dest);
+                copyListMember(write ? dest : (uint8_t *)&entry->FabricId, write ? (uint8_t *)&entry->FabricId : src, write, &entryOffset, sizeof(entry->FabricId)); // FABRIC_ID
+                copyListMember(write ? dest : (uint8_t *)&entry->VendorId, write ? (uint8_t *)&entry->VendorId : src, write, &entryOffset, sizeof(entry->VendorId)); // INT16U
+                copyListMember(write ? dest : (uint8_t *)&entry->NodeId, write ? (uint8_t *)&entry->NodeId : src, write, &entryOffset, sizeof(entry->NodeId)); // NODE_ID
+                ByteSpan * LabelSpan = &entry->Label; // OCTET_STRING
+                if (CHIP_NO_ERROR != (write ? WriteByteSpan(dest + entryOffset, 34, LabelSpan) : ReadByteSpan(src + entryOffset, 34, LabelSpan)))
+                {
+                    ChipLogError(Zcl, "Index %" PRId32 " is invalid. Not enough remaining space", index);
+                    return 0;
+                }
+                entryOffset = static_cast<uint16_t>(entryOffset + 34);
+                break;
             }
-            entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
-            // Struct _FabricDescriptor
-            _FabricDescriptor * entry = reinterpret_cast<_FabricDescriptor *>(write ? src : dest);
-            copyListMember(write ? dest : (uint8_t *) &entry->FabricId, write ? (uint8_t *) &entry->FabricId : src, write,
-                           &entryOffset, sizeof(entry->FabricId)); // FABRIC_ID
-            copyListMember(write ? dest : (uint8_t *) &entry->VendorId, write ? (uint8_t *) &entry->VendorId : src, write,
-                           &entryOffset, sizeof(entry->VendorId)); // INT16U
-            copyListMember(write ? dest : (uint8_t *) &entry->NodeId, write ? (uint8_t *) &entry->NodeId : src, write, &entryOffset,
-                           sizeof(entry->NodeId)); // NODE_ID
-            ByteSpan * LabelSpan = &entry->Label;  // OCTET_STRING
-            if (CHIP_NO_ERROR !=
-                (write ? WriteByteSpan(dest + entryOffset, 34, LabelSpan) : ReadByteSpan(src + entryOffset, 34, LabelSpan)))
-            {
-                ChipLogError(Zcl, "Index %" PRId32 " is invalid. Not enough remaining space", index);
-                return 0;
-            }
-            entryOffset = static_cast<uint16_t>(entryOffset + 34);
-            break;
-        }
-        }
-        break;
+      }
+      break;
     }
     }
 
@@ -156,31 +208,51 @@ uint16_t emberAfAttributeValueListSize(ClusterId clusterId, AttributeId attribut
     uint16_t entryLength = 0;
     switch (clusterId)
     {
+    case 0x001D: // Descriptor Cluster
+        switch (attributeId)
+        {
+            case 0x0000: // device list
+            // Struct _DeviceType
+            entryLength = 6;
+            break;
+            case 0x0001: // server list
+            // chip::ClusterId
+            entryLength = 4;
+            break;
+            case 0x0002: // client list
+            // chip::ClusterId
+            entryLength = 4;
+            break;
+            case 0x0003: // parts list
+            // chip::EndpointId
+            entryLength = 2;
+            break;
+        }
+    break;
     case 0x0030: // General Commissioning Cluster
         switch (attributeId)
         {
-        case 0x0001: // BasicCommissioningInfoList
+            case 0x0001: // BasicCommissioningInfoList
             // Struct _BasicCommissioningInfoType
             entryLength = 4;
             break;
         }
-        break;
+    break;
     case 0x003E: // Operational Credentials Cluster
         switch (attributeId)
         {
-        case 0x0001: // fabrics list
+            case 0x0001: // fabrics list
             // Struct _FabricDescriptor
             entryLength = 52;
             break;
         }
-        break;
+    break;
     }
 
     uint32_t totalSize = kSizeLengthInBytes + (entryCount * entryLength);
     if (!CanCastTo<uint16_t>(totalSize))
     {
-        ChipLogError(Zcl, "Cluster " ChipLogFormatMEI ": Size of attribute " ChipLogFormatMEI " is too large.",
-                     ChipLogValueMEI(clusterId), ChipLogValueMEI(attributeId));
+        ChipLogError(Zcl, "Cluster " ChipLogFormatMEI ": Size of attribute " ChipLogFormatMEI " is too large.", ChipLogValueMEI(clusterId), ChipLogValueMEI(attributeId));
         return 0;
     }
 

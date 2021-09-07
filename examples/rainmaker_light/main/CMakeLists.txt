@@ -11,6 +11,7 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src/app/clusters/wifi_network_diagnostics_server"
                            "${MATTER_SDK_PATH}/src/app/clusters/on-off-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/operational-credentials-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/descriptor"
                            "${MATTER_SDK_PATH}/src/app/clusters/level-control"
                            "${MATTER_SDK_PATH}/src/app/clusters/color-control-server")
 
