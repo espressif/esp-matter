@@ -34,6 +34,9 @@ using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConnectivityMgr;
 using chip::DeviceLayer::DeviceEventType::PublicEventTypes;
 using chip::DeviceLayer::PlatformMgr;
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+using chip::DeviceLayer::ThreadStackMgr;
+#endif
 
 static void on_on_off_attribute_changed(chip::EndpointId endpoint, chip::AttributeId attribute, uint8_t *value, size_t size)
 {
@@ -82,6 +85,11 @@ static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
         chip::app::Mdns::StartServer();
     }
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    if (event->Type == PublicEventTypes::kThreadStateChange) {
+        chip::app::Mdns::StartServer();
+    }
+#endif
 
     ESP_LOGI(APP_LOG_TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
@@ -173,7 +181,17 @@ esp_err_t app_matter_init()
         return ESP_FAIL;
     }
     PlatformMgr().AddEventHandler(on_device_event, static_cast<intptr_t>(NULL));
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
+        ESP_LOGE(APP_LOG_TAG, "Failed to initialize Thread stack");
+        return ESP_FAIL;
+    }
 
+    if (ThreadStackMgr().StartThreadTask() != CHIP_NO_ERROR) {
+        ESP_LOGE(APP_LOG_TAG, "Failed to launch Thread task");
+        return ESP_FAIL;
+    }
+#endif
     InitServer();
 
     app_driver_register_src(APP_DRIVER_SRC_MATTER, &callbacks);
