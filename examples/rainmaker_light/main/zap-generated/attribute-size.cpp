@@ -69,7 +69,7 @@ uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, boo
         return kSizeLengthInBytes;
     }
 
-    if (!chip::CanCastTo<uint16_t>(index))
+    if (!CanCastTo<uint16_t>(index))
     {
         ChipLogError(Zcl, "Index %" PRId32 " is invalid. Should be between 1 and 65534", index);
         return 0;
@@ -78,6 +78,30 @@ uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, boo
     uint16_t entryLength = 0;
     switch (clusterId)
     {
+    case 0x0030: // General Commissioning Cluster
+    {
+        uint16_t entryOffset = kSizeLengthInBytes;
+        switch (am->attributeId)
+        {
+        case 0x0001: // BasicCommissioningInfoList
+        {
+            entryLength = 4;
+            if (((index - 1) * entryLength) > (am->size - entryLength))
+            {
+                ChipLogError(Zcl, "Index %" PRId32 " is invalid.", index);
+                return 0;
+            }
+            entryOffset = static_cast<uint16_t>(entryOffset + ((index - 1) * entryLength));
+            // Struct _BasicCommissioningInfoType
+            _BasicCommissioningInfoType * entry = reinterpret_cast<_BasicCommissioningInfoType *>(write ? src : dest);
+            copyListMember(write ? dest : (uint8_t *) &entry->FailSafeExpiryLengthMs,
+                           write ? (uint8_t *) &entry->FailSafeExpiryLengthMs : src, write, &entryOffset,
+                           sizeof(entry->FailSafeExpiryLengthMs)); // INT32U
+            break;
+        }
+        }
+        break;
+    }
     case 0x003E: // Operational Credentials Cluster
     {
         uint16_t entryOffset = kSizeLengthInBytes;
@@ -99,8 +123,8 @@ uint16_t emberAfCopyList(ClusterId clusterId, EmberAfAttributeMetadata * am, boo
             copyListMember(write ? dest : (uint8_t *) &entry->VendorId, write ? (uint8_t *) &entry->VendorId : src, write,
                            &entryOffset, sizeof(entry->VendorId)); // INT16U
             copyListMember(write ? dest : (uint8_t *) &entry->NodeId, write ? (uint8_t *) &entry->NodeId : src, write, &entryOffset,
-                           sizeof(entry->NodeId));      // NODE_ID
-            chip::ByteSpan * LabelSpan = &entry->Label; // OCTET_STRING
+                           sizeof(entry->NodeId)); // NODE_ID
+            ByteSpan * LabelSpan = &entry->Label;  // OCTET_STRING
             if (CHIP_NO_ERROR !=
                 (write ? WriteByteSpan(dest + entryOffset, 34, LabelSpan) : ReadByteSpan(src + entryOffset, 34, LabelSpan)))
             {
@@ -132,6 +156,15 @@ uint16_t emberAfAttributeValueListSize(ClusterId clusterId, AttributeId attribut
     uint16_t entryLength = 0;
     switch (clusterId)
     {
+    case 0x0030: // General Commissioning Cluster
+        switch (attributeId)
+        {
+        case 0x0001: // BasicCommissioningInfoList
+            // Struct _BasicCommissioningInfoType
+            entryLength = 4;
+            break;
+        }
+        break;
     case 0x003E: // Operational Credentials Cluster
         switch (attributeId)
         {
@@ -144,9 +177,10 @@ uint16_t emberAfAttributeValueListSize(ClusterId clusterId, AttributeId attribut
     }
 
     uint32_t totalSize = kSizeLengthInBytes + (entryCount * entryLength);
-    if (!chip::CanCastTo<uint16_t>(totalSize))
+    if (!CanCastTo<uint16_t>(totalSize))
     {
-        ChipLogError(Zcl, "Cluster %" PRIx32 ": Size of attribute %" PRIx32 " is too large.", clusterId, attributeId);
+        ChipLogError(Zcl, "Cluster " ChipLogFormatMEI ": Size of attribute " ChipLogFormatMEI " is too large.",
+                     ChipLogValueMEI(clusterId), ChipLogValueMEI(attributeId));
         return 0;
     }
 
