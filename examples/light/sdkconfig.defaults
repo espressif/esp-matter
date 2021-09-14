@@ -19,3 +19,7 @@ CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
 
 # Enable chip shell
 CONFIG_ENABLE_CHIP_SHELL=y
+
+# Main task needs a bit more stack than the default
+# default is 3584, bump this up to 5k.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=5120

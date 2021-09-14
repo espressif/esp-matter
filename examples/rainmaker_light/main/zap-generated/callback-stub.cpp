@@ -28,6 +28,9 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
 {
     switch (clusterId)
     {
+    case ZCL_ADMINISTRATOR_COMMISSIONING_CLUSTER_ID:
+        emberAfAdministratorCommissioningClusterInitCallback(endpoint);
+        break;
     case ZCL_BASIC_CLUSTER_ID:
         emberAfBasicClusterInitCallback(endpoint);
         break;
@@ -58,6 +61,11 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
     }
 }
 
+void __attribute__((weak)) emberAfAdministratorCommissioningClusterInitCallback(EndpointId endpoint)
+{
+    // To prevent warning
+    (void) endpoint;
+}
 void __attribute__((weak)) emberAfBasicClusterInitCallback(EndpointId endpoint)
 {
     // To prevent warning
@@ -473,22 +481,6 @@ emberAfExternalAttributeReadCallback(EndpointId endpoint, ClusterId clusterId, E
                                      uint16_t manufacturerCode, uint8_t * buffer, uint16_t maxReadLength, int32_t index)
 {
     return EMBER_ZCL_STATUS_FAILURE;
-}
-
-/** @brief Write Attributes Response
- *
- * This function is called by the application framework when a Write Attributes
- * Response command is received from an external device.  The application should
- * return true if the message was processed or false if it was not.
- *
- * @param clusterId The cluster identifier of this response.  Ver.: always
- * @param buffer Buffer containing the list of write attribute status records.
- * Ver.: always
- * @param bufLen The length in bytes of the list.  Ver.: always
- */
-bool __attribute__((weak)) emberAfWriteAttributesResponseCallback(ClusterId clusterId, uint8_t * buffer, uint16_t bufLen)
-{
-    return false;
 }
 
 /** @brief External Attribute Write
