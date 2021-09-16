@@ -19,6 +19,10 @@ set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
 
 set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls app_driver)
 
+if ("${IDF_TARGET}" STREQUAL "esp32h2")
+    list(APPEND PRIV_REQUIRES_LIST openthread mynewt_nimble)
+endif()
+
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
                       PRIV_INCLUDE_DIRS       ${PRIV_INCLUDE_DIRS_LIST}
                       PRIV_REQUIRES      ${PRIV_REQUIRES_LIST})
