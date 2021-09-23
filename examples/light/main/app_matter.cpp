@@ -85,12 +85,6 @@ static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
         chip::app::Mdns::StartServer();
     }
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    if (event->Type == PublicEventTypes::kThreadStateChange) {
-        chip::app::Mdns::StartServer();
-    }
-#endif
-
     ESP_LOGI(APP_LOG_TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
@@ -193,7 +187,9 @@ esp_err_t app_matter_init()
     }
 #endif
     InitServer();
-
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    chip::app::Mdns::StartServer();
+#endif
     app_driver_register_src(APP_DRIVER_SRC_MATTER, &callbacks);
 
     return ESP_OK;
