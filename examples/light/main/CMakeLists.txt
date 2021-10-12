@@ -18,7 +18,7 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
 set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
                         "${MATTER_SDK_PATH}/src")
 
-set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter app_driver)
+set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter app_driver app_qrcode)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND PRIV_REQUIRES_LIST openthread mynewt_nimble)

@@ -11,6 +11,7 @@
 #include "esp_matter.h"
 #include "esp_matter_standard.h"
 #include "app_driver.h"
+#include "app_qrcode.h"
 #include "app_matter.h"
 #include "app_constants.h"
 
@@ -103,6 +104,7 @@ extern "C" void app_main()
 
     /* Initialize chip */
     ESP_ERROR_CHECK(app_matter_init());
+    app_qrcode_print();
 
     /* Set the default attribute values */
     esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_POWER, esp_matter_bool(DEFAULT_POWER));
