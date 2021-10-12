@@ -48,6 +48,7 @@ Choose IDF target.
 idf.py set-target esp32c3 (or esp32 or other supported targets)
 ```
 
+*   If IDF target has not been set explicitly, then `esp32` is considered as default.
 *   The default device for `esp32`/`esp32c3` is `esp32-devkit-c`/`esp32c3-devkit-m`. If you want to use another device, you can export `ESP_MATTER_DEVICE_PATH` after choosing correct target, e.g for `m5stack` device:
     ```
     $ export ESP_MATTER_DEVICE_PATH=/path/to/esp_matter/device_hal/device/m5stack

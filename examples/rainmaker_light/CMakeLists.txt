@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.5)
 if(NOT DEFINED ENV{ESP_MATTER_PATH})
     message(FATAL_ERROR "Please set ESP_MATTER_PATH to the path of esp-matter repo")
 endif(NOT DEFINED ENV{ESP_MATTER_PATH})
+
 if(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
-    if("${IDF_TARGET}" STREQUAL "esp32")
+    if("${IDF_TARGET}" STREQUAL "esp32" OR "${IDF_TARGET}" STREQUAL "")
         set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32_devkit_c)
     elseif("${IDF_TARGET}" STREQUAL "esp32c3")
         set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32c3_devkit_m)
@@ -14,6 +15,7 @@ if(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
         message(FATAL_ERROR "Unsupported IDF_TARGET")
     endif()
 endif(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
+
 set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
 set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
 
