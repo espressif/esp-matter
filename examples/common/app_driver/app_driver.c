@@ -11,6 +11,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_standard.h>
+#include <esp_matter_console.h>
 #include <app_driver.h>
 #include <device.h>
 #include <light_driver.h>
@@ -48,7 +49,7 @@ static void app_driver_print_attr_val(const char *endpoint, const char *attribut
     }
 }
 
-int app_driver_cli_handler(int argc, char** argv)
+static esp_err_t app_driver_console_handler(int argc, char** argv)
 {
     if (argc == 4 && strncmp(argv[0], "set", sizeof("set")) == 0) {
         char *endpoint_name = argv[1];
@@ -72,6 +73,16 @@ int app_driver_cli_handler(int argc, char** argv)
         return -1;
     }
     return 0;
+}
+
+static void app_driver_register_commands()
+{
+    esp_matter_console_command_t command= {
+        .name = "driver",
+        .description = "This can be used to simulate on-device control. Usage: chip esp driver <set|get> <endpoint_name> <attribute_name> [value]. Example1: chip esp driver set Light Power 1. Example2: chip esp driver get Light Power.",
+        .handler = app_driver_console_handler,
+    };
+    esp_matter_console_add_command(&command);
 }
 
 static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, const char *attribute)
@@ -135,5 +146,6 @@ esp_err_t app_driver_init()
 {
     device_init();
     esp_matter_attribute_callback_add(APP_DRIVER_NAME, app_driver_attribute_update, NULL);
+    app_driver_register_commands();
     return ESP_OK;
 }

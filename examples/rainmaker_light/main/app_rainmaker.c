@@ -22,6 +22,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_standard.h>
+#include <esp_matter_console.h>
 #include <app_rainmaker.h>
 #include "app_constants.h"
 
@@ -30,7 +31,7 @@ static const char *TAG = "app_rainmaker";
 
 esp_rmaker_device_t *light_device;
 
-int app_rainmaker_cli_handler(int argc, char** argv)
+static esp_err_t app_rainmaker_console_handler(int argc, char** argv)
 {
     if (argc == 3 && strncmp(argv[0], "add-user", sizeof("add-user")) == 0) {
         printf("%s: Starting user-node mapping\n", TAG);
@@ -42,6 +43,16 @@ int app_rainmaker_cli_handler(int argc, char** argv)
         return -1;
     }
     return 0;
+}
+
+static void app_rainmaker_register_commands()
+{
+    esp_matter_console_command_t command= {
+        .name = "rainmaker",
+        .description = "Initiate ESP RainMaker User-Node mapping from the node. Usage: chip esp rainmaker add-user <user_id> <secret_key>",
+        .handler = app_rainmaker_console_handler,
+    };
+    esp_matter_console_add_command(&command);
 }
 
 static esp_rmaker_param_val_t esp_rmaker_get_rmaker_val(esp_matter_attr_val_t val)
@@ -167,5 +178,6 @@ esp_err_t app_rainmaker_init()
     esp_rmaker_start();
 
     esp_matter_attribute_callback_add(APP_RAINMAKER_NAME, app_rainmaker_attribute_update, NULL);
+    app_rainmaker_register_commands();
     return ESP_OK;
 }

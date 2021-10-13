@@ -24,15 +24,6 @@ extern "C"
  */
 esp_err_t app_driver_init(void);
 
-/** CLI handler for driver
- *
- * This API can be added as the callback for shell commands
- *
- * @return 0 on success.
- * @return -1 in case of failure.
- */
-int app_driver_cli_handler(int argc, char** argv);
-
 #ifdef __cplusplus
 }
 #endif
