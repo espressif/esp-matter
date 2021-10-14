@@ -4,11 +4,16 @@ stages:
 variables:
     IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
     GIT_STRATEGY: fetch
-    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_STRATEGY: none
+
+.chip_submodule_update: &chip_submodule_update
+    - git submodule sync --recursive
+    - git submodule update --recursive --init --reference /local_references/github/
 
 .setup_idf: &setup_idf
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
-    - git clone --recursive --branch release/v4.3 --depth 1 https://github.com/espressif/esp-idf.git
+    # using v4.3 tag of espressif/esp-idf github repo
+    - git clone --recursive --single-branch -b v4.3 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - ./install.sh
     - . export.sh
@@ -38,7 +43,7 @@ variables:
     - idf.py set-target esp32c3
     - idf.py build
     - cd $REPOS_PATH
-    - git clone --depth 1 --single-branch --recursive https://github.com/espressif/esp-rainmaker.git
+    - git clone --recursive --single-branch -b master --reference-if-able /local_references/github/ https://github.com/espressif/esp-rainmaker.git
     - export ESP_RMAKER_PATH=$PWD/esp-rainmaker
     - cd $ESP_MATTER_PATH/examples/rainmaker_light
     - idf.py set-target esp32
@@ -54,6 +59,7 @@ build_esp_matter_examples:
         - export ESP_MATTER_PATH=$PWD
         - mkdir repos
         - export REPOS_PATH=$PWD/repos
+        - *chip_submodule_update
         - *setup_idf
         - *setup_matter
         - *build_examples
@@ -68,6 +74,7 @@ build_all_examples:
         - export ESP_MATTER_PATH=$PWD
         - mkdir repos
         - export REPOS_PATH=$PWD/repos
+        - *chip_submodule_update
         - *setup_idf
         - *setup_matter
         - *build_matter_examples
