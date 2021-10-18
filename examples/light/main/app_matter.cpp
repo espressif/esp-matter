@@ -14,10 +14,10 @@
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 
-#include "app/common/gen/att-storage.h"
-#include "app/common/gen/attribute-id.h"
-#include "app/common/gen/attribute-type.h"
-#include "app/common/gen/cluster-id.h"
+#include "app-common/zap-generated/att-storage.h"
+#include "app-common/zap-generated/attribute-id.h"
+#include "app-common/zap-generated/attribute-type.h"
+#include "app-common/zap-generated/cluster-id.h"
 #include "app/server/Mdns.h"
 #include "app/server/Server.h"
 #include "app/util/af.h"
@@ -231,7 +231,7 @@ esp_err_t app_matter_attribute_set(const char *endpoint, const char *attribute, 
 static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
 {
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
-        chip::app::Mdns::StartServer();
+        chip::app::MdnsServer::Instance().StartServer();
     }
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
@@ -255,18 +255,18 @@ esp_err_t app_matter_init()
     PlatformMgr().AddEventHandler(on_device_event, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
-        ESP_LOGE(APP_LOG_TAG, "Failed to initialize Thread stack");
+        ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
     }
 
     if (ThreadStackMgr().StartThreadTask() != CHIP_NO_ERROR) {
-        ESP_LOGE(APP_LOG_TAG, "Failed to launch Thread task");
+        ESP_LOGE(TAG, "Failed to launch Thread task");
         return ESP_FAIL;
     }
 #endif
-    InitServer();
+    chip::Server::GetInstance().Init();
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    chip::app::Mdns::StartServer();
+    chip::app::MdnsServer::Instance().StartServer();
 #endif
 
     esp_matter_attribute_callback_add(APP_MATTER_NAME, app_matter_attribute_update, NULL);

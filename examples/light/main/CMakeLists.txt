@@ -1,6 +1,6 @@
 set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${CMAKE_CURRENT_LIST_DIR}/zap-generated"
-                           "${MATTER_SDK_PATH}/src/app/common/gen/attributes"
+                           "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                            "${MATTER_SDK_PATH}/src/app/server"
                            "${MATTER_SDK_PATH}/src/app/util"
                            "${MATTER_SDK_PATH}/src/app/reporting"
@@ -8,6 +8,9 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning"
+                           "${MATTER_SDK_PATH}/src/app/clusters/diagnostic-logs-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/software_diagnostics_server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/thread_network_diagnostics_server"
                            "${MATTER_SDK_PATH}/src/app/clusters/wifi_network_diagnostics_server"
                            "${MATTER_SDK_PATH}/src/app/clusters/on-off-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/operational-credentials-server"
@@ -16,12 +19,13 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src/app/clusters/color-control-server")
 
 set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
-                        "${MATTER_SDK_PATH}/src")
+                        "${MATTER_SDK_PATH}/src"
+                        "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
 set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
-    list(APPEND PRIV_REQUIRES_LIST openthread mynewt_nimble)
+    list(APPEND PRIV_REQUIRES_LIST openthread)
 endif()
 
 idf_component_register(SRC_DIRS          ${SRC_DIRS_LIST}
