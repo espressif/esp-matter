@@ -13,16 +13,15 @@
 
 #include <esp_log.h>
 
-#include <light_driver.h>
 #include <button_driver.h>
+#include <light_driver.h>
 
 #define DEVICE_VERSION_1_0
 
 #ifdef DEVICE_VERSION_1_0
-#define LED_GPIO_PIN 8              /* GPIO_NUM_8 */
-#define LED_CHANNEL  0              /* RMT_CHANNEL_0 */
+#define LED_GPIO_PIN 8 /* GPIO_NUM_8 */
+#define LED_CHANNEL 0 /* RMT_CHANNEL_0 */
 #endif
-
 
 static const char *TAG = "device";
 

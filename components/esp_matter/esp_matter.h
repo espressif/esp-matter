@@ -15,15 +15,14 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
+#include <esp_err.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <esp_err.h>
 
-#define REMAP_TO_RANGE(value, from, to)  value * to / from
+#define REMAP_TO_RANGE(value, from, to) value *to / from
 
 /** ESP Matter Attribute Value type */
 typedef enum {
@@ -68,7 +67,8 @@ typedef struct {
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-typedef esp_err_t (*esp_matter_attribute_callback_t)(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data);
+typedef esp_err_t (*esp_matter_attribute_callback_t)(const char *endpoint, const char *attribute,
+                                                     esp_matter_attr_val_t val, void *priv_data);
 
 /**
  * Initialise a Boolean value
@@ -134,7 +134,8 @@ esp_matter_attr_val_t esp_matter_array(const char *val);
 
 /** Add callback
  *
- * Add a new callback. The callback will then be called if the value of any attributes have been changed by some other callback.
+ * Add a new callback. The callback will then be called if the value of any attributes have been changed by some other
+ * callback.
  *
  * @param[in] name Callback name
  * @param[in] callback Callback for value change
@@ -144,7 +145,8 @@ esp_matter_attr_val_t esp_matter_array(const char *val);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_attribute_callback_add(const char *name, esp_matter_attribute_callback_t callback, void *priv_data);
+esp_err_t esp_matter_attribute_callback_add(const char *name, esp_matter_attribute_callback_t callback,
+                                            void *priv_data);
 
 /** Remove callback
  *
@@ -169,7 +171,8 @@ esp_err_t esp_matter_attribute_callback_remove(const char *name);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, const char *attribute, esp_matter_attr_val_t val);
+esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, const char *attribute,
+                                      esp_matter_attr_val_t val);
 
 /** Initialize ESP Matter
  *

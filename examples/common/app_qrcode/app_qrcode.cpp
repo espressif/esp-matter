@@ -8,20 +8,20 @@
 
 #include <string>
 
-#include <esp_log.h>
 #include <core/CHIPError.h>
+#include <esp_log.h>
 #include <platform/CHIPDeviceLayer.h>
-#include <setup_payload/SetupPayload.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
+#include <setup_payload/SetupPayload.h>
 
-#include <qrcode.h>
 #include <app_qrcode.h>
+#include <qrcode.h>
 
 using namespace ::chip;
 using namespace ::chip::DeviceLayer;
 
-#define QRCODE_BASE_URL     "https://dhrishi.github.io/connectedhomeip/qrcode.html"
+#define QRCODE_BASE_URL "https://dhrishi.github.io/connectedhomeip/qrcode.html"
 static const char *TAG = "app_qrcode";
 
 esp_err_t app_qrcode_get_payload(char **qrcode_text, char **short_manual_code_text, char **long_manual_code_text)
@@ -68,12 +68,12 @@ esp_err_t app_qrcode_get_payload(char **qrcode_text, char **short_manual_code_te
     ESP_LOGI(TAG, "Product ID: %u (0x%x)", product_id, product_id);
 
     /* Set details */
-    payload.version               = 0;
-    payload.discriminator         = discriminator;
-    payload.setUpPINCode          = setup_pin_code;
+    payload.version = 0;
+    payload.discriminator = discriminator;
+    payload.setUpPINCode = setup_pin_code;
     payload.rendezvousInformation = RendezvousInformationFlags(chip::RendezvousInformationFlag::kBLE);
-    payload.vendorID              = vendor_id;
-    payload.productID             = product_id;
+    payload.vendorID = vendor_id;
+    payload.productID = product_id;
 
     /* Change format and alloc for qrcode */
     QRCodeSetupPayloadGenerator qrcode_generator(payload);
@@ -166,10 +166,12 @@ esp_err_t app_qrcode_print()
         /* Print */
         ESP_LOGI(TAG, "Scan this QR code from the Matter phone app for Commissioning.");
         esp_qrcode_config_t cfg = ESP_QRCODE_CONFIG_DEFAULT();
-        /* Changing the error tolerance to MED. This increases the size of the qr code and makes it more detailed. The default is set to LOW and sometimes the qr code scanner is not able to recognize that. */
+        /* Changing the error tolerance to MED. This increases the size of the qr code and makes it more detailed. The
+         * default is set to LOW and sometimes the qr code scanner is not able to recognize that. */
         cfg.qrcode_ecc_level = ESP_QRCODE_ECC_MED;
         esp_qrcode_generate(&cfg, qrcode_text);
-        ESP_LOGI(TAG, "If QR code is not visible, copy paste the URL in a browser: %s?data=%s", QRCODE_BASE_URL, qrcode_text);
+        ESP_LOGI(TAG, "If QR code is not visible, copy paste the URL in a browser: %s?data=%s", QRCODE_BASE_URL,
+                 qrcode_text);
 
         /* Free */
         free(qrcode_text);
@@ -179,7 +181,9 @@ esp_err_t app_qrcode_print()
     }
 
     if (manual_code_exists) {
-        ESP_LOGI(TAG, "In case QR code is not supported, manual code mentioned above can be entered in the Matter phone app for Commissioning");
+        ESP_LOGI(TAG,
+                 "In case QR code is not supported, manual code mentioned above can be entered in the Matter phone app "
+                 "for Commissioning");
     }
 
     return err;

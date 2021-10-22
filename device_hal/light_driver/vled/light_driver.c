@@ -11,15 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include <string.h>
-#include <esp_system.h>
-#include <esp_log.h>
 #include <driver/ledc.h>
+#include <esp_log.h>
+#include <esp_system.h>
+#include <string.h>
 #include <tft.h>
 #include <tftspi.h>
 
-#include <light_driver.h>
 #include <color_format.h>
+#include <light_driver.h>
 
 #define TFT_SPI_CLOCK_INIT_HZ 8000000
 #define LEDC_PWM_HZ 1000
@@ -41,27 +41,27 @@ static void SetupBrightnessControl(light_driver_config_t *config)
     memset(&ledc_timer, 0, sizeof(ledc_timer));
     led_driver_channel = config->channel;
 
-    ledc_timer.duty_resolution = LEDC_TIMER_8_BIT;     // resolution of PWM duty
-    ledc_timer.freq_hz         = LEDC_PWM_HZ;          // frequency of PWM signal
-    ledc_timer.speed_mode      = LEDC_HIGH_SPEED_MODE; // timer mode
-    ledc_timer.timer_num       = LEDC_TIMER_0;         // timer index
+    ledc_timer.duty_resolution = LEDC_TIMER_8_BIT; // resolution of PWM duty
+    ledc_timer.freq_hz = LEDC_PWM_HZ; // frequency of PWM signal
+    ledc_timer.speed_mode = LEDC_HIGH_SPEED_MODE; // timer mode
+    ledc_timer.timer_num = LEDC_TIMER_0; // timer index
     ledc_timer_config(&ledc_timer);
     ledc_timer_set(LEDC_HIGH_SPEED_MODE, LEDC_TIMER_0, LEDC_PWM_HZ, LEDC_TIMER_8_BIT, LEDC_REF_TICK);
 
     ledc_channel_config_t ledc_channel;
     memset(&ledc_channel, 0, sizeof(ledc_channel));
-    ledc_channel.channel    = led_driver_channel;
-    ledc_channel.duty       = BRIGHTNESS_MAX;
-    ledc_channel.gpio_num   = config->gpio;
+    ledc_channel.channel = led_driver_channel;
+    ledc_channel.duty = BRIGHTNESS_MAX;
+    ledc_channel.gpio_num = config->gpio;
     ledc_channel.speed_mode = LEDC_HIGH_SPEED_MODE;
-    ledc_channel.timer_sel  = LEDC_TIMER_0;
+    ledc_channel.timer_sel = LEDC_TIMER_0;
     ledc_channel_config(&ledc_channel);
 }
 
 static void SetDisplayBrightness(uint8_t brightness)
 {
     if (ledc_set_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel, brightness) ||
-            ledc_update_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel)) {
+        ledc_update_duty(LEDC_HIGH_SPEED_MODE, led_driver_channel)) {
         ESP_LOGE(TAG, "Failed to set display brightness...");
     }
 }
@@ -71,21 +71,21 @@ static esp_err_t InitDisplay()
     esp_err_t err;
     spi_lobo_device_handle_t spi;
     spi_lobo_bus_config_t buscfg;
-    memset((void *) &buscfg, 0, sizeof(buscfg));
-    buscfg.miso_io_num   = PIN_NUM_MISO; // set SPI MISO pin
-    buscfg.mosi_io_num   = PIN_NUM_MOSI; // set SPI MOSI pin
-    buscfg.sclk_io_num   = PIN_NUM_CLK;  // set SPI CLK pin
+    memset((void *)&buscfg, 0, sizeof(buscfg));
+    buscfg.miso_io_num = PIN_NUM_MISO; // set SPI MISO pin
+    buscfg.mosi_io_num = PIN_NUM_MOSI; // set SPI MOSI pin
+    buscfg.sclk_io_num = PIN_NUM_CLK; // set SPI CLK pin
     buscfg.quadwp_io_num = -1;
     buscfg.quadhd_io_num = -1;
 
     spi_lobo_device_interface_config_t devcfg;
-    memset((void *) &devcfg, 0, sizeof(devcfg));
-    devcfg.clock_speed_hz   = TFT_SPI_CLOCK_INIT_HZ;
-    devcfg.mode             = 0;                        // SPI mode 0
-    devcfg.spics_io_num     = -1;                       // we will use external CS pin
-    devcfg.spics_ext_io_num = PIN_NUM_CS;               // external CS pi
-    devcfg.flags            = LB_SPI_DEVICE_HALFDUPLEX; // ALWAYS SET  to HALF DUPLEX MODE!! for display spi
-    tft_max_rdclock         = TFT_SPI_CLOCK_INIT_HZ;
+    memset((void *)&devcfg, 0, sizeof(devcfg));
+    devcfg.clock_speed_hz = TFT_SPI_CLOCK_INIT_HZ;
+    devcfg.mode = 0; // SPI mode 0
+    devcfg.spics_io_num = -1; // we will use external CS pin
+    devcfg.spics_ext_io_num = PIN_NUM_CS; // external CS pi
+    devcfg.flags = LB_SPI_DEVICE_HALFDUPLEX; // ALWAYS SET  to HALF DUPLEX MODE!! for display spi
+    tft_max_rdclock = TFT_SPI_CLOCK_INIT_HZ;
 
     // Initialize all pins used by display driver.
     TFT_PinsInit();
@@ -115,7 +115,7 @@ static esp_err_t InitDisplay()
     TFT_setRotation(LANDSCAPE);
     TFT_resetclipwin();
 
-    DisplayWidth  = (uint16_t)(1 + tft_dispWin.x2 - tft_dispWin.x1);
+    DisplayWidth = (uint16_t)(1 + tft_dispWin.x2 - tft_dispWin.x1);
     DisplayHeight = (uint16_t)(1 + tft_dispWin.y2 - tft_dispWin.y1);
     ESP_LOGI(TAG, "Display initialized (height %u, width %u)", DisplayHeight, DisplayWidth);
 
@@ -145,8 +145,8 @@ esp_err_t light_driver_set_power(bool power)
 esp_err_t light_driver_set_RGB()
 {
     TFT_fillWindow(TFT_BLACK);
-    TFT_fillCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t) {mRGB.red, mRGB.green, mRGB.blue});
-    TFT_drawCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t) {255, 255, 255});
+    TFT_fillCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){mRGB.red, mRGB.green, mRGB.blue});
+    TFT_drawCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){255, 255, 255});
     return ESP_OK;
 }
 esp_err_t light_driver_set_brightness(uint8_t brightness)
@@ -181,7 +181,7 @@ esp_err_t light_driver_set_temperature(uint32_t temperature)
 {
     uint8_t brightness = current_power ? current_brightness : 0;
     current_temperature = temperature;
-    temp_to_hs(current_temperature,&current_HS);
+    temp_to_hs(current_temperature, &current_HS);
     hsv_to_rgb(current_HS, brightness, &mRGB);
     return light_driver_set_RGB();
 }

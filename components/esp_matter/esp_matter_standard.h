@@ -15,19 +15,18 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /********** STANDARD ENDPOINT NAMES **********/
-#define ESP_MATTER_ENDPOINT_LIGHT           "Light"
+#define ESP_MATTER_ENDPOINT_LIGHT "Light"
 
 /********** STANDARD ATTRIBUTE NAMES **********/
-#define ESP_MATTER_ATTR_POWER               "Power"
-#define ESP_MATTER_ATTR_BRIGHTNESS          "Brightness"
-#define ESP_MATTER_ATTR_HUE                 "Hue"
-#define ESP_MATTER_ATTR_SATURATION          "Saturation"
-#define ESP_MATTER_ATTR_TEMPERATURE         "Temperature"
+#define ESP_MATTER_ATTR_POWER "Power"
+#define ESP_MATTER_ATTR_BRIGHTNESS "Brightness"
+#define ESP_MATTER_ATTR_HUE "Hue"
+#define ESP_MATTER_ATTR_SATURATION "Saturation"
+#define ESP_MATTER_ATTR_TEMPERATURE "Temperature"
 
 #ifdef __cplusplus
 }

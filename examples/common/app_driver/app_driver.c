@@ -6,14 +6,14 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <string.h>
 #include <esp_log.h>
+#include <string.h>
 
-#include <esp_matter.h>
-#include <esp_matter_standard.h>
-#include <esp_matter_console.h>
 #include <app_driver.h>
 #include <device.h>
+#include <esp_matter.h>
+#include <esp_matter_console.h>
+#include <esp_matter_standard.h>
 #include <light_driver.h>
 
 #define APP_DRIVER_NAME "Driver"
@@ -24,32 +24,32 @@ static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, cons
 
 static void app_driver_print_attr_val(const char *endpoint, const char *attribute, esp_matter_attr_val_t val)
 {
-    switch(val.type) {
-        case ESP_MATTER_VAL_TYPE_BOOLEAN:
-            ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.b);
-            break;
+    switch (val.type) {
+    case ESP_MATTER_VAL_TYPE_BOOLEAN:
+        ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.b);
+        break;
 
-        case ESP_MATTER_VAL_TYPE_INTEGER:
-            ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.i);
-            break;
+    case ESP_MATTER_VAL_TYPE_INTEGER:
+        ESP_LOGI(TAG, "%s's %s is %d", endpoint, attribute, val.val.i);
+        break;
 
-        case ESP_MATTER_VAL_TYPE_FLOAT:
-            ESP_LOGI(TAG, "%s's %s is %f", endpoint, attribute, val.val.f);
-            break;
+    case ESP_MATTER_VAL_TYPE_FLOAT:
+        ESP_LOGI(TAG, "%s's %s is %f", endpoint, attribute, val.val.f);
+        break;
 
-        case ESP_MATTER_VAL_TYPE_STRING:
-        case ESP_MATTER_VAL_TYPE_OBJECT:
-        case ESP_MATTER_VAL_TYPE_ARRAY:
-            ESP_LOGI(TAG, "%s's %s is %s", endpoint, attribute, val.val.s);
-            break;
+    case ESP_MATTER_VAL_TYPE_STRING:
+    case ESP_MATTER_VAL_TYPE_OBJECT:
+    case ESP_MATTER_VAL_TYPE_ARRAY:
+        ESP_LOGI(TAG, "%s's %s is %s", endpoint, attribute, val.val.s);
+        break;
 
-        default:
-            ESP_LOGI(TAG, "%s's %s is <invalid value>", endpoint, attribute);
-            break;
+    default:
+        ESP_LOGI(TAG, "%s's %s is <invalid value>", endpoint, attribute);
+        break;
     }
 }
 
-static esp_err_t app_driver_console_handler(int argc, char** argv)
+static esp_err_t app_driver_console_handler(int argc, char **argv)
 {
     if (argc == 4 && strncmp(argv[0], "set", sizeof("set")) == 0) {
         char *endpoint_name = argv[1];
@@ -77,9 +77,11 @@ static esp_err_t app_driver_console_handler(int argc, char** argv)
 
 static void app_driver_register_commands()
 {
-    esp_matter_console_command_t command= {
+    esp_matter_console_command_t command = {
         .name = "driver",
-        .description = "This can be used to simulate on-device control. Usage: chip esp driver <set|get> <endpoint_name> <attribute_name> [value]. Example1: chip esp driver set Light Power 1. Example2: chip esp driver get Light Power.",
+        .description = "This can be used to simulate on-device control. Usage: chip esp driver <set|get> "
+                       "<endpoint_name> <attribute_name> [value]. Example1: chip esp driver set Light Power 1. "
+                       "Example2: chip esp driver get Light Power.",
         .handler = app_driver_console_handler,
     };
     esp_matter_console_add_command(&command);
@@ -110,7 +112,8 @@ static esp_matter_attr_val_t app_driver_attribute_get(const char *endpoint, cons
     return val;
 }
 
-static esp_err_t app_driver_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+static esp_err_t app_driver_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val,
+                                             void *priv_data)
 {
     esp_err_t err = ESP_OK;
     if (strncmp(endpoint, ESP_MATTER_ENDPOINT_LIGHT, sizeof(ESP_MATTER_ENDPOINT_LIGHT)) == 0) {

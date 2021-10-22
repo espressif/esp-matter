@@ -13,14 +13,14 @@
 
 #include <esp_log.h>
 
-#include <light_driver.h>
 #include <button_driver.h>
+#include <light_driver.h>
 
 #define DEVICE_VERSION_1_0
 
 #ifdef DEVICE_VERSION_1_0
-#define LED_GPIO_PIN 32             /* PIN_NUM_BCKL for M5Stack TFT */
-#define LED_CHANNEL  7              /* LEDC_CHANNEL_7 */
+#define LED_GPIO_PIN 32 /* PIN_NUM_BCKL for M5Stack TFT */
+#define LED_CHANNEL 7 /* LEDC_CHANNEL_7 */
 #endif
 static const char *TAG = "device";
 

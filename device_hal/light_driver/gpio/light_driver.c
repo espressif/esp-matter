@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include <esp_log.h>
 #include <driver/ledc.h>
+#include <esp_log.h>
 #include <hal/ledc_types.h>
 
 #include <light_driver.h>
@@ -122,5 +122,5 @@ uint8_t light_driver_get_saturation()
 
 uint32_t light_driver_get_temperature()
 {
-    return 0;   
+    return 0;
 }
