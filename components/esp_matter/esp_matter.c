@@ -35,37 +35,55 @@ static esp_matter_t *esp_matter = NULL;
 
 esp_matter_attr_val_t esp_matter_bool(bool val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_BOOLEAN, .val.b = val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_BOOLEAN,
+        .val.b = val,
+    };
     return attr_val;
 }
 
 esp_matter_attr_val_t esp_matter_int(int val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_INTEGER, .val.i = val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_INTEGER,
+        .val.i = val,
+    };
     return attr_val;
 }
 
 esp_matter_attr_val_t esp_matter_float(float val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_FLOAT, .val.f = val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_FLOAT,
+        .val.f = val,
+    };
     return attr_val;
 }
 
 esp_matter_attr_val_t esp_matter_str(const char *val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_STRING, .val.s = (char *)val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_STRING,
+        .val.s = (char *)val,
+    };
     return attr_val;
 }
 
 esp_matter_attr_val_t esp_matter_obj(const char *val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_OBJECT, .val.s = (char *)val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_OBJECT,
+        .val.s = (char *)val,
+    };
     return attr_val;
 }
 
 esp_matter_attr_val_t esp_matter_array(const char *val)
 {
-    esp_matter_attr_val_t attr_val = {.type = ESP_MATTER_VAL_TYPE_ARRAY, .val.s = (char *)val};
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_ARRAY,
+        .val.s = (char *)val,
+    };
     return attr_val;
 }
 
