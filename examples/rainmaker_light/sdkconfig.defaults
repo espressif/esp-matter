@@ -29,7 +29,3 @@ CONFIG_MBEDTLS_DYNAMIC_FREE_CONFIG_DATA=y
 
 # Temporary Fix for Timer Overflows
 CONFIG_FREERTOS_TIMER_TASK_STACK_DEPTH=3120
-
-# Main task needs a bit more stack than the default
-# default is 3584, bump this up to 5k.
-CONFIG_ESP_MAIN_TASK_STACK_SIZE=5120

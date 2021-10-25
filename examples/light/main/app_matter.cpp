@@ -22,11 +22,12 @@
 #include "app/server/Server.h"
 #include "app/util/af.h"
 #include "app/util/basic-types.h"
-#include "platform/CHIPDeviceLayer.h"
 #include "core/CHIPError.h"
+#include "freertos/FreeRTOS.h"
 #include "lib/shell/Engine.h"
 #include "lib/support/CHIPMem.h"
-#include <cstdint>
+#include "platform/CHIPDeviceLayer.h"
+#include "platform/PlatformManager.h"
 
 using chip::AttributeId;
 using chip::ClusterId;
@@ -236,6 +237,16 @@ static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
+static void matter_init_task(intptr_t context)
+{
+    xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
+    chip::Server::GetInstance().Init();
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    chip::app::MdnsServer::Instance().StartServer();
+#endif
+    xTaskNotifyGive(task_to_notify);
+}
+
 esp_err_t app_matter_init()
 {
     if (PlatformMgr().InitChipStack() != CHIP_NO_ERROR) {
@@ -264,10 +275,9 @@ esp_err_t app_matter_init()
         return ESP_FAIL;
     }
 #endif
-    chip::Server::GetInstance().Init();
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    chip::app::MdnsServer::Instance().StartServer();
-#endif
+    PlatformMgr().ScheduleWork(matter_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
+    // Wait for the matter stack to be initialized
+    xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 
     esp_matter_attribute_callback_add(APP_MATTER_NAME, app_matter_attribute_update, NULL);
     return ESP_OK;
