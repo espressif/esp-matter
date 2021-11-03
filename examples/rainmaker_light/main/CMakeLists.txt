@@ -26,7 +26,7 @@ set(PRIV_INCLUDE_DIRS_LIST      "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src"
                            "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
-set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode esp_rainmaker)
+set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode esp_rainmaker route_hook)
 
 idf_component_register(SRC_DIRS         ${SRC_DIRS_LIST}
                       PRIV_INCLUDE_DIRS      ${PRIV_INCLUDE_DIRS_LIST}

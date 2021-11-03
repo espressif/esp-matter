@@ -13,6 +13,7 @@
 
 #include "esp_heap_caps.h"
 #include "esp_log.h"
+#include "esp_route_hook.h"
 
 #include <cstdint>
 #include "app-common/zap-generated/att-storage.h"
@@ -236,6 +237,7 @@ static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
 {
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
         chip::app::DnssdServer::Instance().StartServer();
+        esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
     }
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }

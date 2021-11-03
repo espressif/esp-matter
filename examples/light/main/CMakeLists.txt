@@ -26,7 +26,7 @@ set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
 set(PRIV_REQUIRES_LIST
-    chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode app_openthread)
+    chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode app_openthread route_hook)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND PRIV_REQUIRES_LIST openthread)
