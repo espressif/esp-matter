@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
+#include <color_format.h>
 #include <esp_log.h>
 #include <light_driver.h>
-#include <color_format.h>
 
 static const char *TAG = "light_driver_hollow";
 static bool current_power = false;

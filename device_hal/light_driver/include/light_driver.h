@@ -15,8 +15,7 @@
 #include <esp_err.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 typedef struct {

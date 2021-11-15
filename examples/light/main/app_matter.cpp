@@ -6,14 +6,15 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "esp_matter.h"
-#include "esp_matter_standard.h"
 #include "app_matter.h"
 #include "app_constants.h"
+#include "esp_matter.h"
+#include "esp_matter_standard.h"
 
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 
+#include <cstdint>
 #include "app-common/zap-generated/att-storage.h"
 #include "app-common/zap-generated/attribute-id.h"
 #include "app-common/zap-generated/attribute-type.h"
@@ -34,8 +35,8 @@ using chip::ClusterId;
 using chip::EndpointId;
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConnectivityMgr;
-using chip::DeviceLayer::DeviceEventType::PublicEventTypes;
 using chip::DeviceLayer::PlatformMgr;
+using chip::DeviceLayer::DeviceEventType::PublicEventTypes;
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
@@ -190,7 +191,8 @@ static esp_matter_attr_val_t app_matter_get_attribute_val(char *attribute, int v
     return esp_matter_int(value);
 }
 
-static esp_err_t app_matter_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+static esp_err_t app_matter_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val,
+                                             void *priv_data)
 {
     EndpointId endpoint_id = app_matter_get_endpoint_id(endpoint);
     ClusterId cluster_id = app_matter_get_cluster_id(attribute);
@@ -200,7 +202,8 @@ static esp_err_t app_matter_attribute_update(const char *endpoint, const char *a
     uint8_t value_remap = (uint8_t)app_matter_remap((char *)attribute, value, REMAP_STANDARD_TO_MATTER);
     ESP_LOGD(TAG, "Changing %s from standard: %d, to matter: %d\n", attribute, value, value_remap);
 
-    EmberAfStatus status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, CLUSTER_MASK_SERVER, (uint8_t *)&value_remap, attribute_type);
+    EmberAfStatus status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, CLUSTER_MASK_SERVER,
+                                                 (uint8_t *)&value_remap, attribute_type);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error updating attribute to matter");
         return ESP_FAIL;
@@ -208,7 +211,8 @@ static esp_err_t app_matter_attribute_update(const char *endpoint, const char *a
     return ESP_OK;
 }
 
-void emberAfPostAttributeChangeCallback(EndpointId endpoint, ClusterId cluster, AttributeId attribute, uint8_t mask, uint16_t manufacturer, uint8_t type, uint16_t size, uint8_t *value)
+void emberAfPostAttributeChangeCallback(EndpointId endpoint, ClusterId cluster, AttributeId attribute, uint8_t mask,
+                                        uint16_t manufacturer, uint8_t type, uint16_t size, uint8_t *value)
 {
     char *endpoint_name = (char *)app_matter_get_endpoint_name(endpoint);
     char *attribute_name = (char *)app_matter_get_attribute_name(cluster, attribute);

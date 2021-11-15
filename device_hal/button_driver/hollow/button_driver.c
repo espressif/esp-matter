@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include <esp_log.h>
 #include <button_driver.h>
+#include <esp_log.h>
 
 static const char *TAG = "button_driver_hollow";
 

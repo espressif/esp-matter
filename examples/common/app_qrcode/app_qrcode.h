@@ -11,8 +11,7 @@
 #include <esp_err.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /** Print the QR code for commissioning

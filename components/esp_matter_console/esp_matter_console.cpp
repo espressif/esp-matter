@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string.h>
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <string.h>
 
-#include <lib/shell/Engine.h>
 #include <esp_matter_console.h>
+#include <lib/shell/Engine.h>
 
 #define MAX_CONSOLE_COMMANDS CONFIG_ESP_MATTER_CONSOLE_MAX_COMMANDS
 
@@ -47,7 +47,7 @@ static void esp_matter_console_print_help()
     }
 }
 
-static esp_err_t esp_matter_console_help_handler(int argc, char** argv)
+static esp_err_t esp_matter_console_help_handler(int argc, char **argv)
 {
     esp_matter_console_print_help();
     return ESP_OK;
@@ -55,7 +55,7 @@ static esp_err_t esp_matter_console_help_handler(int argc, char** argv)
 
 static esp_err_t esp_matter_console_register_default_commands()
 {
-    esp_matter_console_command_t command= {
+    esp_matter_console_command_t command = {
         .name = "help",
         .description = "Print help",
         .handler = esp_matter_console_help_handler,
@@ -63,9 +63,10 @@ static esp_err_t esp_matter_console_register_default_commands()
     return esp_matter_console_add_command(&command);
 }
 
-static CHIP_ERROR esp_matter_console_common_handler(int argc, char** argv)
+static CHIP_ERROR esp_matter_console_common_handler(int argc, char **argv)
 {
-    /* This common handler is added to avoid adding `CHIP_ERROR` and its component requirements in other esp-matter components */
+    /* This common handler is added to avoid adding `CHIP_ERROR` and its component requirements in other esp-matter
+     * components */
     if (argc <= 0) {
         esp_matter_console_print_help();
         return CHIP_NO_ERROR;
@@ -76,7 +77,7 @@ static CHIP_ERROR esp_matter_console_common_handler(int argc, char** argv)
                 ESP_LOGW(TAG, "No handler set for the command: %s", argv[0]);
                 return CHIP_NO_ERROR;
             }
-            if (commands[i].handler(argc - 1, &argv[1]) == ESP_OK) {     /* Removing the first argument from argv */
+            if (commands[i].handler(argc - 1, &argv[1]) == ESP_OK) { /* Removing the first argument from argv */
                 return CHIP_NO_ERROR;
             }
             /* The command handler returned error */

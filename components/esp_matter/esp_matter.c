@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string.h>
 #include <esp_log.h>
 #include <esp_matter.h>
+#include <string.h>
 
 #define NAME_MAX_LEN 20
 
@@ -37,7 +37,7 @@ esp_matter_attr_val_t esp_matter_bool(bool val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_BOOLEAN,
-        .val.b = val
+        .val.b = val,
     };
     return attr_val;
 }
@@ -46,7 +46,7 @@ esp_matter_attr_val_t esp_matter_int(int val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_INTEGER,
-        .val.i = val
+        .val.i = val,
     };
     return attr_val;
 }
@@ -55,7 +55,7 @@ esp_matter_attr_val_t esp_matter_float(float val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_FLOAT,
-        .val.f = val
+        .val.f = val,
     };
     return attr_val;
 }
@@ -64,7 +64,7 @@ esp_matter_attr_val_t esp_matter_str(const char *val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_STRING,
-        .val.s = (char *)val
+        .val.s = (char *)val,
     };
     return attr_val;
 }
@@ -73,7 +73,7 @@ esp_matter_attr_val_t esp_matter_obj(const char *val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_OBJECT,
-        .val.s = (char *)val
+        .val.s = (char *)val,
     };
     return attr_val;
 }
@@ -82,12 +82,13 @@ esp_matter_attr_val_t esp_matter_array(const char *val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_ARRAY,
-        .val.s = (char *)val
+        .val.s = (char *)val,
     };
     return attr_val;
 }
 
-esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, const char *attribute, esp_matter_attr_val_t val)
+esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, const char *attribute,
+                                      esp_matter_attr_val_t val)
 {
     if (!esp_matter) {
         ESP_LOGE(TAG, "Init not done");
@@ -98,7 +99,8 @@ esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, co
         return ESP_ERR_INVALID_ARG;
     }
 
-    /* Note: Even if a callback has not been added previously using esp_matter_attribute_callback_add(), it can still call this API to notify others. If this behaviour is to be changed, a check for name can be added here. */
+    /* Note: Even if a callback has not been added previously using esp_matter_attribute_callback_add(), it can still
+     * call this API to notify others. If this behaviour is to be changed, a check for name can be added here. */
 
     /* Print */
     if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
@@ -107,7 +109,8 @@ esp_err_t esp_matter_attribute_notify(const char *name, const char *endpoint, co
         ESP_LOGI(TAG, "********** %s changed %s's %s to %d **********", name, endpoint, attribute, val.val.i);
     } else if (val.type == ESP_MATTER_VAL_TYPE_FLOAT) {
         ESP_LOGI(TAG, "********** %s changed %s's %s to %f **********", name, endpoint, attribute, val.val.f);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_STRING || val.type == ESP_MATTER_VAL_TYPE_OBJECT || val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+    } else if (val.type == ESP_MATTER_VAL_TYPE_STRING || val.type == ESP_MATTER_VAL_TYPE_OBJECT ||
+               val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         ESP_LOGI(TAG, "********** %s changed %s's %s to %s **********", name, endpoint, attribute, val.val.s);
     } else {
         ESP_LOGI(TAG, "********** %s changed %s's %s to <invalid value> **********", name, endpoint, attribute);

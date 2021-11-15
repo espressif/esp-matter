@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License
 
-#include <esp_log.h>
-#include <driver/rmt.h>
-#include <led_strip.h>
 #include <color_format.h>
+#include <driver/rmt.h>
+#include <esp_log.h>
+#include <led_strip.h>
 #include <light_driver.h>
 
 static const char *TAG = "light_driver_ws2812";

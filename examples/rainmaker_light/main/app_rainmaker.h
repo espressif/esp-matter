@@ -11,13 +11,13 @@
 #include <esp_err.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /** Initialize ESP RainMaker
  *
- * This initializes the devices and params for RainMaker, corresponding to the endpoint and attributes. It also adds RainMaker features like OTA, Scheduling, etc.
+ * This initializes the devices and params for RainMaker, corresponding to the endpoint and attributes. It also adds
+ * RainMaker features like OTA, Scheduling, etc.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.

@@ -17,8 +17,7 @@
 #include <esp_err.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /** Callback for console commands
@@ -28,7 +27,7 @@ extern "C"
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-typedef esp_err_t (*esp_matter_console_handler_t)(int argc, char** argv);
+typedef esp_err_t (*esp_matter_console_handler_t)(int argc, char **argv);
 
 /** ESP Matter Console Command */
 typedef struct {

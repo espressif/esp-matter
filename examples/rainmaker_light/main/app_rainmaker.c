@@ -6,32 +6,32 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <string.h>
+#include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <esp_log.h>
 #include <nvs_flash.h>
+#include <string.h>
 
 #include <esp_rmaker_core.h>
-#include <esp_rmaker_standard_params.h>
-#include <esp_rmaker_standard_devices.h>
-#include <esp_rmaker_standard_types.h>
 #include <esp_rmaker_ota.h>
 #include <esp_rmaker_schedule.h>
+#include <esp_rmaker_standard_devices.h>
+#include <esp_rmaker_standard_params.h>
+#include <esp_rmaker_standard_types.h>
 #include <esp_rmaker_user_mapping.h>
 
-#include <esp_matter.h>
-#include <esp_matter_standard.h>
-#include <esp_matter_console.h>
-#include <app_rainmaker.h>
 #include "app_constants.h"
+#include <app_rainmaker.h>
+#include <esp_matter.h>
+#include <esp_matter_console.h>
+#include <esp_matter_standard.h>
 
 #define APP_RAINMAKER_NAME "RainMaker"
 static const char *TAG = "app_rainmaker";
 
 esp_rmaker_device_t *light_device;
 
-static esp_err_t app_rainmaker_console_handler(int argc, char** argv)
+static esp_err_t app_rainmaker_console_handler(int argc, char **argv)
 {
     if (argc == 3 && strncmp(argv[0], "add-user", sizeof("add-user")) == 0) {
         printf("%s: Starting user-node mapping\n", TAG);
@@ -47,9 +47,10 @@ static esp_err_t app_rainmaker_console_handler(int argc, char** argv)
 
 static void app_rainmaker_register_commands()
 {
-    esp_matter_console_command_t command= {
+    esp_matter_console_command_t command = {
         .name = "rainmaker",
-        .description = "Initiate ESP RainMaker User-Node mapping from the node. Usage: chip esp rainmaker add-user <user_id> <secret_key>",
+        .description = "Initiate ESP RainMaker User-Node mapping from the node. Usage: chip esp rainmaker add-user "
+                       "<user_id> <secret_key>",
         .handler = app_rainmaker_console_handler,
     };
     esp_matter_console_add_command(&command);
@@ -96,7 +97,8 @@ static esp_matter_attr_val_t esp_rmaker_get_matter_val(esp_rmaker_param_val_t va
 }
 
 /* Callback to handle changes received from other sources */
-static esp_err_t app_rainmaker_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val, void *priv_data)
+static esp_err_t app_rainmaker_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val,
+                                                void *priv_data)
 {
     const esp_rmaker_node_t *node = esp_rmaker_get_node();
     esp_rmaker_device_t *device = esp_rmaker_node_get_device_by_name(node, endpoint);
@@ -150,11 +152,13 @@ esp_err_t app_rainmaker_init()
     light_device = esp_rmaker_lightbulb_device_create(ESP_MATTER_ENDPOINT_LIGHT, NULL, DEFAULT_POWER);
     esp_rmaker_device_add_cb(light_device, write_cb, NULL);
 
-    esp_rmaker_device_add_param(light_device, esp_rmaker_brightness_param_create(ESP_MATTER_ATTR_BRIGHTNESS, DEFAULT_BRIGHTNESS));
+    esp_rmaker_device_add_param(light_device,
+                                esp_rmaker_brightness_param_create(ESP_MATTER_ATTR_BRIGHTNESS, DEFAULT_BRIGHTNESS));
 
     esp_rmaker_device_add_param(light_device, esp_rmaker_hue_param_create(ESP_MATTER_ATTR_HUE, DEFAULT_HUE));
 
-    esp_rmaker_device_add_param(light_device, esp_rmaker_saturation_param_create(ESP_MATTER_ATTR_SATURATION, DEFAULT_SATURATION));
+    esp_rmaker_device_add_param(light_device,
+                                esp_rmaker_saturation_param_create(ESP_MATTER_ATTR_SATURATION, DEFAULT_SATURATION));
 
     esp_rmaker_node_add_device(node, light_device);
 

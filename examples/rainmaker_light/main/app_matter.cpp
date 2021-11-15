@@ -14,6 +14,7 @@
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 
+#include <cstdint>
 #include "app-common/zap-generated/att-storage.h"
 #include "app-common/zap-generated/attribute-id.h"
 #include "app-common/zap-generated/attribute-type.h"
