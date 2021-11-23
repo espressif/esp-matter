@@ -61,6 +61,12 @@ esp_err_t esp_matter_console_init(void);
  */
 esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command);
 
+/** Add Diagnostics Commands
+ *
+ * Adds the default diagnostics commands.
+ */
+void esp_matter_console_diagnostics_register_commands();
+
 #ifdef __cplusplus
 }
 #endif
