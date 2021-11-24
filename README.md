@@ -109,7 +109,8 @@ chip-device-ctrl > close-ble
 
 Resolve DNS-SD name and update address of the node in the device controller.
 ```
-chip-device-ctrl > resolve 0 12344321
+chip-device-ctrl > get-fabricid
+chip-device-ctrl > resolve <Compressed Fabric ID in decimal> 12344321
 ```
 
 ### Cluster Control
