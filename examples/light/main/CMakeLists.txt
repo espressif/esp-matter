@@ -6,7 +6,10 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src/app/reporting"
                            "${MATTER_SDK_PATH}/src/app/clusters/basic"
                            "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/application-basic-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/general_diagnostics_server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/identify-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning"
                            "${MATTER_SDK_PATH}/src/app/clusters/diagnostic-logs-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/software_diagnostics_server"
@@ -22,7 +25,8 @@ set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
                         "${MATTER_SDK_PATH}/src"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
-set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode)
+set(PRIV_REQUIRES_LIST
+    chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode app_openthread)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND PRIV_REQUIRES_LIST openthread)
