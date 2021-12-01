@@ -81,6 +81,7 @@ extern "C" void app_main()
                                 esp_matter_int(DEFAULT_SATURATION));
 
 #if CONFIG_ENABLE_CHIP_SHELL
+    esp_matter_console_diagnostics_register_commands();
     esp_matter_console_init();
 #endif
 }
