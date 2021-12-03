@@ -6,83 +6,87 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "app_constants.h"
-#include "app_driver.h"
-#include "app_matter.h"
-#include "app_qrcode.h"
-#include "app_rainmaker.h"
-#include "esp_matter.h"
-#include "esp_matter_console.h"
-#include "esp_matter_standard.h"
+#include <esp_err.h>
+#include <esp_log.h>
+#include <nvs_flash.h>
 
-#include "esp_err.h"
-#include "esp_log.h"
-#include "nvs_flash.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "lib/shell/Engine.h"
+#include <esp_matter.h>
+#include <esp_matter_console.h>
+#include <esp_route_hook.h>
 
-#define APP_MAIN_NAME "Main"
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include <app_openthread.h>
+#endif
+#include <app_driver.h>
+#include <app_qrcode.h>
+#include <app_rainmaker.h>
+
 static const char *TAG = "app_main";
 
-static esp_err_t app_main_attribute_update(const char *endpoint, const char *attribute, esp_matter_attr_val_t val,
-                                           void *priv_data)
+static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
+static esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
+
+static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
-    /* Just adding this callback to notify the application */
-    switch (val.type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        ESP_LOGD(TAG, "%s's %s is %d", endpoint, attribute, val.val.b);
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INTEGER:
-        ESP_LOGD(TAG, "%s's %s is %d", endpoint, attribute, val.val.i);
-        break;
-
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-        ESP_LOGD(TAG, "%s's %s is %f", endpoint, attribute, val.val.f);
-        break;
-
-    case ESP_MATTER_VAL_TYPE_STRING:
-    case ESP_MATTER_VAL_TYPE_OBJECT:
-    case ESP_MATTER_VAL_TYPE_ARRAY:
-        ESP_LOGD(TAG, "%s's %s is %s", endpoint, attribute, val.val.s);
-        break;
-
-    default:
-        ESP_LOGD(TAG, "%s's %s is <invalid value>", endpoint, attribute);
-        break;
+    if (event->Type == chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged) {
+#if !CHIP_DEVICE_CONFIG_ENABLE_THREAD
+        chip::app::DnssdServer::Instance().StartServer();
+        esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
+#endif
     }
-    return ESP_OK;
+    ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
+}
+
+static esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int endpoint_id, int cluster_id,
+                                         int attribute_id, esp_matter_attr_val_t val, void *priv_data)
+{
+    esp_err_t err = ESP_OK;
+
+    if (type == ESP_MATTER_CALLBACK_TYPE_PRE_ATTRIBUTE) {
+        /* Driver update */
+        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+    } else if (type == ESP_MATTER_CALLBACK_TYPE_POST_ATTRIBUTE) {
+        /* Other ecosystems update */
+        err = app_rainmaker_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+    }
+
+    return err;
 }
 
 extern "C" void app_main()
 {
-    /* Initialize the ESP NVS layer */
-    ESP_ERROR_CHECK(nvs_flash_init());
+    esp_err_t err = ESP_OK;
 
-    /* Initialize esp_matter */
-    esp_matter_init();
-    esp_matter_attribute_callback_add(APP_MAIN_NAME, app_main_attribute_update, NULL);
+    /* Initialize the ESP NVS layer */
+    nvs_flash_init();
+
+    /* Create matter device */
+    esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config);
+    /**
+    These node and endpoint handles can be used to create and add other endpoints and other clusters to the endpoints.
+    */
+    if (!node || !endpoint) {
+        ESP_LOGE(TAG, "Matter device creation failed");
+    }
 
     /* Initialize driver */
     app_driver_init();
 
-    /* Initialize chip */
-    ESP_ERROR_CHECK(app_matter_init());
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    /* Initialize OpenThread */
+    app_openthread_launch_task();
+#endif
+
+    /* Matter start */
+    err = esp_matter_start(app_event_cb);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Matter start failed: %d", err);
+    }
     app_qrcode_print();
 
     /* Initialize rainmaker */
     app_rainmaker_init();
-
-    /* Set the default attribute values */
-    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_POWER,
-                                esp_matter_bool(DEFAULT_POWER));
-    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_BRIGHTNESS,
-                                esp_matter_int(DEFAULT_BRIGHTNESS));
-    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_HUE,
-                                esp_matter_int(DEFAULT_HUE));
-    esp_matter_attribute_notify(APP_MAIN_NAME, ESP_MATTER_ENDPOINT_LIGHT, ESP_MATTER_ATTR_SATURATION,
-                                esp_matter_int(DEFAULT_SATURATION));
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();

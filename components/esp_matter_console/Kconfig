@@ -10,6 +10,6 @@ menu "ESP Matter Console"
         int "Max commands supported"
         default 10
         help
-            Maximum number of commands that can be added for the 'chip esp <sub_command>' command.
+            Maximum number of commands that can be added for the 'matter esp <sub_command>' command.
 
 endmenu

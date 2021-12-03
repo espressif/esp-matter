@@ -40,7 +40,7 @@ esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command)
 
 static void esp_matter_console_print_help()
 {
-    ESP_LOGI(TAG, "Usage: chip esp <sub_command>");
+    ESP_LOGI(TAG, "Usage: matter esp <sub_command>");
     ESP_LOGI(TAG, "Sub commands:");
     for (int i = 0; i < total_added_commands; i++) {
         ESP_LOGI(TAG, "\t%s: %s", commands[i].name, commands[i].description);
@@ -84,7 +84,7 @@ static CHIP_ERROR esp_matter_console_common_handler(int argc, char **argv)
             return CHIP_ERROR_INVALID_ARGUMENT;
         }
     }
-    ESP_LOGE(TAG, "Could not find the command: %s. Try the help command for more details: chip esp help", argv[0]);
+    ESP_LOGE(TAG, "Could not find the command: %s. Try the help command for more details: matter esp help", argv[0]);
     return CHIP_ERROR_INVALID_ARGUMENT;
 }
 
@@ -94,7 +94,7 @@ static esp_err_t esp_matter_console_register_common_shell_handler()
         {
             .cmd_func = esp_matter_console_common_handler,
             .cmd_name = "esp",
-            .cmd_help = "Usage: chip esp <sub_command>",
+            .cmd_help = "Usage: matter esp <sub_command>",
         },
     };
     int cmds_num = sizeof(cmds) / sizeof(chip::Shell::shell_command_t);

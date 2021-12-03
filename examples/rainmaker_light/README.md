@@ -57,4 +57,7 @@ This will print the console command to be run on the device:
 add-user <user-id> <secret-key>
 ```
 
-Copy-paste this command on the device console.
+Use these details in the below command on the device console.
+```
+matter esp rainmaker add-user <user-id> <secret-key>
+```
