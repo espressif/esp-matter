@@ -14,25 +14,32 @@
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 
-#include <cstdint>
 #include "app-common/zap-generated/att-storage.h"
 #include "app-common/zap-generated/attribute-id.h"
 #include "app-common/zap-generated/attribute-type.h"
 #include "app-common/zap-generated/cluster-id.h"
-#include "app/server/Mdns.h"
+#include "app/server/Dnssd.h"
 #include "app/server/Server.h"
 #include "app/util/af.h"
 #include "app/util/basic-types.h"
 #include "core/CHIPError.h"
+#include "credentials/DeviceAttestationCredsProvider.h"
+#include "credentials/examples/DeviceAttestationCredsExample.h"
 #include "freertos/FreeRTOS.h"
 #include "lib/shell/Engine.h"
 #include "lib/support/CHIPMem.h"
 #include "platform/CHIPDeviceLayer.h"
 #include "platform/PlatformManager.h"
 
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include "app_openthread.h"
+#endif
+
 using chip::AttributeId;
 using chip::ClusterId;
 using chip::EndpointId;
+using chip::Credentials::SetDeviceAttestationCredentialsProvider;
+using chip::Credentials::Examples::GetExampleDACProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConnectivityMgr;
 using chip::DeviceLayer::PlatformMgr;
@@ -211,11 +218,12 @@ static esp_err_t app_matter_attribute_update(const char *endpoint, const char *a
     return ESP_OK;
 }
 
-void emberAfPostAttributeChangeCallback(EndpointId endpoint, ClusterId cluster, AttributeId attribute, uint8_t mask,
-                                        uint16_t manufacturer, uint8_t type, uint16_t size, uint8_t *value)
+void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
+                                       uint16_t size, uint8_t *value)
+
 {
-    char *endpoint_name = (char *)app_matter_get_endpoint_name(endpoint);
-    char *attribute_name = (char *)app_matter_get_attribute_name(cluster, attribute);
+    char *endpoint_name = (char *)app_matter_get_endpoint_name(path.mEndpointId);
+    char *attribute_name = (char *)app_matter_get_attribute_name(path.mClusterId, path.mAttributeId);
     if (endpoint_name == NULL || attribute_name == NULL) {
         return;
     }
@@ -236,7 +244,7 @@ esp_err_t app_matter_attribute_set(const char *endpoint, const char *attribute, 
 static void on_device_event(const ChipDeviceEvent *event, intptr_t arg)
 {
     if (event->Type == PublicEventTypes::kInterfaceIpAddressChanged) {
-        chip::app::MdnsServer::Instance().StartServer();
+        chip::app::DnssdServer::Instance().StartServer();
     }
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
@@ -245,8 +253,9 @@ static void matter_init_task(intptr_t context)
 {
     xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
     chip::Server::GetInstance().Init();
+    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    chip::app::MdnsServer::Instance().StartServer();
+    chip::app::DnssdServer::Instance().StartServer();
 #endif
     xTaskNotifyGive(task_to_notify);
 }
@@ -269,6 +278,9 @@ esp_err_t app_matter_init()
     }
     PlatformMgr().AddEventHandler(on_device_event, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    /* Initializa OpenThread */
+    app_openthread_launch_task();
+
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
