@@ -59,7 +59,7 @@ esp_err_t light_driver_init(light_driver_config_t *config)
 esp_err_t light_driver_set_power(bool power)
 {
     current_power = power;
-    return ESP_OK;
+    return light_driver_set_brightness(current_brightness);
 }
 
 esp_err_t light_driver_set_brightness(uint8_t brightness)
