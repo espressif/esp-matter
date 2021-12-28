@@ -9,6 +9,7 @@
 #include "app_constants.h"
 #include "app_driver.h"
 #include "app_matter.h"
+#include "app_ota.h"
 #include "app_qrcode.h"
 #include "esp_matter.h"
 #include "esp_matter_console.h"
@@ -82,6 +83,9 @@ extern "C" void app_main()
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();
+#if CONFIG_ENABLE_OTA_REQUESTOR
+    esp_matter_console_ota_register_commands();
+#endif
     esp_matter_console_init();
 #endif
 }

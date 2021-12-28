@@ -8,6 +8,7 @@
 
 #include "app_matter.h"
 #include "app_constants.h"
+#include "app_ota.h"
 #include "esp_matter.h"
 #include "esp_matter_standard.h"
 
@@ -298,7 +299,9 @@ esp_err_t app_matter_init()
     PlatformMgr().ScheduleWork(matter_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
-
+#if CONFIG_ENABLE_OTA_REQUESTOR
+    matter_ota_requestor_init();
+#endif
     esp_matter_attribute_callback_add(APP_MATTER_NAME, app_matter_attribute_update, NULL);
     return ESP_OK;
 }

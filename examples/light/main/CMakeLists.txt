@@ -8,13 +8,16 @@ set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
                            "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/application-basic-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/general_diagnostics_server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/general-diagnostics-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/fixed-label-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/user-label-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/identify-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/ota-requestor"
                            "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning"
                            "${MATTER_SDK_PATH}/src/app/clusters/diagnostic-logs-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/software_diagnostics_server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/thread_network_diagnostics_server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/wifi_network_diagnostics_server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/software-diagnostics-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/thread-network-diagnostics-server"
+                           "${MATTER_SDK_PATH}/src/app/clusters/wifi-network-diagnostics-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/on-off-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/operational-credentials-server"
                            "${MATTER_SDK_PATH}/src/app/clusters/descriptor"
@@ -26,7 +29,7 @@ set(PRIV_INCLUDE_DIRS_LIST   "${CMAKE_CURRENT_LIST_DIR}"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common")
 
 set(PRIV_REQUIRES_LIST
-    chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode app_openthread route_hook)
+    chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode app_openthread route_hook app_update)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND PRIV_REQUIRES_LIST openthread)
