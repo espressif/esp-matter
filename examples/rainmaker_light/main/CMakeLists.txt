@@ -1,39 +1,8 @@
-set(SRC_DIRS_LIST          "${CMAKE_CURRENT_LIST_DIR}"
-                           "${CMAKE_CURRENT_LIST_DIR}/zap-generated"
-                           "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
-                           "${MATTER_SDK_PATH}/src/app/server"
-                           "${MATTER_SDK_PATH}/src/app/util"
-                           "${MATTER_SDK_PATH}/src/app/reporting"
-                           "${MATTER_SDK_PATH}/src/app/clusters/basic"
-                           "${MATTER_SDK_PATH}/src/app/clusters/administrator-commissioning-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/application-basic-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/general-diagnostics-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/identify-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/user-label-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/fixed-label-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/ota-requestor"
-                           "${MATTER_SDK_PATH}/src/app/clusters/general-commissioning-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/network-commissioning"
-                           "${MATTER_SDK_PATH}/src/app/clusters/diagnostic-logs-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/software-diagnostics-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/thread-network-diagnostics-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/wifi-network-diagnostics-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/on-off-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/operational-credentials-server"
-                           "${MATTER_SDK_PATH}/src/app/clusters/descriptor"
-                           "${MATTER_SDK_PATH}/src/app/clusters/level-control"
-                           "${MATTER_SDK_PATH}/src/app/clusters/color-control-server")
+set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode app_openthread esp_rainmaker)
 
-set(PRIV_INCLUDE_DIRS_LIST      "${CMAKE_CURRENT_LIST_DIR}"
-                           "${MATTER_SDK_PATH}/src"
-                           "${MATTER_SDK_PATH}/zzz_generated/app-common")
-
-set(PRIV_REQUIRES_LIST chip bt esp32_mbedtls esp_matter esp_matter_console app_driver app_qrcode esp_rainmaker route_hook)
-
-idf_component_register(SRC_DIRS         ${SRC_DIRS_LIST}
-                      PRIV_INCLUDE_DIRS      ${PRIV_INCLUDE_DIRS_LIST}
-                      PRIV_REQUIRES     ${PRIV_REQUIRES_LIST})
+idf_component_register(SRC_DIRS          "."
+                      PRIV_INCLUDE_DIRS  "."
+                      PRIV_REQUIRES      ${PRIV_REQUIRES_LIST})
 
 set_property(TARGET ${COMPONENT_LIB} PROPERTY CXX_STANDARD 14)
 target_compile_options(${COMPONENT_LIB} PRIVATE "-DLWIP_IPV6_SCOPES=0" "-DCHIP_HAVE_CONFIG_H")

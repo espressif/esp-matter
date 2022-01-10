@@ -9,6 +9,7 @@
 #pragma once
 
 #include <esp_err.h>
+#include <esp_matter.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +24,8 @@ extern "C" {
  * @return error in case of failure.
  */
 esp_err_t app_rainmaker_init(void);
+
+esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
 
 #ifdef __cplusplus
 }

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <string.h>
-#include <esp_log.h>
-#include <esp_timer.h>
 #include <esp_heap_caps.h>
+#include <esp_log.h>
 #include <esp_matter_console.h>
+#include <esp_timer.h>
+#include <string.h>
 
 static const char *TAG = "esp_matter_console_diagnostics";
 
@@ -26,11 +26,9 @@ static esp_err_t mem_dump_console_handler(int argc, char *argv[])
     printf("Current Free Memory\t%d\t\t%d\n",
            heap_caps_get_free_size(MALLOC_CAP_8BIT) - heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
            heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
-    printf("Largest Free Block\t%d\t\t%d\n",
-           heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
+    printf("Largest Free Block\t%d\t\t%d\n", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
            heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
-    printf("Min. Ever Free Size\t%d\t\t%d\n",
-           heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
+    printf("Min. Ever Free Size\t%d\t\t%d\n", heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
            heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM));
     return ESP_OK;
 }
@@ -41,11 +39,11 @@ static esp_err_t up_time_console_handler(int argc, char *argv[])
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_console_diagnostics_handler(int argc, char** argv)
+static esp_err_t esp_matter_console_diagnostics_handler(int argc, char **argv)
 {
     if (argc == 1 && strncmp(argv[0], "mem-dump", sizeof("mem-dump")) == 0) {
         return mem_dump_console_handler(argc, argv);
-    } else if (argc == 1 && strncmp(argv[0], "up-time", sizeof("up-time")) == 0){
+    } else if (argc == 1 && strncmp(argv[0], "up-time", sizeof("up-time")) == 0) {
         return up_time_console_handler(argc, argv);
     } else {
         ESP_LOGE(TAG, "Incorrect arguments");
@@ -54,12 +52,13 @@ static esp_err_t esp_matter_console_diagnostics_handler(int argc, char** argv)
     return ESP_OK;
 }
 
-void esp_matter_console_diagnostics_register_commands()
+esp_err_t esp_matter_console_diagnostics_register_commands()
 {
-    esp_matter_console_command_t command= {
+    esp_matter_console_command_t command = {
         .name = "diagnostics",
-        .description = "Diagnostic commands. Usage chip esp diagnostics <diagnostic_command>. Diagnostics commands: mem-dump, up-time",
+        .description = "Diagnostic commands. Usage matter esp diagnostics <diagnostic_command>. Diagnostics commands: "
+                       "mem-dump, up-time",
         .handler = esp_matter_console_diagnostics_handler,
     };
-    esp_matter_console_add_command(&command);
+    return esp_matter_console_add_command(&command);
 }

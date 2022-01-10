@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-void app_openthread_launch_task(void);
+esp_err_t app_openthread_launch_task(void);
 
 #ifdef __cplusplus
 }

@@ -63,8 +63,11 @@ esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command);
 /** Add Diagnostics Commands
  *
  * Adds the default diagnostics commands.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
-void esp_matter_console_diagnostics_register_commands();
+esp_err_t esp_matter_console_diagnostics_register_commands();
 
 #ifdef __cplusplus
 }
