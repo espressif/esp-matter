@@ -10,5 +10,4 @@ SET(button_type hollow)
 SET(used_driver light_driver button_driver)
 SET(extra_components_dirs_append "${device_hal_path}/light_driver"
                                  "${device_hal_path}/button_driver"
-                                 "$ENV{IDF_PATH}/examples/common_components/led_strip"
-                                 "$ENV{IDF_PATH}/examples/peripherals/rmt/led_strip/components")
+                                 "$ENV{IDF_PATH}/examples/common_components/led_strip")

@@ -15,11 +15,15 @@
 #include <esp_log.h>
 #include <esp_matter_core.h>
 
+#include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+#include <app_openthread.h>
+#endif
 
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::Credentials::Examples::GetExampleDACProvider;
@@ -211,6 +215,7 @@ esp_err_t esp_matter_chip_init(esp_matter_event_callback_t callback)
     }
     PlatformMgr().AddEventHandler(callback, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    app_openthread_launch_task();
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
