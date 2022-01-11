@@ -22,7 +22,7 @@
 #include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <app_openthread.h>
+#include <esp_matter_openthread.h>
 #endif
 
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
@@ -191,7 +191,12 @@ static void esp_matter_chip_init_task(intptr_t context)
     chip::Server::GetInstance().Init();
     SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    chip::app::DnssdServer::Instance().StartServer();
+    // If Thread is Provisioned, publish the dns service
+    if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
+            (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0))
+    {
+        chip::app::DnssdServer::Instance().StartServer();
+    }
 #endif
     xTaskNotifyGive(task_to_notify);
 }
@@ -215,7 +220,7 @@ esp_err_t esp_matter_chip_init(esp_matter_event_callback_t callback)
     }
     PlatformMgr().AddEventHandler(callback, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    app_openthread_launch_task();
+    esp_matter_openthread_launch_task();
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;

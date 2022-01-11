@@ -1,12 +1,18 @@
-/*
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
+// Copyright 2021 Espressif Systems (Shanghai) PTE LTD
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-#include "app_openthread_config.h"
+#include "esp_matter_openthread_config.h"
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "esp_netif_types.h"
@@ -58,7 +64,7 @@ static void ot_task_worker(void *context)
     vTaskDelete(NULL);
 }
 
-esp_err_t app_openthread_launch_task(void)
+esp_err_t esp_matter_openthread_launch_task(void)
 {
     // Used eventfds:
     // * netif
