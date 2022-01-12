@@ -1,4 +1,5 @@
 set(SRC_DIRS_LIST       "."
+                        "zap_common/zap-generated"
                         "${ZAP_GENERATED_PATH}"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common/app-common/zap-generated/attributes"
                         "${MATTER_SDK_PATH}/src/app"
@@ -30,6 +31,7 @@ set(SRC_DIRS_LIST       "."
                         "${MATTER_SDK_PATH}/src/app/clusters/color-control-server")
 
 set(INCLUDE_DIRS_LIST   "."
+                        "zap_common"
                         "${MATTER_SDK_PATH}/zzz_generated/app-common"
                         "${MATTER_SDK_PATH}/src"
                         "${ZAP_GENERATED_PATH}/../")
@@ -47,4 +49,4 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
 # This has been added to fix the error and should be removed once fixed:
 # esp-matter/connectedhomeip/connectedhomeip/src/app/EventManagement.cpp:467:23: error: 'writer' is
 # used uninitialized in this function
-idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized" APPEND)
+idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-missing-field-initializers" APPEND)
