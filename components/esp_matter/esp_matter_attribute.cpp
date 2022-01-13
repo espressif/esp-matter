@@ -582,6 +582,17 @@ esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t call
     return ESP_OK;
 }
 
+esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value,
+                                           uint16_t attribute_size)
+{
+    EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
+    if (status != EMBER_ZCL_STATUS_SUCCESS) {
+        ESP_LOGE(TAG, "Error getting raw value from matter");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
 esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
 {
     EmberAfAttributeType attribute_type = 0;
