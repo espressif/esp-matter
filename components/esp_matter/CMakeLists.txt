@@ -35,6 +35,10 @@ set(INCLUDE_DIRS_LIST   "."
 
 set(REQUIRES_LIST       chip bt)
 
+if ("${IDF_TARGET}" STREQUAL "esp32h2")
+    list(APPEND REQUIRES_LIST openthread esp_matter_openthread)
+endif()
+
 idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
                         INCLUDE_DIRS    ${INCLUDE_DIRS_LIST}
                         REQUIRES        ${REQUIRES_LIST})

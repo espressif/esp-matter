@@ -13,10 +13,6 @@
 #include <esp_matter.h>
 #include <esp_matter_console.h>
 #include <esp_route_hook.h>
-
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-#include <app_openthread.h>
-#endif
 #include <app_driver.h>
 #include <app_qrcode.h>
 
@@ -60,11 +56,6 @@ extern "C" void app_main()
 
     /* Initialize driver */
     app_driver_init();
-
-#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    /* Initialize OpenThread */
-    app_openthread_launch_task();
-#endif
 
     /* Matter start */
     err = esp_matter_start(app_event_cb);
