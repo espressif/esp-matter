@@ -34,6 +34,16 @@ using chip::TLV::TLVReader;
 
 static const char *TAG = "esp_matter_command";
 
+static esp_matter_command_custom_callback_t custom_callback = NULL;
+static void *custom_callback_priv_data = NULL;
+
+esp_err_t esp_matter_command_set_custom_callback(esp_matter_command_custom_callback_t callback, void *priv_data)
+{
+    custom_callback = callback;
+    custom_callback_priv_data = priv_data;
+    return ESP_OK;
+}
+
 void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *command_obj)
 {
     int endpoint_id = command_path.mEndpointId;
@@ -49,8 +59,15 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
         ESP_LOGE(TAG, "Command 0x%04X not found", command_id);
         return;
     }
-    esp_matter_command_callback_t callback = esp_matter_command_get_callback(command);
-    callback(command_obj, command_path, tlv_data);
+    int flags = esp_matter_command_get_flags(command);
+    if (flags & COMMAND_MASK_CUSTOM) {
+        if (custom_callback) {
+            custom_callback(endpoint_id, cluster_id, command_id, tlv_data, custom_callback_priv_data);
+        }
+    } else {
+        esp_matter_command_callback_t callback = esp_matter_command_get_callback(command);
+        callback(command_obj, command_path, tlv_data);
+    }
 }
 
 namespace chip {
@@ -781,7 +798,7 @@ void esp_matter_command_callback_key_set_read_all_indices_response(void *command
         }
     }
 
-    emberAfGroupKeyManagementClusterKeySetReadAllIndicesResponseCallback(command_path.mEndpointId, 
+    emberAfGroupKeyManagementClusterKeySetReadAllIndicesResponseCallback(command_path.mEndpointId,
                                                                          (CommandSender *)command_obj,
                                                                          group_key_set_indices);
     */
@@ -939,7 +956,7 @@ void esp_matter_command_callback_network_config_response(void *command_obj, cons
         }
     }
 
-    emberAfNetworkCommissioningClusterNetworkConfigResponseCallback(command_path.mEndpointId, 
+    emberAfNetworkCommissioningClusterNetworkConfigResponseCallback(command_path.mEndpointId,
                                                                     (CommandSender *)command_obj, networking_status,
                                                                     debug_text);
 }
@@ -1176,7 +1193,7 @@ void esp_matter_command_callback_apply_update_response(void *command_obj, const 
         }
     }
 
-    emberAfOtaSoftwareUpdateProviderClusterApplyUpdateResponseCallback(command_path.mEndpointId, 
+    emberAfOtaSoftwareUpdateProviderClusterApplyUpdateResponseCallback(command_path.mEndpointId,
                                                                        (CommandSender *)command_obj, action,
                                                                        delayed_action_time);
 }
