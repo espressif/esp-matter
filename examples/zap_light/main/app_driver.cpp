@@ -63,7 +63,7 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
         int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
         int value = atoi(argv[4]);
 
-        esp_matter_attr_val_t val = esp_matter_int(value);
+        esp_matter_attr_val_t val = esp_matter_uint8(value);
 
         /* Change val if bool */
         if (cluster_id == ZCL_ON_OFF_CLUSTER_ID && attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
@@ -77,7 +77,7 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
         int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
         int value = app_driver_light_get_attribute(endpoint_id, cluster_id, attribute_id);
 
-        esp_matter_attr_val_t val = esp_matter_int(value);
+        esp_matter_attr_val_t val = esp_matter_uint8(value);
 
         /* Change val if bool */
         if (cluster_id == ZCL_ON_OFF_CLUSTER_ID && attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
@@ -113,19 +113,19 @@ static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t val)
 
 static esp_err_t app_driver_light_set_brightness(esp_matter_attr_val_t val)
 {
-    int value = REMAP_TO_RANGE(val.val.i, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
+    int value = REMAP_TO_RANGE(val.val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
     return light_driver_set_brightness(value);
 }
 
 static esp_err_t app_driver_light_set_hue(esp_matter_attr_val_t val)
 {
-    int value = REMAP_TO_RANGE(val.val.i, MATTER_HUE, STANDARD_HUE);
+    int value = REMAP_TO_RANGE(val.val.u8, MATTER_HUE, STANDARD_HUE);
     return light_driver_set_hue(value);
 }
 
 static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t val)
 {
-    int value = REMAP_TO_RANGE(val.val.i, MATTER_SATURATION, STANDARD_SATURATION);
+    int value = REMAP_TO_RANGE(val.val.u8, MATTER_SATURATION, STANDARD_SATURATION);
     return light_driver_set_saturation(value);
 }
 
@@ -149,6 +149,49 @@ esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attri
             }
         }
     }
+    return err;
+}
+
+esp_err_t app_driver_attribute_set_defaults()
+{
+    /* When using static endpoints, i.e. using the data model from zap-generated, this needs to be done
+    after esp_matter_start() */
+    /* Get the default value (current value) from matter submodule and update the app_driver */
+    esp_err_t err = ESP_OK;
+    uint8_t value;
+    int endpoint_id = 0;
+    int cluster_id = 0;
+    int attribute_id = 0;
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+
+    endpoint_id = ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID;
+    cluster_id = ZCL_ON_OFF_CLUSTER_ID;
+    attribute_id = ZCL_ON_OFF_ATTRIBUTE_ID;
+    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    val = esp_matter_bool(value);
+    err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+
+    endpoint_id = ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID;
+    cluster_id = ZCL_LEVEL_CONTROL_CLUSTER_ID;
+    attribute_id = ZCL_CURRENT_LEVEL_ATTRIBUTE_ID;
+    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    val = esp_matter_uint8(value);
+    err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+
+    endpoint_id = ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID;
+    cluster_id = ZCL_COLOR_CONTROL_CLUSTER_ID;
+    attribute_id = ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID;
+    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    val = esp_matter_uint8(value);
+    err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+
+    endpoint_id = ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID;
+    cluster_id = ZCL_COLOR_CONTROL_CLUSTER_ID;
+    attribute_id = ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID;
+    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    val = esp_matter_uint8(value);
+    err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+
     return err;
 }
 

@@ -64,6 +64,8 @@ extern "C" void app_main()
     }
     app_qrcode_print();
 
+    app_driver_attribute_set_defaults();
+
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();
     esp_matter_console_init();

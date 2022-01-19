@@ -174,7 +174,8 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
 static esp_err_t esp_matter_endpoint_enable_all()
 {
     if (!node) {
-        return ESP_FAIL;
+        /* Not returning error, since the node will not be initialized for application using the data model from zap */
+        return ESP_OK;
     }
 
     _esp_matter_endpoint_t *endpoint = node->endpoint_list;
@@ -246,7 +247,6 @@ esp_err_t esp_matter_start(esp_matter_event_callback_t callback)
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
     }
-
     return err;
 }
 
