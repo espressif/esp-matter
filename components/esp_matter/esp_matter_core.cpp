@@ -198,6 +198,9 @@ static void esp_matter_chip_init_task(intptr_t context)
         chip::app::DnssdServer::Instance().StartServer();
     }
 #endif
+    if (esp_matter_endpoint_enable_all() != ESP_OK) {
+        ESP_LOGE(TAG, "Enable all endpoints failure");
+    }
     xTaskNotifyGive(task_to_notify);
 }
 
@@ -244,7 +247,6 @@ esp_err_t esp_matter_start(esp_matter_event_callback_t callback)
         ESP_LOGE(TAG, "Error initializing matter");
     }
 
-    err = esp_matter_endpoint_enable_all();
     return err;
 }
 
