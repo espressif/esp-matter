@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <esp_log.h>
+#include <esp_matter.h>
 #include <esp_matter_core.h>
 
 #include <app/server/Dnssd.h>
@@ -25,6 +26,7 @@
 #include <esp_matter_openthread.h>
 #endif
 
+using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::Credentials::Examples::GetExampleDACProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
@@ -35,7 +37,7 @@ using chip::DeviceLayer::PlatformMgr;
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
 
-static const char *TAG = "esp_matter_device";
+static const char *TAG = "esp_matter_core";
 
 typedef struct esp_matter_attribute {
     int attribute_id;
@@ -64,7 +66,9 @@ typedef struct esp_matter_cluster {
 
 typedef struct esp_matter_endpoint {
     int endpoint_id;
+    uint8_t flags;
     _esp_matter_cluster_t *cluster_list;
+    EmberAfEndpointType *endpoint_type;
     struct esp_matter_endpoint *next;
 } _esp_matter_endpoint_t;
 
@@ -94,6 +98,49 @@ static int esp_matter_attribute_get_count(_esp_matter_attribute_t *current)
     return count;
 }
 
+static int esp_matter_endpoint_get_next_index()
+{
+    int endpoint_id = 0;
+    for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
+        endpoint_id = emberAfEndpointFromIndex(index);
+        if (endpoint_id == kInvalidEndpointId) {
+            return index;
+        }
+    }
+    return 0xFFFF;
+}
+
+static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    /* Remove endpoint */
+    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    int endpoint_index = emberAfGetDynamicIndexFromEndpoint(current_endpoint->endpoint_id);
+    if (endpoint_index == 0xFFFF) {
+        ESP_LOGE(TAG, "Could not find endpoint index");
+        return ESP_FAIL;
+    }
+    emberAfClearDynamicEndpoint(endpoint_index);
+
+    /* Free all clusters */
+    EmberAfEndpointType *endpoint_type = current_endpoint->endpoint_type;
+    int cluster_count = endpoint_type->clusterCount;
+    for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
+        /* Free attributes */
+        free(endpoint_type->cluster[cluster_index].attributes);
+    }
+    free(endpoint_type->cluster);
+
+    /* Free endpoint type */
+    free(endpoint_type);
+    current_endpoint->endpoint_type = NULL;
+    return ESP_OK;
+}
+
 extern esp_err_t esp_matter_attribute_get_type_and_val_default(esp_matter_attr_val_t *val,
                                                                EmberAfAttributeType *attribute_type,
                                                                uint16_t *attribute_size,
@@ -106,7 +153,6 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         return ESP_ERR_INVALID_ARG;
     }
     _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    static int endpoint_index = 0;
 
     /* Endpoint Type */
     EmberAfEndpointType *endpoint_type = (EmberAfEndpointType *)calloc(1, sizeof(EmberAfEndpointType));
@@ -114,6 +160,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         ESP_LOGE(TAG, "Couldn't allocate endpoint_type");
         return ESP_ERR_NO_MEM;
     }
+    current_endpoint->endpoint_type = endpoint_type;
 
     /* Clusters */
     _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
@@ -130,7 +177,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         _esp_matter_attribute_t *attribute = cluster->attribute_list;
         int attribute_count = esp_matter_attribute_get_count(attribute);
         int attribute_index = 0;
-        EmberAfAttributeMetadata *matter_attributes = (EmberAfAttributeMetadata *)calloc(1, 
+        EmberAfAttributeMetadata *matter_attributes = (EmberAfAttributeMetadata *)calloc(1,
                                                        attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
             ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
@@ -165,11 +212,11 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     endpoint_type->clusterCount = cluster_count;
 
     /* Add Endpoint */
+    int endpoint_index = esp_matter_endpoint_get_next_index();
     EmberAfStatus err = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, 0, 1);
     if (err != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
     }
-    endpoint_index++;
     return ESP_OK;
 }
 
@@ -532,6 +579,21 @@ int esp_matter_command_get_flags(esp_matter_command_t *command)
     return current_command->flags;
 }
 
+static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+
+    /* Delete val here, if required */
+
+    /* Free */
+    free(current_attribute);
+    return ESP_OK;
+}
+
 esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags,
                                                     esp_matter_attr_val_t val)
 {
@@ -569,6 +631,19 @@ esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluste
     }
 
     return (esp_matter_attribute_t *)attribute;
+}
+
+static esp_err_t esp_matter_command_delete(esp_matter_command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
+
+    /* Free */
+    free(current_command);
+    return ESP_OK;
 }
 
 esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, int command_id, uint8_t flags,
@@ -609,6 +684,35 @@ esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, i
     return (esp_matter_command_t *)command;
 }
 
+static esp_err_t esp_matter_cluster_delete(esp_matter_cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
+
+    /* Parse and delete all commands */
+    _esp_matter_command_t *command = current_cluster->command_list;
+    while (command) {
+        _esp_matter_command_t *next_command = command->next;
+        esp_matter_command_delete((esp_matter_command_t *)command);
+        command = next_command;
+    }
+
+    /* Parse and delete all attributes */
+    _esp_matter_attribute_t *attribute = current_cluster->attribute_list;
+    while (attribute) {
+        _esp_matter_attribute_t *next_attribute = attribute->next;
+        esp_matter_attribute_delete((esp_matter_attribute_t *)attribute);
+        attribute = next_attribute;
+    }
+
+    /* Free */
+    free(current_cluster);
+    return ESP_OK;
+}
+
 esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint, int cluster_id, uint8_t flags)
 {
     /* Find */
@@ -645,7 +749,57 @@ esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint,
     return (esp_matter_cluster_t *)cluster;
 }
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id)
+esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoint_t *endpoint)
+{
+    if (!node || !endpoint) {
+        ESP_LOGE(TAG, "Node or endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
+    _esp_matter_endpoint_t *_endpoint = (_esp_matter_endpoint_t *)endpoint;
+
+    if (!(_endpoint->flags & ENDPOINT_MASK_DELETABLE)) {
+        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_MASK_DELETABLE is not set");
+        return ESP_FAIL;
+    }
+
+    /* Find current endpoint and remove from list */
+    _esp_matter_endpoint_t *current_endpoint = current_node->endpoint_list;
+    _esp_matter_endpoint_t *previous_endpoint = NULL;
+    while (current_endpoint) {
+        if (current_endpoint == _endpoint) {
+            break;
+        }
+        previous_endpoint = current_endpoint;
+        current_endpoint = current_endpoint->next;
+    }
+    if (current_endpoint == NULL) {
+        ESP_LOGE(TAG, "Could not find the endpoint to delete");
+        return ESP_FAIL;
+    }
+    if (previous_endpoint == NULL) {
+        current_node->endpoint_list = current_endpoint->next;
+    } else {
+        previous_endpoint->next = current_endpoint->next;
+    }
+
+    /* Disable */
+    esp_matter_endpoint_disable(endpoint);
+
+    /* Parse and delete all clusters */
+    _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
+    while (cluster) {
+        _esp_matter_cluster_t *next_cluster = cluster->next;
+        esp_matter_cluster_delete((esp_matter_cluster_t *)cluster);
+        cluster = next_cluster;
+    }
+
+    /* Free */
+    free(current_endpoint);
+    return ESP_OK;
+}
+
+esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id, uint8_t flags)
 {
     /* Find */
     if (!node) {
@@ -653,6 +807,15 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, i
         return NULL;
     }
     _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
+    if (endpoint_id == kInvalidEndpointId) {
+        ESP_LOGE(TAG, "Invalid endpoint_id: 0x%04X", endpoint_id);
+        return NULL;
+    }
+    esp_matter_endpoint_t *existing_endpoint = esp_matter_endpoint_get(node, endpoint_id);
+    if (existing_endpoint) {
+        ESP_LOGE(TAG, "Endpoint with id 0x%04X already exists", endpoint_id);
+        return NULL;
+    }
 
     /* Allocate */
     _esp_matter_endpoint_t *endpoint = (_esp_matter_endpoint_t *)calloc(1, sizeof(_esp_matter_endpoint_t));
@@ -663,6 +826,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, i
 
     /* Set */
     endpoint->endpoint_id = endpoint_id;
+    endpoint->flags = flags;
 
     /* Add */
     _esp_matter_endpoint_t *previous_endpoint = NULL;

@@ -56,6 +56,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t
                                                            uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_DESCRIPTOR_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterDescriptorPluginServerInitCallback);
     }
@@ -84,6 +89,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_access_control(esp_matter_endpoi
     /* Not implemented
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ACCESS_CONTROL_CLUSTER_ID,
                                                               CLUSTER_MASK_SERVER);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterAcccessControlPluginServerInitCallback);
     }
@@ -107,6 +117,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *end
                                                       esp_matter_cluster_basic_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_BASIC_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
     }
@@ -151,6 +166,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_provider(esp_matter_endpoint
                                                              uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OTA_PROVIDER_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster,
                                                            MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
@@ -182,6 +202,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_requestor(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OTA_REQUESTOR_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster,
                                                            MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
@@ -214,6 +239,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_commissioning(esp_matter
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GENERAL_COMMISSIONING_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGeneralCommissioningPluginServerInitCallback);
     }
@@ -254,6 +284,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_network_commissioning(esp_matter
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_NETWORK_COMMISSIONING_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterNetworkCommissioningPluginServerInitCallback);
     }
@@ -309,6 +344,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_diagnostics(esp_matter_e
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GENERAL_DIAGNOSTICS_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGeneralDiagnosticsPluginServerInitCallback);
     }
@@ -332,6 +372,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_administrator_commissioning(esp_
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ADMINISTRATOR_COMMISSIONING_CLUSTER_ID,
                                                               flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster,
                                                            MatterAdministratorCommissioningPluginServerInitCallback);
@@ -365,6 +410,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_operational_credentials(esp_matt
                                                         uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OPERATIONAL_CREDENTIALS_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster,
                                                            MatterOperationalCredentialsPluginServerInitCallback);
@@ -426,6 +476,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GROUP_KEY_MANAGEMENT_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGroupKeyManagementPluginServerInitCallback);
     }
@@ -466,6 +521,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_identify(esp_matter_endpoint_t *
                                                          esp_matter_cluster_identify_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_IDENTIFY_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterIdentifyPluginServerInitCallback);
     }
@@ -494,6 +554,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_groups(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_groups_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GROUPS_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGroupsPluginServerInitCallback);
     }
@@ -534,6 +599,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_scenes(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_scenes_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_SCENES_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterScenesPluginServerInitCallback);
     }
@@ -588,6 +658,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_on_off_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ON_OFF_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterOnOffPluginServerInitCallback);
     }
@@ -611,6 +686,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_LEVEL_CONTROL_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterLevelControlPluginServerInitCallback);
     }
@@ -649,6 +729,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_COLOR_CONTROL_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
     if (flags & CLUSTER_MASK_SERVER) {
         esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterColorControlPluginServerInitCallback);
     }

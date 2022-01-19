@@ -55,7 +55,8 @@ esp_matter_node_t *esp_matter_node_create_raw();
 esp_matter_node_t *esp_matter_node_get();
 
 /** Endpoint APIs */
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id);
+esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id, uint8_t flags);
+esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoint_t *endpoint);
 esp_matter_endpoint_t *esp_matter_endpoint_get(esp_matter_node_t *node, int endpoint_id);
 esp_matter_endpoint_t *esp_matter_endpoint_get_first(esp_matter_node_t *node);
 esp_matter_endpoint_t *esp_matter_endpoint_get_next(esp_matter_endpoint_t *endpoint);
