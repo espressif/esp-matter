@@ -19,22 +19,6 @@
 
 #pragma once
 
-#include <app-common/zap-generated/callbacks/PluginCallbacks.h>
+#include <esp_matter_cluster.h>
 
-#define MATTER_PLUGINS_INIT                                                    \
-  MatterAdministratorCommissioningPluginServerInitCallback();                  \
-  MatterBasicPluginServerInitCallback();                                       \
-  MatterColorControlPluginServerInitCallback();                                \
-  MatterDescriptorPluginServerInitCallback();                                  \
-  MatterGeneralCommissioningPluginServerInitCallback();                        \
-  MatterGeneralDiagnosticsPluginServerInitCallback();                          \
-  MatterGroupKeyManagementPluginServerInitCallback();                          \
-  MatterGroupsPluginServerInitCallback();                                      \
-  MatterIdentifyPluginServerInitCallback();                                    \
-  MatterLevelControlPluginServerInitCallback();                                \
-  MatterNetworkCommissioningPluginServerInitCallback();                        \
-  MatterOtaSoftwareUpdateProviderPluginClientInitCallback();                   \
-  MatterOtaSoftwareUpdateRequestorPluginServerInitCallback();                  \
-  MatterOnOffPluginServerInitCallback();                                       \
-  MatterOperationalCredentialsPluginServerInitCallback();                      \
-  MatterScenesPluginServerInitCallback();
+#define MATTER_PLUGINS_INIT esp_matter_cluster_plugin_init_callback_common();

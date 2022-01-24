@@ -42,6 +42,10 @@ typedef esp_err_t (*esp_matter_attribute_callback_t)(esp_matter_callback_type_t 
 
 typedef void (*esp_matter_event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
 
+typedef void (*esp_matter_cluster_plugin_server_init_callback_t)();
+
+typedef void (*esp_matter_cluster_plugin_client_init_callback_t)();
+
 /** Initializing APIs */
 esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data);
 esp_err_t esp_matter_start(esp_matter_event_callback_t callback);
@@ -66,6 +70,14 @@ esp_matter_cluster_t *esp_matter_cluster_get(esp_matter_endpoint_t *endpoint, in
 esp_matter_cluster_t *esp_matter_cluster_get_first(esp_matter_endpoint_t *endpoint);
 esp_matter_cluster_t *esp_matter_cluster_get_next(esp_matter_cluster_t *cluster);
 int esp_matter_cluster_get_id(esp_matter_cluster_t *cluster);
+esp_err_t esp_matter_cluster_set_plugin_server_init_callback(esp_matter_cluster_t *cluster,
+                                                            esp_matter_cluster_plugin_server_init_callback_t callback);
+esp_err_t esp_matter_cluster_set_plugin_client_init_callback(esp_matter_cluster_t *cluster,
+                                                            esp_matter_cluster_plugin_client_init_callback_t callback);
+esp_matter_cluster_plugin_server_init_callback_t esp_matter_cluster_get_plugin_server_init_callback(
+                                                                                        esp_matter_cluster_t *cluster);
+esp_matter_cluster_plugin_client_init_callback_t esp_matter_cluster_get_plugin_client_init_callback(
+                                                                                        esp_matter_cluster_t *cluster);
 
 /** Attribute APIs */
 esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags,

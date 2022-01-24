@@ -312,6 +312,8 @@ typedef struct esp_matter_cluster_color_control_config {
     uint16_t color_capabilities;
 } esp_matter_cluster_color_control_config_t;
 
+void esp_matter_cluster_plugin_init_callback_common();
+
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_descriptor_config_t *config,
                                                            uint8_t flags);
