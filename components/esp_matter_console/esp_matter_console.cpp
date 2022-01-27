@@ -119,7 +119,7 @@ esp_err_t esp_matter_console_init()
         ESP_LOGE(TAG, "Couldn't register common handler");
         return err;
     }
-
+    chip::Shell::Engine::Root().Init();
     if (xTaskCreate(&ChipShellTask, "console", CONFIG_ESP_MATTER_CONSOLE_TASK_STACK, NULL, 5, NULL) != pdPASS) {
         ESP_LOGE(TAG, "Couldn't create console task");
         err = ESP_FAIL;

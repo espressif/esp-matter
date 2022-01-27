@@ -9,13 +9,11 @@
 #pragma once
 
 #include "esp_err.h"
+#include "sdkconfig.h"
 
+#if CONFIG_ENABLE_OTA_REQUESTOR
 /** Initialize the matter OTA Requestor
  *
  */
 void matter_ota_requestor_init(void);
-
-/** Register the matter OTA commands
- *
- */
-void esp_matter_console_ota_register_commands(void);
+#endif

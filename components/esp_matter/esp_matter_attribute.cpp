@@ -647,8 +647,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
 }
 
 EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                   EmberAfAttributeMetadata *matter_attribute,
-                                                   uint16_t manufacturer_code, uint8_t *buffer,
+                                                   EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
                                                    uint16_t max_read_length)
 {
     /* Get value */
@@ -678,8 +677,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
 }
 
 EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                    EmberAfAttributeMetadata *matter_attribute,
-                                                    uint16_t manufacturer_code, uint8_t *buffer)
+                                                    EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
 {
     /* Get value */
     int attribute_id = matter_attribute->attributeId;

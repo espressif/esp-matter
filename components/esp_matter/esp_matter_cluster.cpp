@@ -129,17 +129,15 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_requestor(esp_matter_endpoin
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
-    esp_matter_attribute_create(cluster, ZCL_DEFAULT_OTA_PROVIDER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+    esp_matter_attribute_create(cluster, ZCL_DEFAULT_OTA_PROVIDERS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_octet_str(config->default_ota_providers,
                                 sizeof(config->default_ota_providers), 0));
     esp_matter_attribute_create(cluster, ZCL_UPDATE_POSSIBLE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_bool(config->update_possible));
-    /* Not impplemented
     esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_enum8(config->update_state));
-    esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_PROGRESS_PROVIDERS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+    esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_PROGRESS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint8(config->update_state_progress));
-    */
 
     esp_matter_command_create(cluster, ZCL_ANNOUNCE_OTA_PROVIDER_COMMAND_ID, COMMAND_MASK_NONE,
                               esp_matter_command_callback_announce_ota_provider);
@@ -333,10 +331,10 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
-    esp_matter_attribute_create(cluster, ZCL_GROUPS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
-                                esp_matter_array(config->group_table, sizeof(config->group_table), 0));
-    esp_matter_attribute_create(cluster, ZCL_GROUPKEYS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+    esp_matter_attribute_create(cluster, ZCL_GROUP_KEY_MAP_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_array(config->group_key_map, sizeof(config->group_key_map), 0));
+    esp_matter_attribute_create(cluster, ZCL_GROUP_TABLE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_array(config->group_table, sizeof(config->group_table), 0));
     /* Not implemented
     esp_matter_attribute_create(cluster, ZCL_MAX_GROUPS_PER_FABRIC_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->max_groups_per_fabric));
