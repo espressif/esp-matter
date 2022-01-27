@@ -304,7 +304,7 @@ void ApplicationLauncherClusterAttributeListListAttributeFilter(TLV::TLVReader *
 void AudioOutputClusterAudioOutputListListAttributeFilter(TLV::TLVReader * tlvData, Callback::Cancelable * onSuccessCallback,
                                                           Callback::Cancelable * onFailureCallback)
 {
-    chip::app::DataModel::DecodableList<chip::app::Clusters::AudioOutput::Structs::AudioOutputInfo::DecodableType> list;
+    chip::app::DataModel::DecodableList<chip::app::Clusters::AudioOutput::Structs::OutputInfo::DecodableType> list;
     CHIP_ERROR err = Decode(*tlvData, list);
     if (err != CHIP_NO_ERROR)
     {
@@ -1048,7 +1048,7 @@ void GeneralDiagnosticsClusterAttributeListListAttributeFilter(TLV::TLVReader * 
 void GroupKeyManagementClusterGroupsListAttributeFilter(TLV::TLVReader * tlvData, Callback::Cancelable * onSuccessCallback,
                                                         Callback::Cancelable * onFailureCallback)
 {
-    chip::app::DataModel::DecodableList<chip::app::Clusters::GroupKeyManagement::Structs::GroupState::DecodableType> list;
+    chip::app::DataModel::DecodableList<chip::app::Clusters::GroupKeyManagement::Structs::GroupInfo::DecodableType> list;
     CHIP_ERROR err = Decode(*tlvData, list);
     if (err != CHIP_NO_ERROR)
     {
@@ -1238,7 +1238,7 @@ void LowPowerClusterAttributeListListAttributeFilter(TLV::TLVReader * tlvData, C
 void MediaInputClusterMediaInputListListAttributeFilter(TLV::TLVReader * tlvData, Callback::Cancelable * onSuccessCallback,
                                                         Callback::Cancelable * onFailureCallback)
 {
-    chip::app::DataModel::DecodableList<chip::app::Clusters::MediaInput::Structs::MediaInputInfo::DecodableType> list;
+    chip::app::DataModel::DecodableList<chip::app::Clusters::MediaInput::Structs::InputInfo::DecodableType> list;
     CHIP_ERROR err = Decode(*tlvData, list);
     if (err != CHIP_NO_ERROR)
     {
@@ -1772,7 +1772,7 @@ void TargetNavigatorClusterTargetNavigatorListListAttributeFilter(TLV::TLVReader
                                                                   Callback::Cancelable * onSuccessCallback,
                                                                   Callback::Cancelable * onFailureCallback)
 {
-    chip::app::DataModel::DecodableList<chip::app::Clusters::TargetNavigator::Structs::NavigateTargetTargetInfo::DecodableType>
+    chip::app::DataModel::DecodableList<chip::app::Clusters::TargetNavigator::Structs::TargetInfo::DecodableType>
         list;
     CHIP_ERROR err = Decode(*tlvData, list);
     if (err != CHIP_NO_ERROR)

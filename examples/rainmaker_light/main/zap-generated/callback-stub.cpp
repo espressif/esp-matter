@@ -184,21 +184,18 @@ EmberAfAttributeWritePermission __attribute__((weak))
 emberAfAllowNetworkWriteAttributeCallback(EndpointId endpoint,
                                           ClusterId clusterId,
                                           AttributeId attributeId, uint8_t mask,
-                                          uint16_t manufacturerCode,
                                           uint8_t *value, uint8_t type) {
   return EMBER_ZCL_ATTRIBUTE_WRITE_PERMISSION_ALLOW_WRITE_NORMAL; // Default
 }
 
 bool __attribute__((weak))
 emberAfAttributeReadAccessCallback(EndpointId endpoint, ClusterId clusterId,
-                                   uint16_t manufacturerCode,
                                    AttributeId attributeId) {
   return true;
 }
 
 bool __attribute__((weak))
 emberAfAttributeWriteAccessCallback(EndpointId endpoint, ClusterId clusterId,
-                                    uint16_t manufacturerCode,
                                     AttributeId attributeId) {
   return true;
 }
@@ -224,15 +221,14 @@ emberAfMessageSentCallback(const MessageSendDestination &destination,
 
 EmberAfStatus __attribute__((weak)) emberAfExternalAttributeReadCallback(
     EndpointId endpoint, ClusterId clusterId,
-    EmberAfAttributeMetadata *attributeMetadata, uint16_t manufacturerCode,
-    uint8_t *buffer, uint16_t maxReadLength) {
+    EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer,
+    uint16_t maxReadLength) {
   return EMBER_ZCL_STATUS_FAILURE;
 }
 
 EmberAfStatus __attribute__((weak)) emberAfExternalAttributeWriteCallback(
     EndpointId endpoint, ClusterId clusterId,
-    EmberAfAttributeMetadata *attributeMetadata, uint16_t manufacturerCode,
-    uint8_t *buffer) {
+    EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer) {
   return EMBER_ZCL_STATUS_FAILURE;
 }
 

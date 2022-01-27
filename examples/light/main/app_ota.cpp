@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "OTAImageProcessorImpl.h"
-#include "OTARequestorDriverImpl.h"
+#include "platform/GenericOTARequestorDriver.h"
 #include "app/clusters/ota-requestor/BDXDownloader.h"
 #include "app/clusters/ota-requestor/OTARequestor.h"
 #include "platform/OTARequestorInterface.h"
@@ -18,52 +18,20 @@
 using chip::BDXDownloader;
 using chip::OTAImageProcessorImpl;
 using chip::OTARequestor;
-using chip::OTARequestorDriverImpl;
+using chip::DeviceLayer::GenericOTARequestorDriver;
 using chip::Server;
-
-static const char *TAG = "esp_matter_ota";
+#if CONFIG_ENABLE_OTA_REQUESTOR 
 OTARequestor gRequestorCore;
-OTARequestorDriverImpl gRequestorUser;
+GenericOTARequestorDriver gRequestorUser;
 BDXDownloader gDownloader;
 OTAImageProcessorImpl gImageProcessor;
-
-static esp_err_t apply_image_handler(int argc, char **argv)
-{
-    chip::OTARequestor *requestor = reinterpret_cast<chip::OTARequestor *>(chip::GetRequestorInstance());
-    requestor->ApplyUpdate();
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_console_ota_handler(int argc, char **argv)
-{
-    if (argc == 1 && strncmp(argv[0], "apply", sizeof("apply")) == 0) {
-        return apply_image_handler(argc, argv);
-    } else {
-        ESP_LOGE(TAG, "Incorrect arguments");
-        return ESP_FAIL;
-    }
-    return ESP_OK;
-}
-
-void esp_matter_console_ota_register_commands()
-{
-    esp_matter_console_command_t command = {
-        .name = "ota",
-        .description = "ota command. Usage matter esp ota <ota_command>. OTA command: apply",
-        .handler = esp_matter_console_ota_handler,
-    };
-    esp_matter_console_add_command(&command);
-}
 
 void matter_ota_requestor_init(void)
 {
     chip::SetRequestorInstance(&gRequestorCore);
-    Server *server = &(Server::GetInstance());
-    gRequestorCore.SetServerInstance(server);
-    gRequestorCore.SetOtaRequestorDriver(&gRequestorUser);
+    gRequestorCore.Init(&(Server::GetInstance()), &gRequestorUser, &gDownloader);
     gImageProcessor.SetOTADownloader(&gDownloader);
     gDownloader.SetImageProcessorDelegate(&gImageProcessor);
-    gRequestorCore.SetBDXDownloader(&gDownloader);
-
-    esp_matter_console_ota_register_commands();
+    gRequestorUser.Init(&gRequestorCore, &gImageProcessor);
 }
+#endif
