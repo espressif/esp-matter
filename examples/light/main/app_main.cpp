@@ -22,6 +22,7 @@ static const char *TAG = "app_main";
 
 static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
 static esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
+int light_endpoint_id = 0;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -60,12 +61,14 @@ extern "C" void app_main()
     esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config,
                                                                                       ENDPOINT_MASK_NONE);
+    light_endpoint_id = esp_matter_endpoint_get_id(endpoint);
     /**
     These node and endpoint handles can be used to create and add other endpoints and other clusters to the endpoints.
     */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter device creation failed");
     }
+    ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
 
     /* Initialize driver */
     app_driver_init();

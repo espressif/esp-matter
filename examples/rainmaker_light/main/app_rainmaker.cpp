@@ -25,6 +25,7 @@
 #include <esp_matter_console.h>
 
 static const char *TAG = "app_rainmaker";
+extern int light_endpoint_id;
 
 #define DEFAULT_LIGHT_NAME "Light"
 
@@ -55,15 +56,15 @@ static void app_rainmaker_register_commands()
 
 static const char *app_rainmaker_get_device_name_from_id(int endpoint_id)
 {
-    if (endpoint_id == ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID) {
+    if (endpoint_id == light_endpoint_id) {
         return DEFAULT_LIGHT_NAME;
     }
     return NULL;
 }
 
-static const char *app_rainmaker_get_device_type_from_id(int endpoint_id)
+static const char *app_rainmaker_get_device_type_from_id(int device_type_id)
 {
-    if (endpoint_id == ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID) {
+    if (device_type_id == ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID) {
         return ESP_RMAKER_DEVICE_LIGHTBULB;
     }
     return NULL;
@@ -72,7 +73,7 @@ static const char *app_rainmaker_get_device_type_from_id(int endpoint_id)
 static int app_rainmaker_get_endpoint_id_from_name(const char *device_name)
 {
     if (strcmp(device_name, DEFAULT_LIGHT_NAME) == 0) {
-        return ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID;
+        return light_endpoint_id;
     }
     return 0;
 }
@@ -291,8 +292,13 @@ static void app_rainmaker_device_create()
 
         /* Proceed only if endpoint_id has been handled */
         if (device_name) {
-            const char *device_type = app_rainmaker_get_device_type_from_id(endpoint_id);
+            int device_type_id = esp_matter_endpoint_get_device_type_id(endpoint_id);
+            const char *device_type = app_rainmaker_get_device_type_from_id(device_type_id);
             esp_rmaker_device_t *device = esp_rmaker_device_create(device_name, device_type, NULL);
+            if (!device) {
+                ESP_LOGE(TAG, "Could not create rainmaker device");
+                continue;
+            }
             esp_rmaker_device_add_cb(device, write_cb, NULL);
             esp_rmaker_node_add_device(node, device);
 
