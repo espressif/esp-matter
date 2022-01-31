@@ -522,6 +522,16 @@ esp_matter_command_callback_t esp_matter_command_get_callback(esp_matter_command
     return current_command->callback;
 }
 
+int esp_matter_command_get_flags(esp_matter_command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return 0;
+    }
+    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
+    return current_command->flags;
+}
+
 esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags,
                                                     esp_matter_attr_val_t val)
 {

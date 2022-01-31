@@ -101,3 +101,5 @@ esp_matter_command_t *esp_matter_command_get_first(esp_matter_cluster_t *cluster
 esp_matter_command_t *esp_matter_command_get_next(esp_matter_command_t *command);
 int esp_matter_command_get_id(esp_matter_command_t *command);
 esp_matter_command_callback_t esp_matter_command_get_callback(esp_matter_command_t *command);
+int esp_matter_command_get_flags(esp_matter_command_t *command);
+esp_err_t esp_matter_command_set_custom_callback(esp_matter_command_custom_callback_t callback, void *priv_data);
