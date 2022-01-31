@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
@@ -20,12 +21,47 @@
 #include <app-common/zap-generated/attribute-id.h>
 #include <app-common/zap-generated/cluster-id.h>
 #include <app-common/zap-generated/command-id.h>
+#include <app-common/zap-generated/callbacks/PluginCallbacks.h>
+
+static const char *TAG = "esp_matter_cluster";
+
+void esp_matter_cluster_plugin_init_callback_common()
+{
+    ESP_LOGI(TAG, "Cluster plugin init common callback");
+    esp_matter_node_t *node = esp_matter_node_get();
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get_first(node);
+    while (endpoint) {
+        esp_matter_cluster_t *cluster = esp_matter_cluster_get_first(endpoint);
+        while (cluster) {
+            /* Plugin server init callback */
+            esp_matter_cluster_plugin_server_init_callback_t plugin_server_init_callback =
+                                                        esp_matter_cluster_get_plugin_server_init_callback(cluster);
+            if (plugin_server_init_callback) {
+                plugin_server_init_callback();
+            }
+            /* Plugin client init callback */
+            esp_matter_cluster_plugin_client_init_callback_t plugin_client_init_callback =
+                                                        esp_matter_cluster_get_plugin_client_init_callback(cluster);
+            if (plugin_client_init_callback) {
+                plugin_client_init_callback();
+            }
+            cluster = esp_matter_cluster_get_next(cluster);
+        }
+        endpoint = esp_matter_endpoint_get_next(endpoint);
+    }
+}
 
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_descriptor_config_t *config,
                                                            uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_DESCRIPTOR_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterDescriptorPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterDescriptorPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -48,6 +84,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_access_control(esp_matter_endpoi
     /* Not implemented
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ACCESS_CONTROL_CLUSTER_ID,
                                                               CLUSTER_MASK_SERVER);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterAcccessControlPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterAcccessControlPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -65,6 +107,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *end
                                                       esp_matter_cluster_basic_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_BASIC_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -103,6 +151,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_provider(esp_matter_endpoint
                                                              uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OTA_PROVIDER_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster,
+                                                           MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster,
+                                                           MatterOtaSoftwareUpdateProviderPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -126,6 +182,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_requestor(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OTA_REQUESTOR_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster,
+                                                           MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster,
+                                                           MatterOtaSoftwareUpdateRequestorPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -150,6 +214,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_commissioning(esp_matter
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GENERAL_COMMISSIONING_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGeneralCommissioningPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterGeneralCommissioningPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -184,6 +254,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_network_commissioning(esp_matter
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_NETWORK_COMMISSIONING_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterNetworkCommissioningPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterNetworkCommissioningPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -233,6 +309,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_diagnostics(esp_matter_e
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GENERAL_DIAGNOSTICS_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGeneralDiagnosticsPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterGeneralDiagnosticsPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -250,6 +332,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_administrator_commissioning(esp_
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ADMINISTRATOR_COMMISSIONING_CLUSTER_ID,
                                                               flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster,
+                                                           MatterAdministratorCommissioningPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster,
+                                                           MatterAdministratorCommissioningPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -275,6 +365,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_operational_credentials(esp_matt
                                                         uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_OPERATIONAL_CREDENTIALS_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster,
+                                                           MatterOperationalCredentialsPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster,
+                                                           MatterOperationalCredentialsPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -328,6 +426,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
                                                             uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GROUP_KEY_MANAGEMENT_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGroupKeyManagementPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterGroupKeyManagementPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -362,6 +466,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_identify(esp_matter_endpoint_t *
                                                          esp_matter_cluster_identify_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_IDENTIFY_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterIdentifyPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterIdentifyPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -384,6 +494,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_groups(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_groups_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_GROUPS_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterGroupsPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterGroupsPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -418,6 +534,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_scenes(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_scenes_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_SCENES_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterScenesPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterScenesPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -466,6 +588,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_on_off_config_t *config, uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ON_OFF_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterOnOffPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterOnOffPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -483,6 +611,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_LEVEL_CONTROL_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterLevelControlPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterLevelControlPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
@@ -515,6 +649,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
                                                               uint8_t flags)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_COLOR_CONTROL_CLUSTER_ID, flags);
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterColorControlPluginServerInitCallback);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterColorControlPluginClientInitCallback);
+    }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
