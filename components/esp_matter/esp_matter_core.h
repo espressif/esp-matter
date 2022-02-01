@@ -16,9 +16,11 @@
 
 #include <esp_err.h>
 #include <esp_matter_attribute.h>
-#include <esp_matter_command.h>
+#include <app/InteractionModelEngine.h>
 
 using chip::DeviceLayer::ChipDeviceEvent;
+using chip::app::ConcreteCommandPath;
+using chip::TLV::TLVReader;
 
 typedef size_t esp_matter_handle_t;
 typedef esp_matter_handle_t esp_matter_node_t;
@@ -45,6 +47,12 @@ typedef void (*esp_matter_event_callback_t)(const ChipDeviceEvent *event, intptr
 typedef void (*esp_matter_cluster_plugin_server_init_callback_t)();
 
 typedef void (*esp_matter_cluster_plugin_client_init_callback_t)();
+
+typedef esp_err_t (*esp_matter_command_custom_callback_t)(int endpoint_id, int cluster_id, int command_id,
+                                                          TLVReader &tlv_data, void *priv_data);
+
+typedef void (*esp_matter_command_callback_t)(void *command_obj, const ConcreteCommandPath &command_path,
+                                              TLVReader &tlv_data);
 
 /** Initializing APIs */
 esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data);

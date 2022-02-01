@@ -183,16 +183,11 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_provider(esp_matter_endpoint
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->cluster_revision));
 
-    esp_matter_command_create(cluster, ZCL_QUERY_IMAGE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_query_image);
-    esp_matter_command_create(cluster, ZCL_QUERY_IMAGE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_query_image_response);
-    esp_matter_command_create(cluster, ZCL_APPLY_UPDATE_REQUEST_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_apply_update_request);
-    esp_matter_command_create(cluster, ZCL_APPLY_UPDATE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_apply_update_response);
-    esp_matter_command_create(cluster, ZCL_NOTIFY_UPDATE_APPLIED_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_notify_update_applied);
+    esp_matter_command_create_query_image(cluster);                              
+    esp_matter_command_create_query_image_response(cluster);                              
+    esp_matter_command_create_apply_update_request(cluster);                              
+    esp_matter_command_create_apply_update_response(cluster);                              
+    esp_matter_command_create_notify_update_applied(cluster);                              
 
     return cluster;
 }
@@ -228,8 +223,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_requestor(esp_matter_endpoin
     esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_PROGRESS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint8(config->update_state_progress));
 
-    esp_matter_command_create(cluster, ZCL_ANNOUNCE_OTA_PROVIDER_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_announce_ota_provider);
+    esp_matter_command_create_announce_ota_provider(cluster);                              
 
     return cluster;
 }
@@ -263,18 +257,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_commissioning(esp_matter
     esp_matter_attribute_create(cluster, ZCL_LOCATIONCAPABILITY_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_enum8(config->location_capability));
 
-    esp_matter_command_create(cluster, ZCL_ARM_FAIL_SAFE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_arm_fail_safe);
-    esp_matter_command_create(cluster, ZCL_ARM_FAIL_SAFE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_arm_fail_safe_response);
-    esp_matter_command_create(cluster, ZCL_SET_REGULATORY_CONFIG_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_set_regulatory_config);
-    esp_matter_command_create(cluster, ZCL_SET_REGULATORY_CONFIG_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_set_regulatory_config_response);
-    esp_matter_command_create(cluster, ZCL_COMMISSIONING_COMPLETE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_commissioning_complete);
-    esp_matter_command_create(cluster, ZCL_COMMISSIONING_COMPLETE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_commissioning_complete_response);
+    esp_matter_command_create_arm_fail_safe(cluster);                              
+    esp_matter_command_create_arm_fail_safe_response(cluster);                              
+    esp_matter_command_create_set_regulatory_config(cluster);                              
+    esp_matter_command_create_set_regulatory_config_response(cluster);                              
+    esp_matter_command_create_commissioning_complete(cluster);                              
+    esp_matter_command_create_commissioning_complete_response(cluster);                              
 
     return cluster;
 }
@@ -317,24 +305,15 @@ esp_matter_cluster_t *esp_matter_cluster_create_network_commissioning(esp_matter
     esp_matter_attribute_create(cluster, ZCL_LAST_CONNECT_ERROR_VALUE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint32(config->last_connect_error_value));
 
-    esp_matter_command_create(cluster, ZCL_SCAN_NETWORKS_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_scan_networks);
-    esp_matter_command_create(cluster, ZCL_SCAN_NETWORKS_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_scan_networks_response);
-    esp_matter_command_create(cluster, ZCL_ADD_OR_UPDATE_WI_FI_NETWORK_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_or_update_wifi_network);
-    esp_matter_command_create(cluster, ZCL_ADD_OR_UPDATE_THREAD_NETWORK_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_or_update_thread_network);
-    esp_matter_command_create(cluster, ZCL_REMOVE_NETWORK_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_network);
-    esp_matter_command_create(cluster, ZCL_NETWORK_CONFIG_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_network_config_response);
-    esp_matter_command_create(cluster, ZCL_CONNECT_NETWORK_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_connect_network);
-    esp_matter_command_create(cluster, ZCL_CONNECT_NETWORK_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_connect_network_response);
-    esp_matter_command_create(cluster, ZCL_REORDER_NETWORK_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_reorder_network);
+    esp_matter_command_create_scan_networks(cluster);                              
+    esp_matter_command_create_scan_networks_response(cluster);                              
+    esp_matter_command_create_add_or_update_wifi_network(cluster);                              
+    esp_matter_command_create_add_or_update_thread_network(cluster);                              
+    esp_matter_command_create_remove_network(cluster);                              
+    esp_matter_command_create_network_config_response(cluster);                              
+    esp_matter_command_create_connect_network(cluster);                              
+    esp_matter_command_create_connect_network_response(cluster);                              
+    esp_matter_command_create_reorder_network(cluster);                              
 
     return cluster;
 }
@@ -395,12 +374,9 @@ esp_matter_cluster_t *esp_matter_cluster_create_administrator_commissioning(esp_
     esp_matter_attribute_create(cluster, ZCL_ADMIN_VENDOR_ID_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->admin_vendor_id));
 
-    esp_matter_command_create(cluster, ZCL_OPEN_COMMISSIONING_WINDOW_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_open_commissioning_window);
-    esp_matter_command_create(cluster, ZCL_OPEN_BASIC_COMMISSIONING_WINDOW_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_open_basic_commissioning_window);
-    esp_matter_command_create(cluster, ZCL_REVOKE_COMMISSIONING_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_revoke_commissioning);
+    esp_matter_command_create_open_commissioning_window(cluster);                              
+    esp_matter_command_create_open_basic_commissioning_window(cluster);                              
+    esp_matter_command_create_revoke_commissioning(cluster);                              
 
     return cluster;
 }
@@ -442,31 +418,19 @@ esp_matter_cluster_t *esp_matter_cluster_create_operational_credentials(esp_matt
     esp_matter_attribute_create(cluster, ZCL_CURRENT_FABRIC_INDEX_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint8(config->current_fabric_index));
 
-    esp_matter_command_create(cluster, ZCL_ATTESTATION_REQUEST_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_attestation_request);
-    esp_matter_command_create(cluster, ZCL_ATTESTATION_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_attestation_response);
-    esp_matter_command_create(cluster, ZCL_CERTIFICATE_CHAIN_REQUEST_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_certificate_chain_request);
-    esp_matter_command_create(cluster, ZCL_CERTIFICATE_CHAIN_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_certificate_chain_response);
-    esp_matter_command_create(cluster, ZCL_OP_CSR_REQUEST_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_csr_request);
-    esp_matter_command_create(cluster, ZCL_OP_CSR_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_csr_response);
-    esp_matter_command_create(cluster, ZCL_ADD_NOC_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_add_noc);
-    esp_matter_command_create(cluster, ZCL_UPDATE_NOC_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_update_noc);
-    esp_matter_command_create(cluster, ZCL_NOC_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_noc_response);
-    esp_matter_command_create(cluster, ZCL_UPDATE_FABRIC_LABEL_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_update_fabric_label);
-    esp_matter_command_create(cluster, ZCL_REMOVE_FABRIC_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_fabric);
-    esp_matter_command_create(cluster, ZCL_ADD_TRUSTED_ROOT_CERTIFICATE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_trusted_root_certificate);
-    esp_matter_command_create(cluster, ZCL_REMOVE_TRUSTED_ROOT_CERTIFICATE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_trusted_root_certificate);
+    esp_matter_command_create_attestation_request(cluster);                              
+    esp_matter_command_create_attestation_response(cluster);                              
+    esp_matter_command_create_certificate_chain_request(cluster);                              
+    esp_matter_command_create_certificate_chain_response(cluster);                              
+    esp_matter_command_create_csr_request(cluster);                              
+    esp_matter_command_create_csr_response(cluster);                              
+    esp_matter_command_create_add_noc(cluster);    
+    esp_matter_command_create_update_noc(cluster);                              
+    esp_matter_command_create_noc_response(cluster);                              
+    esp_matter_command_create_update_fabric_label(cluster);                              
+    esp_matter_command_create_remove_fabric(cluster);                              
+    esp_matter_command_create_add_trusted_root_certificate(cluster);                              
+    esp_matter_command_create_remove_trusted_root_certificate(cluster);                              
 
     return cluster;
 }
@@ -500,18 +464,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
     esp_matter_attribute_create(cluster, ZCL_MAX_GROUP_KEYS_PER_FABRIC_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint16(config->max_group_keys_per_fabric));
 
-    esp_matter_command_create(cluster, ZCL_KEY_SET_WRITE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_write);
-    esp_matter_command_create(cluster, ZCL_KEY_SET_READ_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_read);
-    esp_matter_command_create(cluster, ZCL_KEY_SET_READ_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_read_response);
-    esp_matter_command_create(cluster, ZCL_KEY_SET_REMOVE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_remove);
-    esp_matter_command_create(cluster, ZCL_KEY_SET_READ_ALL_INDICES_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_read_all_indices);
-    esp_matter_command_create(cluster, ZCL_KEY_SET_READ_ALL_INDICES_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_key_set_read_all_indices_response);
+    esp_matter_command_create_key_set_write(cluster);                              
+    esp_matter_command_create_key_set_read(cluster);                              
+    esp_matter_command_create_key_set_read_response(cluster);                              
+    esp_matter_command_create_key_set_remove(cluster);                              
+    esp_matter_command_create_key_set_read_all_indices(cluster);                              
+    esp_matter_command_create_key_set_read_all_indices_response(cluster);                              
     */
 
     return cluster;
@@ -540,12 +498,9 @@ esp_matter_cluster_t *esp_matter_cluster_create_identify(esp_matter_endpoint_t *
     esp_matter_attribute_create(cluster, ZCL_IDENTIFY_TYPE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_uint8(config->identify_type));
 
-    esp_matter_command_create(cluster, ZCL_IDENTIFY_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_identify);
-    esp_matter_command_create(cluster, ZCL_IDENTIFY_QUERY_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_identify_query);
-    esp_matter_command_create(cluster, ZCL_IDENTIFY_QUERY_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_identify_query_response);
+    esp_matter_command_create_identify(cluster);                              
+    esp_matter_command_create_identify_query(cluster);                              
+    esp_matter_command_create_identify_query_response(cluster);                              
 
     return cluster;
 }
@@ -571,26 +526,16 @@ esp_matter_cluster_t *esp_matter_cluster_create_groups(esp_matter_endpoint_t *en
     esp_matter_attribute_create(cluster, ZCL_GROUP_NAME_SUPPORT_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_bitmap8(config->name_support));
 
-    esp_matter_command_create(cluster, ZCL_ADD_GROUP_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_group);
-    esp_matter_command_create(cluster, ZCL_VIEW_GROUP_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_view_group);
-    esp_matter_command_create(cluster, ZCL_GET_GROUP_MEMBERSHIP_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_get_group_membership);
-    esp_matter_command_create(cluster, ZCL_REMOVE_GROUP_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_group);
-    esp_matter_command_create(cluster, ZCL_REMOVE_ALL_GROUPS_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_all_groups);
-    esp_matter_command_create(cluster, ZCL_ADD_GROUP_IF_IDENTIFYING_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_group_if_identifying);
-    esp_matter_command_create(cluster, ZCL_ADD_GROUP_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_group_response);
-    esp_matter_command_create(cluster, ZCL_VIEW_GROUP_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_view_group_response);
-    esp_matter_command_create(cluster, ZCL_GET_GROUP_MEMBERSHIP_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_get_group_membership_response);
-    esp_matter_command_create(cluster, ZCL_REMOVE_GROUP_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_group_response);
+    esp_matter_command_create_add_group(cluster);                              
+    esp_matter_command_create_view_group(cluster);                              
+    esp_matter_command_create_get_group_membership(cluster);                              
+    esp_matter_command_create_remove_group(cluster);                              
+    esp_matter_command_create_remove_all_groups(cluster);                              
+    esp_matter_command_create_add_group_if_identifying(cluster);                              
+    esp_matter_command_create_add_group_response(cluster);                              
+    esp_matter_command_create_view_group_response(cluster);                              
+    esp_matter_command_create_get_group_membership_response(cluster);                              
+    esp_matter_command_create_remove_group_response(cluster);                              
 
     return cluster;
 }
@@ -624,32 +569,19 @@ esp_matter_cluster_t *esp_matter_cluster_create_scenes(esp_matter_endpoint_t *en
     esp_matter_attribute_create(cluster, ZCL_SCENE_NAME_SUPPORT_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_bitmap8(config->name_support));
 
-    esp_matter_command_create(cluster, ZCL_ADD_SCENE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_scene);
-    esp_matter_command_create(cluster, ZCL_VIEW_SCENE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_view_scene);
-    esp_matter_command_create(cluster, ZCL_REMOVE_SCENE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_scene);
-    esp_matter_command_create(cluster, ZCL_REMOVE_ALL_SCENES_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_all_scenes);
-    esp_matter_command_create(cluster, ZCL_STORE_SCENE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_store_scene);
-    esp_matter_command_create(cluster, ZCL_RECALL_SCENE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_recall_scene);
-    esp_matter_command_create(cluster, ZCL_GET_SCENE_MEMBERSHIP_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_get_scene_membership);
-    esp_matter_command_create(cluster, ZCL_ADD_SCENE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_add_scene_response);
-    esp_matter_command_create(cluster, ZCL_VIEW_SCENE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_view_scene_response);
-    esp_matter_command_create(cluster, ZCL_REMOVE_SCENE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_scene_response);
-    esp_matter_command_create(cluster, ZCL_REMOVE_ALL_SCENES_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_remove_all_scenes_response);
-    esp_matter_command_create(cluster, ZCL_STORE_SCENE_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_store_scene_response);
-    esp_matter_command_create(cluster, ZCL_GET_SCENE_MEMBERSHIP_RESPONSE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_get_scene_membership_response);
+    esp_matter_command_create_add_scene(cluster);                              
+    esp_matter_command_create_view_scene(cluster);                              
+    esp_matter_command_create_remove_scene(cluster);                              
+    esp_matter_command_create_remove_all_scenes(cluster);                              
+    esp_matter_command_create_store_scene(cluster);                              
+    esp_matter_command_create_recall_scene(cluster);                              
+    esp_matter_command_create_get_scene_membership(cluster);                              
+    esp_matter_command_create_add_scene_response(cluster);                              
+    esp_matter_command_create_view_scene_response(cluster);                              
+    esp_matter_command_create_remove_scene_response(cluster);                              
+    esp_matter_command_create_remove_all_scenes_response(cluster);                              
+    esp_matter_command_create_store_scene_response(cluster);                              
+    esp_matter_command_create_get_scene_membership_response(cluster);                              
 
     return cluster;
 }
@@ -674,9 +606,9 @@ esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *en
                                 esp_matter_uint16(config->cluster_revision));
     esp_matter_attribute_create(cluster, ZCL_ON_OFF_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE, esp_matter_bool(config->on_off));
 
-    esp_matter_command_create(cluster, ZCL_OFF_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_off);
-    esp_matter_command_create(cluster, ZCL_ON_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_on);
-    esp_matter_command_create(cluster, ZCL_TOGGLE_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_toggle);
+    esp_matter_command_create_off(cluster);    
+    esp_matter_command_create_on(cluster);    
+    esp_matter_command_create_toggle(cluster);    
 
     return cluster;
 }
@@ -707,19 +639,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
     esp_matter_attribute_create(cluster, ZCL_OPTIONS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_bitmap8(config->options));
 
-    esp_matter_command_create(cluster, ZCL_MOVE_TO_LEVEL_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_to_level);
-    esp_matter_command_create(cluster, ZCL_MOVE_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_move);
-    esp_matter_command_create(cluster, ZCL_STEP_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_step);
-    esp_matter_command_create(cluster, ZCL_STOP_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_stop);
-    esp_matter_command_create(cluster, ZCL_MOVE_TO_LEVEL_WITH_ON_OFF_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_to_level_with_on_off);
-    esp_matter_command_create(cluster, ZCL_MOVE_WITH_ON_OFF_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_with_on_off);
-    esp_matter_command_create(cluster, ZCL_STEP_WITH_ON_OFF_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_step_with_on_off);
-    esp_matter_command_create(cluster, ZCL_STOP_WITH_ON_OFF_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_stop_with_on_off);
+    esp_matter_command_create_move_to_level(cluster);                              
+    esp_matter_command_create_move(cluster);    
+    esp_matter_command_create_step(cluster);    
+    esp_matter_command_create_stop(cluster);    
+    esp_matter_command_create_move_to_level_with_on_off(cluster);                              
+    esp_matter_command_create_move_with_on_off(cluster);                              
+    esp_matter_command_create_step_with_on_off(cluster);                              
+    esp_matter_command_create_stop_with_on_off(cluster);                              
 
     return cluster;
 }
@@ -758,20 +685,13 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
     esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_COLOR_CAPABILITIES_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_bitmap16(config->color_capabilities));
 
-    esp_matter_command_create(cluster, ZCL_MOVE_TO_HUE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_to_hue);
-    esp_matter_command_create(cluster, ZCL_MOVE_HUE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_hue);
-    esp_matter_command_create(cluster, ZCL_STEP_HUE_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_step_hue);
-    esp_matter_command_create(cluster, ZCL_MOVE_TO_SATURATION_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_to_saturation);
-    esp_matter_command_create(cluster, ZCL_MOVE_SATURATION_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_saturation);
-    esp_matter_command_create(cluster, ZCL_STEP_SATURATION_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_step_saturation);
-    esp_matter_command_create(cluster, ZCL_MOVE_TO_HUE_AND_SATURATION_COMMAND_ID, COMMAND_MASK_NONE,
-                              esp_matter_command_callback_move_to_hue_and_saturation);
+    esp_matter_command_create_move_to_hue(cluster);                              
+    esp_matter_command_create_move_hue(cluster);                              
+    esp_matter_command_create_step_hue(cluster);                              
+    esp_matter_command_create_move_to_saturation(cluster);                              
+    esp_matter_command_create_move_saturation(cluster);                              
+    esp_matter_command_create_step_saturation(cluster);                              
+    esp_matter_command_create_move_to_hue_and_saturation(cluster);                              
 
     return cluster;
 }
