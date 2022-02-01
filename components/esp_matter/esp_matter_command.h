@@ -19,8 +19,6 @@
 using chip::app::ConcreteCommandPath;
 using chip::TLV::TLVReader;
 
-#define COMMAND_MASK_CUSTOM 0x80
-
 typedef esp_err_t (*esp_matter_command_custom_callback_t)(int endpoint_id, int cluster_id, int command_id,
                                                           TLVReader &tlv_data, void *priv_data);
 

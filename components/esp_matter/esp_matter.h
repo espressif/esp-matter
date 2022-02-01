@@ -32,3 +32,12 @@ application.
 
 #include <app/server/Dnssd.h>
 #include <platform/CHIPDeviceLayer.h>
+
+#define ATTRIBUTE_MASK_NONE 0x0
+#define COMMAND_MASK_NONE 0x0
+#define CLUSTER_MASK_NONE 0x0
+#define ENDPOINT_MASK_NONE 0x0
+
+#define ENDPOINT_MASK_DELETABLE 0x1
+
+#define COMMAND_MASK_CUSTOM 0x80

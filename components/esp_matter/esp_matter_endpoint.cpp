@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_endpoint.h>
 
+static const char *TAG = "esp_matter_endpoint";
+
 esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_root_node_config_t *config)
+                                                            esp_matter_endpoint_root_node_config_t *config,
+                                                            uint8_t flags)
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_ROOT_NODE_ENDPOINT_ID);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_ROOT_NODE_ENDPOINT_ID,
+                                                                     flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
 
     esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_access_control(endpoint, &(config->access_control), CLUSTER_MASK_SERVER);
@@ -38,9 +47,15 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *n
 }
 
 esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_color_dimmable_light_config_t *config)
+                                                            esp_matter_endpoint_color_dimmable_light_config_t *config,
+                                                            uint8_t flags)
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID,
+                                                                     flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
 
     esp_matter_cluster_create_identify(endpoint, &(config->identify), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), CLUSTER_MASK_SERVER);
@@ -56,11 +71,15 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data)
 {
-    esp_matter_node_t *node = esp_matter_node_create_raw();
-
     esp_matter_attribute_callback_set(callback, priv_data);
 
-    esp_matter_endpoint_create_root_node(node, &(config->root_node));
+    esp_matter_node_t *node = esp_matter_node_create_raw();
+    if (!node) {
+        ESP_LOGE(TAG, "Could not create node");
+        return NULL;
+    }
+
+    esp_matter_endpoint_create_root_node(node, &(config->root_node), ENDPOINT_MASK_NONE);
 
     return node;
 }

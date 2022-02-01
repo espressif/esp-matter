@@ -17,10 +17,6 @@
 #include <esp_matter_core.h>
 #include <stdint.h>
 
-#define ATTRIBUTE_MASK_NONE 0
-#define COMMAND_MASK_NONE 0
-#define CLUSTER_MASK_NONE 0
-
 #define CLUSTER_CONFIG_DESCRIPTOR_DEFAULT() \
     {                                       \
         .cluster_revision = 1,              \

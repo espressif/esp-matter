@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <esp_log.h>
+#include <esp_matter.h>
 #include <esp_matter_command.h>
 #include <esp_matter_core.h>
 

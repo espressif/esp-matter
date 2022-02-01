@@ -80,9 +80,11 @@ typedef struct esp_matter_node_config {
 } esp_matter_node_config_t;
 
 esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_root_node_config_t *config);
+                                                            esp_matter_endpoint_root_node_config_t *config,
+                                                            uint8_t flags);
 esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_color_dimmable_light_config_t *config);
+                                                            esp_matter_endpoint_color_dimmable_light_config_t *config,
+                                                            uint8_t flags);
 
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data);
