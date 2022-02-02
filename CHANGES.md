@@ -53,7 +53,7 @@ low level APIs. New device types (endpoints) and supporting clusters can be adde
 by looking at the existing APIs for reference.
 ```
 esp_matter_node_t *esp_matter_node_create_raw();
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id, uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint, int cluster_id, uint8_t flags);
 esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val);
 esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, int command_id, uint8_t flags, esp_matter_command_callback_t callback);

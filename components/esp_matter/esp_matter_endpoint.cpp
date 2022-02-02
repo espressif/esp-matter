@@ -22,12 +22,12 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *n
                                                             esp_matter_endpoint_root_node_config_t *config,
                                                             uint8_t flags)
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_ROOT_NODE_ENDPOINT_ID,
-                                                                     flags);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
+    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID);
 
     esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_access_control(endpoint, &(config->access_control), CLUSTER_MASK_SERVER);
@@ -50,12 +50,12 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
                                                             esp_matter_endpoint_color_dimmable_light_config_t *config,
                                                             uint8_t flags)
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID,
-                                                                     flags);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
+    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID);
 
     esp_matter_cluster_create_identify(endpoint, &(config->identify), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), CLUSTER_MASK_SERVER);

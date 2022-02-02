@@ -17,6 +17,7 @@
 #include <app_qrcode.h>
 
 static const char *TAG = "app_main";
+int light_endpoint_id = 0;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -53,6 +54,7 @@ extern "C" void app_main()
 
     /* Initialize matter callback */
     esp_matter_attribute_callback_set(app_attribute_update_cb, NULL);
+    light_endpoint_id = 1;      /* This is from zap-generated/endpoint_config.h */
 
     /* Initialize driver */
     app_driver_init();

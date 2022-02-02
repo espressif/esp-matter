@@ -66,6 +66,7 @@ typedef struct esp_matter_cluster {
 
 typedef struct esp_matter_endpoint {
     int endpoint_id;
+    int device_type_id;
     uint8_t flags;
     _esp_matter_cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
@@ -74,6 +75,7 @@ typedef struct esp_matter_endpoint {
 
 typedef struct esp_matter_node {
     _esp_matter_endpoint_t *endpoint_list;
+    int current_endpoint_id;
 } _esp_matter_node_t;
 
 static _esp_matter_node_t *node = NULL;
@@ -213,7 +215,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
 
     /* Add Endpoint */
     int endpoint_index = esp_matter_endpoint_get_next_index();
-    EmberAfStatus err = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, 0, 1);
+    EmberAfStatus err = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, current_endpoint->device_type_id, 1);
     if (err != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
     }
@@ -579,6 +581,23 @@ int esp_matter_command_get_flags(esp_matter_command_t *command)
     return current_command->flags;
 }
 
+esp_err_t esp_matter_endpoint_set_device_type_id(esp_matter_endpoint_t *endpoint, int device_type_id)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    current_endpoint->device_type_id = device_type_id;
+    return ESP_OK;
+}
+
+int esp_matter_endpoint_get_device_type_id(int endpoint_id)
+{
+    int device_type_id = emberAfGetDeviceIdForEndpoint(endpoint_id);
+    return device_type_id;
+}
+
 static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
 {
     if (!attribute) {
@@ -799,7 +818,7 @@ esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoin
     return ESP_OK;
 }
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id, uint8_t flags)
+esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, uint8_t flags)
 {
     /* Find */
     if (!node) {
@@ -807,15 +826,6 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, i
         return NULL;
     }
     _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
-    if (endpoint_id == kInvalidEndpointId) {
-        ESP_LOGE(TAG, "Invalid endpoint_id: 0x%04X", endpoint_id);
-        return NULL;
-    }
-    esp_matter_endpoint_t *existing_endpoint = esp_matter_endpoint_get(node, endpoint_id);
-    if (existing_endpoint) {
-        ESP_LOGE(TAG, "Endpoint with id 0x%04X already exists", endpoint_id);
-        return NULL;
-    }
 
     /* Allocate */
     _esp_matter_endpoint_t *endpoint = (_esp_matter_endpoint_t *)calloc(1, sizeof(_esp_matter_endpoint_t));
@@ -825,7 +835,8 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, i
     }
 
     /* Set */
-    endpoint->endpoint_id = endpoint_id;
+    endpoint->endpoint_id = current_node->current_endpoint_id++;
+    endpoint->device_type_id = 0xFFFF;
     endpoint->flags = flags;
 
     /* Add */

@@ -55,12 +55,14 @@ esp_matter_node_t *esp_matter_node_create_raw();
 esp_matter_node_t *esp_matter_node_get();
 
 /** Endpoint APIs */
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, int endpoint_id, uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, uint8_t flags);
 esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoint_t *endpoint);
 esp_matter_endpoint_t *esp_matter_endpoint_get(esp_matter_node_t *node, int endpoint_id);
 esp_matter_endpoint_t *esp_matter_endpoint_get_first(esp_matter_node_t *node);
 esp_matter_endpoint_t *esp_matter_endpoint_get_next(esp_matter_endpoint_t *endpoint);
 int esp_matter_endpoint_get_id(esp_matter_endpoint_t *endpoint);
+esp_err_t esp_matter_endpoint_set_device_type_id(esp_matter_endpoint_t *endpoint, int device_type_id);
+int esp_matter_endpoint_get_device_type_id(int endpoint_id);
 /* Endpoint enable: It only needs to be called for endpoints created after calling esp_matter_start(). It should be
  * called after all the clusters, attributes and commands have been added to the created endpoint. */
 esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint);

@@ -17,8 +17,8 @@
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 
-#define ESP_MATTER_ROOT_NODE_ENDPOINT_ID 0x0000
-#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID 0x0001
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x016
+#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x102
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \

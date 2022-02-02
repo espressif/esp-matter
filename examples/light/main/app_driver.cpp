@@ -18,6 +18,7 @@
 #include <app_driver.h>
 
 static const char *TAG = "app_driver";
+extern int light_endpoint_id;
 
 #define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
@@ -103,7 +104,7 @@ static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t val)
 esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
 {
     esp_err_t err = ESP_OK;
-    if (endpoint_id == ESP_MATTER_COLOR_DIMMABLE_LIGHT_ENDPOINT_ID) {
+    if (endpoint_id == light_endpoint_id) {
         if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
             if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
                 err = app_driver_light_set_power(val);
