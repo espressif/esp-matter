@@ -17,6 +17,7 @@
 #include <esp_err.h>
 #include <esp_matter_attribute.h>
 #include <app/InteractionModelEngine.h>
+#include <app/util/af-types.h>
 
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::app::ConcreteCommandPath;
@@ -48,11 +49,14 @@ typedef void (*esp_matter_cluster_plugin_server_init_callback_t)();
 
 typedef void (*esp_matter_cluster_plugin_client_init_callback_t)();
 
+typedef void (*esp_matter_cluster_function_generic_t)();
+
 typedef esp_err_t (*esp_matter_command_custom_callback_t)(int endpoint_id, int cluster_id, int command_id,
                                                           TLVReader &tlv_data, void *priv_data);
 
 typedef void (*esp_matter_command_callback_t)(void *command_obj, const ConcreteCommandPath &command_path,
                                               TLVReader &tlv_data);
+
 
 /** Initializing APIs */
 esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data);
@@ -89,6 +93,9 @@ esp_matter_cluster_plugin_server_init_callback_t esp_matter_cluster_get_plugin_s
                                                                                         esp_matter_cluster_t *cluster);
 esp_matter_cluster_plugin_client_init_callback_t esp_matter_cluster_get_plugin_client_init_callback(
                                                                                         esp_matter_cluster_t *cluster);
+esp_err_t esp_matter_cluster_add_function_list(esp_matter_cluster_t *cluster,
+                                               const esp_matter_cluster_function_generic_t *function_list,
+                                               int function_flags);
 
 /** Attribute APIs */
 esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags,

@@ -56,7 +56,7 @@ typedef struct esp_matter_command {
 typedef struct esp_matter_cluster {
     int cluster_id;
     uint8_t flags;
-    // const EmberAfGenericClusterFunction *function_list;
+    const esp_matter_cluster_function_generic_t *function_list;
     esp_matter_cluster_plugin_server_init_callback_t plugin_server_init_callback;
     esp_matter_cluster_plugin_client_init_callback_t plugin_client_init_callback;
     _esp_matter_attribute_t *attribute_list;
@@ -203,7 +203,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         matter_clusters[cluster_index].attributes = matter_attributes;
         matter_clusters[cluster_index].attributeCount = attribute_count;
         matter_clusters[cluster_index].mask = cluster->flags;
-        // matter_clusters[cluster_index].functions = function_list;
+        matter_clusters[cluster_index].functions = (EmberAfGenericClusterFunction *)cluster->function_list;
 
         endpoint_type->endpointSize += matter_clusters[cluster_index].clusterSize;
         cluster = cluster->next;
@@ -538,6 +538,20 @@ esp_matter_cluster_plugin_client_init_callback_t esp_matter_cluster_get_plugin_c
     }
     _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
     return current_cluster->plugin_client_init_callback;
+}
+
+esp_err_t esp_matter_cluster_add_function_list(esp_matter_cluster_t *cluster,
+                                               const esp_matter_cluster_function_generic_t *function_list,
+                                               int function_flags)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
+    current_cluster->function_list = function_list;
+    current_cluster->flags |= function_flags;
+    return ESP_OK;
 }
 
 esp_matter_attr_val_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute)
