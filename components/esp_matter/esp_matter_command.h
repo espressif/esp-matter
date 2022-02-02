@@ -14,192 +14,92 @@
 
 #pragma once
 
-#include <app/InteractionModelEngine.h>
+#include <esp_matter.h>
 
-using chip::app::ConcreteCommandPath;
-using chip::TLV::TLVReader;
-
-typedef esp_err_t (*esp_matter_command_custom_callback_t)(int endpoint_id, int cluster_id, int command_id,
-                                                          TLVReader &tlv_data, void *priv_data);
-
-typedef void (*esp_matter_command_callback_t)(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-
-void esp_matter_command_callback_key_set_write(void *command_obj, const ConcreteCommandPath &command_path,
-                                               TLVReader &tlv_data);
-void esp_matter_command_callback_key_set_read(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_key_set_remove(void *command_obj, const ConcreteCommandPath &command_path,
-                                                TLVReader &tlv_data);
-void esp_matter_command_callback_key_set_read_all_indices(void *command_obj, const ConcreteCommandPath &command_path,
-                                                          TLVReader &tlv_data);
-void esp_matter_command_callback_arm_fail_safe(void *command_obj, const ConcreteCommandPath &command_path,
-                                               TLVReader &tlv_data);
-void esp_matter_command_callback_set_regulatory_config(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_commissioning_complete(void *command_obj, const ConcreteCommandPath &command_path,
-                                                        TLVReader &tlv_data);
-void esp_matter_command_callback_scan_networks(void *command_obj, const ConcreteCommandPath &command_path,
-                                               TLVReader &tlv_data);
-void esp_matter_command_callback_add_or_update_wifi_network(void *command_obj, const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data);
-void esp_matter_command_callback_add_or_update_thread_network(void *command_obj,
-                                                              const ConcreteCommandPath &command_path,
-                                                              TLVReader &tlv_data);
-void esp_matter_command_callback_remove_network(void *command_obj, const ConcreteCommandPath &command_path,
-                                                TLVReader &tlv_data);
-void esp_matter_command_callback_connect_network(void *command_obj, const ConcreteCommandPath &command_path,
-                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_reorder_network(void *command_obj, const ConcreteCommandPath &command_path,
-                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_open_commissioning_window(void *command_obj, const ConcreteCommandPath &command_path,
-                                                           TLVReader &tlv_data);
-void esp_matter_command_callback_open_basic_commissioning_window(void *command_obj,
-                                                                 const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_revoke_commissioning(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_attestation_request(void *command_obj, const ConcreteCommandPath &command_path,
-                                                     TLVReader &tlv_data);
-void esp_matter_command_callback_certificate_chain_request(void *command_obj, const ConcreteCommandPath &command_path,
-                                                           TLVReader &tlv_data);
-void esp_matter_command_callback_csr_request(void *command_obj, const ConcreteCommandPath &command_path,
-                                             TLVReader &tlv_data);
-void esp_matter_command_callback_add_noc(void *command_obj, const ConcreteCommandPath &command_path,
-                                         TLVReader &tlv_data);
-void esp_matter_command_callback_update_noc(void *command_obj, const ConcreteCommandPath &command_path,
-                                            TLVReader &tlv_data);
-void esp_matter_command_callback_update_fabric_label(void *command_obj, const ConcreteCommandPath &command_path,
-                                                     TLVReader &tlv_data);
-void esp_matter_command_callback_remove_fabric(void *command_obj, const ConcreteCommandPath &command_path,
-                                               TLVReader &tlv_data);
-void esp_matter_command_callback_add_trusted_root_certificate(void *command_obj,
-                                                              const ConcreteCommandPath &command_path,
-                                                              TLVReader &tlv_data);
-void esp_matter_command_callback_remove_trusted_root_certificate(void *command_obj,
-                                                                 const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_query_image(void *command_obj, const ConcreteCommandPath &command_path,
-                                             TLVReader &tlv_data);
-void esp_matter_command_callback_apply_update_request(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_notify_update_applied(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_announce_ota_provider(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_identify(void *command_obj, const ConcreteCommandPath &command_path,
-                                          TLVReader &tlv_data);
-void esp_matter_command_callback_identify_query(void *command_obj, const ConcreteCommandPath &command_path,
-                                                TLVReader &tlv_data);
-void esp_matter_command_callback_add_group(void *command_obj, const ConcreteCommandPath &command_path,
-                                           TLVReader &tlv_data);
-void esp_matter_command_callback_view_group(void *command_obj, const ConcreteCommandPath &command_path,
-                                            TLVReader &tlv_data);
-void esp_matter_command_callback_get_group_membership(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_remove_group(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_remove_all_groups(void *command_obj, const ConcreteCommandPath &command_path,
-                                                   TLVReader &tlv_data);
-void esp_matter_command_callback_add_group_if_identifying(void *command_obj, const ConcreteCommandPath &command_path,
-                                                          TLVReader &tlv_data);
-void esp_matter_command_callback_add_scene(void *command_obj, const ConcreteCommandPath &command_path,
-                                           TLVReader &tlv_data);
-void esp_matter_command_callback_view_scene(void *command_obj, const ConcreteCommandPath &command_path,
-                                            TLVReader &tlv_data);
-void esp_matter_command_callback_remove_scene(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_remove_all_scenes(void *command_obj, const ConcreteCommandPath &command_path,
-                                                   TLVReader &tlv_data);
-void esp_matter_command_callback_store_scene(void *command_obj, const ConcreteCommandPath &command_path,
-                                             TLVReader &tlv_data);
-void esp_matter_command_callback_recall_scene(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_get_scene_membership(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_off(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data);
-void esp_matter_command_callback_on(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data);
-void esp_matter_command_callback_toggle(void *command_obj, const ConcreteCommandPath &command_path,
-                                        TLVReader &tlv_data);
-void esp_matter_command_callback_move_to_level(void *command_obj, const ConcreteCommandPath &command_path,
-                                               TLVReader &tlv_data);
-void esp_matter_command_callback_move(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data);
-void esp_matter_command_callback_step(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data);
-void esp_matter_command_callback_stop(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data);
-void esp_matter_command_callback_move_to_level_with_on_off(void *command_obj, const ConcreteCommandPath &command_path,
-                                                           TLVReader &tlv_data);
-void esp_matter_command_callback_move_with_on_off(void *command_obj, const ConcreteCommandPath &command_path,
-                                                  TLVReader &tlv_data);
-void esp_matter_command_callback_step_with_on_off(void *command_obj, const ConcreteCommandPath &command_path,
-                                                  TLVReader &tlv_data);
-void esp_matter_command_callback_stop_with_on_off(void *command_obj, const ConcreteCommandPath &command_path,
-                                                  TLVReader &tlv_data);
-void esp_matter_command_callback_move_to_hue(void *command_obj, const ConcreteCommandPath &command_path,
-                                             TLVReader &tlv_data);
-void esp_matter_command_callback_move_hue(void *command_obj, const ConcreteCommandPath &command_path,
-                                          TLVReader &tlv_data);
-void esp_matter_command_callback_step_hue(void *command_obj, const ConcreteCommandPath &command_path,
-                                          TLVReader &tlv_data);
-void esp_matter_command_callback_move_to_saturation(void *command_obj, const ConcreteCommandPath &command_path,
-                                                    TLVReader &tlv_data);
-void esp_matter_command_callback_move_saturation(void *command_obj, const ConcreteCommandPath &command_path,
-                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_step_saturation(void *command_obj, const ConcreteCommandPath &command_path,
-                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_move_to_hue_and_saturation(void *command_obj, const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data);
-void esp_matter_command_callback_key_set_read_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_key_set_read_all_indices_response(void *command_obj,
-                                                                   const ConcreteCommandPath &command_path,
-                                                                   TLVReader &tlv_data);
-void esp_matter_command_callback_arm_fail_safe_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                        TLVReader &tlv_data);
-void esp_matter_command_callback_set_regulatory_config_response(void *command_obj,
-                                                                const ConcreteCommandPath &command_path,
-                                                                TLVReader &tlv_data);
-void esp_matter_command_callback_commissioning_complete_response(void *command_obj,
-                                                                 const ConcreteCommandPath &command_path,
-                                                                 TLVReader &tlv_data);
-void esp_matter_command_callback_scan_networks_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                        TLVReader &tlv_data);
-void esp_matter_command_callback_network_config_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                         TLVReader &tlv_data);
-void esp_matter_command_callback_connect_network_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                          TLVReader &tlv_data);
-void esp_matter_command_callback_attestation_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_certificate_chain_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data);
-void esp_matter_command_callback_csr_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_noc_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                              TLVReader &tlv_data);
-void esp_matter_command_callback_query_image_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_apply_update_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_identify_query_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                         TLVReader &tlv_data);
-void esp_matter_command_callback_add_group_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                    TLVReader &tlv_data);
-void esp_matter_command_callback_view_group_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                     TLVReader &tlv_data);
-void esp_matter_command_callback_get_group_membership_response(void *command_obj,
-                                                               const ConcreteCommandPath &command_path,
-                                                               TLVReader &tlv_data);
-void esp_matter_command_callback_remove_group_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_add_scene_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                    TLVReader &tlv_data);
-void esp_matter_command_callback_view_scene_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                     TLVReader &tlv_data);
-void esp_matter_command_callback_remove_scene_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                       TLVReader &tlv_data);
-void esp_matter_command_callback_remove_all_scenes_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data);
-void esp_matter_command_callback_store_scene_response(void *command_obj, const ConcreteCommandPath &command_path,
-                                                      TLVReader &tlv_data);
-void esp_matter_command_callback_get_scene_membership_response(void *command_obj,
-                                                               const ConcreteCommandPath &command_path,
-                                                               TLVReader &tlv_data);
+esp_matter_command_t *esp_matter_command_create_key_set_write(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_key_set_read(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_key_set_remove(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_key_set_read_all_indices(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_arm_fail_safe(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_set_regulatory_config(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_commissioning_complete(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_scan_networks(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_or_update_wifi_network(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_or_update_thread_network(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_network(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_connect_network(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_reorder_network(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_open_commissioning_window(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_open_basic_commissioning_window(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_revoke_commissioning(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_attestation_request(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_certificate_chain_request(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_csr_request(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_noc(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_update_noc(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_update_fabric_label(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_fabric(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_trusted_root_certificate(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_trusted_root_certificate(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_query_image(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_apply_update_request(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_notify_update_applied(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_announce_ota_provider(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_identify(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_identify_query(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_group(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_view_group(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_get_group_membership(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_group(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_all_groups(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_group_if_identifying(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_scene(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_view_scene(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_scene(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_all_scenes(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_store_scene(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_recall_scene(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_get_scene_membership(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_off(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_on(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_toggle(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_to_level(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_step(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_stop(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_to_level_with_on_off(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_with_on_off(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_step_with_on_off(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_stop_with_on_off(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_to_hue(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_hue(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_step_hue(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_to_saturation(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_saturation(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_step_saturation(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_move_to_hue_and_saturation(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_key_set_read_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_key_set_read_all_indices_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_arm_fail_safe_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_set_regulatory_config_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_commissioning_complete_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_scan_networks_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_network_config_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_connect_network_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_attestation_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_certificate_chain_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_csr_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_noc_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_query_image_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_apply_update_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_identify_query_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_group_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_view_group_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_get_group_membership_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_group_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_add_scene_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_view_scene_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_scene_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_remove_all_scenes_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_store_scene_response(esp_matter_cluster_t *cluster);
+esp_matter_command_t *esp_matter_command_create_get_scene_membership_response(esp_matter_cluster_t *cluster);
