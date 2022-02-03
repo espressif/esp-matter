@@ -17,11 +17,28 @@
 
 #include <app_driver.h>
 
+using chip::kInvalidClusterId;
+static constexpr chip::CommandId kInvalidCommandId     = 0xFFFF'FFFF;
+
 static const char *TAG = "app_driver";
+extern int switch_endpoint_id;
+static int g_cluster_id = kInvalidClusterId;
+static int g_command_id = kInvalidCommandId;
 
 static esp_err_t app_driver_console_handler(int argc, char **argv)
 {
-    if (argc == 5 && strncmp(argv[0], "set", sizeof("set")) == 0) {
+    if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
+        printf("Driver commands:\n"
+               "\thelp: Print help\n"
+               "\tset: <endpoint_id> <cluster_id> <attribute_id> <value>."
+               "Example: matter esp driver set 0x0001 0x0006 0x0000 1.\n"
+               "\tget: <endpoint_id> <cluster_id> <attribute_id>. "
+               "Example: matter esp driver get 0x0001 0x0006 0x0000.\n"
+               "\tsend_bind: <endpoint_id> <cluster_id> <command_id>. "
+               "Example: matter esp driver send_bind 0x0001 0x0006 0x0002.\n"
+               "\tsend: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>. "
+               "Example: matter esp driver send 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
+    } else if (argc == 5 && strncmp(argv[0], "set", sizeof("set")) == 0) {
         int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
         int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
         int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
@@ -46,8 +63,26 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
         esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
         esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
         esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+    } else if (argc == 4 && strncmp(argv[0], "send_bind", sizeof("send_bind")) == 0) {
+        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        int command_id = strtol((const char *)&argv[3][2], NULL, 16);
+
+        g_cluster_id = cluster_id;
+        g_command_id = command_id;
+        esp_matter_client_cluster_update(endpoint_id, cluster_id);
+    } else if (argc == 6 && strncmp(argv[0], "send", sizeof("send")) == 0) {
+        int fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
+        int node_id = strtol((const char *)&argv[2][2], NULL, 16);
+        int remote_endpoint_id = strtol((const char *)&argv[3][2], NULL, 16);
+        int cluster_id = strtol((const char *)&argv[4][2], NULL, 16);
+        int command_id = strtol((const char *)&argv[5][2], NULL, 16);
+
+        g_cluster_id = cluster_id;
+        g_command_id = command_id;
+        esp_matter_connect(fabric_index, node_id, remote_endpoint_id);
     } else {
-        ESP_LOGE(TAG, "Incorrect arguments");
+        ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
     }
     return ESP_OK;
@@ -57,21 +92,31 @@ static void app_driver_register_commands()
 {
     esp_matter_console_command_t command = {
         .name = "driver",
-        .description = "This can be used to simulate on-device control. "
-                       "Usage: matter esp driver <set|get> <endpoint_id> <cluster_id> <attribute_id> [value]. "
-                       "Example1: matter esp driver set 0x1001 0x0006 0x0000 1. "
-                       "Example2: matter esp driver get 0x1001 0x0006 0x0000.",
+        .description = "This can be used to simulate on-device control. Usage: matter esp driver <driver_command>. "
+                       "Driver commands: help, set, get, send, send_bind",
         .handler = app_driver_console_handler,
     };
     esp_matter_console_add_command(&command);
 }
 
+void app_driver_client_command_callback(esp_matter_peer_device_t *peer_device, int remote_endpoint_id, void *priv_data)
+{
+    /** TODO: Find a better way to get the cluster_id and command_id */
+    if (g_cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
+        if (g_command_id == ZCL_OFF_COMMAND_ID) {
+            esp_matter_on_off_send_command_off(peer_device, remote_endpoint_id);
+        } else if (g_command_id == ZCL_ON_COMMAND_ID) {
+            esp_matter_on_off_send_command_on(peer_device, remote_endpoint_id);
+        } else if (g_command_id == ZCL_TOGGLE_COMMAND_ID) {
+            esp_matter_on_off_send_command_toggle(peer_device, remote_endpoint_id);
+        }
+    }
+}
+
 esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
 {
-    esp_err_t err = ESP_OK;
-   // Intentionally kept empty
- 
-    return err;
+    /* Nothing to do here */
+    return ESP_OK;
 }
 
 static esp_err_t app_driver_attribute_set_defaults()
@@ -104,5 +149,6 @@ esp_err_t app_driver_init()
     // device_init();
     app_driver_attribute_set_defaults();
     app_driver_register_commands();
+    esp_matter_set_client_command_callback(app_driver_client_command_callback, NULL);
     return ESP_OK;
 }

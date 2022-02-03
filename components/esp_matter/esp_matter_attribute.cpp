@@ -631,10 +631,13 @@ esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attri
     esp_matter_attribute_get_type_and_val(&val, &attribute_type, &attribute_size, &value);
 
     /* Update matter */
-    EmberAfStatus status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
-    if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error updating attribute to matter");
-        return ESP_FAIL;
+    EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
+    if (emberAfContainsServer(endpoint_id, cluster_id)) {
+        status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
+        if (status != EMBER_ZCL_STATUS_SUCCESS) {
+            ESP_LOGE(TAG, "Error updating attribute to matter");
+            return ESP_FAIL;
+        }
     }
     return ESP_OK;
 }
