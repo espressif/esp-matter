@@ -68,6 +68,27 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
     return endpoint;
 }
 
+esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_t *node,
+                                                            esp_matter_endpoint_on_off_switch_config_t *config,
+                                                            uint8_t flags)
+{
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID);
+
+    esp_matter_cluster_create_identify(endpoint, &(config->identify), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_groups(endpoint, &(config->groups), CLUSTER_MASK_CLIENT);
+    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), CLUSTER_MASK_CLIENT);
+    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), CLUSTER_MASK_CLIENT);
+    esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_binding(endpoint, &(config->binding), CLUSTER_MASK_SERVER);
+
+    return endpoint;
+}
+
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data)
 {

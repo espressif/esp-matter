@@ -50,6 +50,11 @@
         .serial_number = {0},           \
     }
 
+#define CLUSTER_CONFIG_BINDING_DEFAULT()  \
+    {                                     \
+        .cluster_revision = 1,            \
+    }
+
 #define CLUSTER_CONFIG_OTA_PROVIDER_DEFAULT() \
     {                                         \
         .cluster_revision = 1,                \
@@ -201,6 +206,10 @@ typedef struct esp_matter_cluster_basic_config {
     char serial_number[32];
 } esp_matter_cluster_basic_config_t;
 
+typedef struct esp_matter_cluster_binding_config {
+    uint16_t cluster_revision;
+} esp_matter_cluster_binding_config_t;
+
 typedef struct esp_matter_cluster_ota_provider_config {
     uint16_t cluster_revision;
 } esp_matter_cluster_ota_provider_config_t;
@@ -318,6 +327,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_access_control(esp_matter_endpoi
                                                                uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *endpoint,
                                                       esp_matter_cluster_basic_config_t *config, uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_binding(esp_matter_endpoint_t *endpoint,
+                                                        esp_matter_cluster_binding_config_t *config, uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_ota_provider(esp_matter_endpoint_t *endpoint,
                                                              esp_matter_cluster_ota_provider_config_t *config,
                                                              uint8_t flags);

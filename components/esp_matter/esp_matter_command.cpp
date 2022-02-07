@@ -578,6 +578,26 @@ static void esp_matter_command_callback_get_scene_membership(void *command_obj, 
     }
 }
 
+static void esp_matter_command_callback_bind(void *command_obj, const ConcreteCommandPath &command_path,
+                                                            TLVReader &tlv_data)
+{
+    chip::app::Clusters::Binding::Commands::Bind::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfBindingClusterBindCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
+static void esp_matter_command_callback_unbind(void *command_obj, const ConcreteCommandPath &command_path,
+                                                            TLVReader &tlv_data)
+{
+    chip::app::Clusters::Binding::Commands::Unbind::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfBindingClusterUnbindCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
 static void esp_matter_command_callback_off(void *command_obj, const ConcreteCommandPath &command_path, TLVReader &tlv_data)
 {
     chip::app::Clusters::OnOff::Commands::Off::DecodableType command_data;
@@ -1824,6 +1844,16 @@ esp_matter_command_t *esp_matter_command_create_get_scene_membership(esp_matter_
 {
     return esp_matter_command_create(cluster, ZCL_GET_SCENE_MEMBERSHIP_COMMAND_ID, COMMAND_MASK_NONE,
                                      esp_matter_command_callback_get_scene_membership);
+}
+
+esp_matter_command_t *esp_matter_command_create_bind(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_BIND_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_bind);
+}
+
+esp_matter_command_t *esp_matter_command_create_unbind(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_UNBIND_COMMAND_ID, COMMAND_MASK_NONE, esp_matter_command_callback_unbind);
 }
 
 esp_matter_command_t *esp_matter_command_create_off(esp_matter_cluster_t *cluster)
