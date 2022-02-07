@@ -53,6 +53,9 @@ const int esp_matter_cluster_operational_credentials_function_flags = CLUSTER_MA
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_group_key_management_function_list = NULL;
 const int esp_matter_cluster_group_key_management_function_flags = CLUSTER_MASK_NONE;
 
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_binding_function_list = NULL;
+const int esp_matter_cluster_binding_function_flags = CLUSTER_MASK_NONE;
+
 const esp_matter_cluster_function_generic_t esp_matter_cluster_access_control_function_list[] = {
     (esp_matter_cluster_function_generic_t)emberAfAccessControlClusterServerInitCallback,
 };
@@ -233,6 +236,34 @@ esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *end
                                 sizeof(config->software_version_string)));
     esp_matter_attribute_create(cluster, ZCL_SERIAL_NUMBER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_char_str(config->serial_number, sizeof(config->serial_number)));
+
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_binding(esp_matter_endpoint_t *endpoint,
+                                                        esp_matter_cluster_binding_config_t *config, 
+                                                        uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_BINDING_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_binding_function_list,
+                                             esp_matter_cluster_binding_function_flags);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+
+    esp_matter_command_create_bind(cluster);
+    esp_matter_command_create_unbind(cluster);
 
     return cluster;
 }
