@@ -186,6 +186,19 @@
         .system_mode = 1,                    \
     }
 
+#define CLUSTER_CONFIG_BRIDGED_DEVICE_BASIC_DEFAULT() \
+    {                                                 \
+        .cluster_revision = 1,                        \
+        .node_label = {0},                            \
+        .reachable = true,                            \
+    }
+
+#define CLUSTER_CONFIG_FIXED_LABEL_DEFAULT() \
+    {                                        \
+        .cluster_revision = 1,               \
+        .label_list = {0},                   \
+    }
+
 typedef struct esp_matter_cluster_descriptor_config {
     uint16_t cluster_revision;
     uint8_t device_type_list[254];
@@ -336,6 +349,17 @@ typedef struct esp_matter_cluster_thermostat_config {
     uint8_t system_mode;
 } esp_matter_cluster_thermostat_config_t;
 
+typedef struct esp_matter_cluster_bridged_device_basic_config {
+    uint16_t cluster_revision;
+    char node_label[32];
+    bool reachable;
+} esp_matter_cluster_bridged_device_basic_config_t;
+
+typedef struct esp_matter_cluster_fixed_label_config {
+    uint16_t cluster_revision;
+    uint8_t label_list[254];
+} esp_matter_cluster_fixed_label_config_t;
+
 void esp_matter_cluster_plugin_init_callback_common();
 
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
@@ -391,3 +415,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
 esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_thermostat_config_t *config,
                                                            uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_bridged_device_basic(esp_matter_endpoint_t *endpoint,
+                                                                     esp_matter_cluster_bridged_device_basic_config_t *config,
+                                                                     uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_fixed_label(esp_matter_endpoint_t *endpoint,
+                                                            esp_matter_cluster_fixed_label_config_t *config, uint8_t flags);

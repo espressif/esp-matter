@@ -128,6 +128,10 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
     }
     emberAfClearDynamicEndpoint(endpoint_index);
 
+    if (!(current_endpoint->endpoint_type)) {
+        ESP_LOGE(TAG, "endpoint %d's endpoint_type is NULL", current_endpoint->endpoint_id);
+        return ESP_ERR_INVALID_STATE;
+    }
     /* Free all clusters */
     EmberAfEndpointType *endpoint_type = current_endpoint->endpoint_type;
     int cluster_count = endpoint_type->clusterCount;
@@ -171,6 +175,8 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     EmberAfCluster *matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
     if (!matter_clusters) {
         ESP_LOGE(TAG, "Couldn't allocate matter_clusters");
+        free(endpoint_type);
+        current_endpoint->endpoint_type = NULL;
         return ESP_ERR_NO_MEM;
     }
 
@@ -183,6 +189,9 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
                                                        attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
             ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
+            free(matter_clusters);
+            free(endpoint_type);
+            current_endpoint->endpoint_type = NULL;
             return ESP_ERR_NO_MEM;
         }
 
@@ -218,6 +227,12 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     EmberAfStatus err = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, current_endpoint->device_type_id, 1);
     if (err != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
+        for (uint8_t idx = 0; idx < cluster_count; ++idx) {
+            free(matter_clusters[idx].attributes);
+        }
+        free(matter_clusters);
+        free(endpoint_type);
+        current_endpoint->endpoint_type = NULL;
     }
     return ESP_OK;
 }
