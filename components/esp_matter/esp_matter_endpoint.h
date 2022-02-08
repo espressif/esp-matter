@@ -20,6 +20,7 @@
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x016
 #define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x102
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
@@ -55,6 +56,15 @@
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .binding = CLUSTER_CONFIG_BINDING_DEFAULT(),                                                      \
+    }
+
+#define ENDPOINT_CONFIG_THERMOSTAT_DEFAULT()                                                              \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
+        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
+        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
+        .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
     }
 
 #define NODE_CONFIG_DEFAULT()                             \
@@ -95,6 +105,14 @@ typedef struct esp_matter_endpoint_on_off_switch_config {
     esp_matter_cluster_binding_config_t binding;
 } esp_matter_endpoint_on_off_switch_config_t;
 
+typedef struct esp_matter_endpoint_thermostat_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_groups_config_t groups;
+    esp_matter_cluster_scenes_config_t scenes;
+    esp_matter_cluster_basic_config_t basic;
+    esp_matter_cluster_thermostat_config_t thermostat;
+} esp_matter_endpoint_thermostat_config_t;
+
 typedef struct esp_matter_node_config {
     esp_matter_endpoint_root_node_config_t root_node;
 } esp_matter_node_config_t;
@@ -105,10 +123,12 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *n
 esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
                                                             esp_matter_endpoint_color_dimmable_light_config_t *config,
                                                             uint8_t flags);
-
 esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_t *node,
                                                                 esp_matter_endpoint_on_off_switch_config_t *config,
                                                                 uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
+                                                             esp_matter_endpoint_thermostat_config_t *config,
+                                                             uint8_t flags);
 
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data);
