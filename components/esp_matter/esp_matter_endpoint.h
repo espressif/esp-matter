@@ -26,6 +26,7 @@
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
@@ -119,6 +120,13 @@
         .fixed_label = CLUSTER_CONFIG_FIXED_LABEL_DEFAULT(),                                              \
     }
 
+#define ENDPOINT_CONFIG_TEMPERATURE_SENSOR_DEFAULT()                                                      \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
+        .temperature_measurement = CLUSTER_CONFIG_TEMPERATURE_MEASUREMENT_DEFAULT(),                      \
+    }
+
 #define NODE_CONFIG_DEFAULT()                             \
     {                                                     \
         .root_node = ENDPOINT_CONFIG_ROOT_NODE_DEFAULT(), \
@@ -207,6 +215,12 @@ typedef struct esp_matter_endpoint_door_lock_config {
     esp_matter_cluster_time_synchronization_config_t time_synchronization;
 } esp_matter_endpoint_door_lock_config_t;
 
+typedef struct esp_matter_endpoint_temperature_sensor_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_groups_config_t groups;
+    esp_matter_cluster_temperature_measurement_config_t temperature_measurement;
+} esp_matter_endpoint_temperature_sensor_config_t;
+
 typedef struct esp_matter_node_config {
     esp_matter_endpoint_root_node_config_t root_node;
 } esp_matter_node_config_t;
@@ -238,6 +252,10 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_door_lock(esp_matter_node_t *n
 esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
                                                             esp_matter_endpoint_bridged_node_config_t *config,
                                                             uint8_t flags);
+
+esp_matter_endpoint_t *esp_matter_endpoint_create_temperature_sensor(esp_matter_node_t *node,
+                                                                esp_matter_endpoint_temperature_sensor_config_t *config,
+                                                                uint8_t flags);
 
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data);

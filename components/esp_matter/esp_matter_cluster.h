@@ -230,6 +230,14 @@
         .multi_press_max = 2,           \
     }
 
+#define CLUSTER_CONFIG_TEMPERATURE_MEASUREMENT_DEFAULT() \
+    {                                          \
+        .cluster_revision = 3,                 \
+        .measured_value = -32768,              \
+        .min_measured_value = -32768,          \
+        .max_measured_value = -32768,          \
+    }
+
 typedef struct esp_matter_cluster_descriptor_config {
     uint16_t cluster_revision;
     uint8_t device_type_list[254];
@@ -429,6 +437,13 @@ typedef struct esp_matter_cluster_switch_config {
     uint8_t multi_press_max;
 } esp_matter_cluster_switch_config_t;
 
+typedef struct esp_matter_cluster_temperature_measurement_config {
+    uint16_t cluster_revision;
+    int16_t measured_value;
+    int16_t min_measured_value;
+    int16_t max_measured_value;
+} esp_matter_cluster_temperature_measurement_config_t;
+
 void esp_matter_cluster_plugin_init_callback_common();
 
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
@@ -500,3 +515,6 @@ esp_matter_cluster_t *esp_matter_cluster_create_fixed_label(esp_matter_endpoint_
                                                             esp_matter_cluster_fixed_label_config_t *config, uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_switch(esp_matter_endpoint_t *endpoint,
                                                        esp_matter_cluster_switch_config_t *config, uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_temperature_measurement(esp_matter_endpoint_t *endpoint,
+                                                              esp_matter_cluster_temperature_measurement_config_t *config,
+                                                              uint8_t flags);
