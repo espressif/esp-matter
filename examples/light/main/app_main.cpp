@@ -12,10 +12,10 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
 #include <app_driver.h>
-#include <app_ota.h>
 #include <app_qrcode.h>
 
 static const char *TAG = "app_main";
@@ -87,6 +87,6 @@ extern "C" void app_main()
 #endif
 
 #if CONFIG_ENABLE_OTA_REQUESTOR
-    matter_ota_requestor_init();
+    esp_matter_ota_requestor_init();
 #endif
 }
