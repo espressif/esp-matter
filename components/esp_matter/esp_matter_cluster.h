@@ -176,6 +176,16 @@
         .color_capabilities = 0,               \
     }
 
+#define CLUSTER_CONFIG_THERMOSTAT_DEFAULT()  \
+    {                                        \
+        .cluster_revision = 3,               \
+        .local_temperature = 0,              \
+        .occupied_cooling_setpoint = 0x0A28, \
+        .occupied_heating_setpoint = 0x07D0, \
+        .control_sequence_of_operation = 4,  \
+        .system_mode = 1,                    \
+    }
+
 typedef struct esp_matter_cluster_descriptor_config {
     uint16_t cluster_revision;
     uint8_t device_type_list[254];
@@ -317,6 +327,15 @@ typedef struct esp_matter_cluster_color_control_config {
     uint16_t color_capabilities;
 } esp_matter_cluster_color_control_config_t;
 
+typedef struct esp_matter_cluster_thermostat_config {
+    uint16_t cluster_revision;
+    int16_t local_temperature;
+    int16_t occupied_cooling_setpoint;
+    int16_t occupied_heating_setpoint;
+    uint8_t control_sequence_of_operation;
+    uint8_t system_mode;
+} esp_matter_cluster_thermostat_config_t;
+
 void esp_matter_cluster_plugin_init_callback_common();
 
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
@@ -369,3 +388,6 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
 esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_color_control_config_t *config,
                                                               uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t *endpoint,
+                                                           esp_matter_cluster_thermostat_config_t *config,
+                                                           uint8_t flags);

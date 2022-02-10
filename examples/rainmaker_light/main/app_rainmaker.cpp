@@ -211,6 +211,8 @@ static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t
         return esp_rmaker_array(val.val.s);
     } else if (val.type == ESP_MATTER_VAL_TYPE_UINT8) {
         return esp_rmaker_int(val.val.u8);
+    } else if (val.type == ESP_MATTER_VAL_TYPE_INT16) {
+        return esp_rmaker_int(val.val.i16);
     } else if (val.type == ESP_MATTER_VAL_TYPE_UINT16) {
         return esp_rmaker_int(val.val.u16);
     } else {

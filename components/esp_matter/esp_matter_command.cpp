@@ -774,6 +774,16 @@ static void esp_matter_command_callback_move_to_hue_and_saturation(void *command
     }
 }
 
+static void esp_matter_command_callback_setpoint_raise_lower(void *command_obj, const ConcreteCommandPath &command_path,
+                                                             TLVReader &tlv_data)
+{
+    chip::app::Clusters::Thermostat::Commands::SetpointRaiseLower::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterSetpointRaiseLowerCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
 static void esp_matter_command_callback_key_set_read_response(void *command_obj, const ConcreteCommandPath &command_path,
                                                        TLVReader &tlv_data)
 {
@@ -1960,6 +1970,12 @@ esp_matter_command_t *esp_matter_command_create_move_to_hue_and_saturation(esp_m
 {
     return esp_matter_command_create(cluster, ZCL_MOVE_TO_HUE_AND_SATURATION_COMMAND_ID, COMMAND_MASK_NONE,
                                      esp_matter_command_callback_move_to_hue_and_saturation);
+}
+
+esp_matter_command_t *esp_matter_command_create_setpoint_raise_lower(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_SETPOINT_RAISE_LOWER_COMMAND_ID, COMMAND_MASK_NONE,
+                                     esp_matter_command_callback_setpoint_raise_lower);
 }
 
 esp_matter_command_t *esp_matter_command_create_key_set_read_response(esp_matter_cluster_t *cluster)

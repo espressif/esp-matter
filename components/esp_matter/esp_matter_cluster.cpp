@@ -98,6 +98,11 @@ const esp_matter_cluster_function_generic_t esp_matter_cluster_color_control_fun
 };
 const int esp_matter_cluster_color_control_function_flags = CLUSTER_MASK_INIT_FUNCTION;
 
+const esp_matter_cluster_function_generic_t esp_matter_cluster_thermostat_function_list[] = {
+    (esp_matter_cluster_function_generic_t)emberAfThermostatClusterServerInitCallback,
+};
+const int esp_matter_cluster_thermostat_function_flags = CLUSTER_MASK_INIT_FUNCTION;
+
 void esp_matter_cluster_plugin_init_callback_common()
 {
     ESP_LOGI(TAG, "Cluster plugin init common callback");
@@ -827,6 +832,43 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
     esp_matter_command_create_move_saturation(cluster);                              
     esp_matter_command_create_step_saturation(cluster);                              
     esp_matter_command_create_move_to_hue_and_saturation(cluster);                              
+
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t *endpoint,
+                                                           esp_matter_cluster_thermostat_config_t *config,
+                                                           uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_THERMOSTAT_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterThermostatPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_thermostat_function_list,
+                                             esp_matter_cluster_thermostat_function_flags);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterThermostatPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_LOCAL_TEMPERATURE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_int16(config->local_temperature));
+    esp_matter_attribute_create(cluster, ZCL_OCCUPIED_COOLING_SETPOINT_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_int16(config->occupied_cooling_setpoint));
+    esp_matter_attribute_create(cluster, ZCL_OCCUPIED_HEATING_SETPOINT_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_int16(config->occupied_heating_setpoint));
+    esp_matter_attribute_create(cluster, ZCL_CONTROL_SEQUENCE_OF_OPERATION_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_enum8(config->control_sequence_of_operation));
+    esp_matter_attribute_create(cluster, ZCL_SYSTEM_MODE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_enum8(config->system_mode));
+
+    esp_matter_command_create_setpoint_raise_lower(cluster);
 
     return cluster;
 }
