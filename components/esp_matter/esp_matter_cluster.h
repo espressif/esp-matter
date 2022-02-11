@@ -176,6 +176,13 @@
         .color_capabilities = 0,               \
     }
 
+#define CLUSTER_CONFIG_FAN_CONTROL_DEFAULT() \
+    {                                        \
+        .cluster_revision = 3,               \
+        .fan_mode = 5,                       \
+        .fan_mode_sequence = 2,              \
+    }
+
 #define CLUSTER_CONFIG_THERMOSTAT_DEFAULT()  \
     {                                        \
         .cluster_revision = 3,               \
@@ -348,6 +355,23 @@ typedef struct esp_matter_cluster_color_control_config {
     uint16_t color_capabilities;
 } esp_matter_cluster_color_control_config_t;
 
+typedef struct esp_matter_cluster_fan_control_config {
+    uint16_t cluster_revision;
+    uint8_t fan_mode;
+    uint8_t fan_mode_sequence;
+    /* Not implemented
+    uint8_t percent_setting;
+    uint8_t percent_current;
+    uint8_t speed_max;
+    uint8_t speed_setting;
+    uint8_t speed_current;
+    uint8_t rock_support;
+    uint8_t rock_setting;
+    uint8_t wind_support;
+    uint8_t wind_setting;
+    */
+} esp_matter_cluster_fan_control_config_t;
+
 typedef struct esp_matter_cluster_thermostat_config {
     uint16_t cluster_revision;
     int16_t local_temperature;
@@ -427,6 +451,9 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
 esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_color_control_config_t *config,
                                                               uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_fan_control(esp_matter_endpoint_t *endpoint,
+                                                           esp_matter_cluster_fan_control_config_t *config,
+                                                           uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_thermostat_config_t *config,
                                                            uint8_t flags);
