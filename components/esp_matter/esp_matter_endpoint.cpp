@@ -109,6 +109,26 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *
     return endpoint;
 }
 
+esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
+                                                            esp_matter_endpoint_bridged_node_config_t *config,
+                                                            uint8_t flags)
+{
+    // bridged node endpoints are always deletable
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags | ENDPOINT_MASK_DELETABLE);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+
+    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID);
+
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_bridged_device_basic(endpoint, &(config->bridged_device_basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_fixed_label(endpoint, &(config->fixed_label), CLUSTER_MASK_SERVER);
+
+    return endpoint;
+}
+
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data)
 {

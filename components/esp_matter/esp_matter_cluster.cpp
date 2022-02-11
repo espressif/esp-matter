@@ -56,6 +56,12 @@ const int esp_matter_cluster_group_key_management_function_flags = CLUSTER_MASK_
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_binding_function_list = NULL;
 const int esp_matter_cluster_binding_function_flags = CLUSTER_MASK_NONE;
 
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_bridged_device_basic_function_list = NULL;
+const int esp_matter_cluster_bridged_device_basic_function_flags = CLUSTER_MASK_NONE;
+
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_fixed_label_function_list = NULL;
+const int esp_matter_cluster_fixed_label_function_flags = CLUSTER_MASK_NONE;
+
 const esp_matter_cluster_function_generic_t esp_matter_cluster_access_control_function_list[] = {
     (esp_matter_cluster_function_generic_t)emberAfAccessControlClusterServerInitCallback,
 };
@@ -870,5 +876,55 @@ esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t
 
     esp_matter_command_create_setpoint_raise_lower(cluster);
 
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_bridged_device_basic(esp_matter_endpoint_t *endpoint,
+                                                                     esp_matter_cluster_bridged_device_basic_config_t *config,
+                                                                     uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_BRIDGED_DEVICE_BASIC_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return  NULL;
+    }
+
+    if (flags & CLUSTER_MASK_SERVER) {
+        // There is not PluginServer(Client)InitCallback for this cluster
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_bridged_device_basic_function_list,
+                                             esp_matter_cluster_bridged_device_basic_function_flags);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_NODE_LABEL_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_char_str(config->node_label, sizeof(config->node_label)));
+    esp_matter_attribute_create(cluster, ZCL_REACHABLE_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_bool(config->reachable));
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_fixed_label(esp_matter_endpoint_t *endpoint,
+                                                            esp_matter_cluster_fixed_label_config_t *config, uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_FIXED_LABEL_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return  NULL;
+    }
+
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterFixedLabelPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_fixed_label_function_list,
+                                             esp_matter_cluster_fixed_label_function_flags);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_LABEL_LIST_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_array(config->label_list, sizeof(config->label_list), 0));
     return cluster;
 }

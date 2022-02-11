@@ -17,10 +17,11 @@
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x016
-#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x102
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
@@ -65,6 +66,13 @@
         .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
+    }
+
+#define ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT()                                                            \
+    {                                                                                                     \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
+        .bridged_device_basic = CLUSTER_CONFIG_BRIDGED_DEVICE_BASIC_DEFAULT(),                            \
+        .fixed_label = CLUSTER_CONFIG_FIXED_LABEL_DEFAULT(),                                              \
     }
 
 #define NODE_CONFIG_DEFAULT()                             \
@@ -113,6 +121,12 @@ typedef struct esp_matter_endpoint_thermostat_config {
     esp_matter_cluster_thermostat_config_t thermostat;
 } esp_matter_endpoint_thermostat_config_t;
 
+typedef struct esp_matter_endpoint_bridged_node_config {
+    esp_matter_cluster_descriptor_config_t descriptor;
+    esp_matter_cluster_bridged_device_basic_config_t bridged_device_basic;
+    esp_matter_cluster_fixed_label_config_t fixed_label;
+} esp_matter_endpoint_bridged_node_config_t;
+
 typedef struct esp_matter_node_config {
     esp_matter_endpoint_root_node_config_t root_node;
 } esp_matter_node_config_t;
@@ -129,6 +143,9 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_
 esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
                                                              esp_matter_endpoint_thermostat_config_t *config,
                                                              uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
+                                                            esp_matter_endpoint_bridged_node_config_t *config,
+                                                            uint8_t flags);
 
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data);
