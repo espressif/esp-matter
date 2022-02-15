@@ -18,6 +18,8 @@
 #include <esp_matter_core.h>
 
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100  
+#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101 
 #define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
@@ -36,6 +38,25 @@
         .administrator_commissioning = CLUSTER_CONFIG_ADMINISTRATOR_COMMISSIONING_DEFAULT(),                          \
         .operational_credentials = CLUSTER_CONFIG_OPERATIONAL_CREDENTIALS_DEFAULT(),                                  \
         .group_key_management = CLUSTER_CONFIG_GROUP_KEY_MANAGEMENT_DEFAULT(),                                        \
+    }
+
+#define ENDPOINT_CONFIG_ON_OFF_LIGHT_DEFAULT()                                                    \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
+        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
+        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
+        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
+    }
+
+#define ENDPOINT_CONFIG_DIMMABLE_LIGHT_DEFAULT()                                                    \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
+        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
+        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
+        .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
+        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
     }
 
 #define ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT()                                                    \
@@ -94,6 +115,23 @@ typedef struct esp_matter_endpoint_root_node_config {
     esp_matter_cluster_group_key_management_config_t group_key_management;
 } esp_matter_endpoint_root_node_config_t;
 
+typedef struct esp_matter_endpoint_on_off_light_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_groups_config_t groups;
+    esp_matter_cluster_scenes_config_t scenes;
+    esp_matter_cluster_on_off_config_t on_off;
+    esp_matter_cluster_basic_config_t basic;
+} esp_matter_endpoint_on_off_light_config_t;
+
+typedef struct esp_matter_endpoint_dimmable_light_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_groups_config_t groups;
+    esp_matter_cluster_scenes_config_t scenes;
+    esp_matter_cluster_on_off_config_t on_off;
+    esp_matter_cluster_level_control_config_t level_control;
+    esp_matter_cluster_basic_config_t basic;
+} esp_matter_endpoint_dimmable_light_config_t;
+
 typedef struct esp_matter_endpoint_color_dimmable_light_config {
     esp_matter_cluster_identify_config_t identify;
     esp_matter_cluster_groups_config_t groups;
@@ -134,6 +172,12 @@ typedef struct esp_matter_node_config {
 esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *node,
                                                             esp_matter_endpoint_root_node_config_t *config,
                                                             uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_light(esp_matter_node_t *node,
+                                                               esp_matter_endpoint_on_off_light_config_t *config,
+                                                               uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_dimmable_light(esp_matter_node_t *node,
+                                                                 esp_matter_endpoint_dimmable_light_config_t *config,
+                                                                 uint8_t flags);
 esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
                                                             esp_matter_endpoint_color_dimmable_light_config_t *config,
                                                             uint8_t flags);
