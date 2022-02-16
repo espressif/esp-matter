@@ -40,16 +40,17 @@
         .group_key_management = CLUSTER_CONFIG_GROUP_KEY_MANAGEMENT_DEFAULT(),                                        \
     }
 
-#define ENDPOINT_CONFIG_ON_OFF_LIGHT_DEFAULT()                                                    \
+#define ENDPOINT_CONFIG_ON_OFF_LIGHT_DEFAULT()                                                            \
     {                                                                                                     \
         .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
         .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
         .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
-#define ENDPOINT_CONFIG_DIMMABLE_LIGHT_DEFAULT()                                                    \
+#define ENDPOINT_CONFIG_DIMMABLE_LIGHT_DEFAULT()                                                          \
     {                                                                                                     \
         .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
         .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
@@ -57,6 +58,7 @@
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT()                                                    \
@@ -68,6 +70,7 @@
         .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .color_control = CLUSTER_CONFIG_COLOR_CONTROL_DEFAULT(),                                          \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_ON_OFF_SWITCH_DEFAULT()                                                           \
@@ -78,6 +81,7 @@
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .binding = CLUSTER_CONFIG_BINDING_DEFAULT(),                                                      \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_THERMOSTAT_DEFAULT()                                                              \
@@ -87,6 +91,7 @@
         .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT()                                                            \
@@ -121,6 +126,7 @@ typedef struct esp_matter_endpoint_on_off_light_config {
     esp_matter_cluster_scenes_config_t scenes;
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_basic_config_t basic;
+    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_on_off_light_config_t;
 
 typedef struct esp_matter_endpoint_dimmable_light_config {
@@ -130,6 +136,7 @@ typedef struct esp_matter_endpoint_dimmable_light_config {
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_level_control_config_t level_control;
     esp_matter_cluster_basic_config_t basic;
+    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_dimmable_light_config_t;
 
 typedef struct esp_matter_endpoint_color_dimmable_light_config {
@@ -140,6 +147,7 @@ typedef struct esp_matter_endpoint_color_dimmable_light_config {
     esp_matter_cluster_level_control_config_t level_control;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_color_control_config_t color_control;
+    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_color_dimmable_light_config_t;
 
 typedef struct esp_matter_endpoint_on_off_switch_config {
@@ -149,6 +157,7 @@ typedef struct esp_matter_endpoint_on_off_switch_config {
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_binding_config_t binding;
+    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_on_off_switch_config_t;
 
 typedef struct esp_matter_endpoint_thermostat_config {
@@ -157,6 +166,7 @@ typedef struct esp_matter_endpoint_thermostat_config {
     esp_matter_cluster_scenes_config_t scenes;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_thermostat_config_t thermostat;
+    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_thermostat_config_t;
 
 typedef struct esp_matter_endpoint_bridged_node_config {
