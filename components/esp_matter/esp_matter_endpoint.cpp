@@ -62,6 +62,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_light(esp_matter_node_t
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_on_off(endpoint, &(config->on_off), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
 
     return endpoint;
 }
@@ -83,6 +84,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_dimmable_light(esp_matter_node
     esp_matter_cluster_create_on_off(endpoint, &(config->on_off), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_level_control(endpoint, &(config->level_control), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
 
     return endpoint;
 }
@@ -104,6 +106,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
     esp_matter_cluster_create_on_off(endpoint, &(config->on_off), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_level_control(endpoint, &(config->level_control), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_color_control(endpoint, &(config->color_control), CLUSTER_MASK_SERVER);
 
     return endpoint;
@@ -125,6 +128,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), CLUSTER_MASK_CLIENT);
     esp_matter_cluster_create_on_off(endpoint, &(config->on_off), CLUSTER_MASK_CLIENT);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_binding(endpoint, &(config->binding), CLUSTER_MASK_SERVER);
 
     return endpoint;
@@ -145,6 +149,7 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *
     esp_matter_cluster_create_groups(endpoint, &(config->groups), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), CLUSTER_MASK_SERVER);
+    esp_matter_cluster_create_descriptor(endpoint, &(config->descriptor), CLUSTER_MASK_SERVER);
     esp_matter_cluster_create_thermostat(endpoint, &(config->thermostat), CLUSTER_MASK_SERVER);
 
     return endpoint;
