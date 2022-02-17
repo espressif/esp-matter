@@ -60,7 +60,8 @@ extern "C" void app_main()
 
     /* Create matter device */
     esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_on_off_switch(node, &switch_config, ENDPOINT_MASK_NONE);
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_on_off_switch(node, &switch_config,
+                                                                               ESP_MATTER_ENDPOINT_FLAG_NONE);
     switch_endpoint_id = esp_matter_endpoint_get_id(endpoint);
     /**
     These node and endpoint handles can be used to create and add other endpoints and other clusters to the endpoints.
