@@ -15,22 +15,32 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
+#include <esp_matter_factory.h>
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
-#include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <esp_matter_openthread.h>
 #endif
 
+/* TODO: Remove the examples DAC provider once we have a concrete
+ * way to generate attestation credentials.
+ */
+#if CONFIG_ESP_MATTER_USE_ESP_DAC_PROVIDER
+#include <esp_matter_dac.h>
+using chip::Credentials::esp::esp_matter_dac_provider_get;
+#else
+#include <credentials/examples/DeviceAttestationCredsExample.h>
+using chip::Credentials::Examples::GetExampleDACProvider;
+#endif
+
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
-using chip::Credentials::Examples::GetExampleDACProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConnectivityManager;
 using chip::DeviceLayer::ConnectivityMgr;
@@ -258,7 +268,11 @@ static void esp_matter_chip_init_task(intptr_t context)
 {
     xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
     chip::Server::GetInstance().Init();
+#if CONFIG_ESP_MATTER_USE_ESP_DAC_PROVIDER
+    SetDeviceAttestationCredentialsProvider(esp_matter_dac_provider_get());
+#else
     SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
+#endif
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
@@ -321,6 +335,11 @@ esp_err_t esp_matter_start(esp_matter_event_callback_t callback)
     esp_err_t err = esp_matter_chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
+        return err;
+    }
+    err = esp_matter_factory_init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error initializing factory");
     }
     return err;
 }
