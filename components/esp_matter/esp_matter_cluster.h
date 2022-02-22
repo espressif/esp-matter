@@ -193,6 +193,22 @@
         .system_mode = 1,                    \
     }
 
+#define CLUSTER_CONFIG_DOOR_LOCK_DEFAULT()              \
+    {                                                   \
+        .cluster_revision = 3,                          \
+        .lock_state = 0,                                \
+        .lock_type = 0,                                 \
+        .actuator_enabled = 0,                          \
+        .auto_relock_time = 0,                          \
+	.operating_mode = 0,                            \
+        .supported_operating_modes = 0,                 \
+    }
+
+#define CLUSTER_CONFIG_TIME_SYNCHRONIZATION_DEFAULT() \
+    {                                                 \
+        .cluster_revision = 1,                        \
+    }
+
 #define CLUSTER_CONFIG_BRIDGED_DEVICE_BASIC_DEFAULT() \
     {                                                 \
         .cluster_revision = 1,                        \
@@ -372,6 +388,20 @@ typedef struct esp_matter_cluster_fan_control_config {
     */
 } esp_matter_cluster_fan_control_config_t;
 
+typedef struct esp_matter_cluster_door_lock_config {
+    uint16_t cluster_revision;
+    uint8_t lock_state;
+    uint8_t lock_type;
+    bool actuator_enabled;
+    uint32_t auto_relock_time;
+    uint8_t operating_mode;
+    uint16_t supported_operating_modes;
+} esp_matter_cluster_door_lock_config_t;
+
+typedef struct esp_matter_cluster_time_synchronization_config {
+    uint16_t cluster_revision;
+} esp_matter_cluster_time_synchronization_config_t;
+
 typedef struct esp_matter_cluster_thermostat_config {
     uint16_t cluster_revision;
     int16_t local_temperature;
@@ -454,6 +484,12 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
 esp_matter_cluster_t *esp_matter_cluster_create_fan_control(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_fan_control_config_t *config,
                                                            uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_door_lock(esp_matter_endpoint_t *endpoint,
+                                                          esp_matter_cluster_door_lock_config_t *config,
+                                                          uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_time_synchronization(esp_matter_endpoint_t *endpoint,
+                                                          esp_matter_cluster_time_synchronization_config_t *config,
+                                                          uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_thermostat_config_t *config,
                                                            uint8_t flags);

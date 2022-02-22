@@ -25,6 +25,7 @@
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
+#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
@@ -101,6 +102,14 @@
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
         .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
+    }
+
+#define ENDPOINT_CONFIG_DOOR_LOCK_DEFAULT()                                                               \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
+        .door_lock = CLUSTER_CONFIG_DOOR_LOCK_DEFAULT(),                                                  \
+        .time_synchronization = CLUSTER_CONFIG_TIME_SYNCHRONIZATION_DEFAULT(),                                                  \
     }
 
 #define ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT()                                                            \
@@ -191,6 +200,13 @@ typedef struct esp_matter_endpoint_bridged_node_config {
     esp_matter_cluster_fixed_label_config_t fixed_label;
 } esp_matter_endpoint_bridged_node_config_t;
 
+typedef struct esp_matter_endpoint_door_lock_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_descriptor_config_t descriptor;
+    esp_matter_cluster_door_lock_config_t door_lock;
+    esp_matter_cluster_time_synchronization_config_t time_synchronization;
+} esp_matter_endpoint_door_lock_config_t;
+
 typedef struct esp_matter_node_config {
     esp_matter_endpoint_root_node_config_t root_node;
 } esp_matter_node_config_t;
@@ -215,6 +231,9 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_fan(esp_matter_node_t *node,
                                                       uint8_t flags);
 esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
                                                              esp_matter_endpoint_thermostat_config_t *config,
+                                                             uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_door_lock(esp_matter_node_t *node,
+                                                             esp_matter_endpoint_door_lock_config_t *config,
                                                              uint8_t flags);
 esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
                                                             esp_matter_endpoint_bridged_node_config_t *config,

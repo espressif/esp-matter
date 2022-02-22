@@ -68,6 +68,9 @@ const int esp_matter_cluster_fixed_label_function_flags = ESP_MATTER_CLUSTER_FLA
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_switch_function_list = NULL;
 const int esp_matter_cluster_switch_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
 
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_time_synchronization_function_list = NULL;
+const int esp_matter_cluster_time_synchronization_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+
 const esp_matter_cluster_function_generic_t esp_matter_cluster_access_control_function_list[] = {
     (esp_matter_cluster_function_generic_t)emberAfAccessControlClusterServerInitCallback,
 };
@@ -114,6 +117,13 @@ const esp_matter_cluster_function_generic_t esp_matter_cluster_thermostat_functi
     (esp_matter_cluster_function_generic_t)emberAfThermostatClusterServerInitCallback,
 };
 const int esp_matter_cluster_thermostat_function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+
+const esp_matter_cluster_function_generic_t esp_matter_cluster_door_lock_function_list[] = {
+        (esp_matter_cluster_function_generic_t) MatterDoorLockClusterServerAttributeChangedCallback,
+        (esp_matter_cluster_function_generic_t) MatterDoorLockClusterServerPreAttributeChangedCallback,
+};
+const int esp_matter_cluster_door_lock_function_flags = ESP_MATTER_CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION |
+                                                        ESP_MATTER_CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 void esp_matter_cluster_plugin_init_callback_common()
 {
@@ -932,6 +942,70 @@ esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t
 
     esp_matter_command_create_setpoint_raise_lower(cluster);
 
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_door_lock(esp_matter_endpoint_t *endpoint,
+                                                          esp_matter_cluster_door_lock_config_t *config,
+                                                          uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_DOOR_LOCK_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterDoorLockPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_door_lock_function_list,
+                                             esp_matter_cluster_door_lock_function_flags);
+    }
+    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterDoorLockPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint8(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_LOCK_STATE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->lock_state));
+    esp_matter_attribute_create(cluster, ZCL_LOCK_TYPE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->lock_type));
+    esp_matter_attribute_create(cluster, ZCL_ACTUATOR_ENABLED_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bool(config->actuator_enabled));
+    esp_matter_attribute_create(cluster, ZCL_AUTO_RELOCK_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint32(config->auto_relock_time));
+    esp_matter_attribute_create(cluster, ZCL_OPERATING_MODE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->operating_mode));
+    esp_matter_attribute_create(cluster, ZCL_SUPPORTED_OPERATING_MODES_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bitmap16(config->supported_operating_modes));
+
+    esp_matter_command_create_lock_door(cluster);
+    esp_matter_command_create_unlock_door(cluster);
+
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_time_synchronization(esp_matter_endpoint_t *endpoint,
+                                                          esp_matter_cluster_time_synchronization_config_t *config,
+                                                          uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_TIME_SYNCHRONIZATION_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return  NULL;
+    }
+
+    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterTimeSynchronizationPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_time_synchronization_function_list,
+                                             esp_matter_cluster_time_synchronization_function_flags);
+    }
+    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint16(config->cluster_revision));
     return cluster;
 }
 
