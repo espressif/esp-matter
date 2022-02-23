@@ -40,6 +40,9 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py set-target esp32
     - idf.py build
+    - cd $ESP_MATTER_PATH/examples/switch
+    - idf.py set-target esp32
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
     - idf.py set-target esp32
     - idf.py build
@@ -49,6 +52,18 @@ variables:
     - git clone --recursive --single-branch -b master --reference-if-able /local_references/github/ https://github.com/espressif/esp-rainmaker.git
     - export ESP_RMAKER_PATH=$PWD/esp-rainmaker
     - cd $ESP_MATTER_PATH/examples/rainmaker_light
+    - idf.py set-target esp32
+    - idf.py build
+
+.build_bridge_zigbee_app: &build_bridge_zigbee_app
+    - idf.py build
+    - cd $IDF_PATH
+    - git checkout b05b70c7f39a45b9bb8d09498b45edbe3b7bfc22
+    - git submodule update --init --recursive
+    - rm -rf $HOME/.espressif/python_env
+    - ./install.sh
+    - . ./export.sh
+    - cd $ESP_MATTER_PATH/examples/bridge_zigbee
     - idf.py set-target esp32
     - idf.py build
 
@@ -66,6 +81,7 @@ build_esp_matter_examples:
         - *setup_idf
         - *setup_matter
         - *build_examples
+        - *build_bridge_zigbee_app
 
 build_all_examples:
     stage: build
