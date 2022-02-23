@@ -62,6 +62,9 @@ const int esp_matter_cluster_bridged_device_basic_function_flags = CLUSTER_MASK_
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_fixed_label_function_list = NULL;
 const int esp_matter_cluster_fixed_label_function_flags = CLUSTER_MASK_NONE;
 
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_switch_function_list = NULL;
+const int esp_matter_cluster_switch_function_flags = CLUSTER_MASK_NONE;
+
 const esp_matter_cluster_function_generic_t esp_matter_cluster_access_control_function_list[] = {
     (esp_matter_cluster_function_generic_t)emberAfAccessControlClusterServerInitCallback,
 };
@@ -926,5 +929,35 @@ esp_matter_cluster_t *esp_matter_cluster_create_fixed_label(esp_matter_endpoint_
                                 esp_matter_uint16(config->cluster_revision));
     esp_matter_attribute_create(cluster, ZCL_LABEL_LIST_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
                                 esp_matter_array(config->label_list, sizeof(config->label_list), 0));
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_switch(esp_matter_endpoint_t *endpoint,
+                                                       esp_matter_cluster_switch_config_t *config, uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_SWITCH_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return  NULL;
+    }
+
+    if (flags & CLUSTER_MASK_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterSwitchPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_switch_function_list,
+                                             esp_matter_cluster_switch_function_flags);
+    }
+    if (flags & CLUSTER_MASK_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterSwitchPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_NUMBER_OF_POSITIONS_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint8(config->number_of_positions));
+    esp_matter_attribute_create(cluster, ZCL_CURRENT_POSITION_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint8(config->current_position));
+    esp_matter_attribute_create(cluster, ZCL_MULTI_PRESS_MAX_ATTRIBUTE_ID, ATTRIBUTE_MASK_NONE,
+                                esp_matter_uint8(config->multi_press_max));
+
     return cluster;
 }
