@@ -20,6 +20,7 @@
 #include <app-common/zap-generated/callback.h>
 #include <app-common/zap-generated/ids/Commands.h>
 #include <app/InteractionModelEngine.h>
+#include <app/util/af.h>
 #include <app/util/basic-types.h>
 #include <app/util/ember-compatibility-functions.h>
 
@@ -64,7 +65,9 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     int flags = esp_matter_command_get_flags(command);
     if (flags & COMMAND_MASK_CUSTOM) {
         if (custom_callback) {
-            custom_callback(endpoint_id, cluster_id, command_id, tlv_data, custom_callback_priv_data);
+            esp_err_t err = custom_callback(endpoint_id, cluster_id, command_id, tlv_data, custom_callback_priv_data);
+            EmberAfStatus status = (err == ESP_OK) ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;
+            emberAfSendImmediateDefaultResponse(status);
         }
     } else {
         esp_matter_command_callback_t callback = esp_matter_command_get_callback(command);
