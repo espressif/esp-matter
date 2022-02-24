@@ -671,7 +671,7 @@ esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluste
     /* Set */
     attribute->attribute_id = attribute_id;
     attribute->flags = flags;
-    attribute->flags |= ATTRIBUTE_MASK_EXTERNAL_STORAGE;
+    attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
     attribute->val = val;
 
     /* Add */
@@ -815,8 +815,8 @@ esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoin
     _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
     _esp_matter_endpoint_t *_endpoint = (_esp_matter_endpoint_t *)endpoint;
 
-    if (!(_endpoint->flags & ENDPOINT_MASK_DELETABLE)) {
-        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_MASK_DELETABLE is not set");
+    if (!(_endpoint->flags & ESP_MATTER_ENDPOINT_FLAG_DELETABLE)) {
+        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ESP_MATTER_ENDPOINT_FLAG_DELETABLE is not set");
         return ESP_FAIL;
     }
 
