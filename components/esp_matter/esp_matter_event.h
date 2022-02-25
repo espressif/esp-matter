@@ -22,10 +22,11 @@
  * Issue: https://github.com/project-chip/connectedhomeip/issues/14624            
 */
 
-esp_err_t esp_matter_event_send_switch_latched(uint8_t new_position);
-esp_err_t esp_matter_event_send_initial_press(uint8_t new_position);
-esp_err_t esp_matter_event_send_long_press(uint8_t new_position);
-esp_err_t esp_matter_event_send_short_release(uint8_t previous_position);
-esp_err_t esp_matter_event_send_long_release(uint8_t previous_position);
-esp_err_t esp_matter_event_send_multi_press_ongoing(uint8_t new_position, uint8_t count);
-esp_err_t esp_matter_event_send_multi_press_complete(uint8_t new_position, uint8_t count);
+/** cluster: switch */
+esp_err_t esp_matter_switch_send_event_switch_latched(uint8_t new_position);
+esp_err_t esp_matter_switch_send_event_initial_press(uint8_t new_position);
+esp_err_t esp_matter_switch_send_event_long_press(uint8_t new_position);
+esp_err_t esp_matter_switch_send_event_short_release(uint8_t previous_position);
+esp_err_t esp_matter_switch_send_event_long_release(uint8_t previous_position);
+esp_err_t esp_matter_switch_send_event_multi_press_ongoing(uint8_t new_position, uint8_t count);
+esp_err_t esp_matter_switch_send_event_multi_press_complete(uint8_t new_position, uint8_t count);

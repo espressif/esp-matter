@@ -199,6 +199,14 @@
         .label_list = {0},                   \
     }
 
+#define CLUSTER_CONFIG_SWITCH_DEFAULT() \
+    {                                   \
+        .cluster_revision = 1,          \
+        .number_of_positions = 2,       \
+        .current_position = 0,          \
+        .multi_press_max = 2,           \
+    }
+
 typedef struct esp_matter_cluster_descriptor_config {
     uint16_t cluster_revision;
     uint8_t device_type_list[254];
@@ -360,6 +368,13 @@ typedef struct esp_matter_cluster_fixed_label_config {
     uint8_t label_list[254];
 } esp_matter_cluster_fixed_label_config_t;
 
+typedef struct esp_matter_cluster_switch_config {
+    uint16_t cluster_revision;
+    uint8_t number_of_positions;
+    uint8_t current_position;
+    uint8_t multi_press_max;
+} esp_matter_cluster_switch_config_t;
+
 void esp_matter_cluster_plugin_init_callback_common();
 
 esp_matter_cluster_t *esp_matter_cluster_create_descriptor(esp_matter_endpoint_t *endpoint,
@@ -420,3 +435,5 @@ esp_matter_cluster_t *esp_matter_cluster_create_bridged_device_basic(esp_matter_
                                                                      uint8_t flags);
 esp_matter_cluster_t *esp_matter_cluster_create_fixed_label(esp_matter_endpoint_t *endpoint,
                                                             esp_matter_cluster_fixed_label_config_t *config, uint8_t flags);
+esp_matter_cluster_t *esp_matter_cluster_create_switch(esp_matter_endpoint_t *endpoint,
+                                                       esp_matter_cluster_switch_config_t *config, uint8_t flags);
