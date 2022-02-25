@@ -1,0 +1,12 @@
+menu "ESP Matter Insights"
+
+    config ESP_MATTER_ENABLE_INSIGHTS
+        bool "ESP Matter Enable Insights"
+        default n
+        select ESP_INSIGHTS_ENABLED
+        help
+            Enable the ESP Matter Insights service.
+            ESP Insights is a remote diagnostics solution that allows users to
+            remotely monitor the devices in the field.
+
+endmenu
