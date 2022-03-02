@@ -25,7 +25,7 @@ esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter_node_t *n
 {
     esp_matter_bridge_device_t *dev = (esp_matter_bridge_device_t *)calloc(1, sizeof(esp_matter_bridge_device_t));
     dev->node = node;
-    dev->endpoint = esp_matter_endpoint_create_bridged_node(node, &bridged_node_config, ENDPOINT_MASK_DELETABLE);
+    dev->endpoint = esp_matter_endpoint_create_bridged_node(node, &bridged_node_config, ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not create esp_matter endpoint for bridged device");
         free(dev);
