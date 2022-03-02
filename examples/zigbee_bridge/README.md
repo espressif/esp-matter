@@ -112,8 +112,8 @@ chip-tool onoff toggle 0x7283 0x1
 The following is the Memory and Flash Usage.
 
 -   `Bootup` == Device just finished booting up. Device is not
-    commissionined or connected to wifi yet.
--   `After Commissioning` == Device is conneted to wifi and is also
+    commissioned or connected to wifi yet.
+-   `After Commissioning` == Device is connected to wifi and is also
     commissioned and is rebooted.
 -   device used: esp32c3_devkit_m
 -   tested on:

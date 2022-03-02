@@ -15,11 +15,11 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
-#include <app_ble.h>
 #include <app_qrcode.h>
-#include <app_zboss.h>
 #include <app_bridged_device.h>
-#include <zigbee_bridge.h>
+
+#include "blemesh_bridge.h"
+#include "app_blemesh.h"
 
 static const char *TAG = "app_main";
 
@@ -38,7 +38,6 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
-        app_ble_disable();
         break;
 
     default:
@@ -52,7 +51,7 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
     esp_err_t err = ESP_OK;
 
     if (type == PRE_UPDATE) {
-        err = zigbee_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        err = blemesh_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     }
     return err;
 }
@@ -89,5 +88,4 @@ extern "C" void app_main()
 #if CONFIG_ENABLE_OTA_REQUESTOR
     esp_matter_ota_requestor_init();
 #endif
-    launch_app_zboss();
 }

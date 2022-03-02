@@ -12,7 +12,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 
-#include <app_zigbee_bridge_device.h>
+#include <app_bridged_device.h>
 #include <app_zboss.h>
 #include <esp_matter_core.h>
 #include <zboss_api_buf.h>
@@ -23,7 +23,7 @@ static const char *TAG = "zigbee_bridge";
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
-static esp_err_t init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
+static esp_err_t zigbee_bridge_init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
 {
     if (!dev) {
         ESP_LOGE(TAG, "Invalid bridge device to be initialized");
@@ -52,13 +52,13 @@ void zigbee_bridge_match_bridged_onoff_light_cb(zb_bufid_t bufid)
         p_match_ep = (zb_uint8_t *)(p_resp + 1);
         node_t *node = node::get();
         ESP_GOTO_ON_FALSE(node, ESP_ERR_INVALID_STATE, exit, TAG, "Could not find esp_matter node");
-        if (app_bridge_get_zigbee_device_by_zigbee_shortaddr(p_ind->src_addr)) {
+        if (app_bridge_get_device_by_zigbee_shortaddr(p_ind->src_addr)) {
             ESP_LOGI(TAG, "Bridged node for 0x%04x zigbee device on endpoint %d has been created", p_ind->src_addr,
                      app_bridge_get_matter_endpointid_by_zigbee_shortaddr(p_ind->src_addr));
         } else {
-            app_zigbee_bridge_device_t *dev = app_bridge_create_zigbee_device(node, *p_match_ep, p_ind->src_addr);
-            ESP_GOTO_ON_FALSE(dev, ESP_FAIL, exit, TAG, "Failed to create zigbee bridged device (on_off light)");
-            ESP_GOTO_ON_ERROR(init_bridged_onoff_light(dev->dev), exit, TAG, "Failed to initialize the bridged node");
+            app_bridged_device_t *bridged_device = app_bridge_create_bridged_device(node, ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE, app_bridge_zigbee_address(*p_match_ep, p_ind->src_addr));
+            ESP_GOTO_ON_FALSE(bridged_device, ESP_FAIL, exit, TAG, "Failed to create zigbee bridged device (on_off light)");
+            ESP_GOTO_ON_ERROR(zigbee_bridge_init_bridged_onoff_light(bridged_device->dev), exit, TAG, "Failed to initialize the bridged node");
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x zigbee device on endpoint %d", p_ind->src_addr,
                      app_bridge_get_matter_endpointid_by_zigbee_shortaddr(p_ind->src_addr));
         }
@@ -106,29 +106,30 @@ void zigbee_bridge_match_bridged_onoff_light_timeout(zb_bufid_t bufid)
 
 void zigbee_bridge_send_on(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 {
-    app_zigbee_bridge_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
-    ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, dev->zigbee_endpointid,
-                           dev->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
+    app_bridged_device_t *zigbee_device = app_bridge_get_device_by_zigbee_shortaddr(zigbee_shortaddr);
+    ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, zigbee_device->dev_addr.zigbee_endpointid,
+                           zigbee_device->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
                            ZB_ZCL_CMD_ON_OFF_ON_ID, NULL);
 }
 
 void zigbee_bridge_send_off(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 {
-    app_zigbee_bridge_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
-    ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, dev->zigbee_endpointid,
-                           dev->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
+    app_bridged_device_t *zigbee_device = app_bridge_get_device_by_zigbee_shortaddr(zigbee_shortaddr);
+    ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, zigbee_device->dev_addr.zigbee_endpointid,
+                           zigbee_device->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
                            ZB_ZCL_CMD_ON_OFF_OFF_ID, NULL);
 }
 
 esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                          esp_matter_attr_val_t *val)
 {
-    app_zigbee_bridge_device_t *zigbee_device = app_bridge_get_zigbee_device_by_matter_endpointid(endpoint_id);
+    app_bridged_device_t *zigbee_device = app_bridge_get_device_by_matter_endpointid(endpoint_id);
     if (zigbee_device && zigbee_device->dev && zigbee_device->dev->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
+                ESP_LOGD(TAG, "Update Bridged Device, ep: %d, cluster: %d, att: %d", endpoint_id, cluster_id, attribute_id);
                 zb_buf_get_out_delayed_ext((val->val.b ? zigbee_bridge_send_on : zigbee_bridge_send_off),
-                                           zigbee_device->zigbee_shortaddr, 0);
+                                           zigbee_device->dev_addr.zigbee_shortaddr, 0);
             }
         }
     }
