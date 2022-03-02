@@ -53,6 +53,9 @@ const int esp_matter_cluster_operational_credentials_function_flags = ESP_MATTER
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_group_key_management_function_list = NULL;
 const int esp_matter_cluster_group_key_management_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
 
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_fan_control_function_list = NULL;
+const int esp_matter_cluster_fan_control_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_binding_function_list = NULL;
 const int esp_matter_cluster_binding_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
 
@@ -842,6 +845,55 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
     esp_matter_command_create_move_saturation(cluster);                              
     esp_matter_command_create_step_saturation(cluster);                              
     esp_matter_command_create_move_to_hue_and_saturation(cluster);                              
+
+    return cluster;
+}
+
+esp_matter_cluster_t *esp_matter_cluster_create_fan_control(esp_matter_endpoint_t *endpoint,
+                                                            esp_matter_cluster_fan_control_config_t *config,
+                                                            uint8_t flags)
+{
+    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_FAN_CONTROL_CLUSTER_ID, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterFanControlPluginServerInitCallback);
+        esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_fan_control_function_list,
+                                             esp_matter_cluster_fan_control_function_flags);
+    }
+    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterFanControlPluginClientInitCallback);
+    }
+
+    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint16(config->cluster_revision));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_FAN_MODE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->fan_mode));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_FAN_MODE_SEQUENCE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->fan_mode_sequence));
+    /* Not implemented
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_PERCENT_SETTING_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint8(config->percent_setting));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_PERCENT_CURRENT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint8(config->percent_current));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_SPEED_MAX_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint8(config->speed_max));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_SPEED_SETTING_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint8(config->speed_max));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_SPEED_CURRENT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_enum8(config->speed_setting));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_ROCK_SUPPORT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bitmap8(config->rock_support));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_ROCK_SETTING_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bitmap8(config->rock_setting));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_WIND_SUPPORT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bitmap8(config->wind_support));
+    esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_WIND_SETTING_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_bitmap8(config->wind_setting));
+    */
 
     return cluster;
 }

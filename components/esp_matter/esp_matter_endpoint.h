@@ -24,6 +24,7 @@
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
+#define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
@@ -82,6 +83,14 @@
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .binding = CLUSTER_CONFIG_BINDING_DEFAULT(),                                                      \
         .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
+    }
+
+#define ENDPOINT_CONFIG_FAN_DEFAULT()                                                                     \
+    {                                                                                                     \
+        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
+        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
+        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
+        .fan_control = CLUSTER_CONFIG_FAN_CONTROL_DEFAULT(),                                              \
     }
 
 #define ENDPOINT_CONFIG_THERMOSTAT_DEFAULT()                                                              \
@@ -160,6 +169,13 @@ typedef struct esp_matter_endpoint_on_off_switch_config {
     esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_on_off_switch_config_t;
 
+typedef struct esp_matter_endpoint_fan_config {
+    esp_matter_cluster_identify_config_t identify;
+    esp_matter_cluster_groups_config_t groups;
+    esp_matter_cluster_descriptor_config_t descriptor;
+    esp_matter_cluster_fan_control_config_t fan_control;
+} esp_matter_endpoint_fan_config_t;
+
 typedef struct esp_matter_endpoint_thermostat_config {
     esp_matter_cluster_identify_config_t identify;
     esp_matter_cluster_groups_config_t groups;
@@ -194,6 +210,9 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
 esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_t *node,
                                                                 esp_matter_endpoint_on_off_switch_config_t *config,
                                                                 uint8_t flags);
+esp_matter_endpoint_t *esp_matter_endpoint_create_fan(esp_matter_node_t *node,
+                                                      esp_matter_endpoint_fan_config_t *config,
+                                                      uint8_t flags);
 esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
                                                              esp_matter_endpoint_thermostat_config_t *config,
                                                              uint8_t flags);
