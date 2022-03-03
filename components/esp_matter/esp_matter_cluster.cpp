@@ -285,6 +285,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_binding(esp_matter_endpoint_t *e
     if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
         esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
     }
+    /* Extra initialization */
+    esp_matter_binding_manager_init();
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint16(config->cluster_revision));

@@ -17,6 +17,7 @@
 #include <esp_err.h>
 #include <esp_matter_attribute.h>
 #include <app/InteractionModelEngine.h>
+#include <app/DeviceProxy.h>
 #include <app/util/af-types.h>
 
 using chip::DeviceLayer::ChipDeviceEvent;
@@ -57,6 +58,8 @@ typedef esp_err_t (*esp_matter_command_custom_callback_t)(int endpoint_id, int c
 typedef void (*esp_matter_command_callback_t)(void *command_obj, const ConcreteCommandPath &command_path,
                                               TLVReader &tlv_data);
 
+typedef chip::DeviceProxy esp_matter_peer_device_t;
+typedef void (*esp_matter_client_command_callback_t)(esp_matter_peer_device_t *peer_device, int remote_endpoint_id, void *priv_data);
 
 /** Initializing APIs */
 esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data);
@@ -121,3 +124,9 @@ int esp_matter_command_get_id(esp_matter_command_t *command);
 esp_matter_command_callback_t esp_matter_command_get_callback(esp_matter_command_t *command);
 int esp_matter_command_get_flags(esp_matter_command_t *command);
 esp_err_t esp_matter_command_set_custom_callback(esp_matter_command_custom_callback_t callback, void *priv_data);
+
+/* Client APIs */
+void esp_matter_binding_manager_init();
+esp_err_t esp_matter_connect(int fabric_index, int node_id, int remote_endpoint_id);
+esp_err_t esp_matter_set_client_command_callback(esp_matter_client_command_callback_t callback, void *priv_data);
+esp_err_t esp_matter_client_cluster_update(int endpoint_id, int cluster_id);

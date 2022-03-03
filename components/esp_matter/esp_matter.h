@@ -22,6 +22,7 @@ application.
 #include <esp_matter_attribute.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_command.h>
+#include <esp_matter_client.h>
 #include <esp_matter_core.h>
 #include <esp_matter_endpoint.h>
 #include <esp_matter_event.h>

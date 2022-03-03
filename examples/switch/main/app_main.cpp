@@ -17,7 +17,6 @@
 
 #include <app_driver.h>
 #include <app_qrcode.h>
-#include <app_binding_handler.h>
 
 static const char *TAG = "app_main";
 
@@ -70,10 +69,9 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter device creation failed");
     }
     ESP_LOGI(TAG, "Switch created with endpoint_id %d", switch_endpoint_id);
+
     /* Initialize driver */
     app_driver_init();
-
-    app_binding_handler_init();
 
     /* Matter start */
     err = esp_matter_start(app_event_cb);
