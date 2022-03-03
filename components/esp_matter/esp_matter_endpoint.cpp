@@ -219,6 +219,24 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_door_lock(esp_matter_node_t *n
     return endpoint;
 }
 
+esp_matter_endpoint_t *esp_matter_endpoint_create_temperature_sensor(esp_matter_node_t *node,
+                                                            esp_matter_endpoint_temperature_sensor_config_t *config,
+                                                            uint8_t flags)
+{
+    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID);
+
+    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER|ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    esp_matter_cluster_create_temperature_measurement(endpoint, &(config->temperature_measurement), ESP_MATTER_CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+
 esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
                                           void *priv_data)
 {
