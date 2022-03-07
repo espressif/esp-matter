@@ -30,8 +30,6 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_INTEGER,
     /** Floating point number */
     ESP_MATTER_VAL_TYPE_FLOAT,
-    /** NULL terminated string */
-    ESP_MATTER_VAL_TYPE_STRING,
     /** Array Eg. [1,2,3] */
     ESP_MATTER_VAL_TYPE_ARRAY,
     /** Byte String Eg. "123" */
@@ -60,10 +58,6 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_BITMAP16,
     /** 32 bit bitmap */
     ESP_MATTER_VAL_TYPE_BITMAP32,
-    /** NULL terminated JSON Object string Eg. "{\"name\":\"value\"}" */
-    ESP_MATTER_VAL_TYPE_JSON_OBJECT,
-    /** NULL terminated JSON Array string Eg. "[1,2,3]" */
-    ESP_MATTER_VAL_TYPE_JSON_ARRAY,
 } esp_matter_val_type_t;
 
 /* ESP Matter Value */
@@ -74,8 +68,6 @@ typedef union {
     int i;
     /** Float */
     float f;
-    /** NULL terminated string. It should stay allocated throughout the lifetime of the device. */
-    char *s;
     /** 8 bit signed integer */
     int8_t i8;
     /** 8 bit unsigned integer */
@@ -92,10 +84,12 @@ typedef union {
     struct {
         /** Buffer */
         uint8_t *b;
-        /** Total size */
+        /** Data size */
         uint16_t s;
-        /** Total count */
+        /** Data count */
         uint16_t n;
+        /** Total size */
+        uint16_t t;
     } a;
     /** Pointer */
     void *p;
@@ -121,15 +115,6 @@ esp_matter_attr_val_t esp_matter_int(int val);
 
 /** Float */
 esp_matter_attr_val_t esp_matter_float(float val);
-
-/** String */
-esp_matter_attr_val_t esp_matter_str(const char *val);
-
-/** JSON object string */
-esp_matter_attr_val_t esp_matter_json_obj(const char *val);
-
-/** JSON array string */
-esp_matter_attr_val_t esp_matter_json_array(const char *val);
 
 /** 8 bit integer */
 esp_matter_attr_val_t esp_matter_int8(int8_t val);
@@ -162,13 +147,13 @@ esp_matter_attr_val_t esp_matter_bitmap16(uint16_t val);
 esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val);
 
 /** Character string */
-esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t total_size);
+esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size);
 
 /** Octet string */
-esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t total_size, uint16_t count);
+esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size);
 
 /** Array */
-esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t total_size, uint16_t count);
+esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_t count);
 
 /** Attribute update
  *

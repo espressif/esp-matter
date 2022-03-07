@@ -203,12 +203,6 @@ static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t
         return esp_rmaker_int(val.val.i);
     } else if (val.type == ESP_MATTER_VAL_TYPE_FLOAT) {
         return esp_rmaker_float(val.val.f);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_STRING) {
-        return esp_rmaker_str(val.val.s);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_JSON_OBJECT) {
-        return esp_rmaker_obj(val.val.s);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_JSON_ARRAY) {
-        return esp_rmaker_array(val.val.s);
     } else if (val.type == ESP_MATTER_VAL_TYPE_UINT8) {
         return esp_rmaker_int(val.val.u8);
     } else if (val.type == ESP_MATTER_VAL_TYPE_INT16) {
@@ -229,12 +223,6 @@ static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t
         return esp_matter_int(val.val.i);
     } else if (val.type == RMAKER_VAL_TYPE_FLOAT) {
         return esp_matter_float(val.val.f);
-    } else if (val.type == RMAKER_VAL_TYPE_STRING) {
-        return esp_matter_str(val.val.s);
-    } else if (val.type == RMAKER_VAL_TYPE_OBJECT) {
-        return esp_matter_json_obj(val.val.s);
-    } else if (val.type == RMAKER_VAL_TYPE_ARRAY) {
-        return esp_matter_json_array(val.val.s);
     } else {
         ESP_LOGE(TAG, "Invalid val type: %d", val.type);
     }

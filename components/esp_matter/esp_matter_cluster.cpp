@@ -358,7 +358,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_ota_requestor(esp_matter_endpoin
                                 esp_matter_uint16(config->cluster_revision));
     esp_matter_attribute_create(cluster, ZCL_DEFAULT_OTA_PROVIDERS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_octet_str(config->default_ota_providers,
-                                sizeof(config->default_ota_providers), 0));
+                                sizeof(config->default_ota_providers)));
     esp_matter_attribute_create(cluster, ZCL_UPDATE_POSSIBLE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_bool(config->update_possible));
     esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -448,7 +448,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_network_commissioning(esp_matter
     esp_matter_attribute_create(cluster, ZCL_LAST_NETWORKING_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_enum8(config->last_networking_status));
     esp_matter_attribute_create(cluster, ZCL_LAST_NETWORK_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                esp_matter_octet_str(config->last_network_id, sizeof(config->last_network_id), 0));
+                                esp_matter_octet_str(config->last_network_id, sizeof(config->last_network_id)));
     esp_matter_attribute_create(cluster, ZCL_LAST_CONNECT_ERROR_VALUE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint32(config->last_connect_error_value));
 
