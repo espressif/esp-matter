@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include <esp_log.h>
+#include <esp_matter.h>
 #include <esp_matter_attribute.h>
+#include <esp_matter_console.h>
 #include <esp_matter_core.h>
 #include <string.h>
 
@@ -25,10 +27,166 @@ using chip::ClusterId;
 using chip::EndpointId;
 using chip::Protocols::InteractionModel::Status;
 
-static const char *TAG = "esp_matter";
+static const char *TAG = "esp_matter_attribute";
 
 static esp_matter_attribute_callback_t attribute_callback = NULL;
 static void *attribute_callback_priv_data = NULL;
+
+static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type);
+
+static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
+{
+    if (argc == 5 && strncmp(argv[0], "set", sizeof("set")) == 0) {
+        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
+
+        /* Get type from matter_attribute */
+        EmberAfAttributeMetadata *matter_attribute = NULL;
+        EmberAfAttributeSearchRecord record = {
+            .endpoint    = (EndpointId)endpoint_id,
+            .clusterId   = (ClusterId)cluster_id,
+            .clusterMask = ESP_MATTER_CLUSTER_FLAG_SERVER,
+            .attributeId = (AttributeId)attribute_id,
+        };
+        emAfReadOrWriteAttribute(&record, &matter_attribute, NULL, 0, false);
+        if (!matter_attribute) {
+            ESP_LOGE(TAG, "Matter attribute not found");
+            return ESP_ERR_INVALID_ARG;
+        }
+
+        /* Use the type to create the val and then update te attribute */
+        esp_matter_val_type_t type = get_val_type_from_attribute_type(matter_attribute->attributeType);
+        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        if (type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+            bool value = atoi(argv[4]);
+            val = esp_matter_bool(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
+            int8_t value = atoi(argv[4]);
+            val = esp_matter_int8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
+            uint8_t value = atoi(argv[4]);
+            val = esp_matter_uint8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
+            int16_t value = atoi(argv[4]);
+            val = esp_matter_int16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
+            uint16_t value = atoi(argv[4]);
+            val = esp_matter_uint16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
+            uint32_t value = atoi(argv[4]);
+            val = esp_matter_uint32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
+            uint64_t value = atoi(argv[4]);
+            val = esp_matter_uint64(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+            char *value = argv[4];
+            val = esp_matter_char_str(value, strlen(value));
+        } else {
+            ESP_LOGE(TAG, "Type not handled: %d", type);
+            return ESP_ERR_INVALID_ARG;
+        }
+        esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+    } else if (argc == 4 && strncmp(argv[0], "get", sizeof("get")) == 0) {
+        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
+
+        /* Directly print if esp matter data model is used */
+        esp_matter_node_t *node = esp_matter_node_get();
+        if (node) {
+            esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
+            esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
+            esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
+            esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
+            esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+            return ESP_OK;
+        }
+
+        /* Get type from matter_attribute if esp matter data model is not used */
+        EmberAfAttributeMetadata *matter_attribute = NULL;
+        EmberAfAttributeSearchRecord record = {
+            .endpoint    = (EndpointId)endpoint_id,
+            .clusterId   = (ClusterId)cluster_id,
+            .clusterMask = ESP_MATTER_CLUSTER_FLAG_SERVER,
+            .attributeId = (AttributeId)attribute_id,
+        };
+        emAfReadOrWriteAttribute(&record, &matter_attribute, NULL, 0, false);
+        if (!matter_attribute) {
+            ESP_LOGE(TAG, "Matter attribute not found");
+            return ESP_ERR_INVALID_ARG;
+        }
+
+        /* Use the type to read the raw value and then print if esp matter data model is not used */
+        esp_matter_val_type_t type = get_val_type_from_attribute_type(matter_attribute->attributeType);
+        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+        if (type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+            bool value = false;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_bool(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
+            int8_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_int8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
+            uint8_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_uint8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
+            int16_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_int16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
+            uint16_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_uint16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
+            uint32_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_uint32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
+            uint64_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_uint64(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+            /* Get raw value */
+            char value[256] = {0};      /* It can go upto 256 since only 1 byte (first) is used for size */
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            /* Get val from raw value */
+            val = esp_matter_char_str(NULL, 0);
+            int data_size_len = val.val.a.t - val.val.a.s;
+            int data_count = 0;
+            memcpy(&data_count, &value[0], data_size_len);
+            val = esp_matter_char_str((char *)(value + data_size_len), data_count);
+        } else {
+            ESP_LOGE(TAG, "Type not handled: %d", type);
+            return ESP_ERR_INVALID_ARG;
+        }
+        esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+    } else {
+        ESP_LOGE(TAG, "Incorrect arguments");
+        return ESP_ERR_INVALID_ARG;
+    }
+    return ESP_OK;
+}
+
+static void esp_matter_attribute_register_commands()
+{
+    static bool init_done = false;
+    if (init_done) {
+        return;
+    }
+    esp_matter_console_command_t command = {
+        .name = "attribute",
+        .description = "This can be used to simulate on-device control. "
+                       "Usage: matter esp attribute <set|get> <endpoint_id> <cluster_id> <attribute_id> [value]. "
+                       "Example1: matter esp attribute set 0x0001 0x0006 0x0000 1. "
+                       "Example2: matter esp attribute get 0x0001 0x0006 0x0000.",
+        .handler = esp_matter_attribute_console_handler,
+    };
+    esp_matter_console_add_command(&command);
+    init_done = true;
+}
 
 esp_matter_attr_val_t esp_matter_invalid(void *val)
 {
@@ -233,6 +391,76 @@ esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_
         },
     };
     return attr_val;
+}
+
+static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type)
+{
+    switch(attribute_type) {
+    case ZCL_BOOLEAN_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_BOOLEAN;
+        break;
+
+    case ZCL_SINGLE_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_FLOAT;
+        break;
+
+    case ZCL_ARRAY_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_ARRAY;
+        break;
+
+    case ZCL_CHAR_STRING_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_CHAR_STRING;
+        break;
+
+    case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_OCTET_STRING;
+        break;
+
+    case ZCL_INT8S_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_INT8;
+        break;
+
+    case ZCL_INT8U_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_UINT8;
+        break;
+
+    case ZCL_INT16S_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_INT16;
+        break;
+
+    case ZCL_INT16U_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_UINT16;
+        break;
+
+    case ZCL_INT32U_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_UINT32;
+        break;
+
+    case ZCL_INT64U_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_UINT64;
+        break;
+
+    case ZCL_ENUM8_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_ENUM8;
+        break;
+
+    case ZCL_BITMAP8_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_BITMAP8;
+        break;
+
+    case ZCL_BITMAP16_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_BITMAP16;
+        break;
+
+    case ZCL_BITMAP32_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_BITMAP32;
+        break;
+
+    default:
+        return ESP_MATTER_VAL_TYPE_INVALID;
+        break;
+    }
+    return ESP_MATTER_VAL_TYPE_INVALID;
 }
 
 esp_err_t esp_matter_attribute_get_type_and_val_default(esp_matter_attr_val_t *val,
@@ -723,6 +951,9 @@ esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t call
 {
     attribute_callback = callback;
     attribute_callback_priv_data = priv_data;
+
+    /* Other initialisations */
+    esp_matter_attribute_register_commands();
     return ESP_OK;
 }
 
@@ -731,7 +962,7 @@ esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int 
 {
     EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error getting raw value from matter");
+        ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
         return ESP_FAIL;
     }
     return ESP_OK;
