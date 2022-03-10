@@ -86,7 +86,7 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
         }
-        esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
     } else if (argc == 4 && strncmp(argv[0], "get", sizeof("get")) == 0) {
         int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
         int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
@@ -98,8 +98,9 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
             esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
             esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
             esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
-            esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
-            esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+            esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+            esp_matter_attribute_get_val(attribute, &val);
+            esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
             return ESP_OK;
         }
 
@@ -162,7 +163,7 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
         }
-        esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+        esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
     } else {
         ESP_LOGE(TAG, "Incorrect arguments");
         return ESP_ERR_INVALID_ARG;
@@ -912,38 +913,38 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
     return ESP_OK;
 }
 
-void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
+void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
-    if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+    if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.b);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_INTEGER) {
+                 cluster_id, attribute_id, val->val.b);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.i);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_FLOAT) {
+                 cluster_id, attribute_id, val->val.i);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.f);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT8 || val.type == ESP_MATTER_VAL_TYPE_BITMAP8) {
+                 cluster_id, attribute_id, val->val.f);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.u8);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_INT16) {
+                 cluster_id, attribute_id, val->val.u8);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.i16);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT16) {
+                 cluster_id, attribute_id, val->val.i16);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.u16);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT32) {
+                 cluster_id, attribute_id, val->val.u16);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.u32);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT64) {
+                 cluster_id, attribute_id, val->val.u32);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.u64);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
+                 cluster_id, attribute_id, val->val.u64);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %.*s **********", endpoint_id,
-                 cluster_id, attribute_id, val.val.a.s, val.val.a.b);
+                 cluster_id, attribute_id, val->val.a.s, val->val.a.b);
     } else {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is <invalid type: %d> **********",
-                 endpoint_id, cluster_id, attribute_id, val.type);
+                 endpoint_id, cluster_id, attribute_id, val->type);
     }
 }
 
@@ -968,12 +969,12 @@ esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int 
     return ESP_OK;
 }
 
-esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
+esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     /* Get size */
     EmberAfAttributeType attribute_type = 0;
     uint16_t attribute_size = 0;
-    get_data_from_attr_val(&val, &attribute_type, &attribute_size, NULL);
+    get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
 
     /* Get value */
     uint8_t *value = (uint8_t *)calloc(1, attribute_size);
@@ -981,7 +982,7 @@ esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attri
         ESP_LOGE(TAG, "Could not allocate value buffer");
         return ESP_ERR_NO_MEM;
     }
-    get_data_from_attr_val(&val, &attribute_type, &attribute_size, value);
+    get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
 
     /* Update matter */
     EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
@@ -1007,12 +1008,12 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     get_attr_val_from_data(&val, type, size, value);
 
     /* Print */
-    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
 
     /* Callback to application */
     if (attribute_callback) {
         esp_err_t err = attribute_callback(ESP_MATTER_CALLBACK_TYPE_PRE_ATTRIBUTE, endpoint_id, cluster_id,
-                                           attribute_id, val, attribute_callback_priv_data);
+                                           attribute_id, &val, attribute_callback_priv_data);
         if (err != ESP_OK) {
             return Status::Failure;
         }
@@ -1031,7 +1032,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
 
     /* Callback to application */
     if (attribute_callback) {
-        attribute_callback(ESP_MATTER_CALLBACK_TYPE_POST_ATTRIBUTE, endpoint_id, cluster_id, attribute_id, val,
+        attribute_callback(ESP_MATTER_CALLBACK_TYPE_POST_ATTRIBUTE, endpoint_id, cluster_id, attribute_id, &val,
                            attribute_callback_priv_data);
     }
 }
@@ -1049,10 +1050,11 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
     esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
     esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
-    esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter_attribute_get_val(attribute, &val);
 
     /* Print */
-    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, val);
+    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
 
     /* Get size */
     uint16_t attribute_size = 0;
@@ -1088,6 +1090,6 @@ EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, Clus
     get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer);
 
     /* Update val */
-    esp_matter_attribute_set_val(attribute, val);
+    esp_matter_attribute_set_val(attribute, &val);
     return EMBER_ZCL_STATUS_SUCCESS;
 }

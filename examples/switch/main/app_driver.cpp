@@ -85,7 +85,7 @@ void app_driver_client_command_callback(esp_matter_peer_device_t *peer_device, i
     }
 }
 
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
+esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     /* Nothing to do here */
     return ESP_OK;
@@ -105,8 +105,9 @@ static esp_err_t app_driver_attribute_set_defaults()
             esp_matter_attribute_t *attribute = esp_matter_attribute_get_first(cluster);
             while (attribute) {
                 int attribute_id = esp_matter_attribute_get_id(attribute);
-                esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
-                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+                esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+                err |= esp_matter_attribute_get_val(attribute, &val);
+                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
                 attribute = esp_matter_attribute_get_next(attribute);
             }
             cluster = esp_matter_cluster_get_next(cluster);

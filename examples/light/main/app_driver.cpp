@@ -30,30 +30,30 @@ extern int light_endpoint_id;
 #define MATTER_TEMPERATURE 255
 
 /* Do any conversions/remapping for the actual value here */
-static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t val)
+static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t *val)
 {
-    return light_driver_set_power(val.val.b);
+    return light_driver_set_power(val->val.b);
 }
 
-static esp_err_t app_driver_light_set_brightness(esp_matter_attr_val_t val)
+static esp_err_t app_driver_light_set_brightness(esp_matter_attr_val_t *val)
 {
-    int value = REMAP_TO_RANGE(val.val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
+    int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
     return light_driver_set_brightness(value);
 }
 
-static esp_err_t app_driver_light_set_hue(esp_matter_attr_val_t val)
+static esp_err_t app_driver_light_set_hue(esp_matter_attr_val_t *val)
 {
-    int value = REMAP_TO_RANGE(val.val.u8, MATTER_HUE, STANDARD_HUE);
+    int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
     return light_driver_set_hue(value);
 }
 
-static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t val)
+static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t *val)
 {
-    int value = REMAP_TO_RANGE(val.val.u8, MATTER_SATURATION, STANDARD_SATURATION);
+    int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
     return light_driver_set_saturation(value);
 }
 
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
+esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     esp_err_t err = ESP_OK;
     if (endpoint_id == light_endpoint_id) {
@@ -90,8 +90,9 @@ static esp_err_t app_driver_attribute_set_defaults()
             esp_matter_attribute_t *attribute = esp_matter_attribute_get_first(cluster);
             while (attribute) {
                 int attribute_id = esp_matter_attribute_get_id(attribute);
-                esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
-                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+                esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+                err |= esp_matter_attribute_get_val(attribute, &val);
+                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
                 attribute = esp_matter_attribute_get_next(attribute);
             }
             cluster = esp_matter_cluster_get_next(cluster);

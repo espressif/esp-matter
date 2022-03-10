@@ -159,10 +159,10 @@ esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_
  *
  * This API updates the attribute value
  */
-esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
 /** Attribute value print
  *
  * This API prints the attribute value according to the type
  */
-void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);

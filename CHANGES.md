@@ -26,7 +26,7 @@ There is now just one attribute update callback which calls the other callbacks 
 The application receives this callback twice, once before updating the value in the data model (pre_attribute)
 and once after updating the value (post_attribute).
 ```
-esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val, void *priv_data);
+esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val, void *priv_data);
 ```
 
 The app_driver component has been moved to the application itself and it now uses the endpoint_id,
@@ -34,7 +34,7 @@ cluster_id, attribute_id for setting/getting the values. The application calls t
 for drivers first when it gets the pre_attribute callback. If this returns success, i.e. ESP_OK, only then
 the data model value is updated and the application receives the post_attribute callback.
 ```
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 ```
 
 The rainmaker example creates its data model dynamically based on the ESP Matter data model. New
@@ -45,7 +45,7 @@ callback.
 /* Create a device and add the relevant parameters to it */
 app_rainmaker_device_create();
 
-esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 ```
 
 Non-mandatory endpoints, clusters, attributes or commands can also be easily added by using the
