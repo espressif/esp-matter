@@ -18,6 +18,10 @@
 #include <app_driver.h>
 #include <app_qrcode.h>
 
+#define DEFAULT_POWER true
+#define DEFAULT_BRIGHTNESS 254
+#define DEFAULT_SATURATION 254
+
 static const char *TAG = "app_main";
 
 static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
@@ -59,6 +63,9 @@ extern "C" void app_main()
 
     /* Create matter device */
     esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
+    light_config.on_off.on_off = DEFAULT_POWER;
+    light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
+    light_config.color_control.current_saturation = DEFAULT_SATURATION;
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config,
                                                                                       ESP_MATTER_ENDPOINT_FLAG_NONE);
     light_endpoint_id = esp_matter_endpoint_get_id(endpoint);
