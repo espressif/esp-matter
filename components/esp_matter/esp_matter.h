@@ -67,4 +67,6 @@ typedef enum esp_matter_attribute_flags {
 typedef enum esp_matter_command_flags {
     ESP_MATTER_COMMAND_FLAG_NONE = 0x00,
     ESP_MATTER_COMMAND_FLAG_CUSTOM = 0x01,
+    ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED = 0x02,
+    ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED = 0x04,
 } esp_matter_command_flags_t;

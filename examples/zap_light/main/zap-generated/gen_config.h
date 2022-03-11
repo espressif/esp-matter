@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2021 Project CHIP Authors
+ *    Copyright (c) 2022 Project CHIP Authors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -40,13 +40,13 @@
 #define EMBER_AF_GROUPS_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_IDENTIFY_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_LEVEL_CONTROL_CLUSTER_SERVER_ENDPOINT_COUNT (1)
+#define EMBER_AF_LOCALIZATION_CONFIGURATION_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_NETWORK_COMMISSIONING_CLUSTER_SERVER_ENDPOINT_COUNT (1)
-#define EMBER_AF_OTA_PROVIDER_CLUSTER_SERVER_ENDPOINT_COUNT (1)
-#define EMBER_AF_OTA_PROVIDER_CLUSTER_CLIENT_ENDPOINT_COUNT (1)
-#define EMBER_AF_OTA_REQUESTOR_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_ON_OFF_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_OPERATIONAL_CREDENTIALS_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 #define EMBER_AF_SCENES_CLUSTER_SERVER_ENDPOINT_COUNT (1)
+#define EMBER_AF_TIME_FORMAT_LOCALIZATION_CLUSTER_SERVER_ENDPOINT_COUNT (1)
+#define EMBER_AF_UNIT_LOCALIZATION_CLUSTER_SERVER_ENDPOINT_COUNT (1)
 
 /**** Cluster Plugins ****/
 
@@ -118,26 +118,21 @@
 #define EMBER_AF_PLUGIN_LEVEL_CONTROL_SERVER
 #define EMBER_AF_PLUGIN_LEVEL_CONTROL
 // User options for server plugin Level Control
-#define EMBER_AF_PLUGIN_LEVEL_CONTROL_MAXIMUM_LEVEL 255
+#define EMBER_AF_PLUGIN_LEVEL_CONTROL_MAXIMUM_LEVEL 254
 #define EMBER_AF_PLUGIN_LEVEL_CONTROL_MINIMUM_LEVEL 0
 #define EMBER_AF_PLUGIN_LEVEL_CONTROL_RATE 0
+
+// Use this macro to check if the server side of the Localization Configuration
+// cluster is included
+#define ZCL_USING_LOCALIZATION_CONFIGURATION_CLUSTER_SERVER
+#define EMBER_AF_PLUGIN_LOCALIZATION_CONFIGURATION_SERVER
+#define EMBER_AF_PLUGIN_LOCALIZATION_CONFIGURATION
 
 // Use this macro to check if the server side of the Network Commissioning
 // cluster is included
 #define ZCL_USING_NETWORK_COMMISSIONING_CLUSTER_SERVER
 #define EMBER_AF_PLUGIN_NETWORK_COMMISSIONING_SERVER
 #define EMBER_AF_PLUGIN_NETWORK_COMMISSIONING
-
-// Use this macro to check if the client side of the OTA Software Update
-// Provider cluster is included
-#define ZCL_USING_OTA_PROVIDER_CLUSTER_CLIENT
-#define EMBER_AF_PLUGIN_OTA_SOFTWARE_UPDATE_PROVIDER_CLIENT
-
-// Use this macro to check if the server side of the OTA Software Update
-// Requestor cluster is included
-#define ZCL_USING_OTA_REQUESTOR_CLUSTER_SERVER
-#define EMBER_AF_PLUGIN_OTA_SOFTWARE_UPDATE_REQUESTOR_SERVER
-#define EMBER_AF_PLUGIN_OTA_SOFTWARE_UPDATE_REQUESTOR
 
 // Use this macro to check if the server side of the On/Off cluster is included
 #define ZCL_USING_ON_OFF_CLUSTER_SERVER
@@ -156,3 +151,15 @@
 #define EMBER_AF_PLUGIN_SCENES
 // User options for server plugin Scenes
 #define EMBER_AF_PLUGIN_SCENES_TABLE_SIZE 3
+
+// Use this macro to check if the server side of the Time Format Localization
+// cluster is included
+#define ZCL_USING_TIME_FORMAT_LOCALIZATION_CLUSTER_SERVER
+#define EMBER_AF_PLUGIN_TIME_FORMAT_LOCALIZATION_SERVER
+#define EMBER_AF_PLUGIN_TIME_FORMAT_LOCALIZATION
+
+// Use this macro to check if the server side of the Unit Localization cluster
+// is included
+#define ZCL_USING_UNIT_LOCALIZATION_CLUSTER_SERVER
+#define EMBER_AF_PLUGIN_UNIT_LOCALIZATION_SERVER
+#define EMBER_AF_PLUGIN_UNIT_LOCALIZATION

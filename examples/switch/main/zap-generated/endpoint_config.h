@@ -29,6 +29,8 @@
 #define GENERATED_ENDPOINT_TYPES                                               \
   {}
 
+#define ZAP_FIXED_ENDPOINT_DATA_VERSION_COUNT 0
+
 // Largest attribute size is needed for various buffers
 #define ATTRIBUTE_LARGEST (401)
 

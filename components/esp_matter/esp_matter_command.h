@@ -60,8 +60,6 @@ esp_matter_command_t *esp_matter_command_create_remove_all_scenes(esp_matter_clu
 esp_matter_command_t *esp_matter_command_create_store_scene(esp_matter_cluster_t *cluster);
 esp_matter_command_t *esp_matter_command_create_recall_scene(esp_matter_cluster_t *cluster);
 esp_matter_command_t *esp_matter_command_create_get_scene_membership(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_bind(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_unbind(esp_matter_cluster_t *cluster);
 esp_matter_command_t *esp_matter_command_create_off(esp_matter_cluster_t *cluster);
 esp_matter_command_t *esp_matter_command_create_on(esp_matter_cluster_t *cluster);
 esp_matter_command_t *esp_matter_command_create_toggle(esp_matter_cluster_t *cluster);

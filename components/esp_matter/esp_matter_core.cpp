@@ -39,6 +39,9 @@ using chip::Credentials::esp::esp_matter_dac_provider_get;
 using chip::Credentials::Examples::GetExampleDACProvider;
 #endif
 
+using chip::CommandId;
+using chip::DataVersion;
+using chip::kInvalidCommandId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
@@ -82,6 +85,7 @@ typedef struct esp_matter_endpoint {
     uint8_t flags;
     _esp_matter_cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
+    DataVersion *data_versions_ptr;
     struct esp_matter_endpoint *next;
 } _esp_matter_endpoint_t;
 
@@ -108,6 +112,18 @@ static int esp_matter_attribute_get_count(_esp_matter_attribute_t *current)
     while (current) {
         current = current->next;
         count++;
+    }
+    return count;
+}
+
+static int esp_matter_command_get_count(_esp_matter_command_t *current, int command_flag)
+{
+    int count = 0;
+    while (current) {
+        if (current->flags &= command_flag) {
+            count++;
+        }
+        current = current->next;
     }
     return count;
 }
@@ -149,9 +165,22 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
     int cluster_count = endpoint_type->clusterCount;
     for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
         /* Free attributes */
-        free(endpoint_type->cluster[cluster_index].attributes);
+        free((void *)endpoint_type->cluster[cluster_index].attributes);
+        /* Free commands */
+        if (endpoint_type->cluster[cluster_index].clientGeneratedCommandList) {
+            free((void *)endpoint_type->cluster[cluster_index].clientGeneratedCommandList);
+        }
+        if (endpoint_type->cluster[cluster_index].serverGeneratedCommandList) {
+            free((void *)endpoint_type->cluster[cluster_index].serverGeneratedCommandList);
+        }
     }
-    free(endpoint_type->cluster);
+    free((void *)endpoint_type->cluster);
+
+    /* Free data versions */
+    if (current_endpoint->data_versions_ptr) {
+        free(current_endpoint->data_versions_ptr);
+        current_endpoint->data_versions_ptr = NULL;
+    }
 
     /* Free endpoint type */
     free(endpoint_type);
@@ -176,6 +205,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     EmberAfEndpointType *endpoint_type = (EmberAfEndpointType *)calloc(1, sizeof(EmberAfEndpointType));
     if (!endpoint_type) {
         ESP_LOGE(TAG, "Couldn't allocate endpoint_type");
+        /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
         return ESP_ERR_NO_MEM;
     }
     current_endpoint->endpoint_type = endpoint_type;
@@ -184,27 +214,53 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
     int cluster_count = esp_matter_cluster_get_count(cluster);
     int cluster_index = 0;
-    EmberAfCluster *matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
-    if (!matter_clusters) {
-        ESP_LOGE(TAG, "Couldn't allocate matter_clusters");
+
+    DataVersion *data_versions_ptr = (DataVersion *)calloc(1, cluster_count * sizeof(DataVersion));
+    if (!data_versions_ptr) {
+        ESP_LOGE(TAG, "Couldn't allocate data_versions");
         free(endpoint_type);
         current_endpoint->endpoint_type = NULL;
+        /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
         return ESP_ERR_NO_MEM;
+    }
+    chip::Span<chip::DataVersion> data_versions(data_versions_ptr, cluster_count);
+    current_endpoint->data_versions_ptr = data_versions_ptr;
+
+    /* Variables */
+    /* This is needed to avoid 'crosses initialization' errors because of goto */
+    esp_err_t err = ESP_OK;
+    EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
+    EmberAfCluster *matter_clusters = NULL;
+    _esp_matter_attribute_t *attribute = NULL;
+    int attribute_count = 0;
+    int attribute_index = 0;
+    EmberAfAttributeMetadata *matter_attributes = NULL;
+    CommandId *client_generated_command_ids = NULL;
+    CommandId *server_generated_command_ids = NULL;
+    _esp_matter_command_t *command = NULL;
+    int command_count = 0;
+    int command_index = 0;
+    int command_flag = ESP_MATTER_COMMAND_FLAG_NONE;
+    int endpoint_index = 0;
+
+    matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
+    if (!matter_clusters) {
+        ESP_LOGE(TAG, "Couldn't allocate matter_clusters");
+        err = ESP_ERR_NO_MEM;
+        goto cleanup;
     }
 
     while (cluster) {
         /* Attributes */
-        _esp_matter_attribute_t *attribute = cluster->attribute_list;
-        int attribute_count = esp_matter_attribute_get_count(attribute);
-        int attribute_index = 0;
-        EmberAfAttributeMetadata *matter_attributes = (EmberAfAttributeMetadata *)calloc(1,
+        attribute = cluster->attribute_list;
+        attribute_count = esp_matter_attribute_get_count(attribute);
+        attribute_index = 0;
+        matter_attributes = (EmberAfAttributeMetadata *)calloc(1,
                                                        attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
             ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
-            free(matter_clusters);
-            free(endpoint_type);
-            current_endpoint->endpoint_type = NULL;
-            return ESP_ERR_NO_MEM;
+            err = ESP_ERR_NO_MEM;
+            break;
         }
 
         while (attribute) {
@@ -220,33 +276,131 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
             attribute_index++;
         }
 
+        /* Commands */
+        command = NULL;
+        command_count = 0;
+        command_index = 0;
+        command_flag = ESP_MATTER_COMMAND_FLAG_NONE;
+        client_generated_command_ids = NULL;
+        server_generated_command_ids = NULL;
+
+        /* Client Generated Commands */
+        command_flag = ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED;
+        command = cluster->command_list;
+        command_count = esp_matter_command_get_count(command, command_flag);
+        if (command_count > 0) {
+            command_index = 0;
+            client_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            if (!client_generated_command_ids) {
+                ESP_LOGE(TAG, "Couldn't allocate client_generated_command_ids");
+                err = ESP_ERR_NO_MEM;
+                break;
+            }
+            while (command) {
+                if (command->flags &= command_flag) {
+                    client_generated_command_ids[command_index] = command->command_id;
+                    command_index++;
+                }
+                command = command->next;
+            }
+            client_generated_command_ids[command_index] = kInvalidCommandId;
+        }
+
+        /* Server Generated Commands */
+        command_flag = ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED;
+        command = cluster->command_list;
+        command_count = esp_matter_command_get_count(command, command_flag);
+        if (command_count > 0) {
+            command_index = 0;
+            server_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            if (!server_generated_command_ids) {
+                ESP_LOGE(TAG, "Couldn't allocate server_generated_command_ids");
+                err = ESP_ERR_NO_MEM;
+                break;
+            }
+            while (command) {
+                if (command->flags &= command_flag) {
+                    server_generated_command_ids[command_index] = command->command_id;
+                    command_index++;
+                }
+                command = command->next;
+            }
+            server_generated_command_ids[command_index] = kInvalidCommandId;
+        }
+
+        /* Fill up the cluster */
         matter_clusters[cluster_index].clusterId = cluster->cluster_id;
         matter_clusters[cluster_index].attributes = matter_attributes;
         matter_clusters[cluster_index].attributeCount = attribute_count;
         matter_clusters[cluster_index].mask = cluster->flags;
         matter_clusters[cluster_index].functions = (EmberAfGenericClusterFunction *)cluster->function_list;
+        matter_clusters[cluster_index].clientGeneratedCommandList = client_generated_command_ids;
+        matter_clusters[cluster_index].serverGeneratedCommandList = server_generated_command_ids;
 
+        /* Get next cluster */
         endpoint_type->endpointSize += matter_clusters[cluster_index].clusterSize;
         cluster = cluster->next;
         cluster_index++;
+
+        /* This is to avoid double free in case of errors */
+        matter_attributes = NULL;
+        client_generated_command_ids = NULL;
+        server_generated_command_ids = NULL;
+    }
+    if (err != ESP_OK) {
+        goto cleanup;
     }
 
     endpoint_type->cluster = matter_clusters;
     endpoint_type->clusterCount = cluster_count;
 
     /* Add Endpoint */
-    int endpoint_index = esp_matter_endpoint_get_next_index();
-    EmberAfStatus err = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, current_endpoint->device_type_id, 1);
-    if (err != EMBER_ZCL_STATUS_SUCCESS) {
+    endpoint_index = esp_matter_endpoint_get_next_index();
+    status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type,
+                                                  current_endpoint->device_type_id, 1,
+                                                  chip::Span<chip::DataVersion>(data_versions));
+    if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
-        for (uint8_t idx = 0; idx < cluster_count; ++idx) {
-            free(matter_clusters[idx].attributes);
+        err = ESP_FAIL;
+        goto cleanup;
+    }
+    return err;
+
+cleanup:
+    if (server_generated_command_ids) {
+        free(server_generated_command_ids);
+    }
+    if (client_generated_command_ids) {
+        free(client_generated_command_ids);
+    }
+    if (matter_attributes) {
+        free(matter_attributes);
+    }
+    if (matter_clusters) {
+        for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
+            /* Free attributes */
+            if (matter_clusters[cluster_index].attributes) {
+                free((void *)matter_clusters[cluster_index].attributes);
+            }
+            /* Free commands */
+            if (matter_clusters[cluster_index].clientGeneratedCommandList) {
+                free((void *)matter_clusters[cluster_index].clientGeneratedCommandList);
+            }
+            if (matter_clusters[cluster_index].serverGeneratedCommandList) {
+                free((void *)matter_clusters[cluster_index].serverGeneratedCommandList);
+            }
         }
         free(matter_clusters);
+    }
+    if (data_versions_ptr) {
+        free(data_versions_ptr);
+        current_endpoint->data_versions_ptr = NULL;
+    }
+    if (endpoint_type) {
         free(endpoint_type);
         current_endpoint->endpoint_type = NULL;
     }
-    return ESP_OK;
+    return err;
 }
 
 static esp_err_t esp_matter_endpoint_enable_all()
@@ -261,6 +415,38 @@ static esp_err_t esp_matter_endpoint_enable_all()
         esp_matter_endpoint_enable((esp_matter_endpoint_t *)endpoint);
         endpoint = endpoint->next;
     }
+    return ESP_OK;
+}
+
+#define DEFAULT_TICKS (500 / portTICK_PERIOD_MS) /* 500 ms in ticks */
+esp_matter_lock_status_t esp_matter_chip_stack_lock(uint32_t ticks_to_wait)
+{
+    if (PlatformMgr().IsChipStackLockedByCurrentThread()) {
+        return ESP_MATTER_LOCK_ALREADY_TAKEN;
+    }
+    if (ticks_to_wait == portMAX_DELAY) {
+        /* Special handling for max delay */
+        PlatformMgr().LockChipStack();
+        return ESP_MATTER_LOCK_SUCCESS;
+    }
+    uint32_t ticks_remaining = ticks_to_wait;
+    uint32_t ticks = DEFAULT_TICKS;
+    while (ticks_remaining > 0) {
+        if (PlatformMgr().TryLockChipStack()) {
+            return ESP_MATTER_LOCK_SUCCESS;
+        }
+        ticks = ticks_remaining < DEFAULT_TICKS ? ticks_remaining : DEFAULT_TICKS;
+        ticks_remaining -= ticks;
+        ESP_LOGI(TAG, "Did not get lock yet. Retrying...");
+        vTaskDelay(ticks);
+    }
+    ESP_LOGE(TAG, "Could not get lock");
+    return ESP_MATTER_LOCK_FAILED;
+}
+
+esp_err_t esp_matter_chip_stack_unlock()
+{
+    PlatformMgr().UnlockChipStack();
     return ESP_OK;
 }
 
@@ -291,21 +477,23 @@ static void esp_matter_chip_init_task(intptr_t context)
         sWiFiNetworkCommissioningInstance.Init();
     }
 #endif
+    /* Initialize binding manager */
+    esp_matter_binding_manager_init();
     xTaskNotifyGive(task_to_notify);
 }
 
 esp_err_t esp_matter_chip_init(esp_matter_event_callback_t callback)
 {
+    if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
+        ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
+        return ESP_ERR_NO_MEM;
+    }
     if (PlatformMgr().InitChipStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize CHIP stack");
         return ESP_FAIL;
     }
     ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
-    if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
-        ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
-        return ESP_ERR_NO_MEM;
-    }
     if (PlatformMgr().StartEventLoopTask() != CHIP_NO_ERROR) {
         chip::Platform::MemoryShutdown();
         ESP_LOGE(TAG, "Failed to launch Matter main task");

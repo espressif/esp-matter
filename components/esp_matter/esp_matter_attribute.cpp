@@ -42,7 +42,7 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
         int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
 
         /* Get type from matter_attribute */
-        EmberAfAttributeMetadata *matter_attribute = NULL;
+        const EmberAfAttributeMetadata *matter_attribute = NULL;
         EmberAfAttributeSearchRecord record = {
             .endpoint    = (EndpointId)endpoint_id,
             .clusterId   = (ClusterId)cluster_id,
@@ -105,7 +105,7 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
         }
 
         /* Get type from matter_attribute if esp matter data model is not used */
-        EmberAfAttributeMetadata *matter_attribute = NULL;
+        const EmberAfAttributeMetadata *matter_attribute = NULL;
         EmberAfAttributeSearchRecord record = {
             .endpoint    = (EndpointId)endpoint_id,
             .clusterId   = (ClusterId)cluster_id,
@@ -961,16 +961,36 @@ esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t call
 esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value,
                                            uint16_t attribute_size)
 {
+    /* Take lock if not already taken */
+    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
+    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        return ESP_FAIL;
+    }
+
     EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
+        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+            esp_matter_chip_stack_unlock();
+        }
         return ESP_FAIL;
+    }
+    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+        esp_matter_chip_stack_unlock();
     }
     return ESP_OK;
 }
 
 esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
+    /* Take lock if not already taken */
+    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
+    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        return ESP_FAIL;
+    }
+
     /* Get size */
     EmberAfAttributeType attribute_type = 0;
     uint16_t attribute_size = 0;
@@ -980,6 +1000,9 @@ esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attri
     uint8_t *value = (uint8_t *)calloc(1, attribute_size);
     if (!value) {
         ESP_LOGE(TAG, "Could not allocate value buffer");
+        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+            esp_matter_chip_stack_unlock();
+        }
         return ESP_ERR_NO_MEM;
     }
     get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
@@ -991,10 +1014,16 @@ esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attri
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
             ESP_LOGE(TAG, "Error updating attribute to matter");
             free(value);
+            if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+                esp_matter_chip_stack_unlock();
+            }
             return ESP_FAIL;
         }
     }
     free(value);
+    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+        esp_matter_chip_stack_unlock();
+    }
     return ESP_OK;
 }
 
@@ -1038,7 +1067,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
 }
 
 EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                   EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
+                                                   const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
                                                    uint16_t max_read_length)
 {
     /* Get value */
@@ -1071,7 +1100,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
 }
 
 EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                    EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
+                                                    const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
 {
     /* Get value */
     int attribute_id = matter_attribute->attributeId;
