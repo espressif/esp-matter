@@ -120,7 +120,7 @@ static int esp_matter_command_get_count(_esp_matter_command_t *current, int comm
 {
     int count = 0;
     while (current) {
-        if (current->flags &= command_flag) {
+        if (current->flags & command_flag) {
             count++;
         }
         current = current->next;
@@ -297,7 +297,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
                 break;
             }
             while (command) {
-                if (command->flags &= command_flag) {
+                if (command->flags & command_flag) {
                     client_generated_command_ids[command_index] = command->command_id;
                     command_index++;
                 }
@@ -319,7 +319,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
                 break;
             }
             while (command) {
-                if (command->flags &= command_flag) {
+                if (command->flags & command_flag) {
                     server_generated_command_ids[command_index] = command->command_id;
                     command_index++;
                 }

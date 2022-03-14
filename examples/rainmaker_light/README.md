@@ -35,7 +35,7 @@ export ESP_RMAKER_PATH=/path/to/esp-rainmaker
 
 ### RainMaker Claiming
 
-This need to be done before flashing the firmware. Note the mac address of the device.
+If self-claiming is not enabled/supported, this need to be done before flashing the firmware.
 
 RainMaker CLI:
 ```
@@ -45,19 +45,34 @@ $ rainmaker.py claim --addr 0x3E0000 $ESPPORT
 
 ### RainMaker User-Node Association
 
-This need to be done after commissioning.
+This needs to be done after commissioning.
+
+Check if the device already has user node association done, using the custom RainMaker cluster (cluster_id: 0xc00):
+```
+$ ./out/debug/chip-tool any read-by-id 0xc00 0x0 0x1 0x0
+```
+* If the above custom status attribute (attribute_id: 0x0) returns true, the association has already been done.
+* If the attribute returns false, the association has not been done. And the below custom configuration command
+(command_id: 0x0) can be used to do the association.
+
 
 RainMaker CLI:
+
+Get the details: This will print the user_id and secret_key (do not close this): 
 ```
 $ rainmaker.py test --addnode <node-id>
+
+>> add-user <user-id> <secret-key>
 ```
 
-This will print the console command to be run on the device:
+Prepare the command payload: Use the above details.
 ```
-add-user <user-id> <secret-key>
+payload: <user_id>::<secret_key>
 ```
 
-Use these details in the below command on the device console.
+Now use the payload to run the RainMaker configuration command from chip-tool:
 ```
-matter esp rainmaker add-user <user-id> <secret-key>
+$ ./out/debug/chip-tool any command-by-id 0xc00 0x0 '"<user_id>::<secret_key>"' 0x1 0x0
 ```
+
+The device/node should now be associated with the user.
