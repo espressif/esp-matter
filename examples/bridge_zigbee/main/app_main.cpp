@@ -34,7 +34,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 }
 
 static esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int endpoint_id, int cluster_id,
-                                         int attribute_id, esp_matter_attr_val_t val, void *priv_data)
+                                         int attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
 

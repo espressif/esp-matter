@@ -42,7 +42,7 @@ typedef enum esp_matter_callback_type {
  * @return error in case of failure.
  */
 typedef esp_err_t (*esp_matter_attribute_callback_t)(esp_matter_callback_type_t type, int endpoint_id, int cluster_id,
-                                                     int attribute_id, esp_matter_attr_val_t val, void *priv_data);
+                                                     int attribute_id, esp_matter_attr_val_t *val, void *priv_data);
 
 typedef void (*esp_matter_event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
 
@@ -109,8 +109,8 @@ esp_matter_attribute_t *esp_matter_attribute_get_next(esp_matter_attribute_t *at
 int esp_matter_attribute_get_id(esp_matter_attribute_t *attribute);
 
 /** Attribute val APIs */
-esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t val);
-esp_matter_attr_val_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute);
+esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val);
+esp_err_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val);
 esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value,
                                            uint16_t attribute_size);
 

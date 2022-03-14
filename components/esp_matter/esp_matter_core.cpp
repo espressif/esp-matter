@@ -578,24 +578,46 @@ esp_err_t esp_matter_cluster_add_function_list(esp_matter_cluster_t *cluster,
     return ESP_OK;
 }
 
-esp_matter_attr_val_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute)
+esp_err_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return esp_matter_invalid(NULL);
+        return ESP_ERR_INVALID_ARG;
     }
     _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-    return current_attribute->val;
+    memcpy((void *)val, (void *)&current_attribute->val, sizeof(esp_matter_attr_val_t));
+    return ESP_OK;
 }
 
-esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t val)
+esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return ESP_FAIL;
     }
     _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-    current_attribute->val = val;
+    if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING
+        || val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        /* Free old buf */
+        if (current_attribute->val.val.a.b) {
+            free(current_attribute->val.val.a.b);
+        }
+        if (val->val.a.s > 0) {
+            /* Alloc new buf */
+            uint8_t *new_buf = (uint8_t *)calloc(1, val->val.a.s);
+            if (!new_buf) {
+                ESP_LOGE(TAG, "Could not allocate new buffer");
+                return ESP_ERR_NO_MEM;
+            }
+            /* Copy to new buf and assign */
+            memcpy(new_buf, val->val.a.b, val->val.a.s);
+            val->val.a.b = new_buf;
+        } else {
+            ESP_LOGI(TAG, "Set val called with string with size 0");
+            val->val.a.b = NULL;
+        }
+    }
+    memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
     return ESP_OK;
 }
 
@@ -645,6 +667,14 @@ static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
     _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
 
     /* Delete val here, if required */
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING
+        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING
+        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        /* Free buf */
+        if (current_attribute->val.val.a.b) {
+            free(current_attribute->val.val.a.b);
+        }
+    }
 
     /* Free */
     free(current_attribute);
@@ -672,7 +702,7 @@ esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluste
     attribute->attribute_id = attribute_id;
     attribute->flags = flags;
     attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
-    attribute->val = val;
+    esp_matter_attribute_set_val((esp_matter_attribute_t *)attribute, &val);
 
     /* Add */
     _esp_matter_attribute_t *previous_attribute = NULL;

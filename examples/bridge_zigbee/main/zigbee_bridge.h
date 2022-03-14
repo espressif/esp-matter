@@ -23,7 +23,7 @@ void zigbee_bridge_match_bridged_onoff_light(zb_bufid_t bufid);
 
 void zigbee_bridge_match_bridged_onoff_light_timeout(zb_bufid_t bufid);
 
-esp_err_t zigbee_bridge_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+esp_err_t zigbee_bridge_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
 #ifdef __cplusplus
 }

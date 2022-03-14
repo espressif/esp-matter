@@ -24,7 +24,7 @@ extern "C" {
  */
 esp_err_t app_driver_init(void);
 
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val);
+esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
 #ifdef __cplusplus
 }

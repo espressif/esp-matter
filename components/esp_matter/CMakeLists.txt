@@ -67,7 +67,7 @@ set(INCLUDE_DIRS_LIST   "."
                         "${MATTER_SDK_PATH}/src"
                         "${ZAP_GENERATED_PATH}/../")
 
-set(REQUIRES_LIST       chip bt)
+set(REQUIRES_LIST       chip bt esp_matter_console)
 
 if ("${IDF_TARGET}" STREQUAL "esp32h2")
     list(APPEND REQUIRES_LIST openthread esp_matter_openthread)

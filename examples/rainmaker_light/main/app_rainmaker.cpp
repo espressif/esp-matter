@@ -195,28 +195,22 @@ static int app_rainmaker_get_attribute_id_from_name(const char *param_name)
     return 0;
 }
 
-static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t val)
+static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t *val)
 {
-    if (val.type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        return esp_rmaker_bool(val.val.b);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_INTEGER) {
-        return esp_rmaker_int(val.val.i);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_FLOAT) {
-        return esp_rmaker_float(val.val.f);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_STRING) {
-        return esp_rmaker_str(val.val.s);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_JSON_OBJECT) {
-        return esp_rmaker_obj(val.val.s);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_JSON_ARRAY) {
-        return esp_rmaker_array(val.val.s);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT8) {
-        return esp_rmaker_int(val.val.u8);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_INT16) {
-        return esp_rmaker_int(val.val.i16);
-    } else if (val.type == ESP_MATTER_VAL_TYPE_UINT16) {
-        return esp_rmaker_int(val.val.u16);
+    if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
+        return esp_rmaker_bool(val->val.b);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER) {
+        return esp_rmaker_int(val->val.i);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
+        return esp_rmaker_float(val->val.f);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8) {
+        return esp_rmaker_int(val->val.u8);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
+        return esp_rmaker_int(val->val.i16);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16) {
+        return esp_rmaker_int(val->val.u16);
     } else {
-        ESP_LOGE(TAG, "Invalid val type: %d", val.type);
+        ESP_LOGE(TAG, "Invalid val type: %d", val->type);
     }
     return esp_rmaker_int(0);
 }
@@ -229,19 +223,13 @@ static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t
         return esp_matter_int(val.val.i);
     } else if (val.type == RMAKER_VAL_TYPE_FLOAT) {
         return esp_matter_float(val.val.f);
-    } else if (val.type == RMAKER_VAL_TYPE_STRING) {
-        return esp_matter_str(val.val.s);
-    } else if (val.type == RMAKER_VAL_TYPE_OBJECT) {
-        return esp_matter_json_obj(val.val.s);
-    } else if (val.type == RMAKER_VAL_TYPE_ARRAY) {
-        return esp_matter_json_array(val.val.s);
     } else {
         ESP_LOGE(TAG, "Invalid val type: %d", val.type);
     }
     return esp_matter_int(0);
 }
 
-esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t val)
+esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     const char *device_name = app_rainmaker_get_device_name_from_id(endpoint_id);
     const char *param_name = app_rainmaker_get_param_name_from_id(cluster_id, attribute_id);
@@ -278,7 +266,7 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
     int attribute_id = app_rainmaker_get_attribute_id_from_name(param_name);
     esp_matter_attr_val_t matter_val = app_rainmaker_get_matter_val(val);
 
-    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, matter_val);
+    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &matter_val);
 }
 
 static void app_rainmaker_device_create()
@@ -321,8 +309,9 @@ static void app_rainmaker_device_create()
                         bool add_bounds = app_rainmaker_get_param_bounds_from_id(cluster_id, attribute_id, &min, &max,
                                                                                  &step);
 
-                        esp_matter_attr_val_t val = esp_matter_attribute_get_val(attribute);
-                        esp_rmaker_param_val_t rmaker_val = app_rainmaker_get_rmaker_val(val);
+                        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+                        esp_matter_attribute_get_val(attribute, &val);
+                        esp_rmaker_param_val_t rmaker_val = app_rainmaker_get_rmaker_val(&val);
                         esp_rmaker_param_t *param = esp_rmaker_param_create(param_name, param_type, rmaker_val,
                                                                             PROP_FLAG_READ | PROP_FLAG_WRITE);
 
