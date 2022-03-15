@@ -19,8 +19,8 @@
 #include "app/clusters/ota-requestor/BDXDownloader.h"
 #include "app/clusters/ota-requestor/OTARequestor.h"
 #include "OTAImageProcessorImpl.h"
-#include "platform/GenericOTARequestorDriver.h"
-#include "platform/OTARequestorInterface.h"
+#include "app/clusters/ota-requestor/GenericOTARequestorDriver.h"
+#include "app/clusters/ota-requestor/OTARequestorInterface.h"
 
 using chip::BDXDownloader;
 using chip::OTAImageProcessorImpl;

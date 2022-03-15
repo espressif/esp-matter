@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2021 Project CHIP Authors
+ *    Copyright (c) 2022 Project CHIP Authors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -60,14 +60,11 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId) {
   case ZCL_LEVEL_CONTROL_CLUSTER_ID:
     emberAfLevelControlClusterInitCallback(endpoint);
     break;
+  case ZCL_LOCALIZATION_CONFIGURATION_CLUSTER_ID:
+    emberAfLocalizationConfigurationClusterInitCallback(endpoint);
+    break;
   case ZCL_NETWORK_COMMISSIONING_CLUSTER_ID:
     emberAfNetworkCommissioningClusterInitCallback(endpoint);
-    break;
-  case ZCL_OTA_PROVIDER_CLUSTER_ID:
-    emberAfOtaSoftwareUpdateProviderClusterInitCallback(endpoint);
-    break;
-  case ZCL_OTA_REQUESTOR_CLUSTER_ID:
-    emberAfOtaSoftwareUpdateRequestorClusterInitCallback(endpoint);
     break;
   case ZCL_ON_OFF_CLUSTER_ID:
     emberAfOnOffClusterInitCallback(endpoint);
@@ -77,6 +74,12 @@ void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId) {
     break;
   case ZCL_SCENES_CLUSTER_ID:
     emberAfScenesClusterInitCallback(endpoint);
+    break;
+  case ZCL_TIME_FORMAT_LOCALIZATION_CLUSTER_ID:
+    emberAfTimeFormatLocalizationClusterInitCallback(endpoint);
+    break;
+  case ZCL_UNIT_LOCALIZATION_CLUSTER_ID:
+    emberAfUnitLocalizationClusterInitCallback(endpoint);
     break;
   default:
     // Unrecognized cluster ID
@@ -140,17 +143,12 @@ emberAfLevelControlClusterInitCallback(EndpointId endpoint) {
   (void)endpoint;
 }
 void __attribute__((weak))
+emberAfLocalizationConfigurationClusterInitCallback(EndpointId endpoint) {
+  // To prevent warning
+  (void)endpoint;
+}
+void __attribute__((weak))
 emberAfNetworkCommissioningClusterInitCallback(EndpointId endpoint) {
-  // To prevent warning
-  (void)endpoint;
-}
-void __attribute__((weak))
-emberAfOtaSoftwareUpdateProviderClusterInitCallback(EndpointId endpoint) {
-  // To prevent warning
-  (void)endpoint;
-}
-void __attribute__((weak))
-emberAfOtaSoftwareUpdateRequestorClusterInitCallback(EndpointId endpoint) {
   // To prevent warning
   (void)endpoint;
 }
@@ -166,6 +164,16 @@ emberAfOperationalCredentialsClusterInitCallback(EndpointId endpoint) {
 }
 void __attribute__((weak))
 emberAfScenesClusterInitCallback(EndpointId endpoint) {
+  // To prevent warning
+  (void)endpoint;
+}
+void __attribute__((weak))
+emberAfTimeFormatLocalizationClusterInitCallback(EndpointId endpoint) {
+  // To prevent warning
+  (void)endpoint;
+}
+void __attribute__((weak))
+emberAfUnitLocalizationClusterInitCallback(EndpointId endpoint) {
   // To prevent warning
   (void)endpoint;
 }
@@ -221,14 +229,14 @@ emberAfMessageSentCallback(const MessageSendDestination &destination,
 
 EmberAfStatus __attribute__((weak)) emberAfExternalAttributeReadCallback(
     EndpointId endpoint, ClusterId clusterId,
-    EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer,
+    const EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer,
     uint16_t maxReadLength) {
   return EMBER_ZCL_STATUS_FAILURE;
 }
 
 EmberAfStatus __attribute__((weak)) emberAfExternalAttributeWriteCallback(
     EndpointId endpoint, ClusterId clusterId,
-    EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer) {
+    const EmberAfAttributeMetadata *attributeMetadata, uint8_t *buffer) {
   return EMBER_ZCL_STATUS_FAILURE;
 }
 

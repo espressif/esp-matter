@@ -36,7 +36,7 @@
 #define CLUSTER_CONFIG_BASIC_DEFAULT()  \
     {                                   \
         .cluster_revision = 3,          \
-        .interaction_model_version = 1, \
+        .data_model_revision = 1,       \
         .vendor_name = {0},             \
         .vendor_id = 0,                 \
         .product_name = {0},            \
@@ -53,6 +53,7 @@
 #define CLUSTER_CONFIG_BINDING_DEFAULT()  \
     {                                     \
         .cluster_revision = 1,            \
+        .binding_list = {0},              \
     }
 
 #define CLUSTER_CONFIG_OTA_PROVIDER_DEFAULT() \
@@ -254,7 +255,7 @@ typedef struct esp_matter_cluster_access_control_config {
 
 typedef struct esp_matter_cluster_basic_config {
     uint16_t cluster_revision;
-    uint16_t interaction_model_version;
+    uint16_t data_model_revision;
     char vendor_name[32];
     uint16_t vendor_id;
     char product_name[32];
@@ -270,6 +271,7 @@ typedef struct esp_matter_cluster_basic_config {
 
 typedef struct esp_matter_cluster_binding_config {
     uint16_t cluster_revision;
+    uint8_t binding_list[254];
 } esp_matter_cluster_binding_config_t;
 
 typedef struct esp_matter_cluster_ota_provider_config {

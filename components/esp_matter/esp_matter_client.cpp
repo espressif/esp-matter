@@ -30,6 +30,7 @@ static const char *TAG = "esp_matter_client";
 
 static esp_matter_client_command_callback_t client_command_callback = NULL;
 static void *client_command_callback_priv_data = NULL;
+static bool initialize_binding_manager = false;
 
 esp_err_t esp_matter_set_client_command_callback(esp_matter_client_command_callback_t callback, void *priv_data)
 {
@@ -79,11 +80,11 @@ esp_err_t esp_matter_connect(int fabric_index, int node_id, int remote_endpoint_
     return ESP_OK;
 }
 
-static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry *binding, DeviceProxy *peer_device,
+static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding, DeviceProxy *peer_device,
                                                        void *context)
 {
     if (client_command_callback) {
-        client_command_callback(peer_device, binding->remote, client_command_callback_priv_data);
+        client_command_callback(peer_device, binding.remote, client_command_callback_priv_data);
     }
 }
 
@@ -93,15 +94,29 @@ esp_err_t esp_matter_client_cluster_update(int endpoint_id, int cluster_id)
     return ESP_OK;
 }
 
+static void __esp_matter_binding_manager_init(intptr_t arg)
+{
+    auto &server = chip::Server::GetInstance();
+    struct chip::BindingManagerInitParams binding_init_params = {
+        .mFabricTable = &server.GetFabricTable(),
+        .mCASESessionManager = server.GetCASESessionManager(),
+        .mStorage = &server.GetPersistentStorage(),
+    };
+
+    chip::BindingManager::GetInstance().Init(binding_init_params);
+    chip::BindingManager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
+}
+
 void esp_matter_binding_manager_init()
 {
-    static bool init_done = false;
-    if (init_done) {
-        return;
+    if (initialize_binding_manager) {
+        chip::DeviceLayer::PlatformMgr().ScheduleWork(__esp_matter_binding_manager_init);
     }
-    chip::BindingManager::GetInstance().SetAppServer(&chip::Server::GetInstance());
-    chip::BindingManager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
-    init_done = true;
+}
+
+void esp_matter_binding_init()
+{
+    initialize_binding_manager = true;
 }
 
 static void esp_matter_send_command_success_callback(void *context, const chip::app::DataModel::NullObjectType &data)

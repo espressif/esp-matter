@@ -74,10 +74,8 @@ const int esp_matter_cluster_time_synchronization_function_flags = ESP_MATTER_CL
 const esp_matter_cluster_function_generic_t *esp_matter_cluster_temperature_measurement_function_list = NULL;
 const int esp_matter_cluster_temperature_measurement_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
 
-const esp_matter_cluster_function_generic_t esp_matter_cluster_access_control_function_list[] = {
-    (esp_matter_cluster_function_generic_t)emberAfAccessControlClusterServerInitCallback,
-};
-const int esp_matter_cluster_access_control_function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const esp_matter_cluster_function_generic_t *esp_matter_cluster_access_control_function_list = NULL;
+const int esp_matter_cluster_access_control_function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
 
 const esp_matter_cluster_function_generic_t esp_matter_cluster_basic_function_list[] = {
     (esp_matter_cluster_function_generic_t)emberAfBasicClusterServerInitCallback,
@@ -191,21 +189,19 @@ esp_matter_cluster_t *esp_matter_cluster_create_access_control(esp_matter_endpoi
                                                                esp_matter_cluster_access_control_config_t *config,
                                                                uint8_t flags)
 {
-    /* Not implemented
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ACCESS_CONTROL_CLUSTER_ID,
                                                               ESP_MATTER_CLUSTER_FLAG_SERVER);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
-
     if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
-        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterAcccessControlPluginServerInitCallback);
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterAccessControlPluginServerInitCallback);
         esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_access_control_function_list,
                                              esp_matter_cluster_access_control_function_flags);
     }
     if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
-        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterAcccessControlPluginClientInitCallback);
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterAccessControlPluginClientInitCallback);
     }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -216,8 +212,6 @@ esp_matter_cluster_t *esp_matter_cluster_create_access_control(esp_matter_endpoi
                                 esp_matter_array(config->extension, sizeof(config->extension), 0));
 
     return cluster;
-    */
-    return NULL;
 }
 
 esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *endpoint,
@@ -240,8 +234,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_basic(esp_matter_endpoint_t *end
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint16(config->cluster_revision));
-    esp_matter_attribute_create(cluster, ZCL_INTERACTION_MODEL_VERSION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                esp_matter_uint16(config->interaction_model_version));
+    esp_matter_attribute_create(cluster, ZCL_DATA_MODEL_REVISION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_uint16(config->data_model_revision));
     esp_matter_attribute_create(cluster, ZCL_VENDOR_NAME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_char_str(config->vendor_name, sizeof(config->vendor_name)));
     esp_matter_attribute_create(cluster, ZCL_VENDOR_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -281,21 +275,20 @@ esp_matter_cluster_t *esp_matter_cluster_create_binding(esp_matter_endpoint_t *e
     }
 
     if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
-        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterBindingPluginServerInitCallback);
         esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_binding_function_list,
                                              esp_matter_cluster_binding_function_flags);
     }
     if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
-        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterBindingPluginClientInitCallback);
     }
     /* Extra initialization */
-    esp_matter_binding_manager_init();
+    esp_matter_binding_init();
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint16(config->cluster_revision));
-
-    esp_matter_command_create_bind(cluster);
-    esp_matter_command_create_unbind(cluster);
+    esp_matter_attribute_create(cluster, ZCL_BINDING_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                esp_matter_array(config->binding_list, sizeof(config->binding_list), 0));
 
     return cluster;
 }
@@ -394,7 +387,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_general_commissioning(esp_matter
                                 esp_matter_uint16(config->cluster_revision));
     esp_matter_attribute_create(cluster, ZCL_BREADCRUMB_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint64(config->breadcrumb));
-    esp_matter_attribute_create(cluster, ZCL_BASICCOMMISSIONINGINFO_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+    esp_matter_attribute_create(cluster, ZCL_BASICCOMMISSIONINGINFO_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_array(config->basic_commissioning_info,
                                 sizeof(config->basic_commissioning_info), 0));
     esp_matter_attribute_create(cluster, ZCL_REGULATORYCONFIG_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -555,10 +548,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_operational_credentials(esp_matt
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint16(config->cluster_revision));
-    /* Not implemented
     esp_matter_attribute_create(cluster, ZCL_NOCS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_array(config->nocs, sizeof(config->nocs), 0));
-    */
     esp_matter_attribute_create(cluster, ZCL_FABRICS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_array(config->fabrics, sizeof(config->fabrics), 0));
     esp_matter_attribute_create(cluster, ZCL_SUPPORTED_FABRICS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -613,7 +604,6 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
                                 esp_matter_array(config->group_key_map, sizeof(config->group_key_map), 0));
     esp_matter_attribute_create(cluster, ZCL_GROUP_TABLE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_array(config->group_table, sizeof(config->group_table), 0));
-    /* Not implemented
     esp_matter_attribute_create(cluster, ZCL_MAX_GROUPS_PER_FABRIC_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_uint16(config->max_groups_per_fabric));
     esp_matter_attribute_create(cluster, ZCL_MAX_GROUP_KEYS_PER_FABRIC_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -625,7 +615,6 @@ esp_matter_cluster_t *esp_matter_cluster_create_group_key_management(esp_matter_
     esp_matter_command_create_key_set_remove(cluster);                              
     esp_matter_command_create_key_set_read_all_indices(cluster);                              
     esp_matter_command_create_key_set_read_all_indices_response(cluster);                              
-    */
 
     return cluster;
 }
@@ -875,12 +864,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_fan_control(esp_matter_endpoint_
     }
 
     if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
-        esp_matter_cluster_set_plugin_server_init_callback(cluster, MatterFanControlPluginServerInitCallback);
+        /* not implemented: Setting NULL since the MatterFanControlPluginServerInitCallback is not implemented */
+        esp_matter_cluster_set_plugin_server_init_callback(cluster, NULL);
         esp_matter_cluster_add_function_list(cluster, esp_matter_cluster_fan_control_function_list,
                                              esp_matter_cluster_fan_control_function_flags);
     }
     if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
-        esp_matter_cluster_set_plugin_client_init_callback(cluster, MatterFanControlPluginClientInitCallback);
+        /* not implemented: Setting NULL since the MatterFanControlPluginClientInitCallback is not implemented */
+        esp_matter_cluster_set_plugin_client_init_callback(cluster, NULL);
     }
 
     esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,

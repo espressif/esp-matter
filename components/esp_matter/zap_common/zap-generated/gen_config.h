@@ -163,6 +163,8 @@
 
 #define EMBER_AF_PLUGIN_SCENES                              // used in groups, level control, on off
 
+#define EMBER_AF_PLUGIN_IAS_ZONE_SERVER_ZONE_TYPE 541       // used in ias zone server
+
 
 /* Other cluster specific macros which are made generic */
 #define EMBER_AF_COLOR_CONTROL_CLUSTER_SERVER_ENDPOINT_COUNT (16)   // used in color control
@@ -181,6 +183,8 @@
 #define EMBER_AF_MEDIA_INPUT_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in media input
 #define EMBER_AF_LOW_POWER_CLUSTER_SERVER_ENDPOINT_COUNT (16)       // used in low power
 #define EMBER_AF_KEYPAD_INPUT_CLUSTER_SERVER_ENDPOINT_COUNT (16)    // used in keypad input
+#define EMBER_AF_WAKE_ON_LAN_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in wake on lan
+#define EMBER_AF_WINDOW_COVERING_CLUSTER_SERVER_ENDPOINT_COUNT (16) // used in window covering
 
 #define EMBER_AF_PLUGIN_SCENES_TABLE_SIZE 3                         // used in scenes       // TODO: check this again
 

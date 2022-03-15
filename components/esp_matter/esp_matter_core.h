@@ -65,6 +65,16 @@ typedef void (*esp_matter_client_command_callback_t)(esp_matter_peer_device_t *p
 esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data);
 esp_err_t esp_matter_start(esp_matter_event_callback_t callback);
 
+/* Supporting APIs */
+typedef enum esp_matter_lock_status {
+    ESP_MATTER_LOCK_FAILED,
+    ESP_MATTER_LOCK_ALREADY_TAKEN,
+    ESP_MATTER_LOCK_SUCCESS,
+} esp_matter_lock_status_t;
+esp_matter_lock_status_t esp_matter_chip_stack_lock(uint32_t ticks_to_wait);
+/* unlock() should only be called if lock() returns ESP_MATTER_LOCK_SUCCESS */
+esp_err_t esp_matter_chip_stack_unlock();
+
 /** Node APIs */
 esp_matter_node_t *esp_matter_node_create_raw();
 esp_matter_node_t *esp_matter_node_get();
@@ -126,6 +136,7 @@ int esp_matter_command_get_flags(esp_matter_command_t *command);
 esp_err_t esp_matter_command_set_custom_callback(esp_matter_command_custom_callback_t callback, void *priv_data);
 
 /* Client APIs */
+void esp_matter_binding_init();
 void esp_matter_binding_manager_init();
 esp_err_t esp_matter_connect(int fabric_index, int node_id, int remote_endpoint_id);
 esp_err_t esp_matter_set_client_command_callback(esp_matter_client_command_callback_t callback, void *priv_data);

@@ -121,6 +121,8 @@ esp_err_t app_driver_attribute_set_defaults()
 
 esp_err_t app_driver_init()
 {
+    ESP_LOGI(TAG, "Initialising driver");
     device_init();
+    /* Attribute defaults are set after esp_matter_start() from app_main() */
     return ESP_OK;
 }

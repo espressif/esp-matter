@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2021 Project CHIP Authors
+ *    Copyright (c) 2022 Project CHIP Authors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,71 +25,70 @@
 using namespace chip;
 
 // Cluster Init Functions
-void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId) {
+void emberAfClusterInitCallback(EndpointId endpoint, ClusterId clusterId)
+{
   // To prevent warning
   (void)endpoint;
   (void)clusterId;
 }
 
-void __attribute__((weak))
-emberAfAddToCurrentAppTasksCallback(EmberAfApplicationTask tasks) {}
+void __attribute__((weak)) emberAfAddToCurrentAppTasksCallback(EmberAfApplicationTask tasks) {}
 
-void __attribute__((weak))
-emberAfRemoveFromCurrentAppTasksCallback(EmberAfApplicationTask tasks) {}
+void __attribute__((weak)) emberAfRemoveFromCurrentAppTasksCallback(EmberAfApplicationTask tasks) {}
 
 EmberAfAttributeWritePermission __attribute__((weak))
-emberAfAllowNetworkWriteAttributeCallback(EndpointId endpoint,
-                                          ClusterId clusterId,
-                                          AttributeId attributeId, uint8_t mask,
-                                          uint8_t *value, uint8_t type) {
-  return EMBER_ZCL_ATTRIBUTE_WRITE_PERMISSION_ALLOW_WRITE_NORMAL; // Default
+emberAfAllowNetworkWriteAttributeCallback(EndpointId endpoint, ClusterId clusterId, AttributeId attributeId, uint8_t mask,
+                                          uint8_t * value, uint8_t type)
+{
+    return EMBER_ZCL_ATTRIBUTE_WRITE_PERMISSION_ALLOW_WRITE_NORMAL; // Default
+}
+
+bool __attribute__((weak)) emberAfAttributeReadAccessCallback(EndpointId endpoint, ClusterId clusterId, AttributeId attributeId)
+{
+    return true;
+}
+
+bool __attribute__((weak)) emberAfAttributeWriteAccessCallback(EndpointId endpoint, ClusterId clusterId, AttributeId attributeId)
+{
+    return true;
+}
+
+bool __attribute__((weak)) emberAfDefaultResponseCallback(ClusterId clusterId, CommandId commandId, EmberAfStatus status)
+{
+    return false;
+}
+
+bool __attribute__((weak)) emberAfPreMessageSendCallback(EmberAfMessageStruct * messageStruct, EmberStatus * status)
+{
+    return false;
+}
+
+bool __attribute__((weak)) emberAfMessageSentCallback(const MessageSendDestination & destination, EmberApsFrame * apsFrame,
+                                                      uint16_t msgLen, uint8_t * message, EmberStatus status)
+{
+    return false;
+}
+
+uint32_t __attribute__((weak)) emberAfGetCurrentTimeCallback()
+{
+    return 0;
 }
 
 bool __attribute__((weak))
-emberAfAttributeReadAccessCallback(EndpointId endpoint, ClusterId clusterId,
-                                   AttributeId attributeId) {
-  return true;
-}
-
-bool __attribute__((weak))
-emberAfAttributeWriteAccessCallback(EndpointId endpoint, ClusterId clusterId,
-                                    AttributeId attributeId) {
-  return true;
-}
-
-bool __attribute__((weak))
-emberAfDefaultResponseCallback(ClusterId clusterId, CommandId commandId,
-                               EmberAfStatus status) {
-  return false;
-}
-
-bool __attribute__((weak))
-emberAfPreMessageSendCallback(EmberAfMessageStruct *messageStruct,
-                              EmberStatus *status) {
-  return false;
-}
-
-bool __attribute__((weak))
-emberAfMessageSentCallback(const MessageSendDestination &destination,
-                           EmberApsFrame *apsFrame, uint16_t msgLen,
-                           uint8_t *message, EmberStatus status) {
-  return false;
-}
-
-uint32_t __attribute__((weak)) emberAfGetCurrentTimeCallback() { return 0; }
-
-bool __attribute__((weak))
-emberAfGetEndpointInfoCallback(EndpointId endpoint, uint8_t *returnNetworkIndex,
-                               EmberAfEndpointInfoStruct *returnEndpointInfo) {
-  return false;
+emberAfGetEndpointInfoCallback(EndpointId endpoint, uint8_t * returnNetworkIndex, EmberAfEndpointInfoStruct * returnEndpointInfo)
+{
+    return false;
 }
 
 void __attribute__((weak)) emberAfRegistrationAbortCallback() {}
 
 EmberStatus __attribute__((weak))
-emberAfInterpanSendMessageCallback(EmberAfInterpanHeader *header,
-                                   uint16_t messageLength, uint8_t *message) {
-  return EMBER_LIBRARY_NOT_PRESENT;
+emberAfInterpanSendMessageCallback(EmberAfInterpanHeader * header, uint16_t messageLength, uint8_t * message)
+{
+    return EMBER_LIBRARY_NOT_PRESENT;
 }
 
-bool __attribute__((weak)) emberAfStartMoveCallback() { return false; }
+bool __attribute__((weak)) emberAfStartMoveCallback()
+{
+    return false;
+}
