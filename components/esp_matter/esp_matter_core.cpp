@@ -820,7 +820,7 @@ esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_ma
             memcpy(new_buf, val->val.a.b, val->val.a.s);
             val->val.a.b = new_buf;
         } else {
-            ESP_LOGI(TAG, "Set val called with string with size 0");
+            ESP_LOGD(TAG, "Set val called with string with size 0");
             val->val.a.b = NULL;
         }
     }

@@ -13,7 +13,7 @@ extern "C" {
 
 #include <stdint.h>
 
-#include <esp_matter_attribute.h>
+#include <esp_matter_attribute_utils.h>
 #include <zboss_api.h>
 #include <zboss_api_zcl.h>
 

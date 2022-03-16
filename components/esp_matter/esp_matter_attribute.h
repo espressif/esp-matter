@@ -14,155 +14,185 @@
 
 #pragma once
 
-#include <esp_err.h>
-#include <stdbool.h>
-#include <stdint.h>
+#include <esp_matter.h>
+#include <esp_matter_core.h>
 
-#define REMAP_TO_RANGE(value, from, to) ((value * to) / from)
+/** cluster: global */
+esp_matter_attribute_t *esp_matter_attribute_create_cluster_revision(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_feature_map(esp_matter_cluster_t *cluster, uint32_t value);
 
-/** ESP Matter Attribute Value type */
-typedef enum {
-    /** Invalid */
-    ESP_MATTER_VAL_TYPE_INVALID = 0,
-    /** Boolean */
-    ESP_MATTER_VAL_TYPE_BOOLEAN,
-    /** Integer. Mapped to a 32 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INTEGER,
-    /** Floating point number */
-    ESP_MATTER_VAL_TYPE_FLOAT,
-    /** Array Eg. [1,2,3] */
-    ESP_MATTER_VAL_TYPE_ARRAY,
-    /** Byte String Eg. "123" */
-    ESP_MATTER_VAL_TYPE_CHAR_STRING,
-    /** Byte String Eg. [0x01, 0x20] */
-    ESP_MATTER_VAL_TYPE_BYTE_STRING,
-    /** Octet String Eg. [0x01, 0x20] */
-    ESP_MATTER_VAL_TYPE_OCTET_STRING,
-    /** 8 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT8,
-    /** 8 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT8,
-    /** 16 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT16,
-    /** 16 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT16,
-    /** 32 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT32,
-    /** 64 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT64,
-    /** 8 bit enum */
-    ESP_MATTER_VAL_TYPE_ENUM8,
-    /** 8 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP8,
-    /** 16 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP16,
-    /** 32 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP32,
-} esp_matter_val_type_t;
+/** cluster: descriptor */
+esp_matter_attribute_t *esp_matter_attribute_create_device_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_server_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_client_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_parts_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                               uint16_t length, uint16_t count);
 
-/* ESP Matter Value */
-typedef union {
-    /** Boolean */
-    bool b;
-    /** Integer */
-    int i;
-    /** Float */
-    float f;
-    /** 8 bit signed integer */
-    int8_t i8;
-    /** 8 bit unsigned integer */
-    uint8_t u8;
-    /** 16 bit signed integer */
-    int16_t i16;
-    /** 16 bit unsigned integer */
-    uint16_t u16;
-    /** 32 bit unsigned integer */
-    uint32_t u32;
-    /** 64 bit unsigned integer */
-    uint64_t u64;
-    /** Array */
-    struct {
-        /** Buffer */
-        uint8_t *b;
-        /** Data size */
-        uint16_t s;
-        /** Data count */
-        uint16_t n;
-        /** Total size */
-        uint16_t t;
-    } a;
-    /** Pointer */
-    void *p;
-} esp_matter_val_t;
+/** cluster: access control */
+esp_matter_attribute_t *esp_matter_attribute_create_acl(esp_matter_cluster_t *cluster, uint8_t *value, uint16_t length,
+                                                        uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_extension(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                              uint16_t length, uint16_t count);
 
-/* ESP Matter Attribute Value */
-typedef struct {
-    /** Type of Value */
-    esp_matter_val_type_t type;
-    /** Actual value. Depends on the type */
-    esp_matter_val_t val;
-} esp_matter_attr_val_t;
+/** cluster: basic */
+esp_matter_attribute_t *esp_matter_attribute_create_data_model_revision(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_vendor_name(esp_matter_cluster_t *cluster, char *value,
+                                                                uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_vendor_id(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_product_name(esp_matter_cluster_t *cluster, char *value,
+                                                                 uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_product_id(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_node_label(esp_matter_cluster_t *cluster, char *value,
+                                                               uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_location(esp_matter_cluster_t *cluster, char *value,
+                                                             uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_hardware_version(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_hardware_version_string(esp_matter_cluster_t *cluster, char *value,
+                                                                            uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_software_version(esp_matter_cluster_t *cluster, uint32_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_software_version_string(esp_matter_cluster_t *cluster, char *value,
+                                                                            uint16_t length);
 
-/*** Attribute val APIs ***/
-/** Invalid */
-esp_matter_attr_val_t esp_matter_invalid(void *val);
+/** cluster: binding */
+esp_matter_attribute_t *esp_matter_attribute_create_binding(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                            uint16_t length, uint16_t count);
 
-/** Boolean */
-esp_matter_attr_val_t esp_matter_bool(bool val);
+/** cluster: ota requestor */
+esp_matter_attribute_t *esp_matter_attribute_create_default_ota_providers(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                          uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_update_possible(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_update_state(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_update_state_progress(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** Integer */
-esp_matter_attr_val_t esp_matter_int(int val);
+/** cluster: general commissioning */
+esp_matter_attribute_t *esp_matter_attribute_create_breadcrumb(esp_matter_cluster_t *cluster, uint64_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_basic_commissioning_info(esp_matter_cluster_t *cluster,
+                                                                             uint8_t *value, uint16_t length,
+                                                                             uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_regulatory_config(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_location_capability(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** Float */
-esp_matter_attr_val_t esp_matter_float(float val);
+/** cluster: network commissioning */
+esp_matter_attribute_t *esp_matter_attribute_create_max_networks(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_networks(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                             uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_scan_max_time_seconds(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_connect_max_time_seconds(esp_matter_cluster_t *cluster,
+                                                                             uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_interface_enabled(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_last_networking_status(esp_matter_cluster_t *cluster,
+                                                                           uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_last_network_id(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                    uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_last_connect_error_value(esp_matter_cluster_t *cluster,
+                                                                             uint32_t value);
 
-/** 8 bit integer */
-esp_matter_attr_val_t esp_matter_int8(int8_t val);
+/** cluster: general diagnostics */
+esp_matter_attribute_t *esp_matter_attribute_create_network_interfaces(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                       uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_reboot_count(esp_matter_cluster_t *cluster, uint16_t value);
 
-/** 8 bit unsigned integer */
-esp_matter_attr_val_t esp_matter_uint8(uint8_t val);
+/** cluster: administrator commissioning */
+esp_matter_attribute_t *esp_matter_attribute_create_window_status(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_admin_fabric_index(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_admin_vendor_id(esp_matter_cluster_t *cluster, uint16_t value);
 
-/** 16 bit signed integer */
-esp_matter_attr_val_t esp_matter_int16(int16_t val);
+/** cluster: operational credentials */
+esp_matter_attribute_t *esp_matter_attribute_create_nocs(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                         uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_fabrics(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                            uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_supported_fabrics(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_commissioned_fabrics(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_trusted_root_certificates(esp_matter_cluster_t *cluster,
+                                                                              uint8_t *value, uint16_t length,
+                                                                              uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_current_fabric_index(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** 16 bit unsigned integer */
-esp_matter_attr_val_t esp_matter_uint16(uint16_t val);
+/** cluster: group key management */
+esp_matter_attribute_t *esp_matter_attribute_create_group_key_map(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                  uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_group_table(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count);
+esp_matter_attribute_t *esp_matter_attribute_create_max_groups_per_fabric(esp_matter_cluster_t *cluster,
+                                                                          uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_max_group_keys_per_fabric(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value);
 
-/** 32 bit unsigned integer */
-esp_matter_attr_val_t esp_matter_uint32(uint32_t val);
+/** cluster: identify */
+esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_identify_type(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** 64 bit unsigned integer */
-esp_matter_attr_val_t esp_matter_uint64(uint64_t val);
+/** cluster: groups */
+esp_matter_attribute_t *esp_matter_attribute_create_group_name_support(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** 8 bit enum */
-esp_matter_attr_val_t esp_matter_enum8(uint8_t val);
+/** cluster: scenes */
+esp_matter_attribute_t *esp_matter_attribute_create_scene_count(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_current_scene(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_current_group(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_scene_valid(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_scene_name_support(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** 8 bit bitmap */
-esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val);
+/** cluster: on off */
+esp_matter_attribute_t *esp_matter_attribute_create_on_off(esp_matter_cluster_t *cluster, bool value);
 
-/** 16 bit bitmap */
-esp_matter_attr_val_t esp_matter_bitmap16(uint16_t val);
+/** cluster: level control */
+esp_matter_attribute_t *esp_matter_attribute_create_current_level(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_on_level(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** 32 bit bitmap */
-esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val);
+/** cluster: color control */
+esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_current_saturation(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_color_mode(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_color_control_options(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_enhanced_color_mode(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_color_capabilities(esp_matter_cluster_t *cluster, uint16_t value);
 
-/** Character string */
-esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size);
+/** cluster: fan control */
+esp_matter_attribute_t *esp_matter_attribute_create_fan_mode(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_fan_mode_sequence(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** Octet string */
-esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size);
+/** cluster: thermostat */
+esp_matter_attribute_t *esp_matter_attribute_create_local_temperature(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_occupied_cooling_setpoint(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_occupied_heating_setpoint(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_control_sequence_of_operation(esp_matter_cluster_t *cluster,
+                                                                                  uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value);
 
-/** Array */
-esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_t count);
+/** cluster: door lock */
+esp_matter_attribute_t *esp_matter_attribute_create_lock_state(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_lock_type(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_actuator_enabled(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_auto_relock_time(esp_matter_cluster_t *cluster, uint32_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_supported_operating_modes(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value);
 
-/** Attribute update
- *
- * This API updates the attribute value
- */
-esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
+/** cluster: bridged device basic */
+esp_matter_attribute_t *esp_matter_attribute_create_bridged_device_basic_node_label(esp_matter_cluster_t *cluster,
+                                                                                    char *value, uint16_t length);
+esp_matter_attribute_t *esp_matter_attribute_create_reachable(esp_matter_cluster_t *cluster, bool value);
 
-/** Attribute value print
- *
- * This API prints the attribute value according to the type
- */
-void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
+/** cluster: fixed label */
+esp_matter_attribute_t *esp_matter_attribute_create_label_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                               uint16_t length, uint16_t count);
+
+/** cluster: switch */
+esp_matter_attribute_t *esp_matter_attribute_create_number_of_positions(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_current_position(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_multi_press_max(esp_matter_cluster_t *cluster, uint8_t value);
+
+/** cluster: temperature measurement */
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_measured_value(esp_matter_cluster_t *cluster,
+                                                                               int16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_min_measured_value(esp_matter_cluster_t *cluster,
+                                                                                   int16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_max_measured_value(esp_matter_cluster_t *cluster,
+                                                                                   int16_t value);

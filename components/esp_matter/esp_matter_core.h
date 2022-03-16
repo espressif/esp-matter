@@ -15,7 +15,7 @@
 #pragma once
 
 #include <esp_err.h>
-#include <esp_matter_attribute.h>
+#include <esp_matter_attribute_utils.h>
 #include <app/InteractionModelEngine.h>
 #include <app/DeviceProxy.h>
 #include <app/util/af-types.h>
