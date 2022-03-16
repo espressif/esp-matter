@@ -15,7 +15,6 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <esp_matter_core.h>
-#include <esp_matter_factory.h>
 #include <nvs.h>
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
@@ -23,21 +22,12 @@
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
+#include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
+#include <platform/ESP32/ESP32FactoryDataProvider.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <esp_matter_openthread.h>
-#endif
-
-/* TODO: Remove the examples DAC provider once we have a concrete
- * way to generate attestation credentials.
- */
-#if CONFIG_ESP_MATTER_USE_ESP_DAC_PROVIDER
-#include <esp_matter_dac.h>
-using chip::Credentials::esp::esp_matter_dac_provider_get;
-#else
-#include <credentials/examples/DeviceAttestationCredsExample.h>
-using chip::Credentials::Examples::GetExampleDACProvider;
 #endif
 
 using chip::CommandId;
@@ -45,6 +35,7 @@ using chip::DataVersion;
 using chip::kInvalidCommandId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
+using chip::Credentials::Examples::GetExampleDACProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConfigurationMgr;
 using chip::DeviceLayer::ConnectivityManager;
@@ -59,6 +50,13 @@ using chip::DeviceLayer::ThreadStackMgr;
 static const char *TAG = "esp_matter_core";
 
 namespace esp_matter {
+
+namespace {
+#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
+#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+}  // namespace
+
 typedef struct _attribute {
     int attribute_id;
     int cluster_id;
@@ -644,11 +642,15 @@ static void esp_matter_chip_init_task(intptr_t context)
     // initParams.appDelegate = &sCallbacks;
     chip::Server::GetInstance().Init(initParams);
 
-#if CONFIG_ESP_MATTER_USE_ESP_DAC_PROVIDER
-    SetDeviceAttestationCredentialsProvider(esp_matter_dac_provider_get());
-#else
+/* TODO: Remove the examples DAC provider once we have a concrete
+ * way to generate attestation credentials.
+ */
+#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
+#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
     SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
 #endif
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
@@ -673,6 +675,10 @@ static void esp_matter_chip_init_task(intptr_t context)
 
 static esp_err_t chip_init(event_callback_t callback)
 {
+#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetCommissionableDataProvider(&factory_data_provider);
+#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
         return ESP_ERR_NO_MEM;
@@ -711,11 +717,6 @@ esp_err_t start(event_callback_t callback)
     esp_err_t err = chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
-        return err;
-    }
-    err = esp_matter_factory_init();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error initializing factory");
     }
     return err;
 }
