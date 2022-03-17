@@ -600,7 +600,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_identify(esp_matter_endpoint_t *
 
     /* Attributes not managed internally */
     esp_matter_attribute_create_cluster_revision(cluster, config->cluster_revision);
-    esp_matter_attribute_create_identify_time(cluster, config->identify_time);
+    esp_matter_attribute_create_identify_time(cluster, config->identify_time, 0x0, 0xFE);
     esp_matter_attribute_create_identify_type(cluster, config->identify_type);
 
     /* Commands */
@@ -745,7 +745,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
     esp_matter_attribute_create_cluster_revision(cluster, config->cluster_revision);
     esp_matter_attribute_create_current_level(cluster, config->current_level);
     esp_matter_attribute_create_on_level(cluster, config->on_level);
-    esp_matter_attribute_create_options(cluster, config->options);
+    esp_matter_attribute_create_options(cluster, config->options, 0x0, 0x3);
 
     /* Commands */
     esp_matter_command_create_move_to_level(cluster);                              
@@ -858,8 +858,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_thermostat(esp_matter_endpoint_t
     esp_matter_attribute_create_local_temperature(cluster, config->local_temperature);
     esp_matter_attribute_create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
     esp_matter_attribute_create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
-    esp_matter_attribute_create_control_sequence_of_operation(cluster, config->control_sequence_of_operation);
-    esp_matter_attribute_create_system_mode(cluster, config->system_mode);
+    esp_matter_attribute_create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
+    esp_matter_attribute_create_system_mode(cluster, config->system_mode, 0x0, 0x7);
 
     /* Commands */
     esp_matter_command_create_setpoint_raise_lower(cluster);
@@ -892,7 +892,7 @@ esp_matter_cluster_t *esp_matter_cluster_create_door_lock(esp_matter_endpoint_t 
     esp_matter_attribute_create_lock_type(cluster, config->lock_type);
     esp_matter_attribute_create_actuator_enabled(cluster, config->actuator_enabled);
     esp_matter_attribute_create_auto_relock_time(cluster, config->auto_relock_time);
-    esp_matter_attribute_create_operating_mode(cluster, config->operating_mode);
+    esp_matter_attribute_create_operating_mode(cluster, config->operating_mode, 0x0, 0x4);
     esp_matter_attribute_create_supported_operating_modes(cluster, config->supported_operating_modes);
 
     /* Commands */

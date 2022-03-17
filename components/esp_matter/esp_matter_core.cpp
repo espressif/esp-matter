@@ -58,6 +58,9 @@ typedef struct esp_matter_attribute {
     int attribute_id;
     uint8_t flags;
     esp_matter_attr_val_t val;
+    esp_matter_attr_bounds_t *bounds;
+    EmberAfDefaultOrMinMaxAttributeValue default_value;
+    uint16_t default_value_size;
     struct esp_matter_attribute *next;
 } _esp_matter_attribute_t;
 
@@ -96,7 +99,7 @@ typedef struct esp_matter_node {
 
 static _esp_matter_node_t *node = NULL;
 
-static int esp_matter_cluster_get_count(_esp_matter_cluster_t *current)
+static int cluster_get_count(_esp_matter_cluster_t *current)
 {
     int count = 0;
     while (current) {
@@ -106,7 +109,7 @@ static int esp_matter_cluster_get_count(_esp_matter_cluster_t *current)
     return count;
 }
 
-static int esp_matter_attribute_get_count(_esp_matter_attribute_t *current)
+static int attribute_get_count(_esp_matter_attribute_t *current)
 {
     int count = 0;
     while (current) {
@@ -116,7 +119,7 @@ static int esp_matter_attribute_get_count(_esp_matter_attribute_t *current)
     return count;
 }
 
-static int esp_matter_command_get_count(_esp_matter_command_t *current, int command_flag)
+static int command_get_count(_esp_matter_command_t *current, int command_flag)
 {
     int count = 0;
     while (current) {
@@ -128,7 +131,7 @@ static int esp_matter_command_get_count(_esp_matter_command_t *current, int comm
     return count;
 }
 
-static int esp_matter_endpoint_get_next_index()
+static int endpoint_get_next_index()
 {
     int endpoint_id = 0;
     for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
@@ -138,6 +141,108 @@ static int esp_matter_endpoint_get_next_index()
         }
     }
     return 0xFFFF;
+}
+
+extern esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
+                                        uint16_t *attribute_size, uint8_t *value);
+
+static esp_err_t attribute_free_default_value(esp_matter_attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_FAIL;
+    }
+    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+
+    /* Free value if data is more than 2 bytes or if it is min max attribute */
+    if (current_attribute->flags & ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX) {
+        if (current_attribute->default_value_size > 2) {
+            if (current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue) {
+                free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
+            }
+            if (current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue) {
+                free((void *)current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue);
+            }
+            if (current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue) {
+                free((void *)current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
+            }
+        }
+        free((void *)current_attribute->default_value.ptrToMinMaxValue);
+    } else if (current_attribute->default_value_size > 2) {
+        if (current_attribute->default_value.ptrToDefaultValue) {
+            free((void *)current_attribute->default_value.ptrToDefaultValue);
+        }
+    }
+    return ESP_OK;
+}
+
+static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_val_t *val,
+                                                                EmberAfAttributeType attribute_type,
+                                                                uint16_t attribute_size)
+{
+    EmberAfDefaultAttributeValue default_value = (uint16_t)0;
+    uint8_t *value = (uint8_t *)calloc(1, attribute_size);
+    if (!value) {
+        ESP_LOGE(TAG, "Could not allocate value buffer for default value");
+        return default_value;
+    }
+    get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
+
+    if (attribute_size > 2) {
+        /* Directly set the pointer */
+        default_value = value;
+    } else {
+        /* This data is 2 bytes or less. This should be represented as uint16. Copy the bytes appropriately
+        for 0 or 1 or 2 bytes to be converted to uint16. Then free the allocated buffer. */
+        uint16_t int_value = 0;
+        if (attribute_size == 2) {
+            memcpy(&int_value, value, attribute_size);
+        } else if (attribute_size == 1) {
+            int_value = (uint16_t)*value;
+        }
+        default_value = int_value;
+        free(value);
+    }
+    return default_value;
+}
+
+static esp_err_t attribute_set_default_value_from_current_val(esp_matter_attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_FAIL;
+    }
+    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    esp_matter_attr_val_t *val = &current_attribute->val;
+
+    /* Get size */
+    EmberAfAttributeType attribute_type = 0;
+    uint16_t attribute_size = 0;
+    get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
+
+    /* Get and set value */
+    if (current_attribute->flags & ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX) {
+        EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)calloc(1,
+                                                                                sizeof(EmberAfAttributeMinMaxValue));
+        if (!temp_value) {
+            ESP_LOGE(TAG, "Could not allocate ptrToMinMaxValue for default value");
+            return ESP_FAIL;
+        }
+        temp_value->defaultValue = get_default_value_from_data(val, attribute_type, attribute_size);
+        temp_value->minValue = get_default_value_from_data(&current_attribute->bounds->min,
+                                                                               attribute_type, attribute_size);
+        temp_value->maxValue = get_default_value_from_data(&current_attribute->bounds->max,
+                                                                               attribute_type, attribute_size);
+        current_attribute->default_value.ptrToMinMaxValue = temp_value;
+    } else if (attribute_size > 2) {
+        EmberAfDefaultAttributeValue temp_value = get_default_value_from_data(val, attribute_type, attribute_size);
+        current_attribute->default_value.ptrToDefaultValue = temp_value.ptrToDefaultValue;
+    } else {
+        EmberAfDefaultAttributeValue temp_value = get_default_value_from_data(val, attribute_type, attribute_size);
+        current_attribute->default_value.defaultValue = temp_value.defaultValue;
+    }
+    current_attribute->default_value_size = attribute_size;
+    return ESP_OK;
 }
 
 static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
@@ -188,11 +293,6 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
     return ESP_OK;
 }
 
-extern esp_err_t esp_matter_attribute_get_type_and_val_default(esp_matter_attr_val_t *val,
-                                                               EmberAfAttributeType *attribute_type,
-                                                               uint16_t *attribute_size,
-                                                               EmberAfDefaultOrMinMaxAttributeValue *default_value);
-
 esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
 {
     if (!endpoint) {
@@ -212,7 +312,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
 
     /* Clusters */
     _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
-    int cluster_count = esp_matter_cluster_get_count(cluster);
+    int cluster_count = cluster_get_count(cluster);
     int cluster_index = 0;
 
     DataVersion *data_versions_ptr = (DataVersion *)calloc(1, cluster_count * sizeof(DataVersion));
@@ -253,7 +353,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     while (cluster) {
         /* Attributes */
         attribute = cluster->attribute_list;
-        attribute_count = esp_matter_attribute_get_count(attribute);
+        attribute_count = attribute_get_count(attribute);
         attribute_index = 0;
         matter_attributes = (EmberAfAttributeMetadata *)calloc(1,
                                                        attribute_count * sizeof(EmberAfAttributeMetadata));
@@ -266,10 +366,9 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         while (attribute) {
             matter_attributes[attribute_index].attributeId = attribute->attribute_id;
             matter_attributes[attribute_index].mask = attribute->flags;
-            esp_matter_attribute_get_type_and_val_default(&attribute->val,
-                                                          &matter_attributes[attribute_index].attributeType,
-                                                          &matter_attributes[attribute_index].size,
-                                                          &matter_attributes[attribute_index].defaultValue);
+            matter_attributes[attribute_index].defaultValue = attribute->default_value;
+            get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
+                                   &matter_attributes[attribute_index].size, NULL);
 
             matter_clusters[cluster_index].clusterSize += matter_attributes[attribute_index].size;
             attribute = attribute->next;
@@ -287,7 +386,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         /* Client Generated Commands */
         command_flag = ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED;
         command = cluster->command_list;
-        command_count = esp_matter_command_get_count(command, command_flag);
+        command_count = command_get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
             client_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -309,7 +408,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         /* Server Generated Commands */
         command_flag = ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED;
         command = cluster->command_list;
-        command_count = esp_matter_command_get_count(command, command_flag);
+        command_count = command_get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
             server_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -355,7 +454,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     endpoint_type->clusterCount = cluster_count;
 
     /* Add Endpoint */
-    endpoint_index = esp_matter_endpoint_get_next_index();
+    endpoint_index = endpoint_get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type,
                                                   current_endpoint->device_type_id, 1,
                                                   chip::Span<chip::DataVersion>(data_versions));
@@ -828,6 +927,56 @@ esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_ma
     return ESP_OK;
 }
 
+esp_err_t esp_matter_attribute_add_bounds(esp_matter_attribute_t *attribute, esp_matter_attr_val_t min,
+                                          esp_matter_attr_val_t max)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+
+    /* Check if bounds can be set */
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING
+        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING
+        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        ESP_LOGE(TAG, "Bounds cannot be set for string/array type attributes");
+        return ESP_ERR_INVALID_ARG;
+    }
+    if ((current_attribute->val.type != min.type) || (current_attribute->val.type != max.type)) {
+        ESP_LOGE(TAG, "Cannot set bounds because of val type mismatch: expected: %d, min: %d, max: %d",
+                 current_attribute->val.type, min.type, max.type);
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    /* Free the default value before setting the new bounds */
+    attribute_free_default_value(attribute);
+
+    /* Allocate and set */
+    current_attribute->bounds = (esp_matter_attr_bounds_t *)calloc(1, sizeof(esp_matter_attr_bounds_t));
+    if (!current_attribute->bounds) {
+        ESP_LOGE(TAG, "Could not allocate bounds");
+        return ESP_ERR_NO_MEM;
+    }
+    memcpy((void *)&current_attribute->bounds->min, (void *)&min, sizeof(esp_matter_attr_val_t));
+    memcpy((void *)&current_attribute->bounds->max, (void *)&max, sizeof(esp_matter_attr_val_t));
+    current_attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX;
+
+    /* Set the default value again after setting the bounds and the flag */
+    attribute_set_default_value_from_current_val(attribute);
+    return ESP_OK;
+}
+
+esp_matter_attr_bounds_t *esp_matter_attribute_get_bounds(esp_matter_attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return NULL;
+    }
+    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    return current_attribute->bounds;
+}
+
 esp_matter_command_callback_t esp_matter_command_get_callback(esp_matter_command_t *command)
 {
     if (!command) {
@@ -873,6 +1022,9 @@ static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
     }
     _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
 
+    /* Default value needs to be deleted first since it uses the current val. */
+    attribute_free_default_value(attribute);
+
     /* Delete val here, if required */
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING
         || current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING
@@ -881,6 +1033,11 @@ static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
         if (current_attribute->val.val.a.b) {
             free(current_attribute->val.val.a.b);
         }
+    }
+
+    /* Free bounds */
+    if (current_attribute->bounds) {
+        free(current_attribute->bounds);
     }
 
     /* Free */
@@ -910,6 +1067,7 @@ esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluste
     attribute->flags = flags;
     attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
     esp_matter_attribute_set_val((esp_matter_attribute_t *)attribute, &val);
+    attribute_set_default_value_from_current_val((esp_matter_attribute_t *)attribute);
 
     /* Add */
     _esp_matter_attribute_t *previous_attribute = NULL;

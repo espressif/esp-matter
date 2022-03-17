@@ -101,6 +101,15 @@ typedef struct {
     esp_matter_val_t val;
 } esp_matter_attr_val_t;
 
+/* ESP Matter Attribute Bounds */
+typedef struct esp_matter_attr_bounds {
+    /* Minimum Value */
+    esp_matter_attr_val_t min;
+    /* Maximum Value */
+    esp_matter_attr_val_t max;
+    /** TODO: Step Value might be needed here later */
+} esp_matter_attr_bounds_t;
+
 /*** Attribute val APIs ***/
 /** Invalid */
 esp_matter_attr_val_t esp_matter_invalid(void *val);

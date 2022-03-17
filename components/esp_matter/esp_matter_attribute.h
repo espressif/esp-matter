@@ -123,7 +123,8 @@ esp_matter_attribute_t *esp_matter_attribute_create_max_group_keys_per_fabric(es
                                                                               uint16_t value);
 
 /** cluster: identify */
-esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value,
+                                                                  uint16_t min, uint16_t max);
 esp_matter_attribute_t *esp_matter_attribute_create_identify_type(esp_matter_cluster_t *cluster, uint8_t value);
 
 /** cluster: groups */
@@ -142,7 +143,8 @@ esp_matter_attribute_t *esp_matter_attribute_create_on_off(esp_matter_cluster_t 
 /** cluster: level control */
 esp_matter_attribute_t *esp_matter_attribute_create_current_level(esp_matter_cluster_t *cluster, uint8_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_on_level(esp_matter_cluster_t *cluster, uint8_t value);
-esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value, uint8_t min,
+                                                            uint8_t max);
 
 /** cluster: color control */
 esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value);
@@ -163,15 +165,18 @@ esp_matter_attribute_t *esp_matter_attribute_create_occupied_cooling_setpoint(es
 esp_matter_attribute_t *esp_matter_attribute_create_occupied_heating_setpoint(esp_matter_cluster_t *cluster,
                                                                               uint16_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_control_sequence_of_operation(esp_matter_cluster_t *cluster,
-                                                                                  uint8_t value);
-esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value);
+                                                                                  uint8_t value, uint8_t min,
+                                                                                  uint8_t max);
+esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                uint8_t min, uint8_t max);
 
 /** cluster: door lock */
 esp_matter_attribute_t *esp_matter_attribute_create_lock_state(esp_matter_cluster_t *cluster, uint8_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_lock_type(esp_matter_cluster_t *cluster, uint8_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_actuator_enabled(esp_matter_cluster_t *cluster, bool value);
 esp_matter_attribute_t *esp_matter_attribute_create_auto_relock_time(esp_matter_cluster_t *cluster, uint32_t value);
-esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                   uint8_t min, uint8_t max);
 esp_matter_attribute_t *esp_matter_attribute_create_supported_operating_modes(esp_matter_cluster_t *cluster,
                                                                               uint16_t value);
 

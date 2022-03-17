@@ -14,6 +14,8 @@
 
 #include <esp_matter_attribute.h>
 
+static const char *TAG = "esp_matter_attribute";
+
 esp_matter_attribute_t *esp_matter_attribute_create_cluster_revision(esp_matter_cluster_t *cluster, uint16_t value)
 {
     return esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID,
@@ -348,10 +350,18 @@ esp_matter_attribute_t *esp_matter_attribute_create_max_group_keys_per_fabric(es
                                        ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
-esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value)
+esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value,
+                                                                  uint16_t min, uint16_t max)
 {
-    return esp_matter_attribute_create(cluster, ZCL_IDENTIFY_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
-                                       esp_matter_uint16(value));
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_IDENTIFY_TIME_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_identify_type(esp_matter_cluster_t *cluster, uint8_t value)
@@ -414,10 +424,18 @@ esp_matter_attribute_t *esp_matter_attribute_create_on_level(esp_matter_cluster_
                                        esp_matter_uint8(value));
 }
 
-esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value)
+esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value, uint8_t min,
+                                                            uint8_t max)
 {
-    return esp_matter_attribute_create(cluster, ZCL_OPTIONS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
-                                       esp_matter_bitmap8(value));
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_OPTIONS_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_bitmap8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
+    return attribute;
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value)
@@ -489,16 +507,33 @@ esp_matter_attribute_t *esp_matter_attribute_create_occupied_heating_setpoint(es
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_control_sequence_of_operation(esp_matter_cluster_t *cluster,
-                                                                                  uint8_t value)
+                                                                                  uint8_t value, uint8_t min,
+                                                                                  uint8_t max)
 {
-    return esp_matter_attribute_create(cluster, ZCL_CONTROL_SEQUENCE_OF_OPERATION_ATTRIBUTE_ID,
-                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster,
+                                                                    ZCL_CONTROL_SEQUENCE_OF_OPERATION_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
 }
 
-esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value)
+esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                uint8_t min, uint8_t max)
 {
-    return esp_matter_attribute_create(cluster, ZCL_SYSTEM_MODE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
-                                       esp_matter_enum8(value));
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_SYSTEM_MODE_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_lock_state(esp_matter_cluster_t *cluster, uint8_t value)
@@ -525,10 +560,18 @@ esp_matter_attribute_t *esp_matter_attribute_create_auto_relock_time(esp_matter_
                                        esp_matter_bitmap32(value));
 }
 
-esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value)
+esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                   uint8_t min, uint8_t max)
 {
-    return esp_matter_attribute_create(cluster, ZCL_OPERATING_MODE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                       esp_matter_enum8(value));
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_OPERATING_MODE_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_supported_operating_modes(esp_matter_cluster_t *cluster,

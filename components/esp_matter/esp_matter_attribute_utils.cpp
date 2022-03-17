@@ -76,6 +76,9 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
         } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
             char *value = argv[4];
             val = esp_matter_char_str(value, strlen(value));
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
+            uint8_t value = atoi(argv[4]);
+            val = esp_matter_bitmap8(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
@@ -135,6 +138,10 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
             int data_count = 0;
             memcpy(&data_count, &value[0], data_size_len);
             val = esp_matter_char_str((char *)(value + data_size_len), data_count);
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
+            uint8_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_bitmap8(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
@@ -440,117 +447,8 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
     return ESP_MATTER_VAL_TYPE_INVALID;
 }
 
-esp_err_t esp_matter_attribute_get_type_and_val_default(esp_matter_attr_val_t *val,
-                                                        EmberAfAttributeType *attribute_type, uint16_t *attribute_size,
-                                                        EmberAfDefaultOrMinMaxAttributeValue *default_value)
-{
-    switch (val->type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        *attribute_type = ZCL_BOOLEAN_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(bool);
-        *default_value = (uint16_t)val->val.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INTEGER:
-        *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.i;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-        *attribute_type = ZCL_SINGLE_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(float);
-        *default_value = (uint8_t *)&val->val.f;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ARRAY:
-        *attribute_type = ZCL_ARRAY_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.t;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.t;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-        *attribute_type = ZCL_OCTET_STRING_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.t;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT8:
-        *attribute_type = ZCL_INT8S_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(int8_t);
-        *default_value = (uint16_t)val->val.i8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT8:
-        *attribute_type = ZCL_INT8U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT16:
-        *attribute_type = ZCL_INT16S_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(int16_t);
-        *default_value = (int16_t)val->val.i16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT16:
-        *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.u16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT32:
-        *attribute_type = ZCL_INT32U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint32_t);
-        *default_value = (uint8_t *)&val->val.u32;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT64:
-        *attribute_type = ZCL_INT64U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint64_t);
-        *default_value = (uint8_t *)&val->val.u64;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-        *attribute_type = ZCL_ENUM8_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-        *attribute_type = ZCL_BITMAP8_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-        *attribute_type = ZCL_BITMAP16_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.u16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-        *attribute_type = ZCL_BITMAP32_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint32_t);
-        *default_value = (uint8_t *)&val->val.u32;
-        break;
-
-    default:
-        ESP_LOGE(TAG, "esp_matter_attr_val_type_t not handled: %d", val->type);
-        break;
-    }
-
-    return ESP_OK;
-}
-
-static esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
-                                        uint16_t *attribute_size, uint8_t *value)
+esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
+                                 uint16_t *attribute_size, uint8_t *value)
 {
     switch (val->type) {
     case ESP_MATTER_VAL_TYPE_BOOLEAN:
@@ -980,7 +878,7 @@ esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attri
     if (emberAfContainsServer(endpoint_id, cluster_id)) {
         status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
-            ESP_LOGE(TAG, "Error updating attribute to matter");
+            ESP_LOGE(TAG, "Error updating attribute to matter: 0x%X", status);
             free(value);
             if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
                 esp_matter_chip_stack_unlock();
