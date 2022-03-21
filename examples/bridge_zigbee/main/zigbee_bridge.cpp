@@ -20,14 +20,13 @@
 
 static const char *TAG = "zigbee_bridge";
 
-static esp_matter_cluster_on_off_config_t on_off_config = CLUSTER_CONFIG_ON_OFF_DEFAULT();
-
 static esp_err_t init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
 {
     if (!dev) {
         ESP_LOGE(TAG, "Invalid bridge device to be initialized");
         return ESP_ERR_INVALID_ARG;
     }
+    esp_matter_cluster_on_off_config_t on_off_config = CLUSTER_CONFIG_ON_OFF_DEFAULT();
     esp_matter_cluster_create_on_off(dev->endpoint, &on_off_config, CLUSTER_MASK_SERVER);
     if (esp_matter_endpoint_enable(dev->endpoint) != ESP_OK) {
         ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");

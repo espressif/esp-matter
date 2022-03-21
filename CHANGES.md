@@ -7,10 +7,10 @@ The examples create the ESP Matter data model using the new APIs and default con
 These APIs add the mandatory clusters and the corresponding attributes and commands for the
 device type (endpoint) created.
 ```
-static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
-static esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
-
+esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
 esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
+
+esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
 esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config, ESP_MATTER_ENDPOINT_FLAG_NONE);
 ```
 

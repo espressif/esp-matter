@@ -19,13 +19,11 @@
 #include <app_rainmaker.h>
 
 #define DEFAULT_POWER true
-#define DEFAULT_BRIGHTNESS 254
+#define DEFAULT_BRIGHTNESS 64
+#define DEFAULT_HUE 127
 #define DEFAULT_SATURATION 254
 
 static const char *TAG = "app_main";
-
-static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
-static esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
 int light_endpoint_id = 0;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
@@ -71,16 +69,19 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Create matter device */
+    esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
     esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
+
+    esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
+    light_config.color_control.current_hue = DEFAULT_HUE;
     light_config.color_control.current_saturation = DEFAULT_SATURATION;
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config,
                                                                                       ESP_MATTER_ENDPOINT_FLAG_NONE);
     light_endpoint_id = esp_matter_endpoint_get_id(endpoint);
-    /**
-    These node and endpoint handles can be used to create and add other endpoints and other clusters to the endpoints.
-    */
+
+    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter device creation failed");
     }

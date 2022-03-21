@@ -22,8 +22,6 @@
 #include "zigbee_bridge.h"
 static const char *TAG = "app_main";
 
-static esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
-
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     if (event->Type == chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged) {
@@ -52,11 +50,10 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Create matter device */
+    esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
     esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
 
-    /**
-    These node and endpoint handles can be used to create and add other endpoints and other clusters to the endpoints.
-    */
+    /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node) {
         ESP_LOGE(TAG, "Matter device creation failed");
     }
