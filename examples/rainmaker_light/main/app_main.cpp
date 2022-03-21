@@ -55,6 +55,14 @@ static esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int en
     return err;
 }
 
+esp_err_t app_command_callback(int endpoint_id, int cluster_id, int command_id, TLVReader &tlv_data, void *priv_data)
+{
+    esp_err_t err = ESP_OK;
+    /* Pass all the commands to all the ecosystems, if their command callbacks exist */
+    err = app_rainmaker_command_callback(endpoint_id, cluster_id, command_id, tlv_data, priv_data);
+    return err;
+}
+
 extern "C" void app_main()
 {
     esp_err_t err = ESP_OK;
@@ -81,6 +89,10 @@ extern "C" void app_main()
     /* Initialize driver */
     app_driver_init();
 
+    /* Initialize rainmaker */
+    esp_matter_command_set_custom_callback(app_command_callback, NULL);
+    app_rainmaker_init();
+
     /* Matter start */
     err = esp_matter_start(app_event_cb);
     if (err != ESP_OK) {
@@ -88,8 +100,8 @@ extern "C" void app_main()
     }
     app_qrcode_print();
 
-    /* Initialize rainmaker */
-    app_rainmaker_init();
+    /* Start rainmaker */
+    app_rainmaker_start();
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();

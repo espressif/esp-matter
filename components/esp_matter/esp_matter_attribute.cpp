@@ -916,34 +916,34 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
 void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.b);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i);
     } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %f **********", endpoint_id,
                  cluster_id, attribute_id, val->val.f);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u16);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %lld **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %.*s **********", endpoint_id,
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %.*s **********", endpoint_id,
                  cluster_id, attribute_id, val->val.a.s, val->val.a.b);
     } else {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is <invalid type: %d> **********",
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is <invalid type: %d> **********",
                  endpoint_id, cluster_id, attribute_id, val->type);
     }
 }

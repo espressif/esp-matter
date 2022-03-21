@@ -52,7 +52,7 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     int endpoint_id = command_path.mEndpointId;
     int cluster_id = command_path.mClusterId;
     int command_id = command_path.mCommandId;
-    ESP_LOGI(TAG, "Received command 0x%04X for enpoint 0x%04X's cluster 0x%04X", command_id, endpoint_id, cluster_id);
+    ESP_LOGI(TAG, "Received command 0x%04X for enpoint 0x%04X's cluster 0x%08X", command_id, endpoint_id, cluster_id);
 
     esp_matter_node_t *node = esp_matter_node_get();
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
