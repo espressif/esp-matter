@@ -147,15 +147,28 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
         return ESP_ERR_INVALID_ARG;
     }
 
+    /* Take lock if not already taken */
+    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
+    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        return ESP_FAIL;
+    }
+
     /* Remove endpoint */
     _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
     int endpoint_index = emberAfGetDynamicIndexFromEndpoint(current_endpoint->endpoint_id);
     if (endpoint_index == 0xFFFF) {
         ESP_LOGE(TAG, "Could not find endpoint index");
+        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+            esp_matter_chip_stack_unlock();
+        }
         return ESP_FAIL;
     }
     emberAfClearDynamicEndpoint(endpoint_index);
 
+    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+        esp_matter_chip_stack_unlock();
+    }
     if (!(current_endpoint->endpoint_type)) {
         ESP_LOGE(TAG, "endpoint %d's endpoint_type is NULL", current_endpoint->endpoint_id);
         return ESP_ERR_INVALID_STATE;
@@ -229,6 +242,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     /* Variables */
     /* This is needed to avoid 'crosses initialization' errors because of goto */
     esp_err_t err = ESP_OK;
+    esp_matter_lock_status_t lock_status = ESP_MATTER_LOCK_FAILED;
     EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
     EmberAfCluster *matter_clusters = NULL;
     _esp_matter_attribute_t *attribute = NULL;
@@ -354,6 +368,13 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     endpoint_type->cluster = matter_clusters;
     endpoint_type->clusterCount = cluster_count;
 
+    /* Take lock if not already taken */
+    lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
+    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        goto cleanup;
+    }
+
     /* Add Endpoint */
     endpoint_index = esp_matter_endpoint_get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type,
@@ -362,7 +383,13 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
         err = ESP_FAIL;
+        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+            esp_matter_chip_stack_unlock();
+        }
         goto cleanup;
+    }
+    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
+        esp_matter_chip_stack_unlock();
     }
     return err;
 
