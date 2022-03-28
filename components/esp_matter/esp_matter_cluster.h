@@ -15,6 +15,7 @@
 #pragma once
 
 #include <esp_matter_core.h>
+#include <esp_matter_feature.h>
 #include <stdint.h>
 
 #define CLUSTER_CONFIG_BASIC_DEFAULT()  \
@@ -90,30 +91,30 @@
         .scene_name_support = 0,        \
     }
 
-#define CLUSTER_CONFIG_ON_OFF_DEFAULT() \
-    {                                   \
-        .cluster_revision = 4,          \
-        .on_off = false,                \
+#define CLUSTER_CONFIG_ON_OFF_DEFAULT()                         \
+    {                                                           \
+        .cluster_revision = 4,                                  \
+        .on_off = false,                                        \
+        .lighting = ON_OFF_CLUSTER_LIGHTING_CONFIG_DEFAULT(),   \
     }
 
-#define CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT() \
-    {                                          \
-        .cluster_revision = 3,                 \
-        .current_level = 0,                    \
-        .on_level = 0,                         \
-        .options = 0,                          \
+#define CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT()                          \
+    {                                                                   \
+        .cluster_revision = 3,                                          \
+        .current_level = 0,                                             \
+        .on_level = 0,                                                  \
+        .options = 0,                                                   \
+        .lighting = LEVEL_CONTROL_CLUSTER_LIGHTING_CONFIG_DEFAULT(),    \
     }
 
-#define CLUSTER_CONFIG_COLOR_CONTROL_DEFAULT() \
-    {                                          \
-        .cluster_revision = 3,                 \
-        .feature_map = 1,                      \
-        .current_hue = 0,                      \
-        .current_saturation = 0,               \
-        .color_mode = 1,                       \
-        .color_control_options = 0,            \
-        .enhanced_color_mode = 1,              \
-        .color_capabilities = 0,               \
+#define CLUSTER_CONFIG_COLOR_CONTROL_DEFAULT()                                      \
+    {                                                                               \
+        .cluster_revision = 3,                                                      \
+        .color_mode = 1,                                                            \
+        .color_control_options = 0,                                                 \
+        .enhanced_color_mode = 1,                                                   \
+        .color_capabilities = 0,                                                    \
+        .hue_saturation = COLOR_CONTROL_CLUSTER_HUE_SATURATION_CONFIG_DEFAULT(),    \
     }
 
 #define CLUSTER_CONFIG_FAN_CONTROL_DEFAULT() \
@@ -241,6 +242,7 @@ typedef struct esp_matter_cluster_scenes_config {
 typedef struct esp_matter_cluster_on_off_config {
     uint16_t cluster_revision;
     bool on_off;
+    esp_matter_on_off_cluster_lighting_config_t lighting;
 } esp_matter_cluster_on_off_config_t;
 
 typedef struct esp_matter_cluster_level_control_config {
@@ -248,17 +250,16 @@ typedef struct esp_matter_cluster_level_control_config {
     uint8_t current_level;
     uint8_t on_level;
     uint8_t options;
+    esp_matter_level_control_cluster_lighting_config_t lighting;
 } esp_matter_cluster_level_control_config_t;
 
 typedef struct esp_matter_cluster_color_control_config {
     uint16_t cluster_revision;
-    uint32_t feature_map;
-    uint8_t current_hue;
-    uint8_t current_saturation;
     uint8_t color_mode;
     uint8_t color_control_options;
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
+    esp_matter_color_control_cluster_hue_saturation_config_t hue_saturation;
 } esp_matter_cluster_color_control_config_t;
 
 typedef struct esp_matter_cluster_fan_control_config {
@@ -357,13 +358,14 @@ esp_matter_cluster_t *esp_matter_cluster_create_scenes(esp_matter_endpoint_t *en
                                                        esp_matter_cluster_scenes_config_t *config, uint8_t flags);
 
 esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *endpoint,
-                                                       esp_matter_cluster_on_off_config_t *config, uint8_t flags);
+                                                       esp_matter_cluster_on_off_config_t *config, uint8_t flags,
+                                                       uint32_t features);
 esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_level_control_config_t *config,
-                                                              uint8_t flags);
+                                                              uint8_t flags, uint32_t features);
 esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_color_control_config_t *config,
-                                                              uint8_t flags);
+                                                              uint8_t flags, uint32_t features);
 esp_matter_cluster_t *esp_matter_cluster_create_fan_control(esp_matter_endpoint_t *endpoint,
                                                            esp_matter_cluster_fan_control_config_t *config,
                                                            uint8_t flags);

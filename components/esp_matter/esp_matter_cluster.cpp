@@ -693,7 +693,8 @@ esp_matter_cluster_t *esp_matter_cluster_create_scenes(esp_matter_endpoint_t *en
 }
 
 esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *endpoint,
-                                                       esp_matter_cluster_on_off_config_t *config, uint8_t flags)
+                                                       esp_matter_cluster_on_off_config_t *config, uint8_t flags,
+                                                       uint32_t features)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_ON_OFF_CLUSTER_ID, flags);
     if (!cluster) {
@@ -719,12 +720,17 @@ esp_matter_cluster_t *esp_matter_cluster_create_on_off(esp_matter_endpoint_t *en
     esp_matter_command_create_on(cluster);    
     esp_matter_command_create_toggle(cluster);    
 
+    /* Features */
+    if (features & ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID) {
+        esp_matter_on_off_cluster_add_feature_lighting(cluster, &(config->lighting));
+    }
+
     return cluster;
 }
 
 esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_level_control_config_t *config,
-                                                              uint8_t flags)
+                                                              uint8_t flags, uint32_t features)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_LEVEL_CONTROL_CLUSTER_ID, flags);
     if (!cluster) {
@@ -757,12 +763,20 @@ esp_matter_cluster_t *esp_matter_cluster_create_level_control(esp_matter_endpoin
     esp_matter_command_create_step_with_on_off(cluster);                              
     esp_matter_command_create_stop_with_on_off(cluster);                              
 
+    /* Features */
+    if (features & ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID) {
+        esp_matter_level_control_cluster_add_feature_on_off(cluster);
+    }
+    if (features & ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID) {
+        esp_matter_level_control_cluster_add_feature_lighting(cluster, &(config->lighting));
+    }
+
     return cluster;
 }
 
 esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoint_t *endpoint,
                                                               esp_matter_cluster_color_control_config_t *config,
-                                                              uint8_t flags)
+                                                              uint8_t flags, uint32_t features)
 {
     esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ZCL_COLOR_CONTROL_CLUSTER_ID, flags);
     if (!cluster) {
@@ -781,22 +795,15 @@ esp_matter_cluster_t *esp_matter_cluster_create_color_control(esp_matter_endpoin
 
     /* Attributes not managed internally */
     esp_matter_attribute_create_cluster_revision(cluster, config->cluster_revision);
-    esp_matter_attribute_create_feature_map(cluster, config->feature_map);
-    esp_matter_attribute_create_current_hue(cluster, config->current_hue);
-    esp_matter_attribute_create_current_saturation(cluster, config->current_saturation);
     esp_matter_attribute_create_color_mode(cluster, config->color_mode);
     esp_matter_attribute_create_color_control_options(cluster, config->color_control_options);
     esp_matter_attribute_create_enhanced_color_mode(cluster, config->enhanced_color_mode);
     esp_matter_attribute_create_color_capabilities(cluster, config->color_capabilities);
 
-    /* Commands */
-    esp_matter_command_create_move_to_hue(cluster);                              
-    esp_matter_command_create_move_hue(cluster);                              
-    esp_matter_command_create_step_hue(cluster);                              
-    esp_matter_command_create_move_to_saturation(cluster);                              
-    esp_matter_command_create_move_saturation(cluster);                              
-    esp_matter_command_create_step_saturation(cluster);                              
-    esp_matter_command_create_move_to_hue_and_saturation(cluster);                              
+    /* Features */
+    if (features & ESP_MATTER_COLOR_CONTROL_CLUSTER_HUE_SATURATION_FEATURE_ID) {
+        esp_matter_color_control_cluster_add_feature_hue_saturation(cluster, &(config->hue_saturation));
+    }
 
     return cluster;
 }

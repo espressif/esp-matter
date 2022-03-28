@@ -79,6 +79,12 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
         } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
             uint8_t value = atoi(argv[4]);
             val = esp_matter_bitmap8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP16) {
+            uint16_t value = atoi(argv[4]);
+            val = esp_matter_bitmap16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+            uint32_t value = atoi(argv[4]);
+            val = esp_matter_bitmap32(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
@@ -142,6 +148,14 @@ static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
             uint8_t value = 0;
             esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
             val = esp_matter_bitmap8(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP16) {
+            uint16_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_bitmap16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+            uint32_t value = 0;
+            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_bitmap32(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
@@ -796,10 +810,10 @@ void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribu
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {

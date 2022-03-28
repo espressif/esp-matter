@@ -63,7 +63,8 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_light(esp_matter_node_t
     esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
 
@@ -84,8 +85,11 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_dimmable_light(esp_matter_node
     esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
+    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID |
+                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
 
@@ -106,11 +110,15 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matte
     esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
+    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID |
+                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_color_control(endpoint, &(config->color_control), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    esp_matter_cluster_create_color_control(endpoint, &(config->color_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                                            ESP_MATTER_COLOR_CONTROL_CLUSTER_HUE_SATURATION_FEATURE_ID);
 
     return endpoint;
 }
@@ -129,7 +137,8 @@ esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_
     esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
     esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_CLIENT,
+                                     ESP_MATTER_NONE_FEATURE_ID);
     esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
     esp_matter_cluster_create_binding(endpoint, &(config->binding), ESP_MATTER_CLUSTER_FLAG_SERVER);
