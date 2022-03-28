@@ -32,6 +32,8 @@ endif(NOT DEFINED ENV{ESP_RMAKER_PATH})
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
+idf_build_set_property(RAINMAKER_ENABLED 1)
+
 set(EXTRA_COMPONENT_DIRS
     "../common"
     "${IDF_PATH}/examples/common_components"
