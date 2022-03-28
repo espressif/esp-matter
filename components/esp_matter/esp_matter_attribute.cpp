@@ -12,1113 +12,630 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_log.h>
-#include <esp_matter.h>
 #include <esp_matter_attribute.h>
-#include <esp_matter_console.h>
-#include <esp_matter_core.h>
-#include <string.h>
-
-#include <app/util/attribute-storage.h>
-#include <protocols/interaction_model/Constants.h>
-
-using chip::AttributeId;
-using chip::ClusterId;
-using chip::EndpointId;
-using chip::Protocols::InteractionModel::Status;
 
 static const char *TAG = "esp_matter_attribute";
 
-static esp_matter_attribute_callback_t attribute_callback = NULL;
-static void *attribute_callback_priv_data = NULL;
-
-static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type);
-
-static esp_err_t esp_matter_attribute_console_handler(int argc, char **argv)
+esp_matter_attribute_t *esp_matter_attribute_create_cluster_revision(esp_matter_cluster_t *cluster, uint16_t value)
 {
-    if (argc == 5 && strncmp(argv[0], "set", sizeof("set")) == 0) {
-        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
-
-        /* Get type from matter_attribute */
-        const EmberAfAttributeMetadata *matter_attribute = NULL;
-        EmberAfAttributeSearchRecord record = {
-            .endpoint    = (EndpointId)endpoint_id,
-            .clusterId   = (ClusterId)cluster_id,
-            .clusterMask = ESP_MATTER_CLUSTER_FLAG_SERVER,
-            .attributeId = (AttributeId)attribute_id,
-        };
-        emAfReadOrWriteAttribute(&record, &matter_attribute, NULL, 0, false);
-        if (!matter_attribute) {
-            ESP_LOGE(TAG, "Matter attribute not found");
-            return ESP_ERR_INVALID_ARG;
-        }
-
-        /* Use the type to create the val and then update te attribute */
-        esp_matter_val_type_t type = get_val_type_from_attribute_type(matter_attribute->attributeType);
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        if (type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-            bool value = atoi(argv[4]);
-            val = esp_matter_bool(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
-            int8_t value = atoi(argv[4]);
-            val = esp_matter_int8(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
-            uint8_t value = atoi(argv[4]);
-            val = esp_matter_uint8(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
-            int16_t value = atoi(argv[4]);
-            val = esp_matter_int16(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
-            uint16_t value = atoi(argv[4]);
-            val = esp_matter_uint16(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
-            uint32_t value = atoi(argv[4]);
-            val = esp_matter_uint32(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
-            uint64_t value = atoi(argv[4]);
-            val = esp_matter_uint64(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-            char *value = argv[4];
-            val = esp_matter_char_str(value, strlen(value));
-        } else {
-            ESP_LOGE(TAG, "Type not handled: %d", type);
-            return ESP_ERR_INVALID_ARG;
-        }
-        esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
-    } else if (argc == 4 && strncmp(argv[0], "get", sizeof("get")) == 0) {
-        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
-
-        /* Directly print if esp matter data model is used */
-        esp_matter_node_t *node = esp_matter_node_get();
-        if (node) {
-            esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
-            esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
-            esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
-            esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-            esp_matter_attribute_get_val(attribute, &val);
-            esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
-            return ESP_OK;
-        }
-
-        /* Get type from matter_attribute if esp matter data model is not used */
-        const EmberAfAttributeMetadata *matter_attribute = NULL;
-        EmberAfAttributeSearchRecord record = {
-            .endpoint    = (EndpointId)endpoint_id,
-            .clusterId   = (ClusterId)cluster_id,
-            .clusterMask = ESP_MATTER_CLUSTER_FLAG_SERVER,
-            .attributeId = (AttributeId)attribute_id,
-        };
-        emAfReadOrWriteAttribute(&record, &matter_attribute, NULL, 0, false);
-        if (!matter_attribute) {
-            ESP_LOGE(TAG, "Matter attribute not found");
-            return ESP_ERR_INVALID_ARG;
-        }
-
-        /* Use the type to read the raw value and then print if esp matter data model is not used */
-        esp_matter_val_type_t type = get_val_type_from_attribute_type(matter_attribute->attributeType);
-        esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-        if (type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-            bool value = false;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_bool(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
-            int8_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_int8(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
-            uint8_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_uint8(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
-            int16_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_int16(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
-            uint16_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_uint16(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
-            uint32_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_uint32(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
-            uint64_t value = 0;
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            val = esp_matter_uint64(value);
-        } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-            /* Get raw value */
-            char value[256] = {0};      /* It can go upto 256 since only 1 byte (first) is used for size */
-            esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-            /* Get val from raw value */
-            val = esp_matter_char_str(NULL, 0);
-            int data_size_len = val.val.a.t - val.val.a.s;
-            int data_count = 0;
-            memcpy(&data_count, &value[0], data_size_len);
-            val = esp_matter_char_str((char *)(value + data_size_len), data_count);
-        } else {
-            ESP_LOGE(TAG, "Type not handled: %d", type);
-            return ESP_ERR_INVALID_ARG;
-        }
-        esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
-    } else {
-        ESP_LOGE(TAG, "Incorrect arguments");
-        return ESP_ERR_INVALID_ARG;
-    }
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
-static void esp_matter_attribute_register_commands()
+esp_matter_attribute_t *esp_matter_attribute_create_feature_map(esp_matter_cluster_t *cluster, uint32_t value)
 {
-    static bool init_done = false;
-    if (init_done) {
-        return;
-    }
-    esp_matter_console_command_t command = {
-        .name = "attribute",
-        .description = "This can be used to simulate on-device control. "
-                       "Usage: matter esp attribute <set|get> <endpoint_id> <cluster_id> <attribute_id> [value]. "
-                       "Example1: matter esp attribute set 0x0001 0x0006 0x0000 1. "
-                       "Example2: matter esp attribute get 0x0001 0x0006 0x0000.",
-        .handler = esp_matter_attribute_console_handler,
-    };
-    esp_matter_console_add_command(&command);
-    init_done = true;
+    return esp_matter_attribute_create(cluster, ZCL_FEATURE_MAP_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bitmap32(value));
 }
 
-esp_matter_attr_val_t esp_matter_invalid(void *val)
+esp_matter_attribute_t *esp_matter_attribute_create_device_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_INVALID,
-        .val = {
-            .p = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_DEVICE_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_bool(bool val)
+esp_matter_attribute_t *esp_matter_attribute_create_server_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_BOOLEAN,
-        .val = {
-            .b = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_SERVER_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_int(int val)
+esp_matter_attribute_t *esp_matter_attribute_create_client_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_INTEGER,
-        .val = {
-            .i = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_CLIENT_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_float(float val)
+esp_matter_attribute_t *esp_matter_attribute_create_parts_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                               uint16_t length, uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_FLOAT,
-        .val = {
-            .f = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_PARTS_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_int8(int8_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_acl(esp_matter_cluster_t *cluster, uint8_t *value, uint16_t length,
+                                                        uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_INT8,
-        .val = {
-            .i8 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_ACL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_uint8(uint8_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_extension(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                              uint16_t length, uint16_t count)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_UINT8,
-        .val = {
-            .u8 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_EXTENSION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_matter_attr_val_t esp_matter_int16(int16_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_data_model_revision(esp_matter_cluster_t *cluster, uint16_t value)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_INT16,
-        .val = {
-            .i16 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_DATA_MODEL_REVISION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
 }
 
-esp_matter_attr_val_t esp_matter_uint16(uint16_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_vendor_name(esp_matter_cluster_t *cluster, char *value,
+                                                                uint16_t length)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_UINT16,
-        .val = {
-            .u16 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_VENDOR_NAME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_char_str(value, length));
 }
 
-esp_matter_attr_val_t esp_matter_uint32(uint32_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_vendor_id(esp_matter_cluster_t *cluster, uint16_t value)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_UINT32,
-        .val = {
-            .u32 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_VENDOR_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
 }
 
-esp_matter_attr_val_t esp_matter_uint64(uint64_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_product_name(esp_matter_cluster_t *cluster, char *value,
+                                                                 uint16_t length)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_UINT64,
-        .val = {
-            .u64 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_PRODUCT_NAME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_char_str(value, length));
 }
 
-esp_matter_attr_val_t esp_matter_enum8(uint8_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_product_id(esp_matter_cluster_t *cluster, uint16_t value)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_ENUM8,
-        .val = {
-            .u8 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_PRODUCT_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
 }
 
-esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_node_label(esp_matter_cluster_t *cluster, char *value,
+                                                               uint16_t length)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_BITMAP8,
-        .val = {
-            .u8 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_NODE_LABEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_char_str(value, length));
 }
 
-esp_matter_attr_val_t esp_matter_bitmap16(uint16_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_location(esp_matter_cluster_t *cluster, char *value,
+                                                             uint16_t length)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_BITMAP16,
-        .val = {
-            .u16 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_LOCATION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_char_str(value, length));
 }
 
-esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val)
+esp_matter_attribute_t *esp_matter_attribute_create_hardware_version(esp_matter_cluster_t *cluster, uint16_t value)
 {
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_BITMAP32,
-        .val = {
-            .u32 = val,
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_HARDWARE_VERSION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
 }
 
-esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size)
+esp_matter_attribute_t *esp_matter_attribute_create_hardware_version_string(esp_matter_cluster_t *cluster, char *value,
+                                                                            uint16_t length)
 {
-    uint16_t data_size_len = 1;     /* Number of bytes used to store the length */
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_CHAR_STRING,
-        .val = {
-            .a = {
-                .b = (uint8_t *)val,
-                .s = data_size,
-                .n = data_size,
-                .t = (uint16_t)(data_size + data_size_len),
-            },
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_HARDWARE_VERSION_STRING_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
 }
 
-esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size)
+esp_matter_attribute_t *esp_matter_attribute_create_software_version(esp_matter_cluster_t *cluster, uint32_t value)
 {
-    uint16_t data_size_len = 1;     /* Number of bytes used to store the length */
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_OCTET_STRING,
-        .val = {
-            .a = {
-                .b = val,
-                .s = data_size,
-                .n = data_size,
-                .t = (uint16_t)(data_size + data_size_len),
-            },
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_SOFTWARE_VERSION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint32(value));
 }
 
-esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_t count)
+esp_matter_attribute_t *esp_matter_attribute_create_software_version_string(esp_matter_cluster_t *cluster, char *value,
+                                                                            uint16_t length)
 {
-    uint16_t data_size_len = 2;     /* Number of bytes used to store the length */
-    esp_matter_attr_val_t attr_val = {
-        .type = ESP_MATTER_VAL_TYPE_ARRAY,
-        .val = {
-            .a = {
-                .b = val,
-                .s = data_size,
-                .n = count,
-                .t = (uint16_t)(data_size + data_size_len),
-            },
-        },
-    };
-    return attr_val;
+    return esp_matter_attribute_create(cluster, ZCL_SOFTWARE_VERSION_STRING_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
 }
 
-static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type)
+esp_matter_attribute_t *esp_matter_attribute_create_binding(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                            uint16_t length, uint16_t count)
 {
-    switch(attribute_type) {
-    case ZCL_BOOLEAN_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_BOOLEAN;
-        break;
-
-    case ZCL_SINGLE_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_FLOAT;
-        break;
-
-    case ZCL_ARRAY_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_ARRAY;
-        break;
-
-    case ZCL_CHAR_STRING_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_CHAR_STRING;
-        break;
-
-    case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_OCTET_STRING;
-        break;
-
-    case ZCL_INT8S_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_INT8;
-        break;
-
-    case ZCL_INT8U_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_UINT8;
-        break;
-
-    case ZCL_INT16S_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_INT16;
-        break;
-
-    case ZCL_INT16U_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_UINT16;
-        break;
-
-    case ZCL_INT32U_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_UINT32;
-        break;
-
-    case ZCL_INT64U_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_UINT64;
-        break;
-
-    case ZCL_ENUM8_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_ENUM8;
-        break;
-
-    case ZCL_BITMAP8_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_BITMAP8;
-        break;
-
-    case ZCL_BITMAP16_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_BITMAP16;
-        break;
-
-    case ZCL_BITMAP32_ATTRIBUTE_TYPE:
-        return ESP_MATTER_VAL_TYPE_BITMAP32;
-        break;
-
-    default:
-        return ESP_MATTER_VAL_TYPE_INVALID;
-        break;
-    }
-    return ESP_MATTER_VAL_TYPE_INVALID;
+    return esp_matter_attribute_create(cluster, ZCL_BINDING_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_err_t esp_matter_attribute_get_type_and_val_default(esp_matter_attr_val_t *val,
-                                                        EmberAfAttributeType *attribute_type, uint16_t *attribute_size,
-                                                        EmberAfDefaultOrMinMaxAttributeValue *default_value)
+esp_matter_attribute_t *esp_matter_attribute_create_default_ota_providers(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                          uint16_t length)
 {
-    switch (val->type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        *attribute_type = ZCL_BOOLEAN_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(bool);
-        *default_value = (uint16_t)val->val.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INTEGER:
-        *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.i;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-        *attribute_type = ZCL_SINGLE_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(float);
-        *default_value = (uint8_t *)&val->val.f;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ARRAY:
-        *attribute_type = ZCL_ARRAY_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.s;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.s;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BYTE_STRING:
-        ESP_LOGE(TAG, "esp_matter_attr_val_type_t not supported: %d", val->type);
-        break;
-
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-        *attribute_type = ZCL_OCTET_STRING_ATTRIBUTE_TYPE;
-        *attribute_size = val->val.a.s;
-        *default_value = (uint8_t *)val->val.a.b;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT8:
-        *attribute_type = ZCL_INT8S_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(int8_t);
-        *default_value = (uint16_t)val->val.i8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT8:
-        *attribute_type = ZCL_INT8U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT16:
-        *attribute_type = ZCL_INT16S_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(int16_t);
-        *default_value = (int16_t)val->val.i16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT16:
-        *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.u16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT32:
-        *attribute_type = ZCL_INT32U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint32_t);
-        *default_value = (uint8_t *)&val->val.u32;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT64:
-        *attribute_type = ZCL_INT64U_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint64_t);
-        *default_value = (uint8_t *)&val->val.u64;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-        *attribute_type = ZCL_ENUM8_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-        *attribute_type = ZCL_BITMAP8_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint8_t);
-        *default_value = (uint16_t)val->val.u8;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-        *attribute_type = ZCL_BITMAP16_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint16_t);
-        *default_value = (uint16_t)val->val.u16;
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-        *attribute_type = ZCL_BITMAP32_ATTRIBUTE_TYPE;
-        *attribute_size = sizeof(uint32_t);
-        *default_value = (uint8_t *)&val->val.u32;
-        break;
-
-    default:
-        ESP_LOGE(TAG, "esp_matter_attr_val_type_t not handled: %d", val->type);
-        break;
-    }
-
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_DEFAULT_OTA_PROVIDERS_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_octet_str(value, length));
 }
 
-static esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
-                                        uint16_t *attribute_size, uint8_t *value)
+esp_matter_attribute_t *esp_matter_attribute_create_update_possible(esp_matter_cluster_t *cluster, bool value)
 {
-    switch (val->type) {
-    case ESP_MATTER_VAL_TYPE_BOOLEAN:
-        if (attribute_type) {
-            *attribute_type = ZCL_BOOLEAN_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(bool);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.b, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INTEGER:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint16_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.i, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_FLOAT:
-        if (attribute_type) {
-            *attribute_type = ZCL_SINGLE_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(float);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.f, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ARRAY:
-        if (attribute_type) {
-            *attribute_type = ZCL_ARRAY_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = val->val.a.t;
-        }
-        if (value) {
-            int data_size_len = val->val.a.t - val->val.a.s;
-            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
-            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_CHAR_STRING:
-        if (attribute_type) {
-            *attribute_type = ZCL_CHAR_STRING_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = val->val.a.t;
-        }
-        if (value) {
-            int data_size_len = val->val.a.t - val->val.a.s;
-            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
-            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BYTE_STRING:
-        ESP_LOGE(TAG, "esp_matter_attr_val_type_t not supported: %d", val->type);
-        break;
-
-    case ESP_MATTER_VAL_TYPE_OCTET_STRING:
-        if (attribute_type) {
-            *attribute_type = ZCL_OCTET_STRING_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = val->val.a.t;
-        }
-        if (value) {
-            int data_size_len = val->val.a.t - val->val.a.s;
-            memcpy(value, (uint8_t *)&val->val.a.s, data_size_len);
-            memcpy((value + data_size_len), (uint8_t *)val->val.a.b, (*attribute_size - data_size_len));
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT8:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT8S_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(int8_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.i8, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT8:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT8U_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint8_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_INT16:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT16S_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(int16_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.i16, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT16:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint16_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u16, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT32:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT32U_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint32_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u32, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_UINT64:
-        if (attribute_type) {
-            *attribute_type = ZCL_INT64U_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint64_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u64, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_ENUM8:
-        if (attribute_type) {
-            *attribute_type = ZCL_ENUM8_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint8_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP8:
-        if (attribute_type) {
-            *attribute_type = ZCL_BITMAP8_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint8_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP16:
-        if (attribute_type) {
-            *attribute_type = ZCL_BITMAP16_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint16_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u16, *attribute_size);
-        }
-        break;
-
-    case ESP_MATTER_VAL_TYPE_BITMAP32:
-        if (attribute_type) {
-            *attribute_type = ZCL_BITMAP32_ATTRIBUTE_TYPE;
-        }
-        if (attribute_size) {
-            *attribute_size = sizeof(uint32_t);
-        }
-        if (value) {
-            memcpy(value, (uint8_t *)&val->val.u32, *attribute_size);
-        }
-        break;
-
-    default:
-        ESP_LOGE(TAG, "esp_matter_attr_val_type_t not handled: %d", val->type);
-        break;
-    }
-
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_UPDATE_POSSIBLE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
 }
 
-static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
-                                        uint16_t attribute_size, uint8_t *value)
+esp_matter_attribute_t *esp_matter_attribute_create_update_state(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    switch (attribute_type) {
-    case ZCL_BOOLEAN_ATTRIBUTE_TYPE:
-    {
-        bool attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(bool));
-        *val = esp_matter_bool(attribute_value);
-        break;
-    }
-
-    case ZCL_ARRAY_ATTRIBUTE_TYPE:
-    {
-        *val = esp_matter_array(NULL, 0, 0);
-        int data_size_len = val->val.a.t - val->val.a.s;
-        int data_count = 0;
-        memcpy(&data_count, &value[0], data_size_len);
-        *val = esp_matter_array((value + data_size_len), attribute_size, data_count);
-        break;
-    }
-
-    case ZCL_CHAR_STRING_ATTRIBUTE_TYPE:
-    {
-        *val = esp_matter_char_str(NULL, 0);
-        int data_size_len = val->val.a.t - val->val.a.s;
-        int data_count = 0;
-        memcpy(&data_count, &value[0], data_size_len);
-        *val = esp_matter_char_str((char *)(value + data_size_len), data_count);
-        break;
-    }
-
-    case ZCL_OCTET_STRING_ATTRIBUTE_TYPE:
-    {
-        *val = esp_matter_octet_str(NULL, 0);
-        int data_size_len = val->val.a.t - val->val.a.s;
-        int data_count = 0;
-        memcpy(&data_count, &value[0], data_size_len);
-        *val = esp_matter_octet_str((value + data_size_len), data_count);
-        break;
-    }
-
-    case ZCL_INT8S_ATTRIBUTE_TYPE:
-    {
-        int8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int8_t));
-        *val = esp_matter_int8(attribute_value);
-        break;
-    }
-
-    case ZCL_INT8U_ATTRIBUTE_TYPE:
-    {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_uint8(attribute_value);
-        break;
-    }
-
-    case ZCL_INT16S_ATTRIBUTE_TYPE:
-    {
-        int16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int16_t));
-        *val = esp_matter_int16(attribute_value);
-        break;
-    }
-
-    case ZCL_INT16U_ATTRIBUTE_TYPE:
-    {
-        uint16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint16_t));
-        *val = esp_matter_uint16(attribute_value);
-        break;
-    }
-
-    case ZCL_INT32U_ATTRIBUTE_TYPE:
-    {
-        uint32_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint32_t));
-        *val = esp_matter_uint32(attribute_value);
-        break;
-    }
-
-    case ZCL_INT64U_ATTRIBUTE_TYPE:
-    {
-        uint64_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint64_t));
-        *val = esp_matter_uint64(attribute_value);
-        break;
-    }
-
-    case ZCL_ENUM8_ATTRIBUTE_TYPE:
-    {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_enum8(attribute_value);
-        break;
-    }
-
-    case ZCL_BITMAP8_ATTRIBUTE_TYPE:
-    {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_bitmap8(attribute_value);
-        break;
-    }
-
-    case ZCL_BITMAP16_ATTRIBUTE_TYPE:
-    {
-        uint16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint16_t));
-        *val = esp_matter_bitmap16(attribute_value);
-        break;
-    }
-
-    default:
-        *val = esp_matter_invalid(NULL);
-        break;
-    }
-
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
 }
 
-void esp_matter_attribute_val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_matter_attribute_t *esp_matter_attribute_create_update_state_progress(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.b);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.i);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %f **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.f);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.u8);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.i16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.u16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %d **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.u32);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %lld **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.u64);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is %.*s **********", endpoint_id,
-                 cluster_id, attribute_id, val->val.a.s, val->val.a.b);
-    } else {
-        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%08X's Attribute 0x%04X is <invalid type: %d> **********",
-                 endpoint_id, cluster_id, attribute_id, val->type);
-    }
+    return esp_matter_attribute_create(cluster, ZCL_UPDATE_STATE_PROGRESS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
 }
 
-esp_err_t esp_matter_attribute_callback_set(esp_matter_attribute_callback_t callback, void *priv_data)
+esp_matter_attribute_t *esp_matter_attribute_create_breadcrumb(esp_matter_cluster_t *cluster, uint64_t value)
 {
-    attribute_callback = callback;
-    attribute_callback_priv_data = priv_data;
-
-    /* Other initialisations */
-    esp_matter_attribute_register_commands();
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_BREADCRUMB_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_uint64(value));
 }
 
-esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value,
-                                           uint16_t attribute_size)
+esp_matter_attribute_t *esp_matter_attribute_create_basic_commissioning_info(esp_matter_cluster_t *cluster,
+                                                                             uint8_t *value, uint16_t length,
+                                                                             uint16_t count)
 {
-    /* Take lock if not already taken */
-    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
-    if (lock_status == ESP_MATTER_LOCK_FAILED) {
-        ESP_LOGE(TAG, "Could not get task context");
-        return ESP_FAIL;
-    }
-
-    EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
-    if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
-        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-            esp_matter_chip_stack_unlock();
-        }
-        return ESP_FAIL;
-    }
-    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-        esp_matter_chip_stack_unlock();
-    }
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_BASICCOMMISSIONINGINFO_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-esp_err_t esp_matter_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_matter_attribute_t *esp_matter_attribute_create_regulatory_config(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    /* Take lock if not already taken */
-    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
-    if (lock_status == ESP_MATTER_LOCK_FAILED) {
-        ESP_LOGE(TAG, "Could not get task context");
-        return ESP_FAIL;
-    }
-
-    /* Get size */
-    EmberAfAttributeType attribute_type = 0;
-    uint16_t attribute_size = 0;
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
-
-    /* Get value */
-    uint8_t *value = (uint8_t *)calloc(1, attribute_size);
-    if (!value) {
-        ESP_LOGE(TAG, "Could not allocate value buffer");
-        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-            esp_matter_chip_stack_unlock();
-        }
-        return ESP_ERR_NO_MEM;
-    }
-    get_data_from_attr_val(val, &attribute_type, &attribute_size, value);
-
-    /* Update matter */
-    EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
-    if (emberAfContainsServer(endpoint_id, cluster_id)) {
-        status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
-        if (status != EMBER_ZCL_STATUS_SUCCESS) {
-            ESP_LOGE(TAG, "Error updating attribute to matter");
-            free(value);
-            if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-                esp_matter_chip_stack_unlock();
-            }
-            return ESP_FAIL;
-        }
-    }
-    free(value);
-    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-        esp_matter_chip_stack_unlock();
-    }
-    return ESP_OK;
+    return esp_matter_attribute_create(cluster, ZCL_REGULATORYCONFIG_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
 }
 
-Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
-                                        uint16_t size, uint8_t *value)
+esp_matter_attribute_t *esp_matter_attribute_create_location_capability(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    int endpoint_id = path.mEndpointId;
-    int cluster_id = path.mClusterId;
-    int attribute_id = path.mAttributeId;
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    get_attr_val_from_data(&val, type, size, value);
-
-    /* Print */
-    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
-
-    /* Callback to application */
-    if (attribute_callback) {
-        esp_err_t err = attribute_callback(ESP_MATTER_CALLBACK_TYPE_PRE_ATTRIBUTE, endpoint_id, cluster_id,
-                                           attribute_id, &val, attribute_callback_priv_data);
-        if (err != ESP_OK) {
-            return Status::Failure;
-        }
-    }
-    return Status::Success;
+    return esp_matter_attribute_create(cluster, ZCL_LOCATIONCAPABILITY_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
 }
 
-void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
-                                       uint16_t size, uint8_t *value)
+esp_matter_attribute_t *esp_matter_attribute_create_max_networks(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    int endpoint_id = path.mEndpointId;
-    int cluster_id = path.mClusterId;
-    int attribute_id = path.mAttributeId;
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    get_attr_val_from_data(&val, type, size, value);
-
-    /* Callback to application */
-    if (attribute_callback) {
-        attribute_callback(ESP_MATTER_CALLBACK_TYPE_POST_ATTRIBUTE, endpoint_id, cluster_id, attribute_id, &val,
-                           attribute_callback_priv_data);
-    }
+    return esp_matter_attribute_create(cluster, ZCL_MAX_NETWORKS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
 }
 
-EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                   const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer,
-                                                   uint16_t max_read_length)
+esp_matter_attribute_t *esp_matter_attribute_create_networks(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                             uint16_t length, uint16_t count)
 {
-    /* Get value */
-    int attribute_id = matter_attribute->attributeId;
-    esp_matter_node_t *node = esp_matter_node_get();
-    if (!node) {
-        return EMBER_ZCL_STATUS_FAILURE;
-    }
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
-    esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
-    esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    esp_matter_attribute_get_val(attribute, &val);
-
-    /* Print */
-    esp_matter_attribute_val_print(endpoint_id, cluster_id, attribute_id, &val);
-
-    /* Get size */
-    uint16_t attribute_size = 0;
-    get_data_from_attr_val(&val, NULL, &attribute_size, NULL);
-    if (attribute_size > max_read_length) {
-        ESP_LOGE(TAG, "Insufficient space for reading attribute: required: %d, max: %d", attribute_size,
-                                                                                         max_read_length);
-        return EMBER_ZCL_STATUS_INSUFFICIENT_SPACE;
-    }
-
-    /* Assign value */
-    get_data_from_attr_val(&val, NULL, &attribute_size, buffer);
-    return EMBER_ZCL_STATUS_SUCCESS;
+    return esp_matter_attribute_create(cluster, ZCL_NETWORKS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
 }
 
-EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, ClusterId cluster_id,
-                                                    const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
+esp_matter_attribute_t *esp_matter_attribute_create_scan_max_time_seconds(esp_matter_cluster_t *cluster, uint8_t value)
 {
-    /* Get value */
-    int attribute_id = matter_attribute->attributeId;
-    esp_matter_node_t *node = esp_matter_node_get();
-    if (!node) {
-        return EMBER_ZCL_STATUS_FAILURE;
+    return esp_matter_attribute_create(cluster, ZCL_SCAN_MAX_TIME_SECONDS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_connect_max_time_seconds(esp_matter_cluster_t *cluster,
+                                                                             uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CONNECT_MAX_TIME_SECONDS_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_interface_enabled(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_INTERFACE_ENABLED_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_last_networking_status(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LAST_NETWORKING_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_last_network_id(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                    uint16_t length)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LAST_NETWORK_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_octet_str(value, length));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_last_connect_error_value(esp_matter_cluster_t *cluster,
+                                                                             uint32_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LAST_CONNECT_ERROR_VALUE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_network_interfaces(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                       uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_NETWORK_INTERFACES_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_reboot_count(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_REBOOT_COUNT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_window_status(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_WINDOW_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_admin_fabric_index(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ADMIN_FABRIC_INDEX_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_admin_vendor_id(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ADMIN_VENDOR_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_nocs(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                         uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_NOCS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_fabrics(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                            uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_FABRICS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_supported_fabrics(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_SUPPORTED_FABRICS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_commissioned_fabrics(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COMMISSIONED_FABRICS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_trusted_root_certificates(esp_matter_cluster_t *cluster,
+                                                                              uint8_t *value, uint16_t length,
+                                                                              uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_TRUSTED_ROOTS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_fabric_index(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CURRENT_FABRIC_INDEX_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_group_key_map(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                  uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_GROUP_KEY_MAP_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_group_table(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                                uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_GROUP_TABLE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_max_groups_per_fabric(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_MAX_GROUPS_PER_FABRIC_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_max_group_keys_per_fabric(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_MAX_GROUP_KEYS_PER_FABRIC_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_identify_time(esp_matter_cluster_t *cluster, uint16_t value,
+                                                                  uint16_t min, uint16_t max)
+{
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_IDENTIFY_TIME_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_uint16(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
     }
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, endpoint_id);
-    esp_matter_cluster_t *cluster = esp_matter_cluster_get(endpoint, cluster_id);
-    esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, attribute_id);
+    esp_matter_attribute_add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
 
-    /* Get val */
-    /* This creates a new variable val, and stores the new attribute value in the new variable.
-    The value in esp-matter data model is updated only when esp_matter_attribute_set_val() is called */
-    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer);
+esp_matter_attribute_t *esp_matter_attribute_create_identify_type(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_IDENTIFY_TYPE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
 
-    /* Update val */
-    esp_matter_attribute_set_val(attribute, &val);
-    return EMBER_ZCL_STATUS_SUCCESS;
+esp_matter_attribute_t *esp_matter_attribute_create_group_name_support(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_GROUP_NAME_SUPPORT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bitmap8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_scene_count(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_SCENE_COUNT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_scene(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CURRENT_SCENE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_group(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CURRENT_GROUP_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_scene_valid(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_SCENE_VALID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_scene_name_support(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_SCENE_NAME_SUPPORT_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bitmap8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_on_off(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ON_OFF_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_level(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CURRENT_LEVEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_on_level(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ON_LEVEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value, uint8_t min,
+                                                            uint8_t max)
+{
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_OPTIONS_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_bitmap8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
+    return attribute;
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_saturation(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_color_mode(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_COLOR_MODE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_color_control_options(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_OPTIONS_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_enhanced_color_mode(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_ENHANCED_COLOR_MODE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_color_capabilities(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_COLOR_CONTROL_COLOR_CAPABILITIES_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_fan_mode(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_FAN_MODE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_fan_mode_sequence(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_FAN_CONTROL_FAN_MODE_SEQUENCE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_local_temperature(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LOCAL_TEMPERATURE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_occupied_cooling_setpoint(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_OCCUPIED_COOLING_SETPOINT_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_occupied_heating_setpoint(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_OCCUPIED_HEATING_SETPOINT_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_control_sequence_of_operation(esp_matter_cluster_t *cluster,
+                                                                                  uint8_t value, uint8_t min,
+                                                                                  uint8_t max)
+{
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster,
+                                                                    ZCL_CONTROL_SEQUENCE_OF_OPERATION_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_system_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                uint8_t min, uint8_t max)
+{
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_SYSTEM_MODE_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_lock_state(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LOCK_STATE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_lock_type(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LOCK_TYPE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_enum8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_actuator_enabled(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ACTUATOR_ENABLED_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_auto_relock_time(esp_matter_cluster_t *cluster, uint32_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_AUTO_RELOCK_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_bitmap32(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_operating_mode(esp_matter_cluster_t *cluster, uint8_t value,
+                                                                   uint8_t min, uint8_t max)
+{
+    esp_matter_attribute_t *attribute = esp_matter_attribute_create(cluster, ZCL_OPERATING_MODE_ATTRIBUTE_ID,
+                                                                    ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                                                    esp_matter_enum8(value));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Could not create attribute");
+        return NULL;
+    }
+    esp_matter_attribute_add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
+    return attribute;
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_supported_operating_modes(esp_matter_cluster_t *cluster,
+                                                                              uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_SUPPORTED_OPERATING_MODES_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_bridged_device_basic_node_label(esp_matter_cluster_t *cluster,
+                                                                                    char *value, uint16_t length)
+{
+    return esp_matter_attribute_create(cluster, ZCL_NODE_LABEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_char_str(value, length));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_reachable(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_REACHABLE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_label_list(esp_matter_cluster_t *cluster, uint8_t *value,
+                                                               uint16_t length, uint16_t count)
+{
+    return esp_matter_attribute_create(cluster, ZCL_LABEL_LIST_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_array(value, length, count));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_number_of_positions(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_NUMBER_OF_POSITIONS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_current_position(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_CURRENT_POSITION_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_multi_press_max(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_MULTI_PRESS_MAX_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_measured_value(esp_matter_cluster_t *cluster,
+                                                                               int16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_TEMP_MEASURED_VALUE_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_int16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_min_measured_value(esp_matter_cluster_t *cluster,
+                                                                                   int16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_TEMP_MIN_MEASURED_VALUE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_temperature_max_measured_value(esp_matter_cluster_t *cluster,
+                                                                                   int16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_TEMP_MAX_MEASURED_VALUE_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
 }

@@ -30,8 +30,6 @@
 
 #define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
     {                                                                                                                 \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                            \
-        .access_control = CLUSTER_CONFIG_ACCESS_CONTROL_DEFAULT(),                                                    \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                                      \
         .ota_provider = CLUSTER_CONFIG_OTA_PROVIDER_DEFAULT(),                                                        \
         .ota_requestor = CLUSTER_CONFIG_OTA_REQUESTOR_DEFAULT(),                                                      \
@@ -40,7 +38,6 @@
         .general_diagnostics = CLUSTER_CONFIG_GENERAL_DIAGNOSTICS_DEFAULT(),                                          \
         .administrator_commissioning = CLUSTER_CONFIG_ADMINISTRATOR_COMMISSIONING_DEFAULT(),                          \
         .operational_credentials = CLUSTER_CONFIG_OPERATIONAL_CREDENTIALS_DEFAULT(),                                  \
-        .group_key_management = CLUSTER_CONFIG_GROUP_KEY_MANAGEMENT_DEFAULT(),                                        \
     }
 
 #define ENDPOINT_CONFIG_ON_OFF_LIGHT_DEFAULT()                                                            \
@@ -50,7 +47,6 @@
         .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_DIMMABLE_LIGHT_DEFAULT()                                                          \
@@ -61,7 +57,6 @@
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT()                                                    \
@@ -73,7 +68,6 @@
         .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .color_control = CLUSTER_CONFIG_COLOR_CONTROL_DEFAULT(),                                          \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_ON_OFF_SWITCH_DEFAULT()                                                           \
@@ -84,14 +78,12 @@
         .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .binding = CLUSTER_CONFIG_BINDING_DEFAULT(),                                                      \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_FAN_DEFAULT()                                                                     \
     {                                                                                                     \
         .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
         .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
         .fan_control = CLUSTER_CONFIG_FAN_CONTROL_DEFAULT(),                                              \
     }
 
@@ -102,20 +94,17 @@
         .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
         .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
         .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
     }
 
 #define ENDPOINT_CONFIG_DOOR_LOCK_DEFAULT()                                                               \
     {                                                                                                     \
         .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
         .door_lock = CLUSTER_CONFIG_DOOR_LOCK_DEFAULT(),                                                  \
         .time_synchronization = CLUSTER_CONFIG_TIME_SYNCHRONIZATION_DEFAULT(),                                                  \
     }
 
 #define ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT()                                                            \
     {                                                                                                     \
-        .descriptor = CLUSTER_CONFIG_DESCRIPTOR_DEFAULT(),                                                \
         .bridged_device_basic = CLUSTER_CONFIG_BRIDGED_DEVICE_BASIC_DEFAULT(),                            \
         .fixed_label = CLUSTER_CONFIG_FIXED_LABEL_DEFAULT(),                                              \
     }
@@ -133,8 +122,6 @@
     }
 
 typedef struct esp_matter_endpoint_root_node_config {
-    esp_matter_cluster_descriptor_config_t descriptor;
-    esp_matter_cluster_access_control_config_t access_control;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_ota_provider_config_t ota_provider;
     esp_matter_cluster_ota_requestor_config_t ota_requestor;
@@ -143,7 +130,6 @@ typedef struct esp_matter_endpoint_root_node_config {
     esp_matter_cluster_general_diagnostics_config_t general_diagnostics;
     esp_matter_cluster_administrator_commissioning_config_t administrator_commissioning;
     esp_matter_cluster_operational_credentials_config_t operational_credentials;
-    esp_matter_cluster_group_key_management_config_t group_key_management;
 } esp_matter_endpoint_root_node_config_t;
 
 typedef struct esp_matter_endpoint_on_off_light_config {
@@ -152,7 +138,6 @@ typedef struct esp_matter_endpoint_on_off_light_config {
     esp_matter_cluster_scenes_config_t scenes;
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_on_off_light_config_t;
 
 typedef struct esp_matter_endpoint_dimmable_light_config {
@@ -162,7 +147,6 @@ typedef struct esp_matter_endpoint_dimmable_light_config {
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_level_control_config_t level_control;
     esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_dimmable_light_config_t;
 
 typedef struct esp_matter_endpoint_color_dimmable_light_config {
@@ -173,7 +157,6 @@ typedef struct esp_matter_endpoint_color_dimmable_light_config {
     esp_matter_cluster_level_control_config_t level_control;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_color_control_config_t color_control;
-    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_color_dimmable_light_config_t;
 
 typedef struct esp_matter_endpoint_on_off_switch_config {
@@ -183,13 +166,11 @@ typedef struct esp_matter_endpoint_on_off_switch_config {
     esp_matter_cluster_on_off_config_t on_off;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_binding_config_t binding;
-    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_on_off_switch_config_t;
 
 typedef struct esp_matter_endpoint_fan_config {
     esp_matter_cluster_identify_config_t identify;
     esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_descriptor_config_t descriptor;
     esp_matter_cluster_fan_control_config_t fan_control;
 } esp_matter_endpoint_fan_config_t;
 
@@ -199,18 +180,15 @@ typedef struct esp_matter_endpoint_thermostat_config {
     esp_matter_cluster_scenes_config_t scenes;
     esp_matter_cluster_basic_config_t basic;
     esp_matter_cluster_thermostat_config_t thermostat;
-    esp_matter_cluster_descriptor_config_t descriptor;
 } esp_matter_endpoint_thermostat_config_t;
 
 typedef struct esp_matter_endpoint_bridged_node_config {
-    esp_matter_cluster_descriptor_config_t descriptor;
     esp_matter_cluster_bridged_device_basic_config_t bridged_device_basic;
     esp_matter_cluster_fixed_label_config_t fixed_label;
 } esp_matter_endpoint_bridged_node_config_t;
 
 typedef struct esp_matter_endpoint_door_lock_config {
     esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_descriptor_config_t descriptor;
     esp_matter_cluster_door_lock_config_t door_lock;
     esp_matter_cluster_time_synchronization_config_t time_synchronization;
 } esp_matter_endpoint_door_lock_config_t;

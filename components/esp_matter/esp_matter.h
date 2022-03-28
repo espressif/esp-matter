@@ -20,6 +20,7 @@ application.
 */
 
 #include <esp_matter_attribute.h>
+#include <esp_matter_attribute_utils.h>
 #include <esp_matter_cluster.h>
 #include <esp_matter_command.h>
 #include <esp_matter_client.h>

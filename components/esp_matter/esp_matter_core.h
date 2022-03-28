@@ -15,7 +15,7 @@
 #pragma once
 
 #include <esp_err.h>
-#include <esp_matter_attribute.h>
+#include <esp_matter_attribute_utils.h>
 #include <app/InteractionModelEngine.h>
 #include <app/DeviceProxy.h>
 #include <app/util/af-types.h>
@@ -123,6 +123,9 @@ esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_ma
 esp_err_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val);
 esp_err_t esp_matter_attribute_get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value,
                                            uint16_t attribute_size);
+esp_err_t esp_matter_attribute_add_bounds(esp_matter_attribute_t *attribute, esp_matter_attr_val_t min,
+                                          esp_matter_attr_val_t max);
+esp_matter_attr_bounds_t *esp_matter_attribute_get_bounds(esp_matter_attribute_t *attribute);
 
 /** Command APIs */
 esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, int command_id, uint8_t flags,
