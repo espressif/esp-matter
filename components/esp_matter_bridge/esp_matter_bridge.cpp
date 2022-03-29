@@ -19,12 +19,12 @@
 #include <esp_matter_bridge.h>
 
 static const char *TAG = "esp_matter_bridge";
-esp_matter_endpoint_bridged_node_config_t bridged_node_config = ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT();
 
 esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter_node_t *node)
 {
     esp_matter_bridge_device_t *dev = (esp_matter_bridge_device_t *)calloc(1, sizeof(esp_matter_bridge_device_t));
     dev->node = node;
+    esp_matter_endpoint_bridged_node_config_t bridged_node_config = ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT();
     dev->endpoint = esp_matter_endpoint_create_bridged_node(node, &bridged_node_config, ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not create esp_matter endpoint for bridged device");
