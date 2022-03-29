@@ -15,7 +15,7 @@
 #include <esp_matter_console.h>
 #include <light_driver.h>
 
-#include <app_driver.h>
+#include <app_priv.h>
 
 using chip::kInvalidClusterId;
 static constexpr chip::CommandId kInvalidCommandId     = 0xFFFF'FFFF;

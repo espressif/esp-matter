@@ -15,7 +15,7 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
-#include <app_driver.h>
+#include <app_priv.h>
 #include <app_qrcode.h>
 
 static const char *TAG = "app_main";
