@@ -51,6 +51,7 @@ static void esp_matter_rainmaker_register_commands()
 #define ESP_MATTER_RAINMAKER_ENDPOINT_ID 0x0    /* Same as root node endpoint. This will always be endpoint_id 0. */
 #define ESP_MATTER_RAINMAKER_CLUSTER_ID 0x131B0000   /* 0x131B == manufacturer code */
 #define ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID 0x0
+#define ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID 0x1
 #define ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID 0x0
 #define ESP_MATTER_RAINMAKER_CLUSTER_REVISION 1
 #define ESP_MATTER_RAINMAKER_COMMAND_LIMIT 5    /* This command can be called 5 times per reboot */
@@ -62,6 +63,15 @@ static esp_err_t rainmaker_status_attribute_update(bool status)
     int cluster_id = ESP_MATTER_RAINMAKER_CLUSTER_ID;
     int attribute_id = ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID;
     esp_matter_attr_val_t val = esp_matter_bool(status);
+    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
+}
+
+static esp_err_t app_rainmaker_node_id_attribute_update(char *node_id)
+{
+    int endpoint_id = ESP_MATTER_RAINMAKER_ENDPOINT_ID;
+    int cluster_id = ESP_MATTER_RAINMAKER_CLUSTER_ID;
+    int attribute_id = ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID;
+    esp_matter_attr_val_t val = esp_matter_char_str(node_id, strlen(node_id));
     return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -159,6 +169,12 @@ static esp_err_t rainmaker_custom_cluster_create()
     esp_matter_attribute_create(cluster, ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
                                 esp_matter_bool(false));
 
+    /* Create custom node_id attribute */
+    /* Update the value of the attribute after esp_rmaker_node_init() is done */
+    char node_id[32] = {0};
+    esp_matter_attribute_create(cluster, ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                esp_matter_char_str(node_id, sizeof(node_id)));
+
     /* Create custom configuration command */
     esp_matter_command_create(cluster, ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID,
                               ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED | ESP_MATTER_COMMAND_FLAG_CUSTOM, NULL);
@@ -184,5 +200,8 @@ esp_err_t esp_matter_rainmaker_start()
                                 &user_node_association_event_handler, NULL);
     esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_RESET,
                                 &user_node_association_event_handler, NULL);
+
+    /* Update node_id */
+    app_rainmaker_node_id_attribute_update(esp_rmaker_get_node_id());
     return ESP_OK;
 }
