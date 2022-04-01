@@ -22,6 +22,9 @@
 #include "zigbee_bridge.h"
 static const char *TAG = "app_main";
 
+using namespace esp_matter;
+using namespace esp_matter::attribute;
+
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     if (event->Type == chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged) {
@@ -31,12 +34,12 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
-static esp_err_t app_attribute_update_cb(esp_matter_callback_type_t type, int endpoint_id, int cluster_id,
+static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, int cluster_id,
                                          int attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
 
-    if (type == ESP_MATTER_CALLBACK_TYPE_PRE_ATTRIBUTE) {
+    if (type == PRE_ATTRIBUTE) {
         err = zigbee_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     }
     return err;
@@ -50,8 +53,8 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Create matter device */
-    esp_matter_node_config_t node_config = NODE_CONFIG_DEFAULT();
-    esp_matter_node_t *node = esp_matter_node_create(&node_config, app_attribute_update_cb, NULL);
+    node::config_t node_config;
+    node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node) {
@@ -59,8 +62,7 @@ extern "C" void app_main()
     }
 
     /* Matter start */
-    err = esp_matter_start(app_event_cb);
-
+    err = esp_matter::start(app_event_cb);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }

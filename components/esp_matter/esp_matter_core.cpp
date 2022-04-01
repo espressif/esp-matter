@@ -54,52 +54,52 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 static const char *TAG = "esp_matter_core";
 
-typedef struct esp_matter_attribute {
+namespace esp_matter {
+typedef struct _attribute {
     int attribute_id;
     uint8_t flags;
     esp_matter_attr_val_t val;
     esp_matter_attr_bounds_t *bounds;
     EmberAfDefaultOrMinMaxAttributeValue default_value;
     uint16_t default_value_size;
-    struct esp_matter_attribute *next;
-} _esp_matter_attribute_t;
+    struct _attribute *next;
+} _attribute_t;
 
-typedef struct esp_matter_command {
+typedef struct _command {
     int command_id;
     uint8_t flags;
-    esp_matter_command_callback_t callback;
-    struct esp_matter_command *next;
-} _esp_matter_command_t;
+    command::callback_t callback;
+    struct _command *next;
+} _command_t;
 
-typedef struct esp_matter_cluster {
+typedef struct _cluster {
     int cluster_id;
     uint8_t flags;
-    const esp_matter_cluster_function_generic_t *function_list;
-    esp_matter_cluster_plugin_server_init_callback_t plugin_server_init_callback;
-    esp_matter_cluster_plugin_client_init_callback_t plugin_client_init_callback;
-    _esp_matter_attribute_t *attribute_list;
-    _esp_matter_command_t *command_list;
-    struct esp_matter_cluster *next;
-} _esp_matter_cluster_t;
+    const cluster::function_generic_t *function_list;
+    cluster::plugin_server_init_callback_t plugin_server_init_callback;
+    cluster::plugin_client_init_callback_t plugin_client_init_callback;
+    _attribute_t *attribute_list;
+    _command_t *command_list;
+    struct _cluster *next;
+} _cluster_t;
 
-typedef struct esp_matter_endpoint {
+typedef struct _endpoint {
     int endpoint_id;
     int device_type_id;
     uint8_t flags;
-    _esp_matter_cluster_t *cluster_list;
+    _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
     DataVersion *data_versions_ptr;
-    struct esp_matter_endpoint *next;
-} _esp_matter_endpoint_t;
+    struct _endpoint *next;
+} _endpoint_t;
 
-typedef struct esp_matter_node {
-    _esp_matter_endpoint_t *endpoint_list;
+typedef struct _node {
+    _endpoint_t *endpoint_list;
     int current_endpoint_id;
-} _esp_matter_node_t;
+} _node_t;
 
-static _esp_matter_node_t *node = NULL;
-
-static int cluster_get_count(_esp_matter_cluster_t *current)
+namespace cluster {
+static int get_count(_cluster_t *current)
 {
     int count = 0;
     while (current) {
@@ -108,18 +108,10 @@ static int cluster_get_count(_esp_matter_cluster_t *current)
     }
     return count;
 }
+} /* cluster */
 
-static int attribute_get_count(_esp_matter_attribute_t *current)
-{
-    int count = 0;
-    while (current) {
-        current = current->next;
-        count++;
-    }
-    return count;
-}
-
-static int command_get_count(_esp_matter_command_t *current, int command_flag)
+namespace command {
+static int get_count(_command_t *current, int command_flag)
 {
     int count = 0;
     while (current) {
@@ -130,29 +122,30 @@ static int command_get_count(_esp_matter_command_t *current, int command_flag)
     }
     return count;
 }
+} /* command */
 
-static int endpoint_get_next_index()
-{
-    int endpoint_id = 0;
-    for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
-        endpoint_id = emberAfEndpointFromIndex(index);
-        if (endpoint_id == kInvalidEndpointId) {
-            return index;
-        }
-    }
-    return 0xFFFF;
-}
+namespace attribute {
 
 extern esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
                                         uint16_t *attribute_size, uint8_t *value);
 
-static esp_err_t attribute_free_default_value(esp_matter_attribute_t *attribute)
+static int get_count(_attribute_t *current)
+{
+    int count = 0;
+    while (current) {
+        current = current->next;
+        count++;
+    }
+    return count;
+}
+
+static esp_err_t free_default_value(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return ESP_FAIL;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     /* Free value if data is more than 2 bytes or if it is min max attribute */
     if (current_attribute->flags & ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX) {
@@ -206,13 +199,13 @@ static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_
     return default_value;
 }
 
-static esp_err_t attribute_set_default_value_from_current_val(esp_matter_attribute_t *attribute)
+static esp_err_t set_default_value_from_current_val(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return ESP_FAIL;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
     esp_matter_attr_val_t *val = &current_attribute->val;
 
     /* Get size */
@@ -229,10 +222,10 @@ static esp_err_t attribute_set_default_value_from_current_val(esp_matter_attribu
             return ESP_FAIL;
         }
         temp_value->defaultValue = get_default_value_from_data(val, attribute_type, attribute_size);
-        temp_value->minValue = get_default_value_from_data(&current_attribute->bounds->min,
-                                                                               attribute_type, attribute_size);
-        temp_value->maxValue = get_default_value_from_data(&current_attribute->bounds->max,
-                                                                               attribute_type, attribute_size);
+        temp_value->minValue = get_default_value_from_data(&current_attribute->bounds->min, attribute_type,
+                                                           attribute_size);
+        temp_value->maxValue = get_default_value_from_data(&current_attribute->bounds->max, attribute_type,
+                                                           attribute_size);
         current_attribute->default_value.ptrToMinMaxValue = temp_value;
     } else if (attribute_size > 2) {
         EmberAfDefaultAttributeValue temp_value = get_default_value_from_data(val, attribute_type, attribute_size);
@@ -244,8 +237,23 @@ static esp_err_t attribute_set_default_value_from_current_val(esp_matter_attribu
     current_attribute->default_value_size = attribute_size;
     return ESP_OK;
 }
+} /* attribute */
 
-static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
+namespace endpoint {
+
+static int get_next_index()
+{
+    int endpoint_id = 0;
+    for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
+        endpoint_id = emberAfEndpointFromIndex(index);
+        if (endpoint_id == kInvalidEndpointId) {
+            return index;
+        }
+    }
+    return 0xFFFF;
+}
+
+static esp_err_t disable(endpoint_t *endpoint)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -253,26 +261,26 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
     }
 
     /* Take lock if not already taken */
-    esp_matter_lock_status_t lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
-    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    if (lock_status == lock::FAILED) {
         ESP_LOGE(TAG, "Could not get task context");
         return ESP_FAIL;
     }
 
     /* Remove endpoint */
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     int endpoint_index = emberAfGetDynamicIndexFromEndpoint(current_endpoint->endpoint_id);
     if (endpoint_index == 0xFFFF) {
         ESP_LOGE(TAG, "Could not find endpoint index");
-        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-            esp_matter_chip_stack_unlock();
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
         }
         return ESP_FAIL;
     }
     emberAfClearDynamicEndpoint(endpoint_index);
 
-    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-        esp_matter_chip_stack_unlock();
+    if (lock_status == lock::SUCCESS) {
+        lock::chip_stack_unlock();
     }
     if (!(current_endpoint->endpoint_type)) {
         ESP_LOGE(TAG, "endpoint %d's endpoint_type is NULL", current_endpoint->endpoint_id);
@@ -306,13 +314,13 @@ static esp_err_t esp_matter_endpoint_disable(esp_matter_endpoint_t *endpoint)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
+esp_err_t enable(endpoint_t *endpoint)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
 
     /* Endpoint Type */
     EmberAfEndpointType *endpoint_type = (EmberAfEndpointType *)calloc(1, sizeof(EmberAfEndpointType));
@@ -324,8 +332,8 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     current_endpoint->endpoint_type = endpoint_type;
 
     /* Clusters */
-    _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
-    int cluster_count = cluster_get_count(cluster);
+    _cluster_t *cluster = current_endpoint->cluster_list;
+    int cluster_count = cluster::get_count(cluster);
     int cluster_index = 0;
 
     DataVersion *data_versions_ptr = (DataVersion *)calloc(1, cluster_count * sizeof(DataVersion));
@@ -342,20 +350,21 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     /* Variables */
     /* This is needed to avoid 'crosses initialization' errors because of goto */
     esp_err_t err = ESP_OK;
-    esp_matter_lock_status_t lock_status = ESP_MATTER_LOCK_FAILED;
+    lock::status_t lock_status = lock::FAILED;
     EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
     EmberAfCluster *matter_clusters = NULL;
-    _esp_matter_attribute_t *attribute = NULL;
+    _attribute_t *attribute = NULL;
     int attribute_count = 0;
     int attribute_index = 0;
     EmberAfAttributeMetadata *matter_attributes = NULL;
     CommandId *client_generated_command_ids = NULL;
     CommandId *server_generated_command_ids = NULL;
-    _esp_matter_command_t *command = NULL;
+    _command_t *command = NULL;
     int command_count = 0;
     int command_index = 0;
     int command_flag = ESP_MATTER_COMMAND_FLAG_NONE;
     int endpoint_index = 0;
+    int default_device_version = 1;
 
     matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
     if (!matter_clusters) {
@@ -367,10 +376,9 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     while (cluster) {
         /* Attributes */
         attribute = cluster->attribute_list;
-        attribute_count = attribute_get_count(attribute);
+        attribute_count = attribute::get_count(attribute);
         attribute_index = 0;
-        matter_attributes = (EmberAfAttributeMetadata *)calloc(1,
-                                                       attribute_count * sizeof(EmberAfAttributeMetadata));
+        matter_attributes = (EmberAfAttributeMetadata *)calloc(1, attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
             ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
             err = ESP_ERR_NO_MEM;
@@ -381,8 +389,8 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
             matter_attributes[attribute_index].attributeId = attribute->attribute_id;
             matter_attributes[attribute_index].mask = attribute->flags;
             matter_attributes[attribute_index].defaultValue = attribute->default_value;
-            get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
-                                   &matter_attributes[attribute_index].size, NULL);
+            attribute::get_data_from_attr_val(&attribute->val, &matter_attributes[attribute_index].attributeType,
+                                              &matter_attributes[attribute_index].size, NULL);
 
             matter_clusters[cluster_index].clusterSize += matter_attributes[attribute_index].size;
             attribute = attribute->next;
@@ -400,7 +408,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         /* Client Generated Commands */
         command_flag = ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED;
         command = cluster->command_list;
-        command_count = command_get_count(command, command_flag);
+        command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
             client_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -422,7 +430,7 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
         /* Server Generated Commands */
         command_flag = ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED;
         command = cluster->command_list;
-        command_count = command_get_count(command, command_flag);
+        command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
             server_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
@@ -468,28 +476,29 @@ esp_err_t esp_matter_endpoint_enable(esp_matter_endpoint_t *endpoint)
     endpoint_type->clusterCount = cluster_count;
 
     /* Take lock if not already taken */
-    lock_status = esp_matter_chip_stack_lock(portMAX_DELAY);
-    if (lock_status == ESP_MATTER_LOCK_FAILED) {
+    lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    if (lock_status == lock::FAILED) {
         ESP_LOGE(TAG, "Could not get task context");
         goto cleanup;
     }
 
     /* Add Endpoint */
-    endpoint_index = endpoint_get_next_index();
+    endpoint_index = endpoint::get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type,
-                                                  current_endpoint->device_type_id, 1,
-                                                  chip::Span<chip::DataVersion>(data_versions));
+                                       current_endpoint->device_type_id, default_device_version,
+                                       chip::Span<chip::DataVersion>(data_versions));
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
-        ESP_LOGE(TAG, "Error adding dynamic endpoint %d: %d", current_endpoint->endpoint_id, err);
+        ESP_LOGE(TAG, "Error adding dynamic endpoint %d: 0x%x", current_endpoint->endpoint_id, status);
         err = ESP_FAIL;
-        if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-            esp_matter_chip_stack_unlock();
+        if (lock_status == lock::SUCCESS) {
+            lock::chip_stack_unlock();
         }
         goto cleanup;
     }
-    if (lock_status == ESP_MATTER_LOCK_SUCCESS) {
-        esp_matter_chip_stack_unlock();
+    if (lock_status == lock::SUCCESS) {
+        lock::chip_stack_unlock();
     }
+    ESP_LOGI(TAG, "Dynamic endpoint %d added", current_endpoint->endpoint_id);
     return err;
 
 cleanup:
@@ -529,37 +538,40 @@ cleanup:
     return err;
 }
 
-static esp_err_t esp_matter_endpoint_enable_all()
+static esp_err_t enable_all()
 {
+    node_t *node = node::get();
     if (!node) {
         /* Not returning error, since the node will not be initialized for application using the data model from zap */
         return ESP_OK;
     }
 
-    _esp_matter_endpoint_t *endpoint = node->endpoint_list;
+    endpoint_t *endpoint = get_first(node);
     while (endpoint) {
-        esp_matter_endpoint_enable((esp_matter_endpoint_t *)endpoint);
-        endpoint = endpoint->next;
+        enable(endpoint);
+        endpoint = get_next(endpoint);
     }
     return ESP_OK;
 }
+} /* endpoint */
 
+namespace lock {
 #define DEFAULT_TICKS (500 / portTICK_PERIOD_MS) /* 500 ms in ticks */
-esp_matter_lock_status_t esp_matter_chip_stack_lock(uint32_t ticks_to_wait)
+status_t chip_stack_lock(uint32_t ticks_to_wait)
 {
     if (PlatformMgr().IsChipStackLockedByCurrentThread()) {
-        return ESP_MATTER_LOCK_ALREADY_TAKEN;
+        return ALREADY_TAKEN;
     }
     if (ticks_to_wait == portMAX_DELAY) {
         /* Special handling for max delay */
         PlatformMgr().LockChipStack();
-        return ESP_MATTER_LOCK_SUCCESS;
+        return SUCCESS;
     }
     uint32_t ticks_remaining = ticks_to_wait;
     uint32_t ticks = DEFAULT_TICKS;
     while (ticks_remaining > 0) {
         if (PlatformMgr().TryLockChipStack()) {
-            return ESP_MATTER_LOCK_SUCCESS;
+            return SUCCESS;
         }
         ticks = ticks_remaining < DEFAULT_TICKS ? ticks_remaining : DEFAULT_TICKS;
         ticks_remaining -= ticks;
@@ -567,14 +579,15 @@ esp_matter_lock_status_t esp_matter_chip_stack_lock(uint32_t ticks_to_wait)
         vTaskDelay(ticks);
     }
     ESP_LOGE(TAG, "Could not get lock");
-    return ESP_MATTER_LOCK_FAILED;
+    return FAILED;
 }
 
-esp_err_t esp_matter_chip_stack_unlock()
+esp_err_t chip_stack_unlock()
 {
     PlatformMgr().UnlockChipStack();
     return ESP_OK;
 }
+} /* lock */
 
 static void esp_matter_chip_init_task(intptr_t context)
 {
@@ -588,27 +601,26 @@ static void esp_matter_chip_init_task(intptr_t context)
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
-            (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0))
-    {
+        (chip::Server::GetInstance().GetFabricTable().FabricCount() != 0)) {
         chip::app::DnssdServer::Instance().StartServer();
     }
 #endif
-    if (esp_matter_endpoint_enable_all() != ESP_OK) {
+    if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
     {
-        static chip::app::Clusters::NetworkCommissioning::Instance sWiFiNetworkCommissioningInstance(0 /* Endpoint Id*/,
-            &(chip::DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()));
+        static chip::app::Clusters::NetworkCommissioning::Instance sWiFiNetworkCommissioningInstance(0,
+                                            &(chip::DeviceLayer::NetworkCommissioning::ESPWiFiDriver::GetInstance()));
         sWiFiNetworkCommissioningInstance.Init();
     }
 #endif
     /* Initialize binding manager */
-    esp_matter_binding_manager_init();
+    client::binding_manager_init();
     xTaskNotifyGive(task_to_notify);
 }
 
-esp_err_t esp_matter_chip_init(esp_matter_event_callback_t callback)
+static esp_err_t chip_init(event_callback_t callback)
 {
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
@@ -644,9 +656,9 @@ esp_err_t esp_matter_chip_init(esp_matter_event_callback_t callback)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_start(esp_matter_event_callback_t callback)
+esp_err_t start(event_callback_t callback)
 {
-    esp_err_t err = esp_matter_chip_init(callback);
+    esp_err_t err = chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
         return err;
@@ -658,279 +670,133 @@ esp_err_t esp_matter_start(esp_matter_event_callback_t callback)
     return err;
 }
 
-esp_matter_node_t *esp_matter_node_get()
+namespace attribute {
+attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val)
 {
-    return (esp_matter_node_t *)node;
-}
-
-esp_matter_endpoint_t *esp_matter_endpoint_get(esp_matter_node_t *node, int endpoint_id)
-{
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
+    /* Find */
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
         return NULL;
     }
-    _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)current_node->endpoint_list;
-    while (current_endpoint) {
-        if (current_endpoint->endpoint_id == endpoint_id) {
-            break;
-        }
-        current_endpoint = current_endpoint->next;
-    }
-    return (esp_matter_endpoint_t *)current_endpoint;
-}
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
 
-esp_matter_cluster_t *esp_matter_cluster_get(esp_matter_endpoint_t *endpoint, int cluster_id)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+    /* Allocate */
+    _attribute_t *attribute = (_attribute_t *)calloc(1, sizeof(_attribute_t));
+    if (!attribute) {
+        ESP_LOGE(TAG, "Couldn't allocate _attribute_t");
         return NULL;
     }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)current_endpoint->cluster_list;
-    while (current_cluster) {
-        if (current_cluster->cluster_id == cluster_id) {
-            break;
-        }
-        current_cluster = current_cluster->next;
+
+    /* Set */
+    attribute->attribute_id = attribute_id;
+    attribute->flags = flags;
+    attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
+    set_val((attribute_t *)attribute, &val);
+    set_default_value_from_current_val((attribute_t *)attribute);
+
+    /* Add */
+    _attribute_t *previous_attribute = NULL;
+    _attribute_t *current_attribute = current_cluster->attribute_list;
+    while (current_attribute) {
+        previous_attribute = current_attribute;
+        current_attribute = current_attribute->next;
     }
-    return (esp_matter_cluster_t *)current_cluster;
+    if (previous_attribute == NULL) {
+        current_cluster->attribute_list = attribute;
+    } else {
+        previous_attribute->next = attribute;
+    }
+
+    return (attribute_t *)attribute;
 }
 
-esp_matter_attribute_t *esp_matter_attribute_get(esp_matter_cluster_t *cluster, int attribute_id)
+static esp_err_t destroy(attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    /* Default value needs to be deleted first since it uses the current val. */
+    free_default_value(attribute);
+
+    /* Delete val here, if required */
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        /* Free buf */
+        if (current_attribute->val.val.a.b) {
+            free(current_attribute->val.val.a.b);
+        }
+    }
+
+    /* Free bounds */
+    if (current_attribute->bounds) {
+        free(current_attribute->bounds);
+    }
+
+    /* Free */
+    free(current_attribute);
+    return ESP_OK;
+}
+
+attribute_t *get(cluster_t *cluster, int attribute_id)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return NULL;
     }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)current_cluster->attribute_list;
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _attribute_t *current_attribute = (_attribute_t *)current_cluster->attribute_list;
     while (current_attribute) {
         if (current_attribute->attribute_id == attribute_id) {
             break;
         }
         current_attribute = current_attribute->next;
     }
-    return (esp_matter_attribute_t *)current_attribute;
+    return (attribute_t *)current_attribute;
 }
 
-esp_matter_command_t *esp_matter_command_get(esp_matter_cluster_t *cluster, int command_id)
+attribute_t *get_first(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return NULL;
     }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)current_cluster->command_list;
-    while (current_command) {
-        if (current_command->command_id == command_id) {
-            break;
-        }
-        current_command = current_command->next;
-    }
-    return (esp_matter_command_t *)current_command;
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return (attribute_t *)current_cluster->attribute_list;
 }
 
-esp_matter_endpoint_t *esp_matter_endpoint_get_first(esp_matter_node_t *node)
-{
-    if (!node) {
-        ESP_LOGE(TAG, "Node cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
-    return (esp_matter_endpoint_t *)current_node->endpoint_list;
-}
-
-esp_matter_cluster_t *esp_matter_cluster_get_first(esp_matter_endpoint_t *endpoint)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    return (esp_matter_cluster_t *)current_endpoint->cluster_list;
-}
-
-esp_matter_attribute_t *esp_matter_attribute_get_first(esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return (esp_matter_attribute_t *)current_cluster->attribute_list;
-}
-
-esp_matter_command_t *esp_matter_command_get_first(esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return (esp_matter_command_t *)current_cluster->command_list;
-}
-
-esp_matter_endpoint_t *esp_matter_endpoint_get_next(esp_matter_endpoint_t *endpoint)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    return (esp_matter_endpoint_t *)current_endpoint->next;
-}
-
-esp_matter_cluster_t *esp_matter_cluster_get_next(esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return (esp_matter_cluster_t *)current_cluster->next;
-}
-
-esp_matter_attribute_t *esp_matter_attribute_get_next(esp_matter_attribute_t *attribute)
+attribute_t *get_next(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return NULL;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-    return (esp_matter_attribute_t *)current_attribute->next;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    return (attribute_t *)current_attribute->next;
 }
 
-esp_matter_command_t *esp_matter_command_get_next(esp_matter_command_t *command)
-{
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
-    return (esp_matter_command_t *)current_command->next;
-}
-
-int esp_matter_endpoint_get_id(esp_matter_endpoint_t *endpoint)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return -1;
-    }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    return current_endpoint->endpoint_id;
-}
-
-int esp_matter_cluster_get_id(esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return -1;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return current_cluster->cluster_id;
-}
-
-int esp_matter_attribute_get_id(esp_matter_attribute_t *attribute)
+int get_id(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return -1;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->attribute_id;
 }
 
-int esp_matter_command_get_id(esp_matter_command_t *command)
-{
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return -1;
-    }
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
-    return current_command->command_id;
-}
-
-esp_err_t esp_matter_cluster_set_plugin_server_init_callback(esp_matter_cluster_t *cluster,
-                                                             esp_matter_cluster_plugin_server_init_callback_t callback)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    current_cluster->plugin_server_init_callback = callback;
-    return ESP_OK;
-}
-
-esp_err_t esp_matter_cluster_set_plugin_client_init_callback(esp_matter_cluster_t *cluster,
-                                                             esp_matter_cluster_plugin_client_init_callback_t callback)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    current_cluster->plugin_client_init_callback = callback;
-    return ESP_OK;
-}
-
-esp_matter_cluster_plugin_server_init_callback_t esp_matter_cluster_get_plugin_server_init_callback(
-                                                                                        esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return current_cluster->plugin_server_init_callback;
-}
-
-esp_matter_cluster_plugin_client_init_callback_t esp_matter_cluster_get_plugin_client_init_callback(
-                                                                                        esp_matter_cluster_t *cluster)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    return current_cluster->plugin_client_init_callback;
-}
-
-esp_err_t esp_matter_cluster_add_function_list(esp_matter_cluster_t *cluster,
-                                               const esp_matter_cluster_function_generic_t *function_list,
-                                               int function_flags)
-{
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-    current_cluster->function_list = function_list;
-    current_cluster->flags |= function_flags;
-    return ESP_OK;
-}
-
-esp_err_t esp_matter_attribute_get_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val)
-{
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-    memcpy((void *)val, (void *)&current_attribute->val, sizeof(esp_matter_attr_val_t));
-    return ESP_OK;
-}
-
-esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_matter_attr_val_t *val)
+esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return ESP_FAIL;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-    if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING
-        || val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING || val->type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free old buf */
         if (current_attribute->val.val.a.b) {
             free(current_attribute->val.val.a.b);
@@ -954,19 +820,29 @@ esp_err_t esp_matter_attribute_set_val(esp_matter_attribute_t *attribute, esp_ma
     return ESP_OK;
 }
 
-esp_err_t esp_matter_attribute_add_bounds(esp_matter_attribute_t *attribute, esp_matter_attr_val_t min,
-                                          esp_matter_attr_val_t max)
+esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    memcpy((void *)val, (void *)&current_attribute->val, sizeof(esp_matter_attr_val_t));
+    return ESP_OK;
+}
+
+esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matter_attr_val_t max)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     /* Check if bounds can be set */
-    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING
-        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING
-        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         ESP_LOGE(TAG, "Bounds cannot be set for string/array type attributes");
         return ESP_ERR_INVALID_ARG;
     }
@@ -977,7 +853,7 @@ esp_err_t esp_matter_attribute_add_bounds(esp_matter_attribute_t *attribute, esp
     }
 
     /* Free the default value before setting the new bounds */
-    attribute_free_default_value(attribute);
+    free_default_value(attribute);
 
     /* Allocate and set */
     current_attribute->bounds = (esp_matter_attr_bounds_t *)calloc(1, sizeof(esp_matter_attr_bounds_t));
@@ -990,155 +866,36 @@ esp_err_t esp_matter_attribute_add_bounds(esp_matter_attribute_t *attribute, esp
     current_attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX;
 
     /* Set the default value again after setting the bounds and the flag */
-    attribute_set_default_value_from_current_val(attribute);
+    set_default_value_from_current_val(attribute);
     return ESP_OK;
 }
 
-esp_matter_attr_bounds_t *esp_matter_attribute_get_bounds(esp_matter_attribute_t *attribute)
+esp_matter_attr_bounds_t *get_bounds(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
         return NULL;
     }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->bounds;
 }
 
-esp_matter_command_callback_t esp_matter_command_get_callback(esp_matter_command_t *command)
-{
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
-    return current_command->callback;
-}
+} /* attribute */
 
-int esp_matter_command_get_flags(esp_matter_command_t *command)
-{
-    if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return 0;
-    }
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
-    return current_command->flags;
-}
-
-esp_err_t esp_matter_endpoint_set_device_type_id(esp_matter_endpoint_t *endpoint, int device_type_id)
-{
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
-    current_endpoint->device_type_id = device_type_id;
-    return ESP_OK;
-}
-
-int esp_matter_endpoint_get_device_type_id(int endpoint_id)
-{
-    int device_type_id = emberAfGetDeviceIdForEndpoint(endpoint_id);
-    return device_type_id;
-}
-
-static esp_err_t esp_matter_attribute_delete(esp_matter_attribute_t *attribute)
-{
-    if (!attribute) {
-        ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_attribute_t *current_attribute = (_esp_matter_attribute_t *)attribute;
-
-    /* Default value needs to be deleted first since it uses the current val. */
-    attribute_free_default_value(attribute);
-
-    /* Delete val here, if required */
-    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING
-        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING
-        || current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
-        /* Free buf */
-        if (current_attribute->val.val.a.b) {
-            free(current_attribute->val.val.a.b);
-        }
-    }
-
-    /* Free bounds */
-    if (current_attribute->bounds) {
-        free(current_attribute->bounds);
-    }
-
-    /* Free */
-    free(current_attribute);
-    return ESP_OK;
-}
-
-esp_matter_attribute_t *esp_matter_attribute_create(esp_matter_cluster_t *cluster, int attribute_id, uint8_t flags,
-                                                    esp_matter_attr_val_t val)
+namespace command {
+command_t *create(cluster_t *cluster, int command_id, uint8_t flags, callback_t callback)
 {
     /* Find */
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return NULL;
     }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
 
     /* Allocate */
-    _esp_matter_attribute_t *attribute = (_esp_matter_attribute_t *)calloc(1, sizeof(_esp_matter_attribute_t));
-    if (!attribute) {
-        ESP_LOGE(TAG, "Couldn't allocate _esp_matter_attribute_t");
-        return NULL;
-    }
-
-    /* Set */
-    attribute->attribute_id = attribute_id;
-    attribute->flags = flags;
-    attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
-    esp_matter_attribute_set_val((esp_matter_attribute_t *)attribute, &val);
-    attribute_set_default_value_from_current_val((esp_matter_attribute_t *)attribute);
-
-    /* Add */
-    _esp_matter_attribute_t *previous_attribute = NULL;
-    _esp_matter_attribute_t *current_attribute = current_cluster->attribute_list;
-    while (current_attribute) {
-        previous_attribute = current_attribute;
-        current_attribute = current_attribute->next;
-    }
-    if (previous_attribute == NULL) {
-        current_cluster->attribute_list = attribute;
-    } else {
-        previous_attribute->next = attribute;
-    }
-
-    return (esp_matter_attribute_t *)attribute;
-}
-
-static esp_err_t esp_matter_command_delete(esp_matter_command_t *command)
-{
+    _command_t *command = (_command_t *)calloc(1, sizeof(_command_t));
     if (!command) {
-        ESP_LOGE(TAG, "Command cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
-    _esp_matter_command_t *current_command = (_esp_matter_command_t *)command;
-
-    /* Free */
-    free(current_command);
-    return ESP_OK;
-}
-
-esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, int command_id, uint8_t flags,
-                                                esp_matter_command_callback_t callback)
-{
-    /* Find */
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return NULL;
-    }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-
-    /* Allocate */
-    _esp_matter_command_t *command = (_esp_matter_command_t *)calloc(1, sizeof(_esp_matter_command_t));
-    if (!command) {
-        ESP_LOGE(TAG, "Couldn't allocate _esp_matter_command_t");
+        ESP_LOGE(TAG, "Couldn't allocate _command_t");
         return NULL;
     }
 
@@ -1148,8 +905,8 @@ esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, i
     command->callback = callback;
 
     /* Add */
-    _esp_matter_command_t *previous_command = NULL;
-    _esp_matter_command_t *current_command = current_cluster->command_list;
+    _command_t *previous_command = NULL;
+    _command_t *current_command = current_cluster->command_list;
     while (current_command) {
         previous_command = current_command;
         current_command = current_command->next;
@@ -1160,51 +917,106 @@ esp_matter_command_t *esp_matter_command_create(esp_matter_cluster_t *cluster, i
         previous_command->next = command;
     }
 
-    return (esp_matter_command_t *)command;
+    return (command_t *)command;
 }
 
-static esp_err_t esp_matter_cluster_delete(esp_matter_cluster_t *cluster)
+static esp_err_t destroy(command_t *command)
 {
-    if (!cluster) {
-        ESP_LOGE(TAG, "Cluster cannot be NULL");
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    _esp_matter_cluster_t *current_cluster = (_esp_matter_cluster_t *)cluster;
-
-    /* Parse and delete all commands */
-    _esp_matter_command_t *command = current_cluster->command_list;
-    while (command) {
-        _esp_matter_command_t *next_command = command->next;
-        esp_matter_command_delete((esp_matter_command_t *)command);
-        command = next_command;
-    }
-
-    /* Parse and delete all attributes */
-    _esp_matter_attribute_t *attribute = current_cluster->attribute_list;
-    while (attribute) {
-        _esp_matter_attribute_t *next_attribute = attribute->next;
-        esp_matter_attribute_delete((esp_matter_attribute_t *)attribute);
-        attribute = next_attribute;
-    }
+    _command_t *current_command = (_command_t *)command;
 
     /* Free */
-    free(current_cluster);
+    free(current_command);
     return ESP_OK;
 }
 
-esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint, int cluster_id, uint8_t flags)
+command_t *get(cluster_t *cluster, int command_id)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    _command_t *current_command = (_command_t *)current_cluster->command_list;
+    while (current_command) {
+        if (current_command->command_id == command_id) {
+            break;
+        }
+        current_command = current_command->next;
+    }
+    return (command_t *)current_command;
+}
+
+command_t *get_first(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return (command_t *)current_cluster->command_list;
+}
+
+command_t *get_next(command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return NULL;
+    }
+    _command_t *current_command = (_command_t *)command;
+    return (command_t *)current_command->next;
+}
+
+int get_id(command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return -1;
+    }
+    _command_t *current_command = (_command_t *)command;
+    return current_command->command_id;
+}
+
+callback_t get_callback(command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return NULL;
+    }
+    _command_t *current_command = (_command_t *)command;
+    return current_command->callback;
+}
+
+int get_flags(command_t *command)
+{
+    if (!command) {
+        ESP_LOGE(TAG, "Command cannot be NULL");
+        return 0;
+    }
+    _command_t *current_command = (_command_t *)command;
+    return current_command->flags;
+}
+
+} /* command */
+
+namespace cluster {
+
+cluster_t *create(endpoint_t *endpoint, int cluster_id, uint8_t flags)
 {
     /* Find */
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
-    _esp_matter_endpoint_t *current_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
 
     /* Allocate */
-    _esp_matter_cluster_t *cluster = (_esp_matter_cluster_t *)calloc(1, sizeof(_esp_matter_cluster_t));
+    _cluster_t *cluster = (_cluster_t *)calloc(1, sizeof(_cluster_t));
     if (!cluster) {
-        ESP_LOGE(TAG, "Couldn't allocate _esp_matter_cluster_t");
+        ESP_LOGE(TAG, "Couldn't allocate _cluster_t");
         return NULL;
     }
 
@@ -1213,8 +1025,8 @@ esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint,
     cluster->flags = flags;
 
     /* Add */
-    _esp_matter_cluster_t *previous_cluster = NULL;
-    _esp_matter_cluster_t *current_cluster = current_endpoint->cluster_list;
+    _cluster_t *previous_cluster = NULL;
+    _cluster_t *current_cluster = current_endpoint->cluster_list;
     while (current_cluster) {
         previous_cluster = current_cluster;
         current_cluster = current_cluster->next;
@@ -1225,17 +1037,188 @@ esp_matter_cluster_t *esp_matter_cluster_create(esp_matter_endpoint_t *endpoint,
         previous_cluster->next = cluster;
     }
 
-    return (esp_matter_cluster_t *)cluster;
+    return (cluster_t *)cluster;
 }
 
-esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoint_t *endpoint)
+static esp_err_t destroy(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+
+    /* Parse and delete all commands */
+    _command_t *command = current_cluster->command_list;
+    while (command) {
+        _command_t *next_command = command->next;
+        command::destroy((command_t *)command);
+        command = next_command;
+    }
+
+    /* Parse and delete all attributes */
+    _attribute_t *attribute = current_cluster->attribute_list;
+    while (attribute) {
+        _attribute_t *next_attribute = attribute->next;
+        attribute::destroy((attribute_t *)attribute);
+        attribute = next_attribute;
+    }
+
+    /* Free */
+    free(current_cluster);
+    return ESP_OK;
+}
+
+cluster_t *get(endpoint_t *endpoint, int cluster_id)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    _cluster_t *current_cluster = (_cluster_t *)current_endpoint->cluster_list;
+    while (current_cluster) {
+        if (current_cluster->cluster_id == cluster_id) {
+            break;
+        }
+        current_cluster = current_cluster->next;
+    }
+    return (cluster_t *)current_cluster;
+}
+
+cluster_t *get_first(endpoint_t *endpoint)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return (cluster_t *)current_endpoint->cluster_list;
+}
+
+cluster_t *get_next(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return (cluster_t *)current_cluster->next;
+}
+
+int get_id(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return -1;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->cluster_id;
+}
+
+esp_err_t set_plugin_server_init_callback(cluster_t *cluster, plugin_server_init_callback_t callback)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->plugin_server_init_callback = callback;
+    return ESP_OK;
+}
+
+esp_err_t set_plugin_client_init_callback(cluster_t *cluster, plugin_client_init_callback_t callback)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->plugin_client_init_callback = callback;
+    return ESP_OK;
+}
+
+plugin_server_init_callback_t get_plugin_server_init_callback(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->plugin_server_init_callback;
+}
+
+plugin_client_init_callback_t get_plugin_client_init_callback(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return NULL;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    return current_cluster->plugin_client_init_callback;
+}
+
+esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *function_list, int function_flags)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _cluster_t *current_cluster = (_cluster_t *)cluster;
+    current_cluster->function_list = function_list;
+    current_cluster->flags |= function_flags;
+    return ESP_OK;
+}
+
+} /* cluster */
+
+namespace endpoint {
+
+endpoint_t *create(node_t *node, uint8_t flags)
+{
+    /* Find */
+    if (!node) {
+        ESP_LOGE(TAG, "Node cannot be NULL");
+        return NULL;
+    }
+    _node_t *current_node = (_node_t *)node;
+
+    /* Allocate */
+    _endpoint_t *endpoint = (_endpoint_t *)calloc(1, sizeof(_endpoint_t));
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
+        return NULL;
+    }
+
+    /* Set */
+    endpoint->endpoint_id = current_node->current_endpoint_id++;
+    endpoint->device_type_id = 0xFFFF;
+    endpoint->flags = flags;
+
+    /* Add */
+    _endpoint_t *previous_endpoint = NULL;
+    _endpoint_t *current_endpoint = current_node->endpoint_list;
+    while (current_endpoint) {
+        previous_endpoint = current_endpoint;
+        current_endpoint = current_endpoint->next;
+    }
+    if (previous_endpoint == NULL) {
+        current_node->endpoint_list = endpoint;
+    } else {
+        previous_endpoint->next = endpoint;
+    }
+
+    return (endpoint_t *)endpoint;
+}
+
+esp_err_t destroy(node_t *node, endpoint_t *endpoint)
 {
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Node or endpoint cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
-    _esp_matter_endpoint_t *_endpoint = (_esp_matter_endpoint_t *)endpoint;
+    _node_t *current_node = (_node_t *)node;
+    _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
 
     if (!(_endpoint->flags & ESP_MATTER_ENDPOINT_FLAG_DELETABLE)) {
         ESP_LOGE(TAG, "This endpoint cannot be deleted since the ESP_MATTER_ENDPOINT_FLAG_DELETABLE is not set");
@@ -1243,8 +1226,8 @@ esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoin
     }
 
     /* Find current endpoint and remove from list */
-    _esp_matter_endpoint_t *current_endpoint = current_node->endpoint_list;
-    _esp_matter_endpoint_t *previous_endpoint = NULL;
+    _endpoint_t *current_endpoint = current_node->endpoint_list;
+    _endpoint_t *previous_endpoint = NULL;
     while (current_endpoint) {
         if (current_endpoint == _endpoint) {
             break;
@@ -1263,13 +1246,13 @@ esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoin
     }
 
     /* Disable */
-    esp_matter_endpoint_disable(endpoint);
+    disable(endpoint);
 
     /* Parse and delete all clusters */
-    _esp_matter_cluster_t *cluster = current_endpoint->cluster_list;
+    _cluster_t *cluster = current_endpoint->cluster_list;
     while (cluster) {
-        _esp_matter_cluster_t *next_cluster = cluster->next;
-        esp_matter_cluster_delete((esp_matter_cluster_t *)cluster);
+        _cluster_t *next_cluster = cluster->next;
+        cluster::destroy((cluster_t *)cluster);
         cluster = next_cluster;
     }
 
@@ -1278,49 +1261,90 @@ esp_err_t esp_matter_endpoint_delete(esp_matter_node_t *node, esp_matter_endpoin
     return ESP_OK;
 }
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_raw(esp_matter_node_t *node, uint8_t flags)
+endpoint_t *get(node_t *node, int endpoint_id)
 {
-    /* Find */
     if (!node) {
         ESP_LOGE(TAG, "Node cannot be NULL");
         return NULL;
     }
-    _esp_matter_node_t *current_node = (_esp_matter_node_t *)node;
-
-    /* Allocate */
-    _esp_matter_endpoint_t *endpoint = (_esp_matter_endpoint_t *)calloc(1, sizeof(_esp_matter_endpoint_t));
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Couldn't allocate _esp_matter_endpoint_t");
-        return NULL;
-    }
-
-    /* Set */
-    endpoint->endpoint_id = current_node->current_endpoint_id++;
-    endpoint->device_type_id = 0xFFFF;
-    endpoint->flags = flags;
-
-    /* Add */
-    _esp_matter_endpoint_t *previous_endpoint = NULL;
-    _esp_matter_endpoint_t *current_endpoint = current_node->endpoint_list;
+    _node_t *current_node = (_node_t *)node;
+    _endpoint_t *current_endpoint = (_endpoint_t *)current_node->endpoint_list;
     while (current_endpoint) {
-        previous_endpoint = current_endpoint;
+        if (current_endpoint->endpoint_id == endpoint_id) {
+            break;
+        }
         current_endpoint = current_endpoint->next;
     }
-    if (previous_endpoint == NULL) {
-        current_node->endpoint_list = endpoint;
-    } else {
-        previous_endpoint->next = endpoint;
-    }
-
-    return (esp_matter_endpoint_t *)endpoint;
+    return (endpoint_t *)current_endpoint;
 }
 
-esp_matter_node_t *esp_matter_node_create_raw()
+endpoint_t *get_first(node_t *node)
 {
-    node = (_esp_matter_node_t *)calloc(1, sizeof(_esp_matter_node_t));
     if (!node) {
-        ESP_LOGE(TAG, "Couldn't allocate _esp_matter_node_t");
+        ESP_LOGE(TAG, "Node cannot be NULL");
         return NULL;
     }
-    return (esp_matter_node_t *)node;
+    _node_t *current_node = (_node_t *)node;
+    return (endpoint_t *)current_node->endpoint_list;
 }
+
+endpoint_t *get_next(endpoint_t *endpoint)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return (endpoint_t *)current_endpoint->next;
+}
+
+int get_id(endpoint_t *endpoint)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return -1;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->endpoint_id;
+}
+
+esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    current_endpoint->device_type_id = device_type_id;
+    return ESP_OK;
+}
+
+int get_device_type_id(int endpoint_id)
+{
+    int device_type_id = emberAfGetDeviceIdForEndpoint(endpoint_id);
+    return device_type_id;
+}
+
+} /* endpoint */
+
+namespace node {
+
+static _node_t *node = NULL;
+
+node_t *create_raw()
+{
+    node = (_node_t *)calloc(1, sizeof(_node_t));
+    if (!node) {
+        ESP_LOGE(TAG, "Couldn't allocate _node_t");
+        return NULL;
+    }
+    return (node_t *)node;
+}
+
+node_t *get()
+{
+    return (node_t *)node;
+}
+
+} /* node */
+} /* esp_matter */

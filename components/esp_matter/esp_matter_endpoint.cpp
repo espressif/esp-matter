@@ -16,247 +16,307 @@
 #include <esp_matter.h>
 #include <esp_matter_endpoint.h>
 
+/* Replace these with IDs from submodule whenever they are implemented */
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
+#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
+#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
+#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
+#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
+
 static const char *TAG = "esp_matter_endpoint";
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_root_node_config_t *config,
-                                                            uint8_t flags)
+namespace esp_matter {
+using namespace cluster;
+
+namespace endpoint {
+namespace root_node {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_access_control(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_ota_provider(endpoint, &(config->ota_provider), ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_ota_requestor(endpoint, &(config->ota_requestor), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_general_commissioning(endpoint, &(config->general_commissioning),
-                                                    ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_network_commissioning(endpoint, &(config->network_commissioning),
-                                                    ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_general_diagnostics(endpoint, &(config->general_diagnostics),
-                                                  ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_administrator_commissioning(endpoint, &(config->administrator_commissioning),
-                                                          ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_operational_credentials(endpoint, &(config->operational_credentials),
-                                                      ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_group_key_management(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    access_control::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    ota_provider::create(endpoint, &(config->ota_provider), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    ota_requestor::create(endpoint, &(config->ota_requestor), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    general_commissioning::create(endpoint, &(config->general_commissioning), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    network_commissioning::create(endpoint, &(config->network_commissioning), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    general_diagnostics::create(endpoint, &(config->general_diagnostics), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    administrator_commissioning::create(endpoint, &(config->administrator_commissioning),
+                                        ESP_MATTER_CLUSTER_FLAG_SERVER);
+    operational_credentials::create(endpoint, &(config->operational_credentials), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    group_key_management::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* root_node */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_light(esp_matter_node_t *node,
-                                                               esp_matter_endpoint_on_off_light_config_t *config,
-                                                               uint8_t flags)
+namespace on_off_light {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* on_off_light */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_dimmable_light(esp_matter_node_t *node,
-                                                                 esp_matter_endpoint_dimmable_light_config_t *config,
-                                                                 uint8_t flags)
+namespace dimmable_light {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
-    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID |
-                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* dimmable_light */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_color_dimmable_light_config_t *config,
-                                                            uint8_t flags)
+namespace color_dimmable_light {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                     ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
-    esp_matter_cluster_create_level_control(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID |
-                                            ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_color_control(endpoint, &(config->color_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
-                                            ESP_MATTER_COLOR_CONTROL_CLUSTER_HUE_SATURATION_FEATURE_ID);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    color_control::create(endpoint, &(config->color_control), ESP_MATTER_CLUSTER_FLAG_SERVER,
+                          color_control::feature::hue_saturation::get_id());
 
     return endpoint;
 }
+} /* color_dimmable_light */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_t *node,
-                                                                esp_matter_endpoint_on_off_switch_config_t *config,
-                                                                uint8_t flags)
+namespace on_off_switch {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_on_off(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_CLIENT,
-                                     ESP_MATTER_NONE_FEATURE_ID);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_binding(endpoint, &(config->binding), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, &(config->on_off), ESP_MATTER_CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* on_off_switch */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_fan(esp_matter_node_t *node,
-                                                      esp_matter_endpoint_fan_config_t *config,
-                                                      uint8_t flags)
+namespace fan {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_FAN_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_FAN_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_fan_control(endpoint, &(config->fan_control), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    fan_control::create(endpoint, &(config->fan_control), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* fan */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
-                                                             esp_matter_endpoint_thermostat_config_t *config,
-                                                             uint8_t flags)
+namespace thermostat {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_scenes(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_basic(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_thermostat(endpoint, &(config->thermostat), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    basic::create(endpoint, &(config->basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    cluster::thermostat::create(endpoint, &(config->thermostat), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* thermostat */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_bridged_node_config_t *config,
-                                                            uint8_t flags)
+namespace bridged_node {
+int get_device_type_id()
+{
+    return ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 {
     // bridged node endpoints are always deletable
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags | ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
+    endpoint_t *endpoint = endpoint::create(node, flags | ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
 
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_bridged_device_basic(endpoint, &(config->bridged_device_basic),
-                                                   ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_fixed_label(endpoint, &(config->fixed_label), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    bridged_device_basic::create(endpoint, &(config->bridged_device_basic), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    fixed_label::create(endpoint, &(config->fixed_label), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* bridged_node */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_door_lock(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_door_lock_config_t *config,
-                                                            uint8_t flags)
+namespace door_lock {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
 
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_descriptor(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_door_lock(endpoint, &(config->door_lock), ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_cluster_create_time_synchronization(endpoint, &(config->time_synchronization), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    descriptor::create(endpoint, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    cluster::door_lock::create(endpoint, &(config->door_lock), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    time_synchronization::create(endpoint, &(config->time_synchronization), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* door_lock */
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_temperature_sensor(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_temperature_sensor_config_t *config,
-                                                            uint8_t flags)
+namespace temperature_sensor {
+int get_device_type_id()
 {
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_raw(node, flags);
+    return ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    esp_matter_endpoint_set_device_type_id(endpoint, ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID);
+    set_device_type_id(endpoint, get_device_type_id());
 
-    esp_matter_cluster_create_identify(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER|ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_groups(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
-    esp_matter_cluster_create_temperature_measurement(endpoint, &(config->temperature_measurement), ESP_MATTER_CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), ESP_MATTER_CLUSTER_FLAG_SERVER | ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    groups::create(endpoint, &(config->groups), ESP_MATTER_CLUSTER_FLAG_CLIENT);
+    temperature_measurement::create(endpoint, &(config->temperature_measurement), ESP_MATTER_CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
+} /* temperature_sensor */
+} /* endpoint */
 
-esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
-                                          void *priv_data)
+namespace node {
+
+node_t *create(config_t *config, attribute::callback_t callback, void *priv_data)
 {
-    esp_matter_attribute_callback_set(callback, priv_data);
+    attribute::set_callback(callback, priv_data);
 
-    esp_matter_node_t *node = esp_matter_node_create_raw();
+    node_t *node = create_raw();
     if (!node) {
         ESP_LOGE(TAG, "Could not create node");
         return NULL;
     }
 
-    esp_matter_endpoint_create_root_node(node, &(config->root_node), ESP_MATTER_ENDPOINT_FLAG_NONE);
+    endpoint::root_node::create(node, &(config->root_node), ESP_MATTER_ENDPOINT_FLAG_NONE);
 
     return node;
 }
+
+} /* node */
+} /* esp_matter */

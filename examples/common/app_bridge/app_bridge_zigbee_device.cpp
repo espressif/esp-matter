@@ -18,11 +18,13 @@
 
 #include <app_bridge_zigbee_device.h>
 
+using esp_matter::node_t;
+
 static const char *TAG = "esp_matter_bridge_zigbee";
 static app_bridge_zigbee_device_t *device_list = NULL;
 static uint8_t current_bridged_device_count = 0;
 
-app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(esp_matter_node_t *node, uint8_t zigbee_endpointid,
+app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
                                                             uint16_t zigbee_shortaddr)
 {
     if (current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {

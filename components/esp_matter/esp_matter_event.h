@@ -16,17 +16,26 @@
 
 #include <esp_err.h>
 
-/** 
+/**
  * NOTE: These events are currently sent on all the endpoints where the corresponding cluster exists.
  * Once this behaviour is changed, the event APIs here would have the endpoint_id as an argument.
- * Issue: https://github.com/project-chip/connectedhomeip/issues/14624            
-*/
+ * Issue: https://github.com/project-chip/connectedhomeip/issues/14624
+ */
 
-/** cluster: switch */
-esp_err_t esp_matter_switch_send_event_switch_latched(uint8_t new_position);
-esp_err_t esp_matter_switch_send_event_initial_press(uint8_t new_position);
-esp_err_t esp_matter_switch_send_event_long_press(uint8_t new_position);
-esp_err_t esp_matter_switch_send_event_short_release(uint8_t previous_position);
-esp_err_t esp_matter_switch_send_event_long_release(uint8_t previous_position);
-esp_err_t esp_matter_switch_send_event_multi_press_ongoing(uint8_t new_position, uint8_t count);
-esp_err_t esp_matter_switch_send_event_multi_press_complete(uint8_t new_position, uint8_t count);
+namespace esp_matter {
+namespace cluster {
+
+namespace switch_cluster {
+namespace event {
+esp_err_t send_switch_latched(uint8_t new_position);
+esp_err_t send_initial_press(uint8_t new_position);
+esp_err_t send_long_press(uint8_t new_position);
+esp_err_t send_short_release(uint8_t previous_position);
+esp_err_t send_long_release(uint8_t previous_position);
+esp_err_t send_multi_press_ongoing(uint8_t new_position, uint8_t count);
+esp_err_t send_multi_press_complete(uint8_t new_position, uint8_t count);
+} /* event */
+} /* switch_cluster */
+
+} /* cluster */
+} /* esp_matter */

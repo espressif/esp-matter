@@ -25,6 +25,8 @@
 #include <esp_matter_console.h>
 #include <esp_matter_rainmaker.h>
 
+using namespace esp_matter;
+
 static const char *TAG = "app_rainmaker";
 extern int light_endpoint_id;
 
@@ -108,7 +110,7 @@ static const char *app_rainmaker_get_device_name_from_id(int endpoint_id)
 
 static const char *app_rainmaker_get_device_type_from_id(int device_type_id)
 {
-    if (device_type_id == ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID) {
+    if (device_type_id == endpoint::color_dimmable_light::get_device_type_id()) {
         return ESP_RMAKER_DEVICE_LIGHTBULB;
     }
     return NULL;
@@ -207,11 +209,10 @@ static bool app_rainmaker_get_param_bounds_from_id(int cluster_id, int attribute
     return false;
 }
 
-static esp_err_t app_rainmaker_param_add_ui_type(esp_rmaker_param_t *param, esp_matter_cluster_t *cluster,
-                                                 esp_matter_attribute_t *attribute)
+static esp_err_t app_rainmaker_param_add_ui_type(esp_rmaker_param_t *param, cluster_t *cluster, attribute_t *attribute)
 {
-    int cluster_id = esp_matter_cluster_get_id(cluster);
-    int attribute_id = esp_matter_attribute_get_id(attribute);
+    int cluster_id = cluster::get_id(cluster);
+    int attribute_id = attribute::get_id(attribute);
     const char *ui_type = app_rainmaker_get_param_ui_type_from_id(cluster_id, attribute_id);
     if (!ui_type) {
         return ESP_OK;
@@ -219,12 +220,11 @@ static esp_err_t app_rainmaker_param_add_ui_type(esp_rmaker_param_t *param, esp_
     return esp_rmaker_param_add_ui_type(param, ui_type);
 }
 
-static esp_err_t app_rainmaker_param_add_bounds(esp_rmaker_param_t *param, esp_matter_cluster_t *cluster,
-                                                esp_matter_attribute_t *attribute)
+static esp_err_t app_rainmaker_param_add_bounds(esp_rmaker_param_t *param, cluster_t *cluster, attribute_t *attribute)
 {
-    int cluster_id = esp_matter_cluster_get_id(cluster);
-    int attribute_id = esp_matter_attribute_get_id(attribute);
-    esp_matter_attr_bounds_t *bounds = esp_matter_attribute_get_bounds(attribute);
+    int cluster_id = cluster::get_id(cluster);
+    int attribute_id = attribute::get_id(attribute);
+    esp_matter_attr_bounds_t *bounds = attribute::get_bounds(attribute);
     if (bounds) {
         esp_rmaker_param_val_t min_val = app_rainmaker_get_rmaker_val(&bounds->min, cluster_id, attribute_id);
         esp_rmaker_param_val_t max_val = app_rainmaker_get_rmaker_val(&bounds->max, cluster_id, attribute_id);
@@ -294,12 +294,6 @@ esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int at
     return esp_rmaker_param_update_and_report(param, rmaker_val);
 }
 
-esp_err_t app_rainmaker_command_callback(int endpoint_id, int cluster_id, int command_id, TLVReader &tlv_data,
-                                         void *priv_data)
-{
-    return esp_matter_rainmaker_command_callback(endpoint_id, cluster_id, command_id, tlv_data, priv_data);
-}
-
 /* Callback to handle commands received from the RainMaker cloud */
 static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_param_t *param,
                           const esp_rmaker_param_val_t val, void *priv_data, esp_rmaker_write_ctx_t *ctx)
@@ -314,20 +308,21 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
     int endpoint_id = app_rainmaker_get_endpoint_id_from_name(device_name);
     int cluster_id = app_rainmaker_get_cluster_id_from_name(param_name);
     int attribute_id = app_rainmaker_get_attribute_id_from_name(param_name);
-    esp_matter_attr_val_t matter_val = app_rainmaker_get_matter_val((esp_rmaker_param_val_t *)&val, cluster_id, attribute_id);
+    esp_matter_attr_val_t matter_val = app_rainmaker_get_matter_val((esp_rmaker_param_val_t *)&val, cluster_id,
+                                                                    attribute_id);
 
-    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &matter_val);
+    return attribute::update(endpoint_id, cluster_id, attribute_id, &matter_val);
 }
 
-static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t *node, esp_matter_endpoint_t *endpoint)
+static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t *node, endpoint_t *endpoint)
 {
-    int endpoint_id = esp_matter_endpoint_get_id(endpoint);
+    int endpoint_id = endpoint::get_id(endpoint);
     const char *device_name = app_rainmaker_get_device_name_from_id(endpoint_id);
     if (!device_name) {
         return NULL;
     }
     /* Add this device only if endpoint_id has been handled */
-    int device_type_id = esp_matter_endpoint_get_device_type_id(endpoint_id);
+    int device_type_id = endpoint::get_device_type_id(endpoint_id);
     const char *device_type = app_rainmaker_get_device_type_from_id(device_type_id);
     esp_rmaker_device_t *device = esp_rmaker_device_create(device_name, device_type, NULL);
     if (!device) {
@@ -339,11 +334,11 @@ static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t 
     return device;
 }
 
-static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *device, esp_matter_cluster_t *cluster,
-                                       esp_matter_attribute_t *attribute)
+static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *device, cluster_t *cluster,
+                                                      attribute_t *attribute)
 {
-    int cluster_id = esp_matter_cluster_get_id(cluster);
-    int attribute_id = esp_matter_attribute_get_id(attribute);
+    int cluster_id = cluster::get_id(cluster);
+    int attribute_id = attribute::get_id(attribute);
     const char *param_name = app_rainmaker_get_param_name_from_id(cluster_id, attribute_id);
     if (!param_name) {
         return NULL;
@@ -351,7 +346,7 @@ static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *devic
     /* Add this param only if attribute_id corresponding to the cluster_id is handled */
     const char *param_type = app_rainmaker_get_param_type_from_id(cluster_id, attribute_id);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    esp_matter_attribute_get_val(attribute, &val);
+    attribute::get_val(attribute, &val);
     esp_rmaker_param_val_t rmaker_val = app_rainmaker_get_rmaker_val(&val, cluster_id, attribute_id);
     esp_rmaker_param_t *param = esp_rmaker_param_create(param_name, param_type, rmaker_val,
                                                         PROP_FLAG_READ | PROP_FLAG_WRITE);
@@ -369,27 +364,27 @@ static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *devic
 static void app_rainmaker_data_model_create()
 {
     const esp_rmaker_node_t *node = esp_rmaker_get_node();
-    esp_matter_node_t *matter_node = esp_matter_node_get();
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get_first(matter_node);
+    node_t *matter_node = node::get();
+    endpoint_t *endpoint = endpoint::get_first(matter_node);
 
     /* Parse all endpoints */
     while (endpoint) {
         esp_rmaker_device_t *device = app_rainmaker_device_create(node, endpoint);
         /* Proceed only if the device has been handled */
         if (device) {
-            esp_matter_cluster_t *cluster = esp_matter_cluster_get_first(endpoint);
+            cluster_t *cluster = cluster::get_first(endpoint);
             /* Parse all clusters */
             while (cluster) {
-                esp_matter_attribute_t *attribute = esp_matter_attribute_get_first(cluster);
+                attribute_t *attribute = attribute::get_first(cluster);
                 /* Parse all attributes */
                 while (attribute) {
                     app_rainmaker_param_create(device, cluster, attribute);
-                    attribute = esp_matter_attribute_get_next(attribute);
+                    attribute = attribute::get_next(attribute);
                 }
-                cluster = esp_matter_cluster_get_next(cluster);
+                cluster = cluster::get_next(cluster);
             }
         }
-        endpoint = esp_matter_endpoint_get_next(endpoint);
+        endpoint = endpoint::get_next(endpoint);
     }
 }
 

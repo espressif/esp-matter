@@ -21,6 +21,8 @@
 #include <esp_rmaker_core.h>
 #include <esp_rmaker_user_mapping.h>
 
+using namespace esp_matter;
+
 static const char *TAG = "esp_matter_rainmaker";
 
 static esp_err_t esp_matter_rainmaker_console_handler(int argc, char **argv)
@@ -48,13 +50,13 @@ static void esp_matter_rainmaker_register_commands()
     esp_matter_console_add_command(&command);
 }
 
-#define ESP_MATTER_RAINMAKER_ENDPOINT_ID 0x0    /* Same as root node endpoint. This will always be endpoint_id 0. */
-#define ESP_MATTER_RAINMAKER_CLUSTER_ID 0x131B0000   /* 0x131B == manufacturer code */
+#define ESP_MATTER_RAINMAKER_ENDPOINT_ID 0x0 /* Same as root node endpoint. This will always be endpoint_id 0. */
+#define ESP_MATTER_RAINMAKER_CLUSTER_ID 0x131B0000 /* 0x131B == manufacturer code */
 #define ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID 0x0
 #define ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID 0x1
 #define ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID 0x0
 #define ESP_MATTER_RAINMAKER_CLUSTER_REVISION 1
-#define ESP_MATTER_RAINMAKER_COMMAND_LIMIT 5    /* This command can be called 5 times per reboot */
+#define ESP_MATTER_RAINMAKER_COMMAND_LIMIT 5 /* This command can be called 5 times per reboot */
 #define ESP_MATTER_RAINMAKER_MAX_DATA_LEN 40
 
 static esp_err_t rainmaker_status_attribute_update(bool status)
@@ -63,7 +65,7 @@ static esp_err_t rainmaker_status_attribute_update(bool status)
     int cluster_id = ESP_MATTER_RAINMAKER_CLUSTER_ID;
     int attribute_id = ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID;
     esp_matter_attr_val_t val = esp_matter_bool(status);
-    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
+    return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
 static esp_err_t app_rainmaker_node_id_attribute_update(char *node_id)
@@ -72,11 +74,11 @@ static esp_err_t app_rainmaker_node_id_attribute_update(char *node_id)
     int cluster_id = ESP_MATTER_RAINMAKER_CLUSTER_ID;
     int attribute_id = ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID;
     esp_matter_attr_val_t val = esp_matter_char_str(node_id, strlen(node_id));
-    return esp_matter_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
+    return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
-static void user_node_association_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id,
-                                                void* event_data)
+static void user_node_association_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id,
+                                                void *event_data)
 {
     /* This event handler is only for user node association status */
     if (event_base == RMAKER_EVENT) {
@@ -90,13 +92,19 @@ static void user_node_association_event_handler(void* arg, esp_event_base_t even
     }
 }
 
-esp_err_t esp_matter_rainmaker_command_callback(int endpoint_id, int cluster_id, int command_id, TLVReader &tlv_data,
-                                         void *priv_data)
+static esp_err_t esp_matter_rainmaker_command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
 {
+    /* Get ids */
+    int endpoint_id = command_path.mEndpointId;
+    int cluster_id = command_path.mClusterId;
+    int command_id = command_path.mCommandId;
+
     /* Return if this is not the rainmaker configuration command */
-    if (endpoint_id != ESP_MATTER_RAINMAKER_ENDPOINT_ID || cluster_id != ESP_MATTER_RAINMAKER_CLUSTER_ID
-        || command_id != ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID) {
-        return ESP_OK;
+    if (endpoint_id != ESP_MATTER_RAINMAKER_ENDPOINT_ID || cluster_id != ESP_MATTER_RAINMAKER_CLUSTER_ID ||
+        command_id != ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID) {
+        ESP_LOGE(TAG, "Got rainmaker command callback for some other command. This should not happen.");
+        return ESP_FAIL;
     }
     ESP_LOGI(TAG, "RainMaker configuration command callback");
     static int command_count = ESP_MATTER_RAINMAKER_COMMAND_LIMIT;
@@ -128,11 +136,11 @@ esp_err_t esp_matter_rainmaker_command_callback(int endpoint_id, int cluster_id,
 
     /* Get sizes */
     int user_id_index = 0;
-    int user_id_len = (int)(strchr(data, (int)ch) - data);              /* (first ':') - (start of string) */
-    int secret_key_index = (int)(strrchr(data, (int)ch) - data) + 1;    /* (last ':') - (start of string) + 1 */
+    int user_id_len = (int)(strchr(data, (int)ch) - data); /* (first ':') - (start of string) */
+    int secret_key_index = (int)(strrchr(data, (int)ch) - data) + 1; /* (last ':') - (start of string) + 1 */
     int secret_key_len = size - secret_key_index;
-    if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0
-        || secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
+    if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
+        secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
         ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d", user_id_len,
                  secret_key_len);
         return ESP_FAIL;
@@ -155,29 +163,29 @@ esp_err_t esp_matter_rainmaker_command_callback(int endpoint_id, int cluster_id,
 static esp_err_t rainmaker_custom_cluster_create()
 {
     /* Get the endpoint */
-    esp_matter_node_t *node = esp_matter_node_get();
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get(node, ESP_MATTER_RAINMAKER_ENDPOINT_ID);
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get(node, ESP_MATTER_RAINMAKER_ENDPOINT_ID);
 
     /* Create custom rainmaker cluster */
-    esp_matter_cluster_t *cluster = esp_matter_cluster_create(endpoint, ESP_MATTER_RAINMAKER_CLUSTER_ID,
-                                                             ESP_MATTER_CLUSTER_FLAG_SERVER);
-    esp_matter_attribute_create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                esp_matter_uint16(ESP_MATTER_RAINMAKER_CLUSTER_REVISION));
+    cluster_t *cluster = cluster::create(endpoint, ESP_MATTER_RAINMAKER_CLUSTER_ID, ESP_MATTER_CLUSTER_FLAG_SERVER);
+    attribute::create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                      esp_matter_uint16(ESP_MATTER_RAINMAKER_CLUSTER_REVISION));
 
     /* Create custom status attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
-    esp_matter_attribute_create(cluster, ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                esp_matter_bool(false));
+    attribute::create(cluster, ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                      esp_matter_bool(false));
 
     /* Create custom node_id attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
     char node_id[32] = {0};
-    esp_matter_attribute_create(cluster, ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
-                                esp_matter_char_str(node_id, sizeof(node_id)));
+    attribute::create(cluster, ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                      esp_matter_char_str(node_id, sizeof(node_id)));
 
     /* Create custom configuration command */
-    esp_matter_command_create(cluster, ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID,
-                              ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED | ESP_MATTER_COMMAND_FLAG_CUSTOM, NULL);
+    command::create(cluster, ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID,
+                    ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED | ESP_MATTER_COMMAND_FLAG_CUSTOM,
+                    esp_matter_rainmaker_command_callback);
     return ESP_OK;
 }
 
@@ -196,8 +204,8 @@ esp_err_t esp_matter_rainmaker_start()
     }
 
     /* Register an event handler and update the state later */
-    esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_DONE,
-                                &user_node_association_event_handler, NULL);
+    esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_DONE, &user_node_association_event_handler,
+                               NULL);
     esp_event_handler_register(RMAKER_EVENT, RMAKER_EVENT_USER_NODE_MAPPING_RESET,
                                 &user_node_association_event_handler, NULL);
 

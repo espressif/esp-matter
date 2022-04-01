@@ -17,60 +17,56 @@
 #include <esp_err.h>
 #include <esp_matter_core.h>
 
-/* cluster: on_off */
-esp_err_t esp_matter_on_off_send_command_off(esp_matter_peer_device_t *remote_device, int remote_endpoint_id);
-esp_err_t esp_matter_on_off_send_command_on(esp_matter_peer_device_t *remote_device, int remote_endpoint_id);
-esp_err_t esp_matter_on_off_send_command_toggle(esp_matter_peer_device_t *remote_device, int remote_endpoint_id);
+namespace esp_matter {
+namespace cluster {
+using client::peer_device_t;
 
-/* cluster: level_control */
-esp_err_t esp_matter_level_control_send_command_move(esp_matter_peer_device_t *remote_device, int remote_endpoint_id,
-                                                     uint8_t move_mode, uint8_t rate, uint8_t option_mask,
-                                                     uint8_t option_override);
-esp_err_t esp_matter_level_control_send_command_move_to_level(esp_matter_peer_device_t *remote_device,
-                                                              int remote_endpoint_id, uint8_t level,
-                                                              uint16_t transition_time, uint8_t option_mask,
-                                                              uint8_t option_override);
-esp_err_t esp_matter_level_control_send_command_move_to_level_with_on_off(esp_matter_peer_device_t *remote_device,
-                                                                          int remote_endpoint_id, uint8_t level,
-                                                                          uint16_t transition_time);
-esp_err_t esp_matter_level_control_send_command_move_with_on_off(esp_matter_peer_device_t *remote_device,
-                                                                 int remote_endpoint_id, uint8_t move_mode,
-                                                                 uint8_t rate);
-esp_err_t esp_matter_level_control_send_command_step(esp_matter_peer_device_t *remote_device, int remote_endpoint_id,
-                                                     uint8_t step_mode, uint8_t step_size, uint16_t transition_time,
-                                                     uint8_t option_mask, uint8_t option_override);
-esp_err_t esp_matter_level_control_send_command_step_with_on_off(esp_matter_peer_device_t *remote_device,
-                                                                 int remote_endpoint_id, uint8_t step_mode,
-                                                                 uint8_t step_size, uint16_t transition_time);
-esp_err_t esp_matter_level_control_send_command_stop(esp_matter_peer_device_t *remote_device, int remote_endpoint_id,
-                                                     uint8_t option_mask, uint8_t option_override);
-esp_err_t esp_matter_level_control_send_command_stop_with_on_off(esp_matter_peer_device_t *remote_device,
-                                                                 int remote_endpoint_id);
+namespace on_off {
+namespace command {
+esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id);
+esp_err_t send_on(peer_device_t *remote_device, int remote_endpoint_id);
+esp_err_t send_toggle(peer_device_t *remote_device, int remote_endpoint_id);
+} /* command */
+} /* on_off */
 
-/* cluster: color_control */
-esp_err_t esp_matter_color_control_send_command_move_hue(esp_matter_peer_device_t *remote_device,
-                                                         int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
-                                                         uint8_t option_mask, uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_move_saturation(esp_matter_peer_device_t *remote_device,
-                                                                int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
-                                                                uint8_t option_mask, uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_move_to_hue(esp_matter_peer_device_t *remote_device,
-                                                            int remote_endpoint_id, uint8_t hue, uint8_t direction,
-                                                            uint16_t transition_time, uint8_t option_mask,
-                                                            uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_move_to_hue_and_saturation(esp_matter_peer_device_t *remote_device,
-                                                                        int remote_endpoint_id, uint8_t hue,
-                                                                        uint8_t saturation, uint16_t transition_time,
-                                                                        uint8_t option_mask, uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_move_to_saturation(esp_matter_peer_device_t *remote_device,
-                                                                   int remote_endpoint_id, uint8_t saturation,
-                                                                   uint16_t transition_time, uint8_t option_mask,
-                                                                   uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_step_hue(esp_matter_peer_device_t *remote_device,
-                                                         int remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
-                                                         uint16_t transition_time, uint8_t option_mask,
-                                                         uint8_t option_override);
-esp_err_t esp_matter_color_control_send_command_step_saturation(esp_matter_peer_device_t *remote_device,
-                                                                int remote_endpoint_id, uint8_t step_mode,
-                                                                uint8_t step_size, uint16_t transition_time,
-                                                                uint8_t option_mask, uint8_t option_override);
+namespace level_control {
+namespace command {
+esp_err_t send_move(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
+                    uint8_t option_mask, uint8_t option_override);
+esp_err_t send_move_to_level(peer_device_t *remote_device, int remote_endpoint_id, uint8_t level,
+                             uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t level,
+                                         uint16_t transition_time);
+esp_err_t send_move_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate);
+esp_err_t send_step(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
+                    uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_step_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode,
+                                uint8_t step_size, uint16_t transition_time);
+esp_err_t send_stop(peer_device_t *remote_device, int remote_endpoint_id, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_stop_with_on_off(peer_device_t *remote_device, int remote_endpoint_id);
+} /* command */
+} /* level_control */
+
+namespace color_control {
+namespace command {
+esp_err_t send_move_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
+                        uint8_t option_mask, uint8_t option_override);
+esp_err_t send_move_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
+                               uint8_t option_mask, uint8_t option_override);
+esp_err_t send_move_to_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t hue, uint8_t direction,
+                           uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t hue,
+                                          uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
+                                          uint8_t option_override);
+esp_err_t send_move_to_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t saturation,
+                                  uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_step_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
+                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t send_step_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode,
+                               uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
+                               uint8_t option_override);
+} /* command */
+} /* color_control */
+
+} /* cluster */
+} /* esp_matter */

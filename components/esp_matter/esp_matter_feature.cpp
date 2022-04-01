@@ -16,9 +16,14 @@
 #include <esp_matter.h>
 #include <esp_matter_feature.h>
 
-static const char *TAG = "esp_matter_cluster";
+#include <app-common/zap-generated/cluster-enums.h>
 
-esp_err_t esp_matter_cluster_update_feature_map(esp_matter_cluster_t *cluster, uint32_t value)
+static const char *TAG = "esp_matter_feature";
+
+namespace esp_matter {
+namespace cluster {
+
+static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -26,11 +31,11 @@ esp_err_t esp_matter_cluster_update_feature_map(esp_matter_cluster_t *cluster, u
     }
 
     /* Get the attribute */
-    esp_matter_attribute_t *attribute = esp_matter_attribute_get(cluster, ZCL_FEATURE_MAP_SERVER_ATTRIBUTE_ID);
+    attribute_t *attribute = attribute::get(cluster, ZCL_FEATURE_MAP_SERVER_ATTRIBUTE_ID);
 
     /* Create the attribute with the new value if it does not exist */
     if (!attribute) {
-        attribute = esp_matter_attribute_create_feature_map(cluster, value);
+        attribute = global::attribute::create_feature_map(cluster, value);
         if (!attribute) {
             ESP_LOGE(TAG, "Could not create feature map attribute");
             return ESP_FAIL;
@@ -40,87 +45,135 @@ esp_err_t esp_matter_cluster_update_feature_map(esp_matter_cluster_t *cluster, u
 
     /* Update the value if the attribute already exists */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    esp_matter_attribute_get_val(attribute, &val);
+    attribute::get_val(attribute, &val);
     val.val.u32 |= value;
-    /* Here we can't call esp_matter_attribute_update() since the chip stack would not have started yet, since we are
-    still creating the data model. So, we are directly using esp_matter_attribute_set_val(). */
-    return esp_matter_attribute_set_val(attribute, &val);
+    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
+    still creating the data model. So, we are directly using attribute::set_val(). */
+    return attribute::set_val(attribute, &val);
 }
 
-esp_err_t esp_matter_on_off_cluster_add_feature_lighting(esp_matter_cluster_t *cluster,
-                                                         esp_matter_on_off_cluster_lighting_config_t *config)
+namespace on_off {
+namespace feature {
+namespace lighting {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::OnOff::OnOffFeature::kLighting;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_cluster_update_feature_map(cluster, ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID);
+    update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    esp_matter_attribute_create_global_scene_control(cluster, config->global_scene_control);
-    esp_matter_attribute_create_on_time(cluster, config->on_time);
-    esp_matter_attribute_create_off_wait_time(cluster, config->off_wait_time);
-    esp_matter_attribute_create_start_up_on_off(cluster, config->start_up_on_off);
+    attribute::create_global_scene_control(cluster, config->global_scene_control);
+    attribute::create_on_time(cluster, config->on_time);
+    attribute::create_off_wait_time(cluster, config->off_wait_time);
+    attribute::create_start_up_on_off(cluster, config->start_up_on_off);
 
     /* Commands */
-    esp_matter_command_create_off_with_effect(cluster);
-    esp_matter_command_create_on_with_recall_global_scene(cluster);
-    esp_matter_command_create_on_with_timed_off(cluster);
+    command::create_off_with_effect(cluster);
+    command::create_on_with_recall_global_scene(cluster);
+    command::create_on_with_timed_off(cluster);
 
     return ESP_OK;
 }
 
-esp_err_t esp_matter_level_control_cluster_add_feature_on_off(esp_matter_cluster_t *cluster)
+} /* lighting */
+} /* feature */
+} /* on_off */
+
+namespace level_control {
+namespace feature {
+namespace on_off {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::LevelControl::LevelControlFeature::kOnOff;
+}
+
+esp_err_t add(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_cluster_update_feature_map(cluster, ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID);
+    update_feature_map(cluster, get_id());
 
     return ESP_OK;
 }
 
-esp_err_t esp_matter_level_control_cluster_add_feature_lighting(esp_matter_cluster_t *cluster,
-                                                            esp_matter_level_control_cluster_lighting_config_t *config)
+} /* on_off */
+
+namespace lighting {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::LevelControl::LevelControlFeature::kLighting;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_cluster_update_feature_map(cluster, ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID);
+    update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    esp_matter_attribute_create_remaining_time(cluster, config->remaining_time);
-    esp_matter_attribute_create_min_level(cluster, config->min_level);
-    esp_matter_attribute_create_max_level(cluster, config->max_level);
-    esp_matter_attribute_create_start_up_current_level(cluster, config->start_up_current_level);
+    attribute::create_remaining_time(cluster, config->remaining_time);
+    attribute::create_min_level(cluster, config->min_level);
+    attribute::create_max_level(cluster, config->max_level);
+    attribute::create_start_up_current_level(cluster, config->start_up_current_level);
 
     return ESP_OK;
 }
 
-esp_err_t esp_matter_color_control_cluster_add_feature_hue_saturation(esp_matter_cluster_t *cluster,
-                                                    esp_matter_color_control_cluster_hue_saturation_config_t *config)
+} /* lighting */
+} /* feature */
+} /* level_control */
+
+namespace color_control {
+namespace feature {
+namespace hue_saturation {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kHueSaturationSupported;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_cluster_update_feature_map(cluster, ESP_MATTER_COLOR_CONTROL_CLUSTER_HUE_SATURATION_FEATURE_ID);
+    update_feature_map(cluster, get_id());
 
     /* Attributes not managed internally */
-    esp_matter_attribute_create_current_hue(cluster, config->current_hue);
-    esp_matter_attribute_create_current_saturation(cluster, config->current_saturation);
+    attribute::create_current_hue(cluster, config->current_hue);
+    attribute::create_current_saturation(cluster, config->current_saturation);
 
     /* Commands */
-    esp_matter_command_create_move_to_hue(cluster);
-    esp_matter_command_create_move_hue(cluster);
-    esp_matter_command_create_step_hue(cluster);
-    esp_matter_command_create_move_to_saturation(cluster);
-    esp_matter_command_create_move_saturation(cluster);
-    esp_matter_command_create_step_saturation(cluster);
-    esp_matter_command_create_move_to_hue_and_saturation(cluster);
-    esp_matter_command_create_stop_move_step(cluster);
+    command::create_move_to_hue(cluster);
+    command::create_move_hue(cluster);
+    command::create_step_hue(cluster);
+    command::create_move_to_saturation(cluster);
+    command::create_move_saturation(cluster);
+    command::create_step_saturation(cluster);
+    command::create_move_to_hue_and_saturation(cluster);
+    command::create_stop_move_step(cluster);
 
     return ESP_OK;
 }
+
+} /* hue_saturation */
+} /* feature */
+} /* color_control */
+
+} /* cluster */
+} /* esp_matter */

@@ -36,9 +36,6 @@ esp_err_t app_rainmaker_start(void);
 
 esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
-esp_err_t app_rainmaker_command_callback(int endpoint_id, int cluster_id, int command_id, TLVReader &tlv_data,
-                                         void *priv_data);
-
 #ifdef __cplusplus
 }
 #endif
