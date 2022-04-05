@@ -14,20 +14,10 @@
 #include <esp_matter.h>
 #include <light_driver.h>
 
-#include <app_driver.h>
+#include <app_priv.h>
 
 static const char *TAG = "app_driver";
 extern int light_endpoint_id;
-
-#define STANDARD_BRIGHTNESS 100
-#define STANDARD_HUE 360
-#define STANDARD_SATURATION 100
-#define STANDARD_TEMPERATURE 100
-
-#define MATTER_BRIGHTNESS 255
-#define MATTER_HUE 255
-#define MATTER_SATURATION 255
-#define MATTER_TEMPERATURE 255
 
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t *val)

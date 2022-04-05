@@ -346,9 +346,9 @@
                                                                                \
         /* Endpoint: 1, Cluster: Color Control (server) */                     \
         {0x00000000, ZAP_TYPE(INT8U), 1, 0,                                    \
-         ZAP_SIMPLE_DEFAULT(0x7F)}, /* current hue */                          \
+         ZAP_SIMPLE_DEFAULT(0x80)}, /* current hue */                          \
         {0x00000001, ZAP_TYPE(INT8U), 1, 0,                                    \
-         ZAP_SIMPLE_DEFAULT(0xFE)}, /* current saturation */                   \
+         ZAP_SIMPLE_DEFAULT(0xFF)}, /* current saturation */                   \
         {0x00000003, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_SIMPLE_DEFAULT(0x616B)}, /* current x */                          \
         {0x00000004, ZAP_TYPE(INT16U), 2, 0,                                   \

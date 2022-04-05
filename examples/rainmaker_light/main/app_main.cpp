@@ -14,14 +14,9 @@
 #include <esp_matter_console.h>
 #include <esp_route_hook.h>
 
-#include <app_driver.h>
+#include <app_priv.h>
 #include <app_qrcode.h>
 #include <app_rainmaker.h>
-
-#define DEFAULT_POWER true
-#define DEFAULT_BRIGHTNESS 64
-#define DEFAULT_HUE 127
-#define DEFAULT_SATURATION 254
 
 static const char *TAG = "app_main";
 int light_endpoint_id = 0;
