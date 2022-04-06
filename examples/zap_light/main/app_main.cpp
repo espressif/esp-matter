@@ -39,10 +39,10 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, 
 {
     esp_err_t err = ESP_OK;
 
-    if (type == PRE_ATTRIBUTE) {
+    if (type == PRE_UPDATE) {
         /* Driver update */
         err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
-    } else if (type == POST_ATTRIBUTE) {
+    } else if (type == POST_UPDATE) {
         /* Other ecosystems update */
     }
 

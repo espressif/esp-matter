@@ -167,24 +167,24 @@ static esp_err_t rainmaker_custom_cluster_create()
     endpoint_t *endpoint = endpoint::get(node, ESP_MATTER_RAINMAKER_ENDPOINT_ID);
 
     /* Create custom rainmaker cluster */
-    cluster_t *cluster = cluster::create(endpoint, ESP_MATTER_RAINMAKER_CLUSTER_ID, ESP_MATTER_CLUSTER_FLAG_SERVER);
-    attribute::create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+    cluster_t *cluster = cluster::create(endpoint, ESP_MATTER_RAINMAKER_CLUSTER_ID, CLUSTER_FLAG_SERVER);
+    attribute::create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
                       esp_matter_uint16(ESP_MATTER_RAINMAKER_CLUSTER_REVISION));
 
     /* Create custom status attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
-    attribute::create(cluster, ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+    attribute::create(cluster, ESP_MATTER_RAINMAKER_STATUS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
                       esp_matter_bool(false));
 
     /* Create custom node_id attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
     char node_id[32] = {0};
-    attribute::create(cluster, ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+    attribute::create(cluster, ESP_MATTER_RAINMAKER_NODE_ID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
                       esp_matter_char_str(node_id, sizeof(node_id)));
 
     /* Create custom configuration command */
     command::create(cluster, ESP_MATTER_RAINMAKER_CONFIGURATION_COMMAND_ID,
-                    ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED | ESP_MATTER_COMMAND_FLAG_CUSTOM,
+                    COMMAND_FLAG_CLIENT_GENERATED | COMMAND_FLAG_CUSTOM,
                     esp_matter_rainmaker_command_callback);
     return ESP_OK;
 }

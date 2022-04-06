@@ -252,7 +252,7 @@ static esp_err_t console_handler(int argc, char **argv)
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
-                                                                        attribute_id, ESP_MATTER_CLUSTER_FLAG_SERVER);
+                                                                        attribute_id, CLUSTER_FLAG_SERVER);
         if (!matter_attribute) {
             ESP_LOGE(TAG, "Matter attribute not found");
             return ESP_ERR_INVALID_ARG;
@@ -306,7 +306,7 @@ static esp_err_t console_handler(int argc, char **argv)
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
-                                                                        attribute_id, ESP_MATTER_CLUSTER_FLAG_SERVER);
+                                                                        attribute_id, CLUSTER_FLAG_SERVER);
         if (!matter_attribute) {
             ESP_LOGE(TAG, "Matter attribute not found");
             return ESP_ERR_INVALID_ARG;
@@ -922,7 +922,7 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
 
     /* Callback to application */
-    esp_err_t err = send_callback(attribute::PRE_ATTRIBUTE, endpoint_id, cluster_id, attribute_id, &val);
+    esp_err_t err = send_callback(attribute::PRE_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
     if (err != ESP_OK) {
         return Status::Failure;
     }
@@ -939,7 +939,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
     attribute::get_attr_val_from_data(&val, type, size, value);
 
     /* Callback to application */
-    send_callback(attribute::POST_ATTRIBUTE, endpoint_id, cluster_id, attribute_id, &val);
+    send_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
 }
 
 EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,

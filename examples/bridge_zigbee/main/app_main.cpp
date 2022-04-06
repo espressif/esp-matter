@@ -39,7 +39,7 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, 
 {
     esp_err_t err = ESP_OK;
 
-    if (type == PRE_ATTRIBUTE) {
+    if (type == PRE_UPDATE) {
         err = zigbee_bridge_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     }
     return err;

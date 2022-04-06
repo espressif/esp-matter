@@ -56,7 +56,7 @@ void plugin_init_callback_common()
 
 namespace descriptor {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
@@ -66,11 +66,11 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterDescriptorPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterDescriptorPluginClientInitCallback);
     }
 
@@ -87,7 +87,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
 namespace access_control {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
@@ -96,11 +96,11 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterAccessControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterAccessControlPluginClientInitCallback);
     }
 
@@ -116,7 +116,7 @@ namespace basic {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfBasicClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -126,11 +126,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
     }
 
@@ -156,7 +156,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace binding {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -166,11 +166,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterBindingPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterBindingPluginClientInitCallback);
     }
 
@@ -189,7 +189,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace ota_provider {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -199,11 +199,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOtaSoftwareUpdateProviderPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateProviderPluginClientInitCallback);
     }
 
@@ -223,7 +223,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace ota_requestor {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -233,11 +233,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOtaSoftwareUpdateRequestorPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateRequestorPluginClientInitCallback);
     }
 
@@ -259,7 +259,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace general_commissioning {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -269,11 +269,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGeneralCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterGeneralCommissioningPluginClientInitCallback);
     }
 
@@ -300,7 +300,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace network_commissioning {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -310,11 +310,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterNetworkCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterNetworkCommissioningPluginClientInitCallback);
     }
 
@@ -349,7 +349,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace general_diagnostics {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -359,11 +359,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGeneralDiagnosticsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterGeneralDiagnosticsPluginClientInitCallback);
     }
 
@@ -380,7 +380,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace administrator_commissioning {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -390,11 +390,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterAdministratorCommissioningPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterAdministratorCommissioningPluginClientInitCallback);
     }
 
@@ -417,7 +417,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace operational_credentials {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -427,11 +427,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOperationalCredentialsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterOperationalCredentialsPluginClientInitCallback);
     }
 
@@ -467,7 +467,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace group_key_management {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
@@ -477,11 +477,11 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGroupKeyManagementPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterGroupKeyManagementPluginClientInitCallback);
     }
 
@@ -509,7 +509,7 @@ const function_generic_t function_list[] = {
     (function_generic_t)emberAfIdentifyClusterServerInitCallback,
     (function_generic_t)MatterIdentifyClusterServerAttributeChangedCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION | ESP_MATTER_CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -519,11 +519,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterIdentifyPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterIdentifyPluginClientInitCallback);
     }
 
@@ -545,7 +545,7 @@ namespace groups {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfGroupsClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -555,11 +555,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterGroupsPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterGroupsPluginClientInitCallback);
     }
 
@@ -587,7 +587,7 @@ namespace scenes {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfScenesClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -597,11 +597,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterScenesPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterScenesPluginClientInitCallback);
     }
 
@@ -636,7 +636,7 @@ namespace on_off {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfOnOffClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -646,11 +646,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterOnOffPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterOnOffPluginClientInitCallback);
     }
 
@@ -676,7 +676,7 @@ namespace level_control {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfLevelControlClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -686,11 +686,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterLevelControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterLevelControlPluginClientInitCallback);
     }
 
@@ -726,7 +726,7 @@ namespace color_control {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfColorControlClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
@@ -736,11 +736,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterColorControlPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterColorControlPluginClientInitCallback);
     }
 
@@ -762,7 +762,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
 namespace fan_control {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -772,12 +772,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         /* not implemented: Setting NULL since the MatterFanControlPluginServerInitCallback is not implemented */
         set_plugin_server_init_callback(cluster, NULL);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         /* not implemented: Setting NULL since the MatterFanControlPluginClientInitCallback is not implemented */
         set_plugin_client_init_callback(cluster, NULL);
     }
@@ -799,7 +799,7 @@ namespace thermostat {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfThermostatClusterServerInitCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_INIT_FUNCTION;
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -809,11 +809,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterThermostatPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterThermostatPluginClientInitCallback);
     }
 
@@ -837,8 +837,8 @@ const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,
     (function_generic_t)MatterDoorLockClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION |
-                           ESP_MATTER_CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION |
+                           CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -848,11 +848,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterDoorLockPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterDoorLockPluginClientInitCallback);
     }
 
@@ -875,7 +875,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace time_synchronization {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -885,11 +885,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterTimeSynchronizationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
     }
 
@@ -902,7 +902,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace bridged_device_basic {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -912,7 +912,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         // There is not PluginServer(Client)InitCallback for this cluster
         add_function_list(cluster, function_list, function_flags);
     }
@@ -928,7 +928,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace fixed_label {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -938,11 +938,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterFixedLabelPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
     }
 
@@ -958,7 +958,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace switch_cluster {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -968,11 +968,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterSwitchPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterSwitchPluginClientInitCallback);
     }
 
@@ -988,7 +988,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
 namespace temperature_measurement {
 const function_generic_t *function_list = NULL;
-const int function_flags = ESP_MATTER_CLUSTER_FLAG_NONE;
+const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
@@ -998,11 +998,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         return NULL;
     }
 
-    if (flags & ESP_MATTER_CLUSTER_FLAG_SERVER) {
+    if (flags & CLUSTER_FLAG_SERVER) {
         set_plugin_server_init_callback(cluster, MatterTemperatureMeasurementPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
-    if (flags & ESP_MATTER_CLUSTER_FLAG_CLIENT) {
+    if (flags & CLUSTER_FLAG_CLIENT) {
         set_plugin_client_init_callback(cluster, MatterTemperatureMeasurementPluginClientInitCallback);
     }
 

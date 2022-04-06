@@ -148,7 +148,7 @@ static esp_err_t free_default_value(attribute_t *attribute)
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     /* Free value if data is more than 2 bytes or if it is min max attribute */
-    if (current_attribute->flags & ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX) {
+    if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
         if (current_attribute->default_value_size > 2) {
             if (current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue) {
                 free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
@@ -214,7 +214,7 @@ static esp_err_t set_default_value_from_current_val(attribute_t *attribute)
     get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
 
     /* Get and set value */
-    if (current_attribute->flags & ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX) {
+    if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
         EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)calloc(1,
                                                                                 sizeof(EmberAfAttributeMinMaxValue));
         if (!temp_value) {
@@ -362,7 +362,7 @@ esp_err_t enable(endpoint_t *endpoint)
     _command_t *command = NULL;
     int command_count = 0;
     int command_index = 0;
-    int command_flag = ESP_MATTER_COMMAND_FLAG_NONE;
+    int command_flag = COMMAND_FLAG_NONE;
     int endpoint_index = 0;
     int default_device_version = 1;
 
@@ -401,12 +401,12 @@ esp_err_t enable(endpoint_t *endpoint)
         command = NULL;
         command_count = 0;
         command_index = 0;
-        command_flag = ESP_MATTER_COMMAND_FLAG_NONE;
+        command_flag = COMMAND_FLAG_NONE;
         client_generated_command_ids = NULL;
         server_generated_command_ids = NULL;
 
         /* Client Generated Commands */
-        command_flag = ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED;
+        command_flag = COMMAND_FLAG_CLIENT_GENERATED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
@@ -428,7 +428,7 @@ esp_err_t enable(endpoint_t *endpoint)
         }
 
         /* Server Generated Commands */
-        command_flag = ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED;
+        command_flag = COMMAND_FLAG_SERVER_GENERATED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
@@ -690,7 +690,7 @@ attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_mat
     /* Set */
     attribute->attribute_id = attribute_id;
     attribute->flags = flags;
-    attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
+    attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
     set_val((attribute_t *)attribute, &val);
     set_default_value_from_current_val((attribute_t *)attribute);
 
@@ -863,7 +863,7 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
     }
     memcpy((void *)&current_attribute->bounds->min, (void *)&min, sizeof(esp_matter_attr_val_t));
     memcpy((void *)&current_attribute->bounds->max, (void *)&max, sizeof(esp_matter_attr_val_t));
-    current_attribute->flags |= ESP_MATTER_ATTRIBUTE_FLAG_MIN_MAX;
+    current_attribute->flags |= ATTRIBUTE_FLAG_MIN_MAX;
 
     /* Set the default value again after setting the bounds and the flag */
     set_default_value_from_current_val(attribute);
@@ -1220,8 +1220,8 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     _node_t *current_node = (_node_t *)node;
     _endpoint_t *_endpoint = (_endpoint_t *)endpoint;
 
-    if (!(_endpoint->flags & ESP_MATTER_ENDPOINT_FLAG_DELETABLE)) {
-        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ESP_MATTER_ENDPOINT_FLAG_DELETABLE is not set");
+    if (!(_endpoint->flags & ENDPOINT_FLAG_DESTROYABLE)) {
+        ESP_LOGE(TAG, "This endpoint cannot be deleted since the ENDPOINT_FLAG_DESTROYABLE is not set");
         return ESP_FAIL;
     }
 

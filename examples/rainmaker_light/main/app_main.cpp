@@ -41,10 +41,10 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, 
 {
     esp_err_t err = ESP_OK;
 
-    if (type == PRE_ATTRIBUTE) {
+    if (type == PRE_UPDATE) {
         /* Driver update */
         err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
-    } else if (type == POST_ATTRIBUTE) {
+    } else if (type == POST_UPDATE) {
         /* Other ecosystems update */
         err = app_rainmaker_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     }
@@ -68,7 +68,7 @@ extern "C" void app_main()
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
     light_config.color_control.hue_saturation.current_hue = DEFAULT_HUE;
     light_config.color_control.hue_saturation.current_saturation = DEFAULT_SATURATION;
-    endpoint_t *endpoint = color_dimmable_light::create(node, &light_config, ESP_MATTER_ENDPOINT_FLAG_NONE);
+    endpoint_t *endpoint = color_dimmable_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
     light_endpoint_id = endpoint::get_id(endpoint);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */

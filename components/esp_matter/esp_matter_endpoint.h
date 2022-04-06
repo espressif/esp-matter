@@ -20,6 +20,15 @@
 namespace esp_matter {
 using namespace cluster;
 
+/** Specific endpoint (device type) create APIs
+ *
+ * These APIs also create the mandatory clusters and the mandatory attributes and commands for the clusters.
+ * The configs has the cluster configs for the mandatory clusters, if it exists.
+ *
+ * If some standard endpoint (device type) is not present here, it can be added.
+ * If a custom endpoint needs to be created, the low level esp_matter::endpoint::create() API can be used.
+ */
+
 namespace endpoint {
 namespace root_node {
 typedef struct config {
@@ -151,6 +160,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* endpoint */
 
 namespace node {
+/** Standard node create
+ *
+ * This creates the node, sets the attribute callback and also adds the root node device type, which is by default
+ * added to endpoint 0 (since this is the first endpoint which is created).
+ */
+
 typedef struct config {
     endpoint::root_node::config_t root_node;
 } config_t;

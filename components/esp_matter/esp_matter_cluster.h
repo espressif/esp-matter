@@ -21,7 +21,24 @@
 namespace esp_matter {
 namespace cluster {
 
+/** Common cluster plugin init callback
+ *
+ * This is the common plugin init callback which calls the plugin init callbacks in the clusters.
+ *
+ * This common API has been added so that the specific APIs in zap-generated/PluginApplicationCallbacks.h can be
+ * removed.
+ */
 void plugin_init_callback_common();
+
+/** Specific cluster create APIs
+ *
+ * These APIs also create the mandatory attributes and commands for the cluster. If the mandatory attribute is not
+ * managed internally, then a config is present for that attribute. The constructor for the config will set the
+ * attribute to the default value from the spec.
+ *
+ * If some standard cluster is not present here, it can be added.
+ * If a custom cluster needs to be created, the low level esp_matter::cluster::create() API can be used.
+ */
 
 namespace descriptor {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
