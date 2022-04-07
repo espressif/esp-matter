@@ -24,13 +24,13 @@ namespace attribute {
 
 attribute_t *create_cluster_revision(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CLUSTER_REVISION_SERVER_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, Globals::Attributes::ClusterRevision::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
 }
 
 attribute_t *create_feature_map(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_FEATURE_MAP_SERVER_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Globals::Attributes::FeatureMap::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bitmap32(value));
 }
 
@@ -42,25 +42,25 @@ namespace attribute {
 
 attribute_t *create_device_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_DEVICE_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceList::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_server_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SERVER_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ServerList::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_client_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CLIENT_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::ClientList::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_PARTS_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::PartsList::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -72,13 +72,13 @@ namespace attribute {
 
 attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ACL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Acl::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_EXTENSION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::Extension::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -90,68 +90,68 @@ namespace attribute {
 
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_DATA_MODEL_REVISION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::DataModelRevision::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_VENDOR_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::VendorName::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_vendor_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_VENDOR_ID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::VendorID::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_product_name(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_PRODUCT_NAME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::ProductName::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_product_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_PRODUCT_ID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::ProductID::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NODE_LABEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::NodeLabel::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_location(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LOCATION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::Location::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_HARDWARE_VERSION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::HardwareVersion::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_HARDWARE_VERSION_STRING_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, Basic::Attributes::HardwareVersionString::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
 }
 
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SOFTWARE_VERSION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Basic::Attributes::SoftwareVersion::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint32(value));
 }
 
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SOFTWARE_VERSION_STRING_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+    return esp_matter::attribute::create(cluster, Basic::Attributes::SoftwareVersionString::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
 }
 
 } /* attribute */
@@ -162,7 +162,7 @@ namespace attribute {
 
 attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_BINDING_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, Binding::Attributes::Binding::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -174,25 +174,25 @@ namespace attribute {
 
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_DEFAULT_OTA_PROVIDERS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOtaProviders::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_update_possible(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_UPDATE_POSSIBLE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_bool(value));
+    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::UpdatePossible::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
 }
 
 attribute_t *create_update_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_UPDATE_STATE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::UpdateState::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_UPDATE_STATE_PROGRESS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::UpdateStateProgress::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
@@ -204,26 +204,26 @@ namespace attribute {
 
 attribute_t *create_breadcrumb(cluster_t *cluster, uint64_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_BREADCRUMB_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_uint64(value));
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::Breadcrumb::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint64(value));
 }
 
 attribute_t *create_basic_commissioning_info(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_BASICCOMMISSIONINGINFO_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::BasicCommissioningInfo::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_regulatory_config(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_REGULATORYCONFIG_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::RegulatoryConfig::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_location_capability(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LOCATIONCAPABILITY_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::LocationCapability::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -234,49 +234,49 @@ namespace attribute {
 
 attribute_t *create_max_networks(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MAX_NETWORKS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::MaxNetworks::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_networks(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NETWORKS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::Networks::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_scan_max_time_seconds(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SCAN_MAX_TIME_SECONDS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ScanMaxTimeSeconds::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_connect_max_time_seconds(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CONNECT_MAX_TIME_SECONDS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::ConnectMaxTimeSeconds::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_INTERFACE_ENABLED_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::InterfaceEnabled::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
 }
 
 attribute_t *create_last_networking_status(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LAST_NETWORKING_STATUS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastNetworkingStatus::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LAST_NETWORK_ID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_octet_str(value, length));
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastNetworkID::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
 }
 
 attribute_t *create_last_connect_error_value(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LAST_CONNECT_ERROR_VALUE_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastConnectErrorValue::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
 }
 
@@ -288,13 +288,13 @@ namespace attribute {
 
 attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NETWORK_INTERFACES_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::NetworkInterfaces::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_REBOOT_COUNT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::RebootCount::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
@@ -306,20 +306,20 @@ namespace attribute {
 
 attribute_t *create_window_status(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_WINDOW_STATUS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::WindowStatus::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_admin_fabric_index(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ADMIN_FABRIC_INDEX_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::AdminFabricIndex::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 attribute_t *create_admin_vendor_id(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ADMIN_VENDOR_ID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, AdministratorCommissioning::Attributes::AdminVendorId::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 } /* attribute */
@@ -330,38 +330,38 @@ namespace attribute {
 
 attribute_t *create_nocs(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NOCS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::NOCs::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_fabrics(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_FABRICS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::Fabrics::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_supported_fabrics(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SUPPORTED_FABRICS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::SupportedFabrics::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_commissioned_fabrics(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COMMISSIONED_FABRICS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::CommissionedFabrics::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 attribute_t *create_trusted_root_certificates(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_TRUSTED_ROOTS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::TrustedRootCertificates::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_current_fabric_index(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CURRENT_FABRIC_INDEX_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, OperationalCredentials::Attributes::CurrentFabricIndex::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
 }
 
 } /* attribute */
@@ -372,25 +372,25 @@ namespace attribute {
 
 attribute_t *create_group_key_map(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_GROUP_KEY_MAP_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_array(value, length, count));
+    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::GroupKeyMap::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_group_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_GROUP_TABLE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::GroupTable::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
 attribute_t *create_max_groups_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MAX_GROUPS_PER_FABRIC_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::MaxGroupsPerFabric::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MAX_GROUP_KEYS_PER_FABRIC_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, GroupKeyManagement::Attributes::MaxGroupKeysPerFabric::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
@@ -402,9 +402,8 @@ namespace attribute {
 
 attribute_t *create_identify_time(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ZCL_IDENTIFY_TIME_ATTRIBUTE_ID,
-                                                           ATTRIBUTE_FLAG_WRITABLE,
-                                                           esp_matter_uint16(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyTime::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
@@ -415,7 +414,7 @@ attribute_t *create_identify_time(cluster_t *cluster, uint16_t value, uint16_t m
 
 attribute_t *create_identify_type(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_IDENTIFY_TYPE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Identify::Attributes::IdentifyType::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
@@ -427,7 +426,7 @@ namespace attribute {
 
 attribute_t *create_group_name_support(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_GROUP_NAME_SUPPORT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Groups::Attributes::NameSupport::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bitmap8(value));
 }
 
@@ -439,31 +438,31 @@ namespace attribute {
 
 attribute_t *create_scene_count(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SCENE_COUNT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Scenes::Attributes::SceneCount::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_current_scene(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CURRENT_SCENE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Scenes::Attributes::CurrentScene::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_current_group(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CURRENT_GROUP_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Scenes::Attributes::CurrentGroup::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_scene_valid(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SCENE_VALID_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Scenes::Attributes::SceneValid::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 
 attribute_t *create_scene_name_support(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SCENE_NAME_SUPPORT_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Scenes::Attributes::NameSupport::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bitmap8(value));
 }
 
@@ -475,31 +474,31 @@ namespace attribute {
 
 attribute_t *create_on_off(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ON_OFF_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnOff::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 
 attribute_t *create_global_scene_control(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_GLOBAL_SCENE_CONTROL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::GlobalSceneControl::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 
 attribute_t *create_on_time(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ON_TIME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnTime::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_OFF_WAIT_TIME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OffWaitTime::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_START_UP_ON_OFF_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::StartUpOnOff::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_enum8(value));
 }
 
@@ -511,21 +510,20 @@ namespace attribute {
 
 attribute_t *create_current_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CURRENT_LEVEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::CurrentLevel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_on_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ON_LEVEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnLevel::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ZCL_OPTIONS_ATTRIBUTE_ID,
-                                                           ATTRIBUTE_FLAG_WRITABLE,
-                                                           esp_matter_bitmap8(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, LevelControl::Attributes::Options::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
@@ -536,25 +534,25 @@ attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint
 
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_REMAINING_TIME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::RemainingTime::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_min_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MINIMUM_LEVEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MinLevel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_max_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MAXIMUM_LEVEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MaxLevel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_start_up_current_level(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_START_UP_CURRENT_LEVEL_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::StartUpCurrentLevel::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
 }
 
@@ -566,38 +564,38 @@ namespace attribute {
 
 attribute_t *create_current_hue(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentHue::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
 }
 
 attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentSaturation::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
 }
 
 attribute_t *create_color_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_COLOR_MODE_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorMode::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
 }
 
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_OPTIONS_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorControlOptions::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_ENHANCED_COLOR_MODE_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::EnhancedColorMode::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
 }
 
 attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_COLOR_CONTROL_COLOR_CAPABILITIES_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorCapabilities::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap16(value));
 }
 
 } /* attribute */
@@ -608,14 +606,14 @@ namespace attribute {
 
 attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_FAN_CONTROL_FAN_MODE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::FanMode::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_FAN_CONTROL_FAN_MODE_SEQUENCE_ATTRIBUTE_ID,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::FanModeSequence::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -626,27 +624,27 @@ namespace attribute {
 
 attribute_t *create_local_temperature(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LOCAL_TEMPERATURE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_OCCUPIED_COOLING_SETPOINT_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedCoolingSetpoint::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
 }
 
 attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_OCCUPIED_HEATING_SETPOINT_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedHeatingSetpoint::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ZCL_CONTROL_SEQUENCE_OF_OPERATION_ATTRIBUTE_ID,
-                                                           ATTRIBUTE_FLAG_WRITABLE,
-                                                           esp_matter_enum8(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster,
+                                                           Thermostat::Attributes::ControlSequenceOfOperation::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
@@ -657,9 +655,8 @@ attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t va
 
 attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ZCL_SYSTEM_MODE_ATTRIBUTE_ID,
-                                                           ATTRIBUTE_FLAG_WRITABLE,
-                                                           esp_matter_enum8(value));
+    attribute_t *attribute = esp_matter::attribute::create(cluster, Thermostat::Attributes::SystemMode::Id,
+                                                           ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
         return NULL;
@@ -676,31 +673,31 @@ namespace attribute {
 
 attribute_t *create_lock_state(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LOCK_STATE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LockState::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LOCK_TYPE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LockType::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
 }
 
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_ACTUATOR_ENABLED_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::ActuatorEnabled::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_AUTO_RELOCK_TIME_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::AutoRelockTime::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_bitmap32(value));
 }
 
 attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
 {
-    attribute_t *attribute = esp_matter::attribute::create(cluster, ZCL_OPERATING_MODE_ATTRIBUTE_ID,
+    attribute_t *attribute = esp_matter::attribute::create(cluster, DoorLock::Attributes::OperatingMode::Id,
                                                            ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
     if (!attribute) {
         ESP_LOGE(TAG, "Could not create attribute");
@@ -712,7 +709,7 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t mi
 
 attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_SUPPORTED_OPERATING_MODES_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::SupportedOperatingModes::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
 }
 
@@ -724,13 +721,13 @@ namespace attribute {
 
 attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NODE_LABEL_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::NodeLabel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_reachable(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_REACHABLE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 
@@ -742,7 +739,7 @@ namespace attribute {
 
 attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ZCL_LABEL_LIST_ATTRIBUTE_ID, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, FixedLabel::Attributes::LabelList::Id, ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -754,19 +751,19 @@ namespace attribute {
 
 attribute_t *create_number_of_positions(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_NUMBER_OF_POSITIONS_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Switch::Attributes::NumberOfPositions::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_current_position(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_CURRENT_POSITION_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Switch::Attributes::CurrentPosition::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
 attribute_t *create_multi_press_max(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_MULTI_PRESS_MAX_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Switch::Attributes::MultiPressMax::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
@@ -778,19 +775,19 @@ namespace attribute {
 
 attribute_t *create_temperature_measured_value(cluster_t *cluster, int16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_TEMP_MEASURED_VALUE_ATTRIBUTE_ID, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_int16(value));
+    return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MeasuredValue::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
 }
 
 attribute_t *create_temperature_min_measured_value(cluster_t *cluster, int16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_TEMP_MIN_MEASURED_VALUE_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MinMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
 }
 
 attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t value)
 {
-    return esp_matter::attribute::create(cluster, ZCL_TEMP_MAX_MEASURED_VALUE_ATTRIBUTE_ID,
+    return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MaxMeasuredValue::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
 }
 

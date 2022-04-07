@@ -19,11 +19,8 @@
 #include <esp_matter_core.h>
 
 #include <app-common/zap-generated/att-storage.h>
-#include <app-common/zap-generated/attribute-id.h>
 #include <app-common/zap-generated/callback.h>
 #include <app-common/zap-generated/callbacks/PluginCallbacks.h>
-#include <app-common/zap-generated/cluster-id.h>
-#include <app-common/zap-generated/command-id.h>
 
 static const char *TAG = "esp_matter_cluster";
 
@@ -60,7 +57,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_DESCRIPTOR_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -91,7 +88,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_ACCESS_CONTROL_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, AccessControl::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -120,7 +117,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_BASIC_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Basic::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -160,7 +157,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_BINDING_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Binding::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -193,7 +190,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_OTA_PROVIDER_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateProvider::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -227,7 +224,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_OTA_REQUESTOR_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, OtaSoftwareUpdateRequestor::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -263,7 +260,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_GENERAL_COMMISSIONING_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, GeneralCommissioning::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -304,7 +301,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_NETWORK_COMMISSIONING_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, NetworkCommissioning::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -353,7 +350,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_GENERAL_DIAGNOSTICS_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, GeneralDiagnostics::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -384,7 +381,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_ADMINISTRATOR_COMMISSIONING_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, AdministratorCommissioning::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -421,7 +418,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_OPERATIONAL_CREDENTIALS_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, OperationalCredentials::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -471,7 +468,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_GROUP_KEY_MANAGEMENT_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, GroupKeyManagement::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -513,7 +510,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_ATTRIBUTE_C
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_IDENTIFY_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Identify::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -549,7 +546,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_GROUPS_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Groups::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -591,7 +588,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_SCENES_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Scenes::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -640,7 +637,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_ON_OFF_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, OnOff::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -680,7 +677,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_LEVEL_CONTROL_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, LevelControl::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -730,7 +727,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_COLOR_CONTROL_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, ColorControl::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -766,7 +763,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_FAN_CONTROL_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, FanControl::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -803,7 +800,7 @@ const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_THERMOSTAT_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Thermostat::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -837,12 +834,11 @@ const function_generic_t function_list[] = {
     (function_generic_t)MatterDoorLockClusterServerAttributeChangedCallback,
     (function_generic_t)MatterDoorLockClusterServerPreAttributeChangedCallback,
 };
-const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION |
-                           CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_DOOR_LOCK_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, DoorLock::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -879,7 +875,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_TIME_SYNCHRONIZATION_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, TimeSynchronization::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -906,7 +902,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_BRIDGED_DEVICE_BASIC_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasic::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -932,7 +928,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_FIXED_LABEL_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, FixedLabel::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -962,7 +958,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_SWITCH_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, Switch::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -992,7 +988,7 @@ const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, ZCL_TEMP_MEASUREMENT_CLUSTER_ID, flags);
+    cluster_t *cluster = cluster::create(endpoint, TemperatureMeasurement::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;

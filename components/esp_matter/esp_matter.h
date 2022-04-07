@@ -30,12 +30,10 @@ application.
 #include <esp_matter_feature.h>
 
 #include <app-common/zap-generated/att-storage.h>
-#include <app-common/zap-generated/attribute-id.h>
-#include <app-common/zap-generated/cluster-id.h>
-#include <app-common/zap-generated/command-id.h>
-
 #include <app/server/Dnssd.h>
 #include <platform/CHIPDeviceLayer.h>
+
+using namespace chip::app::Clusters;
 
 namespace esp_matter {
 

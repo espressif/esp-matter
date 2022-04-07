@@ -57,8 +57,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     general_commissioning::create(endpoint, &(config->general_commissioning), CLUSTER_FLAG_SERVER);
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
     general_diagnostics::create(endpoint, &(config->general_diagnostics), CLUSTER_FLAG_SERVER);
-    administrator_commissioning::create(endpoint, &(config->administrator_commissioning),
-                                        CLUSTER_FLAG_SERVER);
+    administrator_commissioning::create(endpoint, &(config->administrator_commissioning), CLUSTER_FLAG_SERVER);
     operational_credentials::create(endpoint, &(config->operational_credentials), CLUSTER_FLAG_SERVER);
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 
