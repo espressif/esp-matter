@@ -601,6 +601,37 @@ static void esp_matter_command_callback_toggle(void *command_obj, const Concrete
     }
 }
 
+static void esp_matter_command_callback_off_with_effect(void *command_obj, const ConcreteCommandPath &command_path,
+                                                        TLVReader &tlv_data)
+{
+    chip::app::Clusters::OnOff::Commands::OffWithEffect::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfOnOffClusterOffWithEffectCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
+static void esp_matter_command_callback_on_with_recall_global_scene(void *command_obj,
+                                                                    const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data)
+{
+    chip::app::Clusters::OnOff::Commands::OnWithRecallGlobalScene::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfOnOffClusterOnWithRecallGlobalSceneCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
+static void esp_matter_command_callback_on_with_timed_off(void *command_obj, const ConcreteCommandPath &command_path,
+                                                          TLVReader &tlv_data)
+{
+    chip::app::Clusters::OnOff::Commands::OnWithTimedOff::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfOnOffClusterOnWithTimedOffCallback((CommandHandler *)command_obj, command_path, command_data);
+    }
+}
+
 static void esp_matter_command_callback_move_to_level(void *command_obj, const ConcreteCommandPath &command_path,
                                                       TLVReader &tlv_data)
 {
@@ -752,6 +783,16 @@ static void esp_matter_command_callback_move_to_hue_and_saturation(void *command
     if (error == CHIP_NO_ERROR) {
         emberAfColorControlClusterMoveToHueAndSaturationCallback((CommandHandler *)command_obj, command_path,
                                                                  command_data);
+    }
+}
+
+static void esp_matter_command_callback_stop_move_step(void *command_obj, const ConcreteCommandPath &command_path,
+                                                       TLVReader &tlv_data)
+{
+    chip::app::Clusters::ColorControl::Commands::StopMoveStep::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterStopMoveStepCallback((CommandHandler *)command_obj, command_path, command_data);
     }
 }
 
@@ -1088,6 +1129,26 @@ esp_matter_command_t *esp_matter_command_create_toggle(esp_matter_cluster_t *clu
                                      esp_matter_command_callback_toggle);
 }
 
+esp_matter_command_t *esp_matter_command_create_off_with_effect(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_OFF_WITH_EFFECT_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+                                     esp_matter_command_callback_off_with_effect);
+}
+
+esp_matter_command_t *esp_matter_command_create_on_with_recall_global_scene(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_ON_WITH_RECALL_GLOBAL_SCENE_COMMAND_ID,
+                                     ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+                                     esp_matter_command_callback_on_with_recall_global_scene);
+}
+
+esp_matter_command_t *esp_matter_command_create_on_with_timed_off(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_ON_WITH_TIMED_OFF_COMMAND_ID,
+                                     ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+                                     esp_matter_command_callback_on_with_timed_off);
+}
+
 esp_matter_command_t *esp_matter_command_create_move_to_level(esp_matter_cluster_t *cluster)
 {
     return esp_matter_command_create(cluster, ZCL_MOVE_TO_LEVEL_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
@@ -1179,6 +1240,12 @@ esp_matter_command_t *esp_matter_command_create_move_to_hue_and_saturation(esp_m
     return esp_matter_command_create(cluster, ZCL_MOVE_TO_HUE_AND_SATURATION_COMMAND_ID,
                                      ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
                                      esp_matter_command_callback_move_to_hue_and_saturation);
+}
+
+esp_matter_command_t *esp_matter_command_create_stop_move_step(esp_matter_cluster_t *cluster)
+{
+    return esp_matter_command_create(cluster, ZCL_STOP_MOVE_STEP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+                                     esp_matter_command_callback_stop_move_step);
 }
 
 esp_matter_command_t *esp_matter_command_create_lock_door(esp_matter_cluster_t *cluster)

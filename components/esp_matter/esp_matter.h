@@ -27,6 +27,7 @@ application.
 #include <esp_matter_core.h>
 #include <esp_matter_endpoint.h>
 #include <esp_matter_event.h>
+#include <esp_matter_feature.h>
 
 #include <app-common/zap-generated/att-storage.h>
 #include <app-common/zap-generated/attribute-id.h>

@@ -70,8 +70,8 @@ extern "C" void app_main()
     esp_matter_endpoint_color_dimmable_light_config_t light_config = ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT();
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-    light_config.color_control.current_hue = DEFAULT_HUE;
-    light_config.color_control.current_saturation = DEFAULT_SATURATION;
+    light_config.color_control.hue_saturation.current_hue = DEFAULT_HUE;
+    light_config.color_control.hue_saturation.current_saturation = DEFAULT_SATURATION;
     esp_matter_endpoint_t *endpoint = esp_matter_endpoint_create_color_dimmable_light(node, &light_config,
                                                                                       ESP_MATTER_ENDPOINT_FLAG_NONE);
     light_endpoint_id = esp_matter_endpoint_get_id(endpoint);

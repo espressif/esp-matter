@@ -412,6 +412,30 @@ esp_matter_attribute_t *esp_matter_attribute_create_on_off(esp_matter_cluster_t 
                                        esp_matter_bool(value));
 }
 
+esp_matter_attribute_t *esp_matter_attribute_create_global_scene_control(esp_matter_cluster_t *cluster, bool value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_GLOBAL_SCENE_CONTROL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_bool(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_on_time(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_ON_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_off_wait_time(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_OFF_WAIT_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_start_up_on_off(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_START_UP_ON_OFF_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE,
+                                       esp_matter_enum8(value));
+}
+
 esp_matter_attribute_t *esp_matter_attribute_create_current_level(esp_matter_cluster_t *cluster, uint8_t value)
 {
     return esp_matter_attribute_create(cluster, ZCL_CURRENT_LEVEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
@@ -436,6 +460,31 @@ esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t
     }
     esp_matter_attribute_add_bounds(attribute, esp_matter_bitmap8(min), esp_matter_bitmap8(max));
     return attribute;
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_remaining_time(esp_matter_cluster_t *cluster, uint16_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_REMAINING_TIME_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint16(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_min_level(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_MIN_LEVEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_max_level(esp_matter_cluster_t *cluster, uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_MAX_LEVEL_ATTRIBUTE_ID, ESP_MATTER_ATTRIBUTE_FLAG_NONE,
+                                       esp_matter_uint8(value));
+}
+
+esp_matter_attribute_t *esp_matter_attribute_create_start_up_current_level(esp_matter_cluster_t *cluster,
+                                                                           uint8_t value)
+{
+    return esp_matter_attribute_create(cluster, ZCL_START_UP_CURRENT_LEVEL_ATTRIBUTE_ID,
+                                       ESP_MATTER_ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
 }
 
 esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value)

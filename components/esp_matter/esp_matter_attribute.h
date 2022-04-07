@@ -139,12 +139,21 @@ esp_matter_attribute_t *esp_matter_attribute_create_scene_name_support(esp_matte
 
 /** cluster: on off */
 esp_matter_attribute_t *esp_matter_attribute_create_on_off(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_global_scene_control(esp_matter_cluster_t *cluster, bool value);
+esp_matter_attribute_t *esp_matter_attribute_create_on_time(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_off_wait_time(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_start_up_on_off(esp_matter_cluster_t *cluster, uint8_t value);
 
 /** cluster: level control */
 esp_matter_attribute_t *esp_matter_attribute_create_current_level(esp_matter_cluster_t *cluster, uint8_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_on_level(esp_matter_cluster_t *cluster, uint8_t value);
 esp_matter_attribute_t *esp_matter_attribute_create_options(esp_matter_cluster_t *cluster, uint8_t value, uint8_t min,
                                                             uint8_t max);
+esp_matter_attribute_t *esp_matter_attribute_create_remaining_time(esp_matter_cluster_t *cluster, uint16_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_min_level(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_max_level(esp_matter_cluster_t *cluster, uint8_t value);
+esp_matter_attribute_t *esp_matter_attribute_create_start_up_current_level(esp_matter_cluster_t *cluster,
+                                                                           uint8_t value);
 
 /** cluster: color control */
 esp_matter_attribute_t *esp_matter_attribute_create_current_hue(esp_matter_cluster_t *cluster, uint8_t value);
