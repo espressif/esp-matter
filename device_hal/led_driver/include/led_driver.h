@@ -13,6 +13,8 @@
 
 #pragma once
 #include <esp_err.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,9 +22,21 @@ extern "C" {
 
 typedef struct {
     int gpio;
-} button_driver_config_t;
+    int channel;
+} led_driver_config_t;
 
-esp_err_t button_driver_init(button_driver_config_t *config);
+esp_err_t led_driver_init(led_driver_config_t *config);
+esp_err_t led_driver_set_power(bool power);
+esp_err_t led_driver_set_brightness(uint8_t brightness);
+esp_err_t led_driver_set_hue(uint16_t hue);
+esp_err_t led_driver_set_saturation(uint8_t saturation);
+esp_err_t led_driver_set_temperature(uint32_t temperature);
+
+bool led_driver_get_power(void);
+uint8_t led_driver_get_brightness(void);
+uint16_t led_driver_get_hue(void);
+uint8_t led_driver_get_saturation(void);
+uint32_t led_driver_get_temperature(void);
 
 #ifdef __cplusplus
 }

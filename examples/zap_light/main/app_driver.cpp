@@ -12,7 +12,7 @@
 
 #include <device.h>
 #include <esp_matter.h>
-#include <light_driver.h>
+#include <led_driver.h>
 
 #include <app_priv.h>
 
@@ -24,25 +24,39 @@ extern int light_endpoint_id;
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t *val)
 {
-    return light_driver_set_power(val->val.b);
+    return led_driver_set_power(val->val.b);
 }
 
 static esp_err_t app_driver_light_set_brightness(esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
-    return light_driver_set_brightness(value);
+    return led_driver_set_brightness(value);
 }
 
 static esp_err_t app_driver_light_set_hue(esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
-    return light_driver_set_hue(value);
+    return led_driver_set_hue(value);
 }
 
 static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t *val)
 {
     int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
-    return light_driver_set_saturation(value);
+    return led_driver_set_saturation(value);
+}
+
+static void app_driver_button_toggle_cb(void *arg)
+{
+    ESP_LOGI(TAG, "Toggle button pressed");
+    int endpoint_id = light_endpoint_id;
+    int cluster_id = OnOff::Id;
+    int attribute_id = OnOff::Attributes::OnOff::Id;
+
+    uint8_t value;
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    esp_matter_attr_val_t val = esp_matter_bool(value);
+    val.val.b = !val.val.b;
+    attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
 esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
@@ -114,7 +128,16 @@ esp_err_t app_driver_attribute_set_defaults()
 esp_err_t app_driver_init()
 {
     ESP_LOGI(TAG, "Initialising driver");
-    device_init();
+
+    /* Initialize button */
+    button_config_t button_config = button_driver_get_config();
+    button_handle_t handle = iot_button_create(&button_config);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+
+    /* Initialize led */
+    led_driver_config_t led_config = led_driver_get_config();
+    led_driver_init(&led_config);
+
     /* Attribute defaults are set after esp_matter::start() from app_main() */
     return ESP_OK;
 }

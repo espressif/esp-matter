@@ -12,36 +12,32 @@
 // limitations under the License
 
 #include <esp_log.h>
+#include <iot_button.h>
+#include <led_driver.h>
 
-#include <button_driver.h>
-#include <light_driver.h>
-
-#define DEVICE_VERSION_1_0
-
-#ifdef DEVICE_VERSION_1_0
 #define LED_GPIO_PIN 32 /* PIN_NUM_BCKL for M5Stack TFT */
 #define LED_CHANNEL 7 /* LEDC_CHANNEL_7 */
-#endif
+#define BUTTON_GPIO_PIN 39 /* Left button on M5Stack */
+
 static const char *TAG = "device";
 
-static esp_err_t device_light_init()
+led_driver_config_t led_driver_get_config()
 {
-    light_driver_config_t config = {
-        .gpio = 32,
-        .channel = 7,
+    led_driver_config_t config = {
+        .gpio = LED_GPIO_PIN,
+        .channel = LED_CHANNEL,
     };
-    return light_driver_init(&config);
+    return config;
 }
 
-static esp_err_t device_button_init()
+button_config_t button_driver_get_config()
 {
-    return button_driver_init(NULL);
-}
-
-esp_err_t device_init()
-{
-    ESP_LOGI(TAG, "Initializing board");
-    device_light_init();
-    device_button_init();
-    return ESP_OK;
+    button_config_t config = {
+        .type = BUTTON_TYPE_GPIO,
+        .gpio_button_config = {
+            .gpio_num = BUTTON_GPIO_PIN,
+            .active_level = 0,
+        }
+    };
+    return config;
 }

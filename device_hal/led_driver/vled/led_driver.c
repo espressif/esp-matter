@@ -19,13 +19,13 @@
 #include <tftspi.h>
 
 #include <color_format.h>
-#include <light_driver.h>
+#include <led_driver.h>
 
 #define TFT_SPI_CLOCK_INIT_HZ 8000000
 #define LEDC_PWM_HZ 1000
 #define BRIGHTNESS_MAX 255
 
-static const char *TAG = "light_driver_vled";
+static const char *TAG = "led_driver_vled";
 static bool current_power = false;
 static uint8_t current_brightness = 0;
 static HS_color_t current_HS = {0, 0};
@@ -35,7 +35,7 @@ static uint16_t DisplayHeight;
 static uint16_t DisplayWidth;
 static int led_driver_channel = -1;
 
-static void SetupBrightnessControl(light_driver_config_t *config)
+static void SetupBrightnessControl(led_driver_config_t *config)
 {
     ledc_timer_config_t ledc_timer;
     memset(&ledc_timer, 0, sizeof(ledc_timer));
@@ -124,7 +124,7 @@ static esp_err_t InitDisplay()
     return ESP_OK;
 }
 
-esp_err_t light_driver_init(light_driver_config_t *config)
+esp_err_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing led driver");
     esp_err_t err = ESP_OK;
@@ -137,19 +137,19 @@ esp_err_t light_driver_init(light_driver_config_t *config)
     return err;
 }
 
-esp_err_t light_driver_set_power(bool power)
+esp_err_t led_driver_set_power(bool power)
 {
     current_power = power;
-    return light_driver_set_brightness(current_brightness);
+    return led_driver_set_brightness(current_brightness);
 }
-esp_err_t light_driver_set_RGB()
+esp_err_t led_driver_set_RGB()
 {
     TFT_fillWindow(TFT_BLACK);
     TFT_fillCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){mRGB.red, mRGB.green, mRGB.blue});
     TFT_drawCircle(DisplayWidth / 2, DisplayHeight / 2, DisplayWidth / 4, (color_t){255, 255, 255});
     return ESP_OK;
 }
-esp_err_t light_driver_set_brightness(uint8_t brightness)
+esp_err_t led_driver_set_brightness(uint8_t brightness)
 {
     if (brightness != 0) {
         current_brightness = brightness;
@@ -158,55 +158,55 @@ esp_err_t light_driver_set_brightness(uint8_t brightness)
         brightness = 0;
     }
     hsv_to_rgb(current_HS, brightness, &mRGB);
-    return light_driver_set_RGB();
+    return led_driver_set_RGB();
 }
 
-esp_err_t light_driver_set_hue(uint16_t hue)
+esp_err_t led_driver_set_hue(uint16_t hue)
 {
     uint8_t brightness = current_power ? current_brightness : 0;
     current_HS.hue = hue;
     hsv_to_rgb(current_HS, brightness, &mRGB);
-    return light_driver_set_RGB();
+    return led_driver_set_RGB();
 }
 
-esp_err_t light_driver_set_saturation(uint8_t saturation)
+esp_err_t led_driver_set_saturation(uint8_t saturation)
 {
     uint8_t brightness = current_power ? current_brightness : 0;
     current_HS.saturation = saturation;
     hsv_to_rgb(current_HS, brightness, &mRGB);
-    return light_driver_set_RGB();
+    return led_driver_set_RGB();
 }
 
-esp_err_t light_driver_set_temperature(uint32_t temperature)
+esp_err_t led_driver_set_temperature(uint32_t temperature)
 {
     uint8_t brightness = current_power ? current_brightness : 0;
     current_temperature = temperature;
     temp_to_hs(current_temperature, &current_HS);
     hsv_to_rgb(current_HS, brightness, &mRGB);
-    return light_driver_set_RGB();
+    return led_driver_set_RGB();
 }
 
-bool light_driver_get_power()
+bool led_driver_get_power()
 {
     return current_power;
 }
 
-uint8_t light_driver_get_brightness()
+uint8_t led_driver_get_brightness()
 {
     return current_brightness;
 }
 
-uint16_t light_driver_get_hue()
+uint16_t led_driver_get_hue()
 {
     return current_HS.hue;
 }
 
-uint8_t light_driver_get_saturation()
+uint8_t led_driver_get_saturation()
 {
     return current_HS.saturation;
 }
 
-uint32_t light_driver_get_temperature()
+uint32_t led_driver_get_temperature()
 {
     return current_temperature;
 }

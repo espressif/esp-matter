@@ -13,7 +13,7 @@
 #include <device.h>
 #include <esp_matter.h>
 #include <esp_matter_console.h>
-#include <light_driver.h>
+#include <led_driver.h>
 
 #include <app_priv.h>
 
@@ -88,6 +88,18 @@ void app_driver_client_command_callback(client::peer_device_t *peer_device, int 
     }
 }
 
+static void app_driver_button_toggle_cb(void *arg)
+{
+    ESP_LOGI(TAG, "Toggle button pressed");
+    int endpoint_id = switch_endpoint_id;
+    int cluster_id = OnOff::Id;
+    int command_id = OnOff::Commands::Off::Id;
+
+    g_cluster_id = cluster_id;
+    g_command_id = command_id;
+    client::cluster_update(endpoint_id, cluster_id);
+}
+
 esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
     /* Nothing to do here */
@@ -123,7 +135,12 @@ static esp_err_t app_driver_attribute_set_defaults()
 esp_err_t app_driver_init()
 {
     ESP_LOGI(TAG, "Initialising driver");
-    // device_init();
+
+    /* Initialize button */
+    button_config_t button_config = button_driver_get_config();
+    button_handle_t handle = iot_button_create(&button_config);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+
     app_driver_attribute_set_defaults();
     app_driver_register_commands();
     client::set_command_callback(app_driver_client_command_callback, NULL);

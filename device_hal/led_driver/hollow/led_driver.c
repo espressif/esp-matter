@@ -13,15 +13,15 @@
 
 #include <color_format.h>
 #include <esp_log.h>
-#include <light_driver.h>
+#include <led_driver.h>
 
-static const char *TAG = "light_driver_hollow";
+static const char *TAG = "led_driver_hollow";
 static bool current_power = false;
 static uint8_t current_brightness = 0;
 static HS_color_t current_HS = {0, 0};
 static uint32_t current_temperature = 6600;
 
-esp_err_t light_driver_init(light_driver_config_t *config)
+esp_err_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
     /* Initialize the driver here */
@@ -29,7 +29,7 @@ esp_err_t light_driver_init(light_driver_config_t *config)
     return ESP_OK;
 }
 
-esp_err_t light_driver_set_power(bool power)
+esp_err_t led_driver_set_power(bool power)
 {
     ESP_LOGI(TAG, "Setting power to: %d", power);
     /* Set the power state here */
@@ -37,7 +37,7 @@ esp_err_t light_driver_set_power(bool power)
     return ESP_OK;
 }
 
-esp_err_t light_driver_set_brightness(uint8_t brightness)
+esp_err_t led_driver_set_brightness(uint8_t brightness)
 {
     ESP_LOGI(TAG, "Setting brightness to: %d", brightness);
     /* Set the brightness level here */
@@ -45,7 +45,7 @@ esp_err_t light_driver_set_brightness(uint8_t brightness)
     return ESP_OK;
 }
 
-esp_err_t light_driver_set_hue(uint16_t hue)
+esp_err_t led_driver_set_hue(uint16_t hue)
 {
     ESP_LOGI(TAG, "Setting hue to: %d", hue);
     /* Set the color hue here */
@@ -53,7 +53,7 @@ esp_err_t light_driver_set_hue(uint16_t hue)
     return ESP_OK;
 }
 
-esp_err_t light_driver_set_saturation(uint8_t saturation)
+esp_err_t led_driver_set_saturation(uint8_t saturation)
 {
     ESP_LOGI(TAG, "Setting saturation to: %d", saturation);
     /* Set the color saturation here */
@@ -61,7 +61,7 @@ esp_err_t light_driver_set_saturation(uint8_t saturation)
     return ESP_OK;
 }
 
-esp_err_t light_driver_set_temperature(uint32_t temperature)
+esp_err_t led_driver_set_temperature(uint32_t temperature)
 {
     ESP_LOGI(TAG, "Setting temperature to: %d", temperature);
     /* Set the color temp here*/
@@ -69,27 +69,27 @@ esp_err_t light_driver_set_temperature(uint32_t temperature)
     return ESP_OK;
 }
 
-bool light_driver_get_power()
+bool led_driver_get_power()
 {
     return current_power;
 }
 
-uint8_t light_driver_get_brightness()
+uint8_t led_driver_get_brightness()
 {
     return current_brightness;
 }
 
-uint16_t light_driver_get_hue()
+uint16_t led_driver_get_hue()
 {
     return current_HS.hue;
 }
 
-uint8_t light_driver_get_saturation()
+uint8_t led_driver_get_saturation()
 {
     return current_HS.saturation;
 }
 
-uint32_t light_driver_get_temperature()
+uint32_t led_driver_get_temperature()
 {
     return current_temperature;
 }
