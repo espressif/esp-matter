@@ -176,6 +176,10 @@ typedef enum callback_type {
     PRE_UPDATE,
     /** Callback after updating the value in the database */
     POST_UPDATE,
+    /** Callback for reading the attribute value. This is used when the `ATTRIBUTE_FLAG_OVERRIDE` is set. */
+    READ,
+    /** Callback for writing the attribute value. This is used when the `ATTRIBUTE_FLAG_OVERRIDE` is set. */
+    WRITE,
 } callback_type_t;
 
 /** Callback for attribute update

@@ -85,6 +85,9 @@ typedef enum attribute_flags {
     ATTRIBUTE_FLAG_SINGLETON = ATTRIBUTE_MASK_SINGLETON, /* 0x20 */
     ATTRIBUTE_FLAG_CLIENT = ATTRIBUTE_MASK_CLIENT, /* 0x40 */
     ATTRIBUTE_FLAG_NULLABLE = ATTRIBUTE_MASK_NULLABLE, /* 0x80 */
+    /** The attribute read and write are overridden. The attribute value will be fetched from and will be updated using
+    the override callback. The value of this attribute is not maintained internally. */
+    ATTRIBUTE_FLAG_OVERRIDE = ATTRIBUTE_FLAG_NULLABLE << 1, /* 0x100 */
 } attribute_flags_t;
 
 /** Command flags */
