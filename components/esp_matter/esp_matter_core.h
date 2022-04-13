@@ -498,6 +498,43 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
  */
 esp_matter_attr_bounds_t *get_bounds(attribute_t *attribute);
 
+/** Get attribute flags
+ *
+ * Get the attribute flags for the attribute.
+ *
+ * @param[in] attribute Attribute handle.
+ *
+ * @return Attribute flags.
+ */
+uint16_t get_flags(attribute_t *attribute);
+
+/** Set attribute override
+ *
+ * Set the override callback for the attribute. For attribute read and write calls, instead of doing that from the
+ * common database, this callback will be called.
+ *
+ * This can be used if the application or some component wants to maintain the attribute's value in the application or
+ * in that component respectively. It can also be used if the attribute value needs to be dynamically fetched and is
+ * difficult to maintain in the database.
+ *
+ * @param[in] attribute Attribute handle.
+ * @param[in] callback Override callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_override_callback(attribute_t *attribute, callback_t callback);
+
+/** Get attribute override
+ *
+ * Get the override callback for the attribute.
+ *
+ * @param[in] attribute Attribute handle.
+ *
+ * @return Attribute override callback.
+ */
+callback_t get_override_callback(attribute_t *attribute);
+
 } /* attribute */
 
 namespace command {
@@ -599,7 +636,7 @@ callback_t get_callback(command_t *command);
  *
  * @return Command flags.
  */
-int get_flags(command_t *command);
+uint16_t get_flags(command_t *command);
 
 } /* command */
 

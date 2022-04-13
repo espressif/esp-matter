@@ -57,24 +57,25 @@ static const char *TAG = "esp_matter_core";
 namespace esp_matter {
 typedef struct _attribute {
     int attribute_id;
-    uint8_t flags;
+    uint16_t flags;
     esp_matter_attr_val_t val;
     esp_matter_attr_bounds_t *bounds;
     EmberAfDefaultOrMinMaxAttributeValue default_value;
     uint16_t default_value_size;
+    attribute::callback_t override_callback;
     struct _attribute *next;
 } _attribute_t;
 
 typedef struct _command {
     int command_id;
-    uint8_t flags;
+    uint16_t flags;
     command::callback_t callback;
     struct _command *next;
 } _command_t;
 
 typedef struct _cluster {
     int cluster_id;
-    uint8_t flags;
+    uint16_t flags;
     const cluster::function_generic_t *function_list;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
     cluster::plugin_client_init_callback_t plugin_client_init_callback;
@@ -86,7 +87,7 @@ typedef struct _cluster {
 typedef struct _endpoint {
     int endpoint_id;
     int device_type_id;
-    uint8_t flags;
+    uint16_t flags;
     _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
     DataVersion *data_versions_ptr;
@@ -880,6 +881,38 @@ esp_matter_attr_bounds_t *get_bounds(attribute_t *attribute)
     return current_attribute->bounds;
 }
 
+uint16_t get_flags(attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return 0;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    return current_attribute->flags;
+}
+
+esp_err_t set_override_callback(attribute_t *attribute, callback_t callback)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    current_attribute->override_callback = callback;
+    current_attribute->flags |= ATTRIBUTE_FLAG_OVERRIDE;
+    return ESP_OK;
+}
+
+callback_t get_override_callback(attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return NULL;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+    return current_attribute->override_callback;
+}
+
 } /* attribute */
 
 namespace command {
@@ -990,7 +1023,7 @@ callback_t get_callback(command_t *command)
     return current_command->callback;
 }
 
-int get_flags(command_t *command)
+uint16_t get_flags(command_t *command)
 {
     if (!command) {
         ESP_LOGE(TAG, "Command cannot be NULL");

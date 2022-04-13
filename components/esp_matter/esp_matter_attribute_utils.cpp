@@ -405,11 +405,24 @@ esp_err_t set_callback(callback_t callback, void *priv_data)
     return ESP_OK;
 }
 
-esp_err_t send_callback(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
-                        esp_matter_attr_val_t *val)
+static esp_err_t execute_callback(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
+                                  esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
-        attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, attribute_callback_priv_data);
+        return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, attribute_callback_priv_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t execute_override_callback(attribute_t *attribute, callback_type_t type, int endpoint_id,
+                                           int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+{
+    callback_t override_callback = attribute::get_override_callback(attribute);
+    if (override_callback) {
+        return override_callback(type, endpoint_id, cluster_id, attribute_id, val, NULL);
+    } else {
+        ESP_LOGI(TAG, "Attribute override callback not set, calling the common callback");
+        return execute_callback(type, endpoint_id, cluster_id, attribute_id, val);
     }
     return ESP_OK;
 }
@@ -922,7 +935,7 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
 
     /* Callback to application */
-    esp_err_t err = send_callback(attribute::PRE_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
+    esp_err_t err = execute_callback(attribute::PRE_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
     if (err != ESP_OK) {
         return Status::Failure;
     }
@@ -939,7 +952,7 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
     attribute::get_attr_val_from_data(&val, type, size, value);
 
     /* Callback to application */
-    send_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
+    execute_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
 }
 
 EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, ClusterId cluster_id,
@@ -956,7 +969,17 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     cluster_t *cluster = cluster::get(endpoint, cluster_id);
     attribute_t *attribute = attribute::get(cluster, attribute_id);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_val(attribute, &val);
+
+    int flags = attribute::get_flags(attribute);
+    if (flags & ATTRIBUTE_FLAG_OVERRIDE) {
+        esp_err_t err = execute_override_callback(attribute, attribute::READ, endpoint_id, cluster_id, attribute_id,
+                                                  &val);
+        if (err != ESP_OK) {
+            return EMBER_ZCL_STATUS_FAILURE;
+        }
+    } else {
+        attribute::get_val(attribute, &val);
+    }
 
     /* Print */
     attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
@@ -993,6 +1016,14 @@ EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, Clus
     The value in esp-matter data model is updated only when attribute::set_val() is called */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer);
+
+    int flags = attribute::get_flags(attribute);
+    if (flags & ATTRIBUTE_FLAG_OVERRIDE) {
+        esp_err_t err = execute_override_callback(attribute, attribute::WRITE, endpoint_id, cluster_id, attribute_id,
+                                                  &val);
+        EmberAfStatus status = (err == ESP_OK) ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;
+        return status;
+    }
 
     /* Update val */
     attribute::set_val(attribute, &val);
