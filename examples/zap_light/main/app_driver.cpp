@@ -16,6 +16,8 @@
 
 #include <app_priv.h>
 
+using namespace esp_matter;
+
 static const char *TAG = "app_driver";
 extern int light_endpoint_id;
 
@@ -69,7 +71,7 @@ esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attri
 esp_err_t app_driver_attribute_set_defaults()
 {
     /* When using static endpoints, i.e. using the data model from zap-generated, this needs to be done
-    after esp_matter_start() */
+    after esp_matter::start() */
     /* Get the default value (current value) from matter submodule and update the app_driver */
     esp_err_t err = ESP_OK;
     uint8_t value;
@@ -81,28 +83,28 @@ esp_err_t app_driver_attribute_set_defaults()
     endpoint_id = light_endpoint_id;
     cluster_id = ZCL_ON_OFF_CLUSTER_ID;
     attribute_id = ZCL_ON_OFF_ATTRIBUTE_ID;
-    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
     val = esp_matter_bool(value);
     err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 
     endpoint_id = light_endpoint_id;
     cluster_id = ZCL_LEVEL_CONTROL_CLUSTER_ID;
     attribute_id = ZCL_CURRENT_LEVEL_ATTRIBUTE_ID;
-    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
     val = esp_matter_uint8(value);
     err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 
     endpoint_id = light_endpoint_id;
     cluster_id = ZCL_COLOR_CONTROL_CLUSTER_ID;
     attribute_id = ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID;
-    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
     val = esp_matter_uint8(value);
     err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 
     endpoint_id = light_endpoint_id;
     cluster_id = ZCL_COLOR_CONTROL_CLUSTER_ID;
     attribute_id = ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID;
-    esp_matter_attribute_get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
     val = esp_matter_uint8(value);
     err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 
@@ -113,6 +115,6 @@ esp_err_t app_driver_init()
 {
     ESP_LOGI(TAG, "Initialising driver");
     device_init();
-    /* Attribute defaults are set after esp_matter_start() from app_main() */
+    /* Attribute defaults are set after esp_matter::start() from app_main() */
     return ESP_OK;
 }

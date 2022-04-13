@@ -22,141 +22,156 @@ static const char *TAG = "esp_matter_event";
 using chip::DeviceLayer::DeviceControlServer;
 using chip::DeviceLayer::SwitchDeviceControlDelegate;
 
-/** cluster: door_lock */
-esp_err_t esp_matter_door_lock_send_event_door_lock_alarm()
+namespace esp_matter {
+namespace cluster {
+
+namespace door_lock {
+namespace event {
+
+esp_err_t send_door_lock_alarm()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_door_lock_send_event_door_state_change()
+esp_err_t send_door_state_change()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_door_lock_send_event_lock_operation()
+esp_err_t send_lock_operation()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_door_lock_send_event_lock_operation_error()
+esp_err_t send_lock_operation_error()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_door_lock_send_event_lock_user_change()
+esp_err_t send_lock_user_change()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-/** cluster: pump_configuration_and_control */
-esp_err_t esp_matter_pump_configuration_and_control_send_event_supply_voltage_low()
+} /* event */
+} /* door_lock */
+
+namespace pump_configuration_and_control {
+namespace event {
+
+esp_err_t send_supply_voltage_low()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_supply_voltage_high()
+esp_err_t send_supply_voltage_high()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_power_missing_phase()
+esp_err_t send_power_missing_phase()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_system_pressure_low()
+esp_err_t send_system_pressure_low()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_system_pressure_high()
+esp_err_t send_system_pressure_high()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_dry_running()
+esp_err_t send_dry_running()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_motor_temperature_high()
+esp_err_t send_motor_temperature_high()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_pump_motor_fatal_failure()
+esp_err_t send_pump_motor_fatal_failure()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_electronic_temperature_high()
+esp_err_t send_electronic_temperature_high()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_pump_blocked()
+esp_err_t send_pump_blocked()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_sensor_failure()
+esp_err_t send_sensor_failure()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_electronic_non_fatal_failure()
+esp_err_t send_electronic_non_fatal_failure()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_electronic_fatal_failure()
+esp_err_t send_electronic_fatal_failure()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_general_fault()
+esp_err_t send_general_fault()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_leakage()
+esp_err_t send_leakage()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_air_detection()
+esp_err_t send_air_detection()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-esp_err_t esp_matter_pump_configuration_and_control_send_event_turbine_operation()
+esp_err_t send_turbine_operation()
 {
     /* Not implemented */
     return ESP_OK;
 }
 
-/** cluster: switch */
+} /* event */
+} /* pump_configuration_and_control */
+
+namespace switch_cluster {
+namespace event {
+
 static SwitchDeviceControlDelegate *get_switch_delegate()
 {
     SwitchDeviceControlDelegate *delegate = DeviceControlServer::DeviceControlSvr().GetSwitchDelegate();
@@ -166,7 +181,7 @@ static SwitchDeviceControlDelegate *get_switch_delegate()
     return delegate;
 }
 
-esp_err_t esp_matter_switch_send_event_switch_latched(uint8_t new_position)
+esp_err_t send_switch_latched(uint8_t new_position)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -176,7 +191,7 @@ esp_err_t esp_matter_switch_send_event_switch_latched(uint8_t new_position)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_initial_press(uint8_t new_position)
+esp_err_t send_initial_press(uint8_t new_position)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -186,7 +201,7 @@ esp_err_t esp_matter_switch_send_event_initial_press(uint8_t new_position)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_long_press(uint8_t new_position)
+esp_err_t send_long_press(uint8_t new_position)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -196,7 +211,7 @@ esp_err_t esp_matter_switch_send_event_long_press(uint8_t new_position)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_short_release(uint8_t previous_position)
+esp_err_t send_short_release(uint8_t previous_position)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -206,7 +221,7 @@ esp_err_t esp_matter_switch_send_event_short_release(uint8_t previous_position)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_long_release(uint8_t previous_position)
+esp_err_t send_long_release(uint8_t previous_position)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -216,7 +231,7 @@ esp_err_t esp_matter_switch_send_event_long_release(uint8_t previous_position)
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_multi_press_ongoing(uint8_t new_position, uint8_t count)
+esp_err_t send_multi_press_ongoing(uint8_t new_position, uint8_t count)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -226,7 +241,7 @@ esp_err_t esp_matter_switch_send_event_multi_press_ongoing(uint8_t new_position,
     return ESP_OK;
 }
 
-esp_err_t esp_matter_switch_send_event_multi_press_complete(uint8_t new_position, uint8_t count)
+esp_err_t send_multi_press_complete(uint8_t new_position, uint8_t count)
 {
     SwitchDeviceControlDelegate *delegate = get_switch_delegate();
     if (!delegate) {
@@ -235,3 +250,9 @@ esp_err_t esp_matter_switch_send_event_multi_press_complete(uint8_t new_position
     delegate->OnMultiPressComplete(new_position, count);
     return ESP_OK;
 }
+
+} /* event */
+} /* switch_cluster */
+
+} /* cluster */
+} /* esp_matter */

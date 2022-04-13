@@ -20,17 +20,20 @@
 
 static const char *TAG = "zigbee_bridge";
 
+using namespace esp_matter;
+using namespace esp_matter::cluster;
+
 static esp_err_t init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
 {
     if (!dev) {
         ESP_LOGE(TAG, "Invalid bridge device to be initialized");
         return ESP_ERR_INVALID_ARG;
     }
-    esp_matter_cluster_on_off_config_t on_off_config = CLUSTER_CONFIG_ON_OFF_DEFAULT();
-    esp_matter_cluster_create_on_off(dev->endpoint, &on_off_config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
-    if (esp_matter_endpoint_enable(dev->endpoint) != ESP_OK) {
+    on_off::config_t config;
+    on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    if (endpoint::enable(dev->endpoint) != ESP_OK) {
         ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
-        esp_matter_endpoint_delete(dev->node, dev->endpoint);
+        endpoint::destroy(dev->node, dev->endpoint);
         return ESP_FAIL;
     }
     return ESP_OK;
@@ -46,7 +49,7 @@ void zigbee_bridge_match_bridged_onoff_light_cb(zb_bufid_t bufid)
 
     if ((p_resp->status == ZB_ZDP_STATUS_SUCCESS) && (p_resp->match_len > 0)) {
         p_match_ep = (zb_uint8_t *)(p_resp + 1);
-        esp_matter_node_t *node = esp_matter_node_get();
+        node_t *node = node::get();
         ESP_GOTO_ON_FALSE(node, ESP_ERR_INVALID_STATE, exit, TAG, "Could not find esp_matter node");
         if (app_bridge_get_zigbee_device_by_zigbee_shortaddr(p_ind->src_addr)) {
             ESP_LOGI(TAG, "Bridged node for 0x%04x zigbee device on endpoint %d has been created", p_ind->src_addr,

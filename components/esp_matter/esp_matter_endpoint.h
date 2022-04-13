@@ -17,223 +17,145 @@
 #include <esp_matter_cluster.h>
 #include <esp_matter_core.h>
 
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
-#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100  
-#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101 
-#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
-#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
-#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
-#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
-#define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
-#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
-#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
+namespace esp_matter {
+using namespace cluster;
 
-#define ENDPOINT_CONFIG_ROOT_NODE_DEFAULT()                                                                           \
-    {                                                                                                                 \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                                      \
-        .ota_provider = CLUSTER_CONFIG_OTA_PROVIDER_DEFAULT(),                                                        \
-        .ota_requestor = CLUSTER_CONFIG_OTA_REQUESTOR_DEFAULT(),                                                      \
-        .general_commissioning = CLUSTER_CONFIG_GENERAL_COMMISSIONING_DEFAULT(),                                      \
-        .network_commissioning = CLUSTER_CONFIG_NETWORK_COMMISSIONING_DEFAULT(),                                      \
-        .general_diagnostics = CLUSTER_CONFIG_GENERAL_DIAGNOSTICS_DEFAULT(),                                          \
-        .administrator_commissioning = CLUSTER_CONFIG_ADMINISTRATOR_COMMISSIONING_DEFAULT(),                          \
-        .operational_credentials = CLUSTER_CONFIG_OPERATIONAL_CREDENTIALS_DEFAULT(),                                  \
-    }
+namespace endpoint {
+namespace root_node {
+typedef struct config {
+    basic::config_t basic;
+    ota_provider::config_t ota_provider;
+    ota_requestor::config_t ota_requestor;
+    general_commissioning::config_t general_commissioning;
+    network_commissioning::config_t network_commissioning;
+    general_diagnostics::config_t general_diagnostics;
+    administrator_commissioning::config_t administrator_commissioning;
+    operational_credentials::config_t operational_credentials;
+} config_t;
 
-#define ENDPOINT_CONFIG_ON_OFF_LIGHT_DEFAULT()                                                            \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
-        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-    }
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* root_node */
 
-#define ENDPOINT_CONFIG_DIMMABLE_LIGHT_DEFAULT()                                                          \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
-        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
-        .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-    }
+namespace on_off_light {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    basic::config_t basic;
+} config_t;
 
-#define ENDPOINT_CONFIG_COLOR_DIMMABLE_LIGHT_DEFAULT()                                                    \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
-        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
-        .level_control = CLUSTER_CONFIG_LEVEL_CONTROL_DEFAULT(),                                          \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-        .color_control = CLUSTER_CONFIG_COLOR_CONTROL_DEFAULT(),                                          \
-    }
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* on_off_light */
 
-#define ENDPOINT_CONFIG_ON_OFF_SWITCH_DEFAULT()                                                           \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
-        .on_off = CLUSTER_CONFIG_ON_OFF_DEFAULT(),                                                        \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-        .binding = CLUSTER_CONFIG_BINDING_DEFAULT(),                                                      \
-    }
+namespace dimmable_light {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    basic::config_t basic;
+} config_t;
 
-#define ENDPOINT_CONFIG_FAN_DEFAULT()                                                                     \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .fan_control = CLUSTER_CONFIG_FAN_CONTROL_DEFAULT(),                                              \
-    }
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* dimmable_light */
 
-#define ENDPOINT_CONFIG_THERMOSTAT_DEFAULT()                                                              \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .scenes = CLUSTER_CONFIG_SCENES_DEFAULT(),                                                        \
-        .basic = CLUSTER_CONFIG_BASIC_DEFAULT(),                                                          \
-        .thermostat = CLUSTER_CONFIG_THERMOSTAT_DEFAULT(),                                                \
-    }
+namespace color_dimmable_light {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    basic::config_t basic;
+    color_control::config_t color_control;
+} config_t;
 
-#define ENDPOINT_CONFIG_DOOR_LOCK_DEFAULT()                                                               \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .door_lock = CLUSTER_CONFIG_DOOR_LOCK_DEFAULT(),                                                  \
-        .time_synchronization = CLUSTER_CONFIG_TIME_SYNCHRONIZATION_DEFAULT(),                                                  \
-    }
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* color_dimmable_light */
 
-#define ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT()                                                            \
-    {                                                                                                     \
-        .bridged_device_basic = CLUSTER_CONFIG_BRIDGED_DEVICE_BASIC_DEFAULT(),                            \
-        .fixed_label = CLUSTER_CONFIG_FIXED_LABEL_DEFAULT(),                                              \
-    }
+namespace on_off_switch {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    basic::config_t basic;
+    binding::config_t binding;
+} config_t;
 
-#define ENDPOINT_CONFIG_TEMPERATURE_SENSOR_DEFAULT()                                                      \
-    {                                                                                                     \
-        .identify = CLUSTER_CONFIG_IDENTIFY_DEFAULT(),                                                    \
-        .groups = CLUSTER_CONFIG_GROUPS_DEFAULT(),                                                        \
-        .temperature_measurement = CLUSTER_CONFIG_TEMPERATURE_MEASUREMENT_DEFAULT(),                      \
-    }
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* on_off_switch */
 
-#define NODE_CONFIG_DEFAULT()                             \
-    {                                                     \
-        .root_node = ENDPOINT_CONFIG_ROOT_NODE_DEFAULT(), \
-    }
+namespace fan {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    fan_control::config_t fan_control;
+} config_t;
 
-typedef struct esp_matter_endpoint_root_node_config {
-    esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_ota_provider_config_t ota_provider;
-    esp_matter_cluster_ota_requestor_config_t ota_requestor;
-    esp_matter_cluster_general_commissioning_config_t general_commissioning;
-    esp_matter_cluster_network_commissioning_config_t network_commissioning;
-    esp_matter_cluster_general_diagnostics_config_t general_diagnostics;
-    esp_matter_cluster_administrator_commissioning_config_t administrator_commissioning;
-    esp_matter_cluster_operational_credentials_config_t operational_credentials;
-} esp_matter_endpoint_root_node_config_t;
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* fan */
 
-typedef struct esp_matter_endpoint_on_off_light_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_scenes_config_t scenes;
-    esp_matter_cluster_on_off_config_t on_off;
-    esp_matter_cluster_basic_config_t basic;
-} esp_matter_endpoint_on_off_light_config_t;
+namespace thermostat {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    basic::config_t basic;
+    cluster::thermostat::config_t thermostat;
+} config_t;
 
-typedef struct esp_matter_endpoint_dimmable_light_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_scenes_config_t scenes;
-    esp_matter_cluster_on_off_config_t on_off;
-    esp_matter_cluster_level_control_config_t level_control;
-    esp_matter_cluster_basic_config_t basic;
-} esp_matter_endpoint_dimmable_light_config_t;
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* thermostat */
 
-typedef struct esp_matter_endpoint_color_dimmable_light_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_scenes_config_t scenes;
-    esp_matter_cluster_on_off_config_t on_off;
-    esp_matter_cluster_level_control_config_t level_control;
-    esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_color_control_config_t color_control;
-} esp_matter_endpoint_color_dimmable_light_config_t;
+namespace bridged_node {
+typedef struct config {
+    bridged_device_basic::config_t bridged_device_basic;
+    fixed_label::config_t fixed_label;
+} config_t;
 
-typedef struct esp_matter_endpoint_on_off_switch_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_scenes_config_t scenes;
-    esp_matter_cluster_on_off_config_t on_off;
-    esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_binding_config_t binding;
-} esp_matter_endpoint_on_off_switch_config_t;
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* bridged_node */
 
-typedef struct esp_matter_endpoint_fan_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_fan_control_config_t fan_control;
-} esp_matter_endpoint_fan_config_t;
+namespace door_lock {
+typedef struct config {
+    identify::config_t identify;
+    cluster::door_lock::config_t door_lock;
+    time_synchronization::config_t time_synchronization;
+} config_t;
 
-typedef struct esp_matter_endpoint_thermostat_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_scenes_config_t scenes;
-    esp_matter_cluster_basic_config_t basic;
-    esp_matter_cluster_thermostat_config_t thermostat;
-} esp_matter_endpoint_thermostat_config_t;
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* door_lock */
 
-typedef struct esp_matter_endpoint_bridged_node_config {
-    esp_matter_cluster_bridged_device_basic_config_t bridged_device_basic;
-    esp_matter_cluster_fixed_label_config_t fixed_label;
-} esp_matter_endpoint_bridged_node_config_t;
+namespace temperature_sensor {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    temperature_measurement::config_t temperature_measurement;
+} config_t;
 
-typedef struct esp_matter_endpoint_door_lock_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_door_lock_config_t door_lock;
-    esp_matter_cluster_time_synchronization_config_t time_synchronization;
-} esp_matter_endpoint_door_lock_config_t;
+int get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* temperature_sensor */
+} /* endpoint */
 
-typedef struct esp_matter_endpoint_temperature_sensor_config {
-    esp_matter_cluster_identify_config_t identify;
-    esp_matter_cluster_groups_config_t groups;
-    esp_matter_cluster_temperature_measurement_config_t temperature_measurement;
-} esp_matter_endpoint_temperature_sensor_config_t;
+namespace node {
+typedef struct config {
+    endpoint::root_node::config_t root_node;
+} config_t;
 
-typedef struct esp_matter_node_config {
-    esp_matter_endpoint_root_node_config_t root_node;
-} esp_matter_node_config_t;
+node_t *create(config_t *config, attribute::callback_t callback, void *priv_data);
 
-esp_matter_endpoint_t *esp_matter_endpoint_create_root_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_root_node_config_t *config,
-                                                            uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_light(esp_matter_node_t *node,
-                                                               esp_matter_endpoint_on_off_light_config_t *config,
-                                                               uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_dimmable_light(esp_matter_node_t *node,
-                                                                 esp_matter_endpoint_dimmable_light_config_t *config,
-                                                                 uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_color_dimmable_light(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_color_dimmable_light_config_t *config,
-                                                            uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_on_off_switch(esp_matter_node_t *node,
-                                                                esp_matter_endpoint_on_off_switch_config_t *config,
-                                                                uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_fan(esp_matter_node_t *node,
-                                                      esp_matter_endpoint_fan_config_t *config,
-                                                      uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_thermostat(esp_matter_node_t *node,
-                                                             esp_matter_endpoint_thermostat_config_t *config,
-                                                             uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_door_lock(esp_matter_node_t *node,
-                                                             esp_matter_endpoint_door_lock_config_t *config,
-                                                             uint8_t flags);
-esp_matter_endpoint_t *esp_matter_endpoint_create_bridged_node(esp_matter_node_t *node,
-                                                            esp_matter_endpoint_bridged_node_config_t *config,
-                                                            uint8_t flags);
-
-esp_matter_endpoint_t *esp_matter_endpoint_create_temperature_sensor(esp_matter_node_t *node,
-                                                                esp_matter_endpoint_temperature_sensor_config_t *config,
-                                                                uint8_t flags);
-
-esp_matter_node_t *esp_matter_node_create(esp_matter_node_config_t *config, esp_matter_attribute_callback_t callback,
-                                          void *priv_data);
+} /* node */
+} /* esp_matter */

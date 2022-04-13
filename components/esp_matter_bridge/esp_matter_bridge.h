@@ -21,12 +21,14 @@
 #define MAX_BRIDGED_DEVICE_COUNT CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT - 1
 // There is an endpoint reserved as root endpoint
 
+using namespace esp_matter;
+
 typedef struct esp_matter_bridge_device {
-    esp_matter_node_t *node;
-    esp_matter_endpoint_t *endpoint;
+    node_t *node;
+    endpoint_t *endpoint;
     int endpoint_id;
 } esp_matter_bridge_device_t;
 
-esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter_node_t *node);
+esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node);
 
 esp_err_t esp_matter_bridge_remove_device(esp_matter_bridge_device_t *bridged_device);

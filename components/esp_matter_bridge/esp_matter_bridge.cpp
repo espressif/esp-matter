@@ -20,18 +20,21 @@
 
 static const char *TAG = "esp_matter_bridge";
 
-esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter_node_t *node)
+using namespace esp_matter;
+using namespace esp_matter::endpoint;
+
+esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node)
 {
     esp_matter_bridge_device_t *dev = (esp_matter_bridge_device_t *)calloc(1, sizeof(esp_matter_bridge_device_t));
     dev->node = node;
-    esp_matter_endpoint_bridged_node_config_t bridged_node_config = ENDPOINT_CONFIG_BRIDGED_NODE_DEFAULT();
-    dev->endpoint = esp_matter_endpoint_create_bridged_node(node, &bridged_node_config, ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
+    bridged_node::config_t bridged_node_config;
+    dev->endpoint = bridged_node::create(node, &bridged_node_config, ESP_MATTER_ENDPOINT_FLAG_DELETABLE);
     if (!(dev->endpoint)) {
         ESP_LOGE(TAG, "Could not create esp_matter endpoint for bridged device");
         free(dev);
         return NULL;
     }
-    dev->endpoint_id = esp_matter_endpoint_get_id(dev->endpoint);
+    dev->endpoint_id = endpoint::get_id(dev->endpoint);
     return dev;
 }
 
@@ -40,7 +43,7 @@ esp_err_t esp_matter_bridge_remove_device(esp_matter_bridge_device_t *bridged_de
     if (!bridged_device) {
         return ESP_ERR_INVALID_ARG;
     }
-    esp_err_t error = esp_matter_endpoint_delete(bridged_device->node, bridged_device->endpoint);
+    esp_err_t error = endpoint::destroy(bridged_device->node, bridged_device->endpoint);
     if (error != ESP_OK) {
         ESP_LOGE(TAG, "Failed to delete bridged endpoint");
     }

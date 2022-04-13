@@ -18,58 +18,71 @@
 #include <stdint.h>
 
 #define ESP_MATTER_NONE_FEATURE_ID 0x0000
-#define ESP_MATTER_ON_OFF_CLUSTER_LIGHTING_FEATURE_ID 0x0001
-#define ESP_MATTER_LEVEL_CONTROL_CLUSTER_ON_OFF_FEATURE_ID 0x0001
-#define ESP_MATTER_LEVEL_CONTROL_CLUSTER_LIGHTING_FEATURE_ID 0x0002
-#define ESP_MATTER_COLOR_CONTROL_CLUSTER_HUE_SATURATION_FEATURE_ID 0x0001
 
-#define ON_OFF_CLUSTER_LIGHTING_CONFIG_DEFAULT()    \
-    {                                               \
-        .global_scene_control = 1,                  \
-        .on_time = 0,                               \
-        .off_wait_time = 0,                         \
-        .start_up_on_off = 0,                       \
-    }
+namespace esp_matter {
+namespace cluster {
 
-#define LEVEL_CONTROL_CLUSTER_LIGHTING_CONFIG_DEFAULT()     \
-    {                                                       \
-        .remaining_time = 0,                                \
-        .min_level = 1,                                     \
-        .max_level = 254,                                   \
-        .start_up_current_level = 0,                        \
-    }
+namespace on_off {
+namespace feature {
+namespace lighting {
 
-#define COLOR_CONTROL_CLUSTER_HUE_SATURATION_CONFIG_DEFAULT()   \
-    {                                                           \
-        .current_hue = 0,                                       \
-        .current_saturation = 0,                                \
-    }
-
-typedef struct esp_matter_on_off_cluster_lighting_config {
+typedef struct config {
     bool global_scene_control;
     uint16_t on_time;
     uint16_t off_wait_time;
     uint8_t start_up_on_off;
-} esp_matter_on_off_cluster_lighting_config_t;
+    config() : global_scene_control(1), on_time(0), off_wait_time(0), start_up_on_off(0) {}
+} config_t;
 
-typedef struct esp_matter_level_control_cluster_lighting_config {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* lighting */
+} /* feature */
+} /* on_off */
+
+namespace level_control {
+namespace feature {
+namespace on_off {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* on_off */
+
+namespace lighting {
+
+typedef struct config {
     uint16_t remaining_time;
     uint8_t min_level;
     uint8_t max_level;
     uint8_t start_up_current_level;
-} esp_matter_level_control_cluster_lighting_config_t;
+    config() : remaining_time(0), min_level(1), max_level(254), start_up_current_level(0) {}
+} config_t;
 
-typedef struct esp_matter_color_control_cluster_hue_saturation_config {
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* lighting */
+} /* feature */
+} /* level_control */
+
+namespace color_control {
+namespace feature {
+namespace hue_saturation {
+
+typedef struct config {
     uint8_t current_hue;
     uint8_t current_saturation;
-} esp_matter_color_control_cluster_hue_saturation_config_t;
+    config() : current_hue(0), current_saturation(0) {}
+} config_t;
 
-esp_err_t esp_matter_on_off_cluster_add_feature_lighting(esp_matter_cluster_t *cluster,
-                                                         esp_matter_on_off_cluster_lighting_config_t *config);
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
 
-esp_err_t esp_matter_level_control_cluster_add_feature_on_off(esp_matter_cluster_t *cluster);
-esp_err_t esp_matter_level_control_cluster_add_feature_lighting(esp_matter_cluster_t *cluster,
-                                                            esp_matter_level_control_cluster_lighting_config_t *config);
+} /* hue_saturation */
+} /* feature */
+} /* color_control */
 
-esp_err_t esp_matter_color_control_cluster_add_feature_hue_saturation(esp_matter_cluster_t *cluster,
-                                                    esp_matter_color_control_cluster_hue_saturation_config_t *config);
+} /* cluster */
+} /* esp_matter */

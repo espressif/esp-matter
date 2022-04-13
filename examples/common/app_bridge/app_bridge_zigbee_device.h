@@ -17,6 +17,8 @@
 #if CONFIG_ZB_ENABLED
 #include <esp_matter_bridge.h>
 
+using esp_matter::node_t;
+
 typedef struct app_bridge_zigbee_device {
     esp_matter_bridge_device_t *dev;
     uint8_t zigbee_endpointid;
@@ -24,7 +26,7 @@ typedef struct app_bridge_zigbee_device {
     struct app_bridge_zigbee_device *next;
 } app_bridge_zigbee_device_t;
 
-app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(esp_matter_node_t *node, uint8_t zigbee_endpointid,
+app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
                                                             uint16_t zigbee_shortaddr);
 
 uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpointid);

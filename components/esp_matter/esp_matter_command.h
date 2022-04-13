@@ -16,126 +16,177 @@
 
 #include <esp_matter.h>
 
-/** cluster: group key management */
-esp_matter_command_t *esp_matter_command_create_key_set_write(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_key_set_read(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_key_set_remove(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_key_set_read_all_indices(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_key_set_read_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_key_set_read_all_indices_response(esp_matter_cluster_t *cluster);
+namespace esp_matter {
+namespace cluster {
 
-/** cluster: general commissioning */
-esp_matter_command_t *esp_matter_command_create_arm_fail_safe(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_set_regulatory_config(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_commissioning_complete(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_arm_fail_safe_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_set_regulatory_config_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_commissioning_complete_response(esp_matter_cluster_t *cluster);
+namespace group_key_management {
+namespace command {
+command_t *create_key_set_write(cluster_t *cluster);
+command_t *create_key_set_read(cluster_t *cluster);
+command_t *create_key_set_remove(cluster_t *cluster);
+command_t *create_key_set_read_all_indices(cluster_t *cluster);
+command_t *create_key_set_read_response(cluster_t *cluster);
+command_t *create_key_set_read_all_indices_response(cluster_t *cluster);
+} /* command */
+} /* group_key_management */
 
-/** cluster: network commissioning */
-esp_matter_command_t *esp_matter_command_create_scan_networks(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_or_update_wifi_network(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_or_update_thread_network(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_network(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_connect_network(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_reorder_network(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_scan_networks_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_network_config_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_connect_network_response(esp_matter_cluster_t *cluster);
+namespace general_commissioning {
+namespace command {
+command_t *create_arm_fail_safe(cluster_t *cluster);
+command_t *create_set_regulatory_config(cluster_t *cluster);
+command_t *create_commissioning_complete(cluster_t *cluster);
+command_t *create_arm_fail_safe_response(cluster_t *cluster);
+command_t *create_set_regulatory_config_response(cluster_t *cluster);
+command_t *create_commissioning_complete_response(cluster_t *cluster);
+} /* command */
+} /* general_commissioning */
 
-/** cluster: administrator commissioning */
-esp_matter_command_t *esp_matter_command_create_open_commissioning_window(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_open_basic_commissioning_window(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_revoke_commissioning(esp_matter_cluster_t *cluster);
+namespace network_commissioning {
+namespace command {
+command_t *create_scan_networks(cluster_t *cluster);
+command_t *create_add_or_update_wifi_network(cluster_t *cluster);
+command_t *create_add_or_update_thread_network(cluster_t *cluster);
+command_t *create_remove_network(cluster_t *cluster);
+command_t *create_connect_network(cluster_t *cluster);
+command_t *create_reorder_network(cluster_t *cluster);
+command_t *create_scan_networks_response(cluster_t *cluster);
+command_t *create_network_config_response(cluster_t *cluster);
+command_t *create_connect_network_response(cluster_t *cluster);
+} /* command */
+} /* network_commissioning */
 
-/** cluster: operational credentials */
-esp_matter_command_t *esp_matter_command_create_attestation_request(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_certificate_chain_request(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_csr_request(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_noc(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_update_noc(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_update_fabric_label(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_fabric(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_trusted_root_certificate(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_trusted_root_certificate(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_attestation_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_certificate_chain_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_csr_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_noc_response(esp_matter_cluster_t *cluster);
+namespace administrator_commissioning {
+namespace command {
+command_t *create_open_commissioning_window(cluster_t *cluster);
+command_t *create_open_basic_commissioning_window(cluster_t *cluster);
+command_t *create_revoke_commissioning(cluster_t *cluster);
+} /* command */
+} /* administrator_commissioning */
 
-/** cluster: ota provider */
-esp_matter_command_t *esp_matter_command_create_query_image(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_apply_update_request(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_notify_update_applied(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_query_image_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_apply_update_response(esp_matter_cluster_t *cluster);
+namespace operational_credentials {
+namespace command {
+command_t *create_attestation_request(cluster_t *cluster);
+command_t *create_certificate_chain_request(cluster_t *cluster);
+command_t *create_csr_request(cluster_t *cluster);
+command_t *create_add_noc(cluster_t *cluster);
+command_t *create_update_noc(cluster_t *cluster);
+command_t *create_update_fabric_label(cluster_t *cluster);
+command_t *create_remove_fabric(cluster_t *cluster);
+command_t *create_add_trusted_root_certificate(cluster_t *cluster);
+command_t *create_remove_trusted_root_certificate(cluster_t *cluster);
+command_t *create_attestation_response(cluster_t *cluster);
+command_t *create_certificate_chain_response(cluster_t *cluster);
+command_t *create_csr_response(cluster_t *cluster);
+command_t *create_noc_response(cluster_t *cluster);
+} /* command */
+} /* operational_credentials */
 
-/** cluster: ota requestor */
-esp_matter_command_t *esp_matter_command_create_announce_ota_provider(esp_matter_cluster_t *cluster);
+namespace ota_provider {
+namespace command {
+command_t *create_query_image(cluster_t *cluster);
+command_t *create_apply_update_request(cluster_t *cluster);
+command_t *create_notify_update_applied(cluster_t *cluster);
+command_t *create_query_image_response(cluster_t *cluster);
+command_t *create_apply_update_response(cluster_t *cluster);
+} /* command */
+} /* ota_provider */
 
-/** cluster: identify */
-esp_matter_command_t *esp_matter_command_create_identify(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_identify_query(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_identify_query_response(esp_matter_cluster_t *cluster);
+namespace ota_requestor {
+namespace command {
+command_t *create_announce_ota_provider(cluster_t *cluster);
+} /* command */
+} /* ota_requestor */
 
-/** cluster: groups */
-esp_matter_command_t *esp_matter_command_create_add_group(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_view_group(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_get_group_membership(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_group(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_all_groups(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_group_if_identifying(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_group_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_view_group_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_get_group_membership_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_group_response(esp_matter_cluster_t *cluster);
+namespace identify {
+namespace command {
+command_t *create_identify(cluster_t *cluster);
+command_t *create_identify_query(cluster_t *cluster);
+command_t *create_identify_query_response(cluster_t *cluster);
+} /* command */
+} /* identify */
 
-/** cluster: scenes */
-esp_matter_command_t *esp_matter_command_create_add_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_view_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_all_scenes(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_store_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_recall_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_get_scene_membership(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_add_scene_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_view_scene_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_scene_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_remove_all_scenes_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_store_scene_response(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_get_scene_membership_response(esp_matter_cluster_t *cluster);
+namespace groups {
+namespace command {
+command_t *create_add_group(cluster_t *cluster);
+command_t *create_view_group(cluster_t *cluster);
+command_t *create_get_group_membership(cluster_t *cluster);
+command_t *create_remove_group(cluster_t *cluster);
+command_t *create_remove_all_groups(cluster_t *cluster);
+command_t *create_add_group_if_identifying(cluster_t *cluster);
+command_t *create_add_group_response(cluster_t *cluster);
+command_t *create_view_group_response(cluster_t *cluster);
+command_t *create_get_group_membership_response(cluster_t *cluster);
+command_t *create_remove_group_response(cluster_t *cluster);
+} /* command */
+} /* groups */
 
-/** cluster: on off */
-esp_matter_command_t *esp_matter_command_create_off(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_on(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_toggle(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_off_with_effect(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_on_with_recall_global_scene(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_on_with_timed_off(esp_matter_cluster_t *cluster);
+namespace scenes {
+namespace command {
+command_t *create_add_scene(cluster_t *cluster);
+command_t *create_view_scene(cluster_t *cluster);
+command_t *create_remove_scene(cluster_t *cluster);
+command_t *create_remove_all_scenes(cluster_t *cluster);
+command_t *create_store_scene(cluster_t *cluster);
+command_t *create_recall_scene(cluster_t *cluster);
+command_t *create_get_scene_membership(cluster_t *cluster);
+command_t *create_add_scene_response(cluster_t *cluster);
+command_t *create_view_scene_response(cluster_t *cluster);
+command_t *create_remove_scene_response(cluster_t *cluster);
+command_t *create_remove_all_scenes_response(cluster_t *cluster);
+command_t *create_store_scene_response(cluster_t *cluster);
+command_t *create_get_scene_membership_response(cluster_t *cluster);
+} /* command */
+} /* scenes */
 
-/** cluster: level control */
-esp_matter_command_t *esp_matter_command_create_move_to_level(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_step(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_stop(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_to_level_with_on_off(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_with_on_off(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_step_with_on_off(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_stop_with_on_off(esp_matter_cluster_t *cluster);
+namespace on_off {
+namespace command {
+command_t *create_off(cluster_t *cluster);
+command_t *create_on(cluster_t *cluster);
+command_t *create_toggle(cluster_t *cluster);
+command_t *create_off_with_effect(cluster_t *cluster);
+command_t *create_on_with_recall_global_scene(cluster_t *cluster);
+command_t *create_on_with_timed_off(cluster_t *cluster);
+} /* command */
+} /* on_off */
 
-/** cluster: color control */
-esp_matter_command_t *esp_matter_command_create_move_to_hue(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_hue(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_step_hue(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_to_saturation(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_saturation(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_step_saturation(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_move_to_hue_and_saturation(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_stop_move_step(esp_matter_cluster_t *cluster);
+namespace level_control {
+namespace command {
+command_t *create_move_to_level(cluster_t *cluster);
+command_t *create_move(cluster_t *cluster);
+command_t *create_step(cluster_t *cluster);
+command_t *create_stop(cluster_t *cluster);
+command_t *create_move_to_level_with_on_off(cluster_t *cluster);
+command_t *create_move_with_on_off(cluster_t *cluster);
+command_t *create_step_with_on_off(cluster_t *cluster);
+command_t *create_stop_with_on_off(cluster_t *cluster);
+} /* command */
+} /* level_control */
 
-/** cluster: thermostat */
-esp_matter_command_t *esp_matter_command_create_setpoint_raise_lower(esp_matter_cluster_t *cluster);
+namespace color_control {
+namespace command {
+command_t *create_move_to_hue(cluster_t *cluster);
+command_t *create_move_hue(cluster_t *cluster);
+command_t *create_step_hue(cluster_t *cluster);
+command_t *create_move_to_saturation(cluster_t *cluster);
+command_t *create_move_saturation(cluster_t *cluster);
+command_t *create_step_saturation(cluster_t *cluster);
+command_t *create_move_to_hue_and_saturation(cluster_t *cluster);
+command_t *create_stop_move_step(cluster_t *cluster);
+} /* command */
+} /* color_control */
 
-/** cluster: door lock */
-esp_matter_command_t *esp_matter_command_create_lock_door(esp_matter_cluster_t *cluster);
-esp_matter_command_t *esp_matter_command_create_unlock_door(esp_matter_cluster_t *cluster);
+namespace thermostat {
+namespace command {
+command_t *create_setpoint_raise_lower(cluster_t *cluster);
+} /* command */
+} /* thermostat */
+
+namespace door_lock {
+namespace command {
+command_t *create_lock_door(cluster_t *cluster);
+command_t *create_unlock_door(cluster_t *cluster);
+} /* command */
+} /* door_lock */
+
+} /* cluster */
+} /* esp_matter */

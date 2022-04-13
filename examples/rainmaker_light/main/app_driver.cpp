@@ -16,6 +16,8 @@
 
 #include <app_priv.h>
 
+using namespace esp_matter;
+
 static const char *TAG = "app_driver";
 extern int light_endpoint_id;
 
@@ -70,24 +72,24 @@ static esp_err_t app_driver_attribute_set_defaults()
 {
     /* Get the default value (current value) from esp_matter and update the app_driver */
     esp_err_t err = ESP_OK;
-    esp_matter_node_t *node = esp_matter_node_get();
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get_first(node);
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
-        int endpoint_id = esp_matter_endpoint_get_id(endpoint);
-        esp_matter_cluster_t *cluster = esp_matter_cluster_get_first(endpoint);
+        int endpoint_id = endpoint::get_id(endpoint);
+        cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            int cluster_id = esp_matter_cluster_get_id(cluster);
-            esp_matter_attribute_t *attribute = esp_matter_attribute_get_first(cluster);
+            int cluster_id = cluster::get_id(cluster);
+            attribute_t *attribute = attribute::get_first(cluster);
             while (attribute) {
-                int attribute_id = esp_matter_attribute_get_id(attribute);
+                int attribute_id = attribute::get_id(attribute);
                 esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-                err |= esp_matter_attribute_get_val(attribute, &val);
+                err |= attribute::get_val(attribute, &val);
                 err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
-                attribute = esp_matter_attribute_get_next(attribute);
+                attribute = attribute::get_next(attribute);
             }
-            cluster = esp_matter_cluster_get_next(cluster);
+            cluster = cluster::get_next(cluster);
         }
-        endpoint = esp_matter_endpoint_get_next(endpoint);
+        endpoint = endpoint::get_next(endpoint);
     }
     return err;
 }

@@ -37,20 +37,3 @@ esp_err_t esp_matter_rainmaker_init(void);
  * @return error in case of failure.
  */
 esp_err_t esp_matter_rainmaker_start(void);
-
-/** Custom Command callback
- *
- * Command callback for custom commands.
- * This should be called when the application receives the custom command callback.
- *
- * @param[in] endpoint_id Endpoint ID of the command.
- * @param[in] cluster_id Cluster ID of the command.
- * @param[in] command_id Command ID.
- * @param[in] tlv_data Command data which can be parsed.
- * @param[in] priv_data Pointer to the private data paassed while setting the command callback.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t esp_matter_rainmaker_command_callback(int endpoint_id, int cluster_id, int command_id, TLVReader &tlv_data,
-                                                void *priv_data);

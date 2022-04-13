@@ -18,7 +18,10 @@
 #include <app_priv.h>
 
 using chip::kInvalidClusterId;
-static constexpr chip::CommandId kInvalidCommandId     = 0xFFFF'FFFF;
+static constexpr chip::CommandId kInvalidCommandId = 0xFFFF'FFFF;
+
+using namespace esp_matter;
+using namespace esp_matter::cluster;
 
 static const char *TAG = "app_driver";
 extern int switch_endpoint_id;
@@ -41,7 +44,7 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
 
         g_cluster_id = cluster_id;
         g_command_id = command_id;
-        esp_matter_client_cluster_update(endpoint_id, cluster_id);
+        client::cluster_update(endpoint_id, cluster_id);
     } else if (argc == 6 && strncmp(argv[0], "send", sizeof("send")) == 0) {
         int fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
         int node_id = strtol((const char *)&argv[2][2], NULL, 16);
@@ -51,7 +54,7 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
 
         g_cluster_id = cluster_id;
         g_command_id = command_id;
-        esp_matter_connect(fabric_index, node_id, remote_endpoint_id);
+        client::connect(fabric_index, node_id, remote_endpoint_id);
     } else {
         ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
@@ -70,17 +73,17 @@ static void app_driver_register_commands()
     esp_matter_console_add_command(&command);
 }
 
-void app_driver_client_command_callback(esp_matter_peer_device_t *peer_device, int remote_endpoint_id, void *priv_data)
+void app_driver_client_command_callback(client::peer_device_t *peer_device, int remote_endpoint_id, void *priv_data)
 {
     /** TODO: Find a better way to get the cluster_id and command_id.
     Once done, move the console commands to esp_matter_client. */
     if (g_cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
         if (g_command_id == ZCL_OFF_COMMAND_ID) {
-            esp_matter_on_off_send_command_off(peer_device, remote_endpoint_id);
+            on_off::command::send_off(peer_device, remote_endpoint_id);
         } else if (g_command_id == ZCL_ON_COMMAND_ID) {
-            esp_matter_on_off_send_command_on(peer_device, remote_endpoint_id);
+            on_off::command::send_on(peer_device, remote_endpoint_id);
         } else if (g_command_id == ZCL_TOGGLE_COMMAND_ID) {
-            esp_matter_on_off_send_command_toggle(peer_device, remote_endpoint_id);
+            on_off::command::send_toggle(peer_device, remote_endpoint_id);
         }
     }
 }
@@ -95,24 +98,24 @@ static esp_err_t app_driver_attribute_set_defaults()
 {
     /* Get the default value (current value) from esp_matter and update the app_driver */
     esp_err_t err = ESP_OK;
-    esp_matter_node_t *node = esp_matter_node_get();
-    esp_matter_endpoint_t *endpoint = esp_matter_endpoint_get_first(node);
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
-        int endpoint_id = esp_matter_endpoint_get_id(endpoint);
-        esp_matter_cluster_t *cluster = esp_matter_cluster_get_first(endpoint);
+        int endpoint_id = endpoint::get_id(endpoint);
+        cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            int cluster_id = esp_matter_cluster_get_id(cluster);
-            esp_matter_attribute_t *attribute = esp_matter_attribute_get_first(cluster);
+            int cluster_id = cluster::get_id(cluster);
+            attribute_t *attribute = attribute::get_first(cluster);
             while (attribute) {
-                int attribute_id = esp_matter_attribute_get_id(attribute);
+                int attribute_id = attribute::get_id(attribute);
                 esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-                err |= esp_matter_attribute_get_val(attribute, &val);
+                err |= attribute::get_val(attribute, &val);
                 err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
-                attribute = esp_matter_attribute_get_next(attribute);
+                attribute = attribute::get_next(attribute);
             }
-            cluster = esp_matter_cluster_get_next(cluster);
+            cluster = cluster::get_next(cluster);
         }
-        endpoint = esp_matter_endpoint_get_next(endpoint);
+        endpoint = endpoint::get_next(endpoint);
     }
     return err;
 }
@@ -123,6 +126,6 @@ esp_err_t app_driver_init()
     // device_init();
     app_driver_attribute_set_defaults();
     app_driver_register_commands();
-    esp_matter_set_client_command_callback(app_driver_client_command_callback, NULL);
+    client::set_command_callback(app_driver_client_command_callback, NULL);
     return ESP_OK;
 }
