@@ -77,12 +77,12 @@ void app_driver_client_command_callback(client::peer_device_t *peer_device, int 
 {
     /** TODO: Find a better way to get the cluster_id and command_id.
     Once done, move the console commands to esp_matter_client. */
-    if (g_cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-        if (g_command_id == ZCL_OFF_COMMAND_ID) {
+    if (g_cluster_id == OnOff::Id) {
+        if (g_command_id == OnOff::Commands::Off::Id) {
             on_off::command::send_off(peer_device, remote_endpoint_id);
-        } else if (g_command_id == ZCL_ON_COMMAND_ID) {
+        } else if (g_command_id == OnOff::Commands::On::Id) {
             on_off::command::send_on(peer_device, remote_endpoint_id);
-        } else if (g_command_id == ZCL_TOGGLE_COMMAND_ID) {
+        } else if (g_command_id == OnOff::Commands::Toggle::Id) {
             on_off::command::send_toggle(peer_device, remote_endpoint_id);
         }
     }

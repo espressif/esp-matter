@@ -31,7 +31,7 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     }
 
     /* Get the attribute */
-    attribute_t *attribute = attribute::get(cluster, ZCL_FEATURE_MAP_SERVER_ATTRIBUTE_ID);
+    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
 
     /* Create the attribute with the new value if it does not exist */
     if (!attribute) {

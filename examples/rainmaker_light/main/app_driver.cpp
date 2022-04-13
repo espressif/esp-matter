@@ -49,18 +49,18 @@ esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attri
 {
     esp_err_t err = ESP_OK;
     if (endpoint_id == light_endpoint_id) {
-        if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-            if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
+        if (cluster_id == OnOff::Id) {
+            if (attribute_id == OnOff::Attributes::OnOff::Id) {
                 err = app_driver_light_set_power(val);
             }
-        } else if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-            if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+        } else if (cluster_id == LevelControl::Id) {
+            if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
                 err = app_driver_light_set_brightness(val);
             }
-        } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-            if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+        } else if (cluster_id == ColorControl::Id) {
+            if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
                 err = app_driver_light_set_hue(val);
-            } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+            } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                 err = app_driver_light_set_saturation(val);
             }
         }
