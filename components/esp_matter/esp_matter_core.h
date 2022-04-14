@@ -58,6 +58,15 @@ typedef void (*event_callback_t)(const ChipDeviceEvent *event, intptr_t arg);
  */
 esp_err_t start(event_callback_t callback);
 
+/** Factory reset
+ *
+ * Perform factory reset and erase the data stored in the non volatile storage. This also restarts the device.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t factory_reset();
+
 namespace lock {
 
 /** Lock status */

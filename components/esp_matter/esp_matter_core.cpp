@@ -46,6 +46,7 @@ using chip::kInvalidCommandId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
+using chip::DeviceLayer::ConfigurationMgr;
 using chip::DeviceLayer::ConnectivityManager;
 using chip::DeviceLayer::ConnectivityMgr;
 using chip::DeviceLayer::PlatformMgr;
@@ -719,6 +720,41 @@ esp_err_t start(event_callback_t callback)
     return err;
 }
 
+esp_err_t factory_reset()
+{
+    esp_err_t err = ESP_OK;
+    node_t *node = node::get();
+    if (node) {
+        /* ESP Matter data model is used. Erase all the data that we have added in nvs. */
+        endpoint_t *endpoint = endpoint::get_first(node);
+        while (endpoint) {
+            int endpoint_id = endpoint::get_id(endpoint);
+            char nvs_namespace[16] = {0};
+            snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+
+            nvs_handle_t handle;
+            err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Error opening partition: %s, %d", nvs_namespace, err);
+                continue;
+            }
+            err = nvs_erase_all(handle);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
+                continue;
+            }
+            endpoint = endpoint::get_next(endpoint);
+        }
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "Erasing attribute data completed");
+        }
+    }
+
+    /* Submodule factory reset. This also restarts after completion. */
+    ConfigurationMgr().InitiateFactoryReset();
+    return err;
+}
+
 namespace attribute {
 attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val)
 {
@@ -988,12 +1024,12 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     int attribute_id = current_attribute->attribute_id;
     int cluster_id = current_attribute->cluster_id;
     int endpoint_id = current_attribute->endpoint_id;
-    char nvs_namespace[4] = {0};
+    char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 4, "%X", endpoint_id); /* endpoint_id */
+    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
     snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
-    nvs_handle handle;
+    nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
     if (err != ESP_OK) {
         return err;
@@ -1028,12 +1064,12 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
     int attribute_id = current_attribute->attribute_id;
     int cluster_id = current_attribute->cluster_id;
     int endpoint_id = current_attribute->endpoint_id;
-    char nvs_namespace[4] = {0};
+    char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
-    snprintf(nvs_namespace, 4, "%X", endpoint_id); /* endpoint_id */
+    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
     snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
 
-    nvs_handle handle;
+    nvs_handle_t handle;
     esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
     if (err != ESP_OK) {
         return err;

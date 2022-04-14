@@ -14,6 +14,7 @@
 #include <esp_matter.h>
 #include <led_driver.h>
 
+#include <app_reset.h>
 #include <app_priv.h>
 
 using namespace esp_matter;
@@ -133,6 +134,7 @@ esp_err_t app_driver_init()
     button_config_t button_config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&button_config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+    app_reset_button_register(handle);
 
     /* Initialize led */
     led_driver_config_t led_config = led_driver_get_config();

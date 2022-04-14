@@ -15,6 +15,7 @@
 #include <esp_matter_console.h>
 #include <led_driver.h>
 
+#include <app_reset.h>
 #include <app_priv.h>
 
 using chip::kInvalidClusterId;
@@ -140,6 +141,7 @@ esp_err_t app_driver_init()
     button_config_t button_config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&button_config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+    app_reset_button_register(handle);
 
     app_driver_attribute_set_defaults();
     app_driver_register_commands();
