@@ -54,7 +54,7 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
         err = callback(command_path, tlv_data, opaque_ptr);
     }
     int flags = get_flags(command);
-    if (flags & ESP_MATTER_COMMAND_FLAG_CUSTOM) {
+    if (flags & COMMAND_FLAG_CUSTOM) {
         EmberAfStatus status = (err == ESP_OK) ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;
         emberAfSendImmediateDefaultResponse(status);
     }
@@ -871,39 +871,39 @@ namespace command {
 
 command_t *create_key_set_write(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_WRITE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_key_set_write);
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetWrite::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_key_set_write);
 }
 
 command_t *create_key_set_read(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_READ_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_key_set_read);
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetRead::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_key_set_read);
 }
 
 command_t *create_key_set_remove(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_REMOVE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_key_set_remove);
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetRemove::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_key_set_remove);
 }
 
 command_t *create_key_set_read_all_indices(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_READ_ALL_INDICES_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetReadAllIndices::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_key_set_read_all_indices);
 }
 
 command_t *create_key_set_read_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_READ_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetReadResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_key_set_read_all_indices_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_KEY_SET_READ_ALL_INDICES_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, GroupKeyManagement::Commands::KeySetReadAllIndicesResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -914,40 +914,40 @@ namespace command {
 
 command_t *create_arm_fail_safe(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ARM_FAIL_SAFE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_arm_fail_safe);
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::ArmFailSafe::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_arm_fail_safe);
 }
 
 command_t *create_set_regulatory_config(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_SET_REGULATORY_CONFIG_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetRegulatoryConfig::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_set_regulatory_config);
 }
 
 command_t *create_commissioning_complete(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_COMMISSIONING_COMPLETE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::CommissioningComplete::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_commissioning_complete);
 }
 
 command_t *create_arm_fail_safe_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ARM_FAIL_SAFE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::ArmFailSafeResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_set_regulatory_config_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_SET_REGULATORY_CONFIG_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::SetRegulatoryConfigResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_commissioning_complete_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_COMMISSIONING_COMPLETE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, GeneralCommissioning::Commands::CommissioningCompleteResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -958,60 +958,58 @@ namespace command {
 
 command_t *create_scan_networks(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_SCAN_NETWORKS_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_scan_networks);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ScanNetworks::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_scan_networks);
 }
 
 command_t *create_add_or_update_wifi_network(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_OR_UPDATE_WI_FI_NETWORK_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::AddOrUpdateWiFiNetwork::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_or_update_wifi_network);
 }
 
 command_t *create_add_or_update_thread_network(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_OR_UPDATE_THREAD_NETWORK_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::AddOrUpdateThreadNetwork::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_or_update_thread_network);
 }
 
 command_t *create_remove_network(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_NETWORK_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_remove_network);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::RemoveNetwork::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_remove_network);
 }
 
 command_t *create_connect_network(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CONNECT_NETWORK_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_connect_network);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ConnectNetwork::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_connect_network);
 }
 
 command_t *create_reorder_network(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REORDER_NETWORK_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_reorder_network);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ReorderNetwork::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_reorder_network);
 }
 
 command_t *create_scan_networks_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_SCAN_NETWORKS_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ScanNetworksResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_network_config_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_NETWORK_CONFIG_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::NetworkConfigResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_connect_network_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CONNECT_NETWORK_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, NetworkCommissioning::Commands::ConnectNetworkResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1022,23 +1020,22 @@ namespace command {
 
 command_t *create_open_commissioning_window(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_OPEN_COMMISSIONING_WINDOW_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::OpenCommissioningWindow::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_open_commissioning_window);
 }
 
 command_t *create_open_basic_commissioning_window(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_OPEN_BASIC_COMMISSIONING_WINDOW_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::OpenBasicCommissioningWindow::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_open_basic_commissioning_window);
 }
 
 command_t *create_revoke_commissioning(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REVOKE_COMMISSIONING_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_revoke_commissioning);
+    return esp_matter::command::create(cluster, AdministratorCommissioning::Commands::RevokeCommissioning::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_revoke_commissioning);
 }
 
 } /* command */
@@ -1049,85 +1046,83 @@ namespace command {
 
 command_t *create_attestation_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ATTESTATION_REQUEST_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_attestation_request);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::AttestationRequest::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_attestation_request);
 }
 
 command_t *create_certificate_chain_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CERTIFICATE_CHAIN_REQUEST_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::CertificateChainRequest::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_certificate_chain_request);
 }
 
 command_t *create_csr_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CSR_REQUEST_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_csr_request);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::CSRRequest::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_csr_request);
 }
 
 command_t *create_add_noc(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_NOC_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_add_noc);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::AddNOC::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_add_noc);
 }
 
 command_t *create_update_noc(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_UPDATE_NOC_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_update_noc);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::UpdateNOC::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_update_noc);
 }
 
 command_t *create_update_fabric_label(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_UPDATE_FABRIC_LABEL_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_update_fabric_label);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::UpdateFabricLabel::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_update_fabric_label);
 }
 
 command_t *create_remove_fabric(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_FABRIC_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_remove_fabric);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::RemoveFabric::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_remove_fabric);
 }
 
 command_t *create_add_trusted_root_certificate(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_TRUSTED_ROOT_CERTIFICATE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::AddTrustedRootCertificate::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_trusted_root_certificate);
 }
 
 command_t *create_remove_trusted_root_certificate(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_TRUSTED_ROOT_CERTIFICATE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::RemoveTrustedRootCertificate::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_remove_trusted_root_certificate);
 }
 
 command_t *create_attestation_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ATTESTATION_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::AttestationResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_certificate_chain_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CERTIFICATE_CHAIN_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::CertificateChainResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_csr_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_CSR_RESPONSE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED,
-                                       NULL);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::CSRResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_noc_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_NOC_RESPONSE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED,
-                                       NULL);
+    return esp_matter::command::create(cluster, OperationalCredentials::Commands::NOCResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1138,34 +1133,33 @@ namespace command {
 
 command_t *create_query_image(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_QUERY_IMAGE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_query_image);
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::QueryImage::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_query_image);
 }
 
 command_t *create_apply_update_request(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_APPLY_UPDATE_REQUEST_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_apply_update_request);
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::ApplyUpdateRequest::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_apply_update_request);
 }
 
 command_t *create_notify_update_applied(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_NOTIFY_UPDATE_APPLIED_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::NotifyUpdateApplied::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_notify_update_applied);
 }
 
 command_t *create_query_image_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_QUERY_IMAGE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::QueryImageResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_apply_update_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_APPLY_UPDATE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateProvider::Commands::ApplyUpdateResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1176,8 +1170,8 @@ namespace command {
 
 command_t *create_announce_ota_provider(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ANNOUNCE_OTA_PROVIDER_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateRequestor::Commands::AnnounceOtaProvider::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_announce_ota_provider);
 }
 
@@ -1189,20 +1183,20 @@ namespace command {
 
 command_t *create_identify(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_IDENTIFY_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Identify::Commands::Identify::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_identify);
 }
 
 command_t *create_identify_query(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_IDENTIFY_QUERY_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Identify::Commands::IdentifyQuery::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_identify_query);
 }
 
 command_t *create_identify_query_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_IDENTIFY_QUERY_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Identify::Commands::IdentifyQueryResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1213,65 +1207,63 @@ namespace command {
 
 command_t *create_add_group(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_GROUP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::AddGroup::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_group);
 }
 
 command_t *create_view_group(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_VIEW_GROUP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::ViewGroup::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_view_group);
 }
 
 command_t *create_get_group_membership(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_GET_GROUP_MEMBERSHIP_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::GetGroupMembership::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_get_group_membership);
 }
 
 command_t *create_remove_group(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_GROUP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::RemoveGroup::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_remove_group);
 }
 
 command_t *create_remove_all_groups(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_ALL_GROUPS_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::RemoveAllGroups::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_remove_all_groups);
 }
 
 command_t *create_add_group_if_identifying(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_GROUP_IF_IDENTIFYING_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Groups::Commands::AddGroupIfIdentifying::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_group_if_identifying);
 }
 
 command_t *create_add_group_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_GROUP_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Groups::Commands::AddGroupResponse::Id, COMMAND_FLAG_SERVER_GENERATED,
+                                       NULL);
 }
 
 command_t *create_view_group_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_VIEW_GROUP_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Groups::Commands::ViewGroupResponse::Id, COMMAND_FLAG_SERVER_GENERATED,
+                                       NULL);
 }
 
 command_t *create_get_group_membership_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_GET_GROUP_MEMBERSHIP_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Groups::Commands::GetGroupMembershipResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_remove_group_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_GROUP_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Groups::Commands::RemoveGroupResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1282,82 +1274,80 @@ namespace command {
 
 command_t *create_add_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_SCENE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::AddScene::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_add_scene);
 }
 
 command_t *create_view_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_VIEW_SCENE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::ViewScene::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_view_scene);
 }
 
 command_t *create_remove_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_SCENE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveScene::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_remove_scene);
 }
 
 command_t *create_remove_all_scenes(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_ALL_SCENES_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenes::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_remove_all_scenes);
 }
 
 command_t *create_store_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STORE_SCENE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::StoreScene::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_store_scene);
 }
 
 command_t *create_recall_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_RECALL_SCENE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::RecallScene::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_recall_scene);
 }
 
 command_t *create_get_scene_membership(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_GET_SCENE_MEMBERSHIP_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembership::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_get_scene_membership);
 }
 
 command_t *create_add_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ADD_SCENE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::AddSceneResponse::Id, COMMAND_FLAG_SERVER_GENERATED,
+                                       NULL);
 }
 
 command_t *create_view_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_VIEW_SCENE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::ViewSceneResponse::Id, COMMAND_FLAG_SERVER_GENERATED,
+                                       NULL);
 }
 
 command_t *create_remove_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_SCENE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveSceneResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_remove_all_scenes_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_REMOVE_ALL_SCENES_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::RemoveAllScenesResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 command_t *create_store_scene_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STORE_SCENE_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::StoreSceneResponse::Id, COMMAND_FLAG_SERVER_GENERATED,
+                                       NULL);
 }
 
 command_t *create_get_scene_membership_response(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_GET_SCENE_MEMBERSHIP_RESPONSE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_SERVER_GENERATED, NULL);
+    return esp_matter::command::create(cluster, Scenes::Commands::GetSceneMembershipResponse::Id,
+                                       COMMAND_FLAG_SERVER_GENERATED, NULL);
 }
 
 } /* command */
@@ -1368,40 +1358,38 @@ namespace command {
 
 command_t *create_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_OFF_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::Off::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_off);
 }
 
 command_t *create_on(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ON_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::On::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_on);
 }
 
 command_t *create_toggle(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_TOGGLE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::Toggle::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_toggle);
 }
 
 command_t *create_off_with_effect(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_OFF_WITH_EFFECT_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::OffWithEffect::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_off_with_effect);
 }
 
 command_t *create_on_with_recall_global_scene(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ON_WITH_RECALL_GLOBAL_SCENE_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::OnWithRecallGlobalScene::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_on_with_recall_global_scene);
 }
 
 command_t *create_on_with_timed_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_ON_WITH_TIMED_OFF_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, OnOff::Commands::OnWithTimedOff::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_on_with_timed_off);
 }
 
@@ -1413,54 +1401,51 @@ namespace command {
 
 command_t *create_move_to_level(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_TO_LEVEL_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, LevelControl::Commands::MoveToLevel::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move_to_level);
 }
 
 command_t *create_move(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, LevelControl::Commands::Move::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move);
 }
 
 command_t *create_step(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STEP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, LevelControl::Commands::Step::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_step);
 }
 
 command_t *create_stop(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STOP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, LevelControl::Commands::Stop::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_stop);
 }
 
 command_t *create_move_to_level_with_on_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_TO_LEVEL_WITH_ON_OFF_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, LevelControl::Commands::MoveToLevelWithOnOff::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move_to_level_with_on_off);
 }
 
 command_t *create_move_with_on_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_WITH_ON_OFF_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_move_with_on_off);
+    return esp_matter::command::create(cluster, LevelControl::Commands::MoveWithOnOff::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_move_with_on_off);
 }
 
 command_t *create_step_with_on_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STEP_WITH_ON_OFF_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_step_with_on_off);
+    return esp_matter::command::create(cluster, LevelControl::Commands::StepWithOnOff::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_step_with_on_off);
 }
 
 command_t *create_stop_with_on_off(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STOP_WITH_ON_OFF_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_stop_with_on_off);
+    return esp_matter::command::create(cluster, LevelControl::Commands::StopWithOnOff::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_stop_with_on_off);
 }
 
 } /* command */
@@ -1471,53 +1456,50 @@ namespace command {
 
 command_t *create_move_to_hue(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_TO_HUE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveToHue::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move_to_hue);
 }
 
 command_t *create_move_hue(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_HUE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveHue::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move_hue);
 }
 
 command_t *create_step_hue(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STEP_HUE_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, ColorControl::Commands::StepHue::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_step_hue);
 }
 
 command_t *create_move_to_saturation(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_TO_SATURATION_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_move_to_saturation);
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveToSaturation::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_move_to_saturation);
 }
 
 command_t *create_move_saturation(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_SATURATION_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_move_saturation);
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveSaturation::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_move_saturation);
 }
 
 command_t *create_step_saturation(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STEP_SATURATION_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_step_saturation);
+    return esp_matter::command::create(cluster, ColorControl::Commands::StepSaturation::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_step_saturation);
 }
 
 command_t *create_move_to_hue_and_saturation(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_MOVE_TO_HUE_AND_SATURATION_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveToHueAndSaturation::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_move_to_hue_and_saturation);
 }
 
 command_t *create_stop_move_step(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_STOP_MOVE_STEP_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, ColorControl::Commands::StopMoveStep::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_stop_move_step);
 }
 
@@ -1529,9 +1511,8 @@ namespace command {
 
 command_t *create_setpoint_raise_lower(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_SETPOINT_RAISE_LOWER_COMMAND_ID,
-                                       ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
-                                       esp_matter_command_callback_setpoint_raise_lower);
+    return esp_matter::command::create(cluster, Thermostat::Commands::SetpointRaiseLower::Id,
+                                       COMMAND_FLAG_CLIENT_GENERATED, esp_matter_command_callback_setpoint_raise_lower);
 }
 
 } /* command */
@@ -1542,13 +1523,13 @@ namespace command {
 
 command_t *create_lock_door(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_LOCK_DOOR_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, DoorLock::Commands::LockDoor::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_lock_door);
 }
 
 command_t *create_unlock_door(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, ZCL_UNLOCK_DOOR_COMMAND_ID, ESP_MATTER_COMMAND_FLAG_CLIENT_GENERATED,
+    return esp_matter::command::create(cluster, DoorLock::Commands::UnlockDoor::Id, COMMAND_FLAG_CLIENT_GENERATED,
                                        esp_matter_command_callback_unlock_door);
 }
 

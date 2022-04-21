@@ -123,8 +123,8 @@ esp_err_t zigbee_bridge_attribute_update(int endpoint_id, int cluster_id, int at
 {
     app_bridge_zigbee_device_t *zigbee_device = app_bridge_get_zigbee_device_by_matter_endpointid(endpoint_id);
     if (zigbee_device && zigbee_device->dev && zigbee_device->dev->endpoint) {
-        if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-            if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
+        if (cluster_id == OnOff::Id) {
+            if (attribute_id == OnOff::Attributes::OnOff::Id) {
                 zb_buf_get_out_delayed_ext((val->val.b ? zigbee_bridge_send_on : zigbee_bridge_send_off),
                                            zigbee_device->zigbee_shortaddr, 0);
             }

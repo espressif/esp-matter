@@ -17,6 +17,9 @@
 #include <esp_err.h>
 #include <esp_matter.h>
 
+namespace esp_matter {
+namespace rainmaker {
+
 /** Initialize ESP Matter RainMaker
  *
  * This adds the custom RainMaker cluster which is used for RainMaker User Node Association.
@@ -26,7 +29,7 @@
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_rainmaker_init(void);
+esp_err_t init(void);
 
 /** Start ESP Matter RainMaker
  *
@@ -36,4 +39,7 @@ esp_err_t esp_matter_rainmaker_init(void);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_rainmaker_start(void);
+esp_err_t start(void);
+
+} /* rainmaker */
+} /* esp_matter */

@@ -21,6 +21,11 @@ namespace esp_matter {
 namespace cluster {
 using client::peer_device_t;
 
+/** Specific command send APIs
+ *
+ * If some standard command is not present here, it can be added.
+ */
+
 namespace on_off {
 namespace command {
 esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id);

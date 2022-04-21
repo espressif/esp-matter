@@ -19,6 +19,15 @@
 
 #define ESP_MATTER_NONE_FEATURE_ID 0x0000
 
+/** Specific feature APIs
+ *
+ * These APIs also create the mandatory attributes and commands for the cluster for that particular feature. If the
+ * mandatory attribute is not managed internally, then a config is present for that attribute. The constructor for the
+ * config will set the attribute to the default value from the spec.
+ *
+ * If some standard feature is not present here, it can be added.
+ */
+
 namespace esp_matter {
 namespace cluster {
 

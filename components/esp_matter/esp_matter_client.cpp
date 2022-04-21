@@ -142,7 +142,7 @@ namespace command {
 esp_err_t send_on(peer_device_t *remote_device, int remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
-    chip::app::Clusters::OnOff::Commands::On::Type command_data;
+    OnOff::Commands::On::Type command_data;
 
     cluster.Associate(remote_device, remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -152,7 +152,7 @@ esp_err_t send_on(peer_device_t *remote_device, int remote_endpoint_id)
 esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
-    chip::app::Clusters::OnOff::Commands::Off::Type command_data;
+    OnOff::Commands::Off::Type command_data;
 
     cluster.Associate(remote_device, remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -162,7 +162,7 @@ esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id)
 esp_err_t send_toggle(peer_device_t *remote_device, int remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
-    chip::app::Clusters::OnOff::Commands::Toggle::Type command_data;
+    OnOff::Commands::Toggle::Type command_data;
 
     cluster.Associate(remote_device, remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -179,8 +179,8 @@ esp_err_t send_move(peer_device_t *remote_device, int remote_endpoint_id, uint8_
                     uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::Move::Type command_data;
-    command_data.moveMode = (chip::app::Clusters::LevelControl::MoveMode)move_mode;
+    LevelControl::Commands::Move::Type command_data;
+    command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate = rate;
     command_data.optionMask = option_mask;
     command_data.optionOverride = option_override;
@@ -194,7 +194,7 @@ esp_err_t send_move_to_level(peer_device_t *remote_device, int remote_endpoint_i
                              uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::MoveToLevel::Type command_data;
+    LevelControl::Commands::MoveToLevel::Type command_data;
     command_data.level = level;
     command_data.transitionTime = transition_time;
     command_data.optionMask = option_mask;
@@ -209,7 +209,7 @@ esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, int remot
                                          uint16_t transition_time)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
+    LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
     command_data.level = level;
     command_data.transitionTime = transition_time;
 
@@ -221,8 +221,8 @@ esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, int remot
 esp_err_t send_move_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::MoveWithOnOff::Type command_data;
-    command_data.moveMode = (chip::app::Clusters::LevelControl::MoveMode)move_mode;
+    LevelControl::Commands::MoveWithOnOff::Type command_data;
+    command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate = rate;
 
     cluster.Associate(remote_device, remote_endpoint_id);
@@ -234,8 +234,8 @@ esp_err_t send_step(peer_device_t *remote_device, int remote_endpoint_id, uint8_
                     uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::Step::Type command_data;
-    command_data.stepMode = (chip::app::Clusters::LevelControl::StepMode)step_mode;
+    LevelControl::Commands::Step::Type command_data;
+    command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime = transition_time;
     command_data.optionMask = option_mask;
@@ -250,8 +250,8 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, int remote_endpoin
                                 uint8_t step_size, uint16_t transition_time)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::StepWithOnOff::Type command_data;
-    command_data.stepMode = (chip::app::Clusters::LevelControl::StepMode)step_mode;
+    LevelControl::Commands::StepWithOnOff::Type command_data;
+    command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime = transition_time;
 
@@ -263,7 +263,7 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, int remote_endpoin
 esp_err_t send_stop(peer_device_t *remote_device, int remote_endpoint_id, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::Stop::Type command_data;
+    LevelControl::Commands::Stop::Type command_data;
     command_data.optionMask = option_mask;
     command_data.optionOverride = option_override;
 
@@ -275,7 +275,7 @@ esp_err_t send_stop(peer_device_t *remote_device, int remote_endpoint_id, uint8_
 esp_err_t send_stop_with_on_off(peer_device_t *remote_device, int remote_endpoint_id)
 {
     chip::Controller::LevelControlCluster cluster;
-    chip::app::Clusters::LevelControl::Commands::Stop::Type command_data;
+    LevelControl::Commands::Stop::Type command_data;
 
     cluster.Associate(remote_device, remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -292,8 +292,8 @@ esp_err_t send_move_hue(peer_device_t *remote_device, int remote_endpoint_id, ui
                         uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::MoveHue::Type command_data;
-    command_data.moveMode = (chip::app::Clusters::ColorControl::HueMoveMode)move_mode;
+    ColorControl::Commands::MoveHue::Type command_data;
+    command_data.moveMode = (ColorControl::HueMoveMode)move_mode;
     command_data.rate = rate;
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
@@ -307,8 +307,8 @@ esp_err_t send_move_saturation(peer_device_t *remote_device, int remote_endpoint
                                uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::MoveSaturation::Type command_data;
-    command_data.moveMode = (chip::app::Clusters::ColorControl::SaturationMoveMode)move_mode;
+    ColorControl::Commands::MoveSaturation::Type command_data;
+    command_data.moveMode = (ColorControl::SaturationMoveMode)move_mode;
     command_data.rate = rate;
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
@@ -322,9 +322,9 @@ esp_err_t send_move_to_hue(peer_device_t *remote_device, int remote_endpoint_id,
                            uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::MoveToHue::Type command_data;
+    ColorControl::Commands::MoveToHue::Type command_data;
     command_data.hue = hue;
-    command_data.direction = (chip::app::Clusters::ColorControl::HueDirection)direction;
+    command_data.direction = (ColorControl::HueDirection)direction;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
@@ -339,7 +339,7 @@ esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, int remo
                                           uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::MoveToHueAndSaturation::Type command_data;
+    ColorControl::Commands::MoveToHueAndSaturation::Type command_data;
     command_data.hue = hue;
     command_data.saturation = saturation;
     command_data.transitionTime = transition_time;
@@ -355,7 +355,7 @@ esp_err_t send_move_to_saturation(peer_device_t *remote_device, int remote_endpo
                                   uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::MoveToSaturation::Type command_data;
+    ColorControl::Commands::MoveToSaturation::Type command_data;
     command_data.saturation = saturation;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;
@@ -370,8 +370,8 @@ esp_err_t send_step_hue(peer_device_t *remote_device, int remote_endpoint_id, ui
                         uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::StepHue::Type command_data;
-    command_data.stepMode = (chip::app::Clusters::ColorControl::HueStepMode)step_mode;
+    ColorControl::Commands::StepHue::Type command_data;
+    command_data.stepMode = (ColorControl::HueStepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;
@@ -387,8 +387,8 @@ esp_err_t send_step_saturation(peer_device_t *remote_device, int remote_endpoint
                                uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
-    chip::app::Clusters::ColorControl::Commands::StepSaturation::Type command_data;
-    command_data.stepMode = (chip::app::Clusters::ColorControl::SaturationStepMode)step_mode;
+    ColorControl::Commands::StepSaturation::Type command_data;
+    command_data.stepMode = (ColorControl::SaturationStepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime = transition_time;
     command_data.optionsMask = option_mask;

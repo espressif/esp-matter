@@ -35,16 +35,16 @@ extern int light_endpoint_id;
 static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t *val, int cluster_id, int attribute_id)
 {
     /* Attributes which need to be remapped */
-    if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
             return esp_rmaker_int(value);
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             int value = REMAP_TO_RANGE(val->val.u8, MATTER_HUE, STANDARD_HUE);
             return esp_rmaker_int(value);
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
             return esp_rmaker_int(value);
         }
@@ -72,16 +72,16 @@ static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t
 static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t *val, int cluster_id, int attribute_id)
 {
     /* Attributes which need to be remapped */
-    if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             uint8_t value = REMAP_TO_RANGE(val->val.i, STANDARD_BRIGHTNESS, MATTER_BRIGHTNESS);
             return esp_matter_uint8(value);
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             uint8_t value = REMAP_TO_RANGE(val->val.i, STANDARD_HUE, MATTER_HUE);
             return esp_matter_uint8(value);
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             uint8_t value = REMAP_TO_RANGE(val->val.i, STANDARD_SATURATION, MATTER_SATURATION);
             return esp_matter_uint8(value);
         }
@@ -126,18 +126,18 @@ static int app_rainmaker_get_endpoint_id_from_name(const char *device_name)
 
 static const char *app_rainmaker_get_param_name_from_id(int cluster_id, int attribute_id)
 {
-    if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-        if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
+    if (cluster_id == OnOff::Id) {
+        if (attribute_id == OnOff::Attributes::OnOff::Id) {
             return ESP_RMAKER_DEF_POWER_NAME;
         }
-    } else if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    } else if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             return ESP_RMAKER_DEF_BRIGHTNESS_NAME;
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             return ESP_RMAKER_DEF_HUE_NAME;
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_DEF_SATURATION_NAME;
         }
     }
@@ -146,18 +146,18 @@ static const char *app_rainmaker_get_param_name_from_id(int cluster_id, int attr
 
 static const char *app_rainmaker_get_param_type_from_id(int cluster_id, int attribute_id)
 {
-    if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-        if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
+    if (cluster_id == OnOff::Id) {
+        if (attribute_id == OnOff::Attributes::OnOff::Id) {
             return ESP_RMAKER_PARAM_POWER;
         }
-    } else if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    } else if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             return ESP_RMAKER_PARAM_BRIGHTNESS;
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             return ESP_RMAKER_PARAM_HUE;
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_PARAM_SATURATION;
         }
     }
@@ -166,18 +166,18 @@ static const char *app_rainmaker_get_param_type_from_id(int cluster_id, int attr
 
 static const char *app_rainmaker_get_param_ui_type_from_id(int cluster_id, int attribute_id)
 {
-    if (cluster_id == ZCL_ON_OFF_CLUSTER_ID) {
-        if (attribute_id == ZCL_ON_OFF_ATTRIBUTE_ID) {
+    if (cluster_id == OnOff::Id) {
+        if (attribute_id == OnOff::Attributes::OnOff::Id) {
             return ESP_RMAKER_UI_TOGGLE;
         }
-    } else if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    } else if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             return ESP_RMAKER_UI_SLIDER;
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             return ESP_RMAKER_UI_HUE_SLIDER;
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_UI_SLIDER;
         }
     }
@@ -186,20 +186,20 @@ static const char *app_rainmaker_get_param_ui_type_from_id(int cluster_id, int a
 
 static bool app_rainmaker_get_param_bounds_from_id(int cluster_id, int attribute_id, int *min, int *max, int *step)
 {
-    if (cluster_id == ZCL_LEVEL_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_CURRENT_LEVEL_ATTRIBUTE_ID) {
+    if (cluster_id == LevelControl::Id) {
+        if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
             *min = 0;
             *max = STANDARD_BRIGHTNESS;
             *step = 1;
             return true;
         }
-    } else if (cluster_id == ZCL_COLOR_CONTROL_CLUSTER_ID) {
-        if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID) {
+    } else if (cluster_id == ColorControl::Id) {
+        if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
             *min = 0;
             *max = STANDARD_HUE;
             *step = 1;
             return true;
-        } else if (attribute_id == ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID) {
+        } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             *min = 0;
             *max = STANDARD_SATURATION;
             *step = 1;
@@ -248,13 +248,13 @@ static esp_err_t app_rainmaker_param_add_bounds(esp_rmaker_param_t *param, clust
 static int app_rainmaker_get_cluster_id_from_name(const char *param_name)
 {
     if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
-        return ZCL_ON_OFF_CLUSTER_ID;
+        return OnOff::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_BRIGHTNESS_NAME) == 0) {
-        return ZCL_LEVEL_CONTROL_CLUSTER_ID;
+        return LevelControl::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_HUE_NAME) == 0) {
-        return ZCL_COLOR_CONTROL_CLUSTER_ID;
+        return ColorControl::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_SATURATION_NAME) == 0) {
-        return ZCL_COLOR_CONTROL_CLUSTER_ID;
+        return ColorControl::Id;
     }
     return 0;
 }
@@ -262,13 +262,13 @@ static int app_rainmaker_get_cluster_id_from_name(const char *param_name)
 static int app_rainmaker_get_attribute_id_from_name(const char *param_name)
 {
     if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
-        return ZCL_ON_OFF_ATTRIBUTE_ID;
+        return OnOff::Attributes::OnOff::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_BRIGHTNESS_NAME) == 0) {
-        return ZCL_CURRENT_LEVEL_ATTRIBUTE_ID;
+        return LevelControl::Attributes::CurrentLevel::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_HUE_NAME) == 0) {
-        return ZCL_COLOR_CONTROL_CURRENT_HUE_ATTRIBUTE_ID;
+        return ColorControl::Attributes::CurrentHue::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_SATURATION_NAME) == 0) {
-        return ZCL_COLOR_CONTROL_CURRENT_SATURATION_ATTRIBUTE_ID;
+        return ColorControl::Attributes::CurrentSaturation::Id;
     }
     return 0;
 }
@@ -391,7 +391,7 @@ static void app_rainmaker_data_model_create()
 esp_err_t app_rainmaker_init()
 {
     /* Add custom rainmaker cluster */
-    return esp_matter_rainmaker_init();
+    return rainmaker::init();
 }
 
 esp_err_t app_rainmaker_start()
@@ -429,7 +429,7 @@ esp_err_t app_rainmaker_start()
     esp_rmaker_schedule_enable();
 
     /* Start the ESP RainMaker Agent */
-    esp_matter_rainmaker_start();
+    rainmaker::start();
     esp_rmaker_start();
     return ESP_OK;
 }

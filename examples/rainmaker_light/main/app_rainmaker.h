@@ -34,6 +34,19 @@ esp_err_t app_rainmaker_init(void);
  */
 esp_err_t app_rainmaker_start(void);
 
+/** ESP RainMaker Update
+ *
+ * This API should be called to update ESP RainMaker for the attribute being updated.
+ * This is usually called from the common `app_attribute_update_cb()`.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
 esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
 #ifdef __cplusplus

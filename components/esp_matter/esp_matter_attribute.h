@@ -20,6 +20,12 @@
 namespace esp_matter {
 namespace cluster {
 
+/** Specific attribute create APIs
+ *
+ * If some standard attribute is not present here, it can be added.
+ * If a custom attribute needs to be created, the low level esp_matter::attribute::create() API can be used.
+ */
+
 namespace global {
 namespace attribute {
 attribute_t *create_cluster_revision(cluster_t *cluster, uint16_t value);

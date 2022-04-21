@@ -25,6 +25,11 @@
 namespace esp_matter {
 namespace cluster {
 
+/** Specific event send APIs
+ *
+ * If some standard event is not present here, it can be added.
+ */
+
 namespace switch_cluster {
 namespace event {
 esp_err_t send_switch_latched(uint8_t new_position);

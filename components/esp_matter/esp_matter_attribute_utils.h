@@ -18,6 +18,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/** Remap attribute values
+ *
+ * This can be used to remap attribute values to different ranges.
+ * Example: To convert the brightness value (0-255) into brightness percentage (0-100) and vice-versa.
+ */
 #define REMAP_TO_RANGE(value, from, to) ((value * to) / from)
 
 /** ESP Matter Attribute Value type */
@@ -58,7 +63,7 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_BITMAP32,
 } esp_matter_val_type_t;
 
-/* ESP Matter Value */
+/** ESP Matter Value */
 typedef union {
     /** Boolean */
     bool b;
@@ -93,7 +98,7 @@ typedef union {
     void *p;
 } esp_matter_val_t;
 
-/* ESP Matter Attribute Value */
+/** ESP Matter Attribute Value */
 typedef struct {
     /** Type of Value */
     esp_matter_val_type_t type;
@@ -101,11 +106,11 @@ typedef struct {
     esp_matter_val_t val;
 } esp_matter_attr_val_t;
 
-/* ESP Matter Attribute Bounds */
+/** ESP Matter Attribute Bounds */
 typedef struct esp_matter_attr_bounds {
-    /* Minimum Value */
+    /** Minimum Value */
     esp_matter_attr_val_t min;
-    /* Maximum Value */
+    /** Maximum Value */
     esp_matter_attr_val_t max;
     /** TODO: Step Value might be needed here later */
 } esp_matter_attr_bounds_t;
@@ -165,15 +170,74 @@ esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_
 namespace esp_matter {
 namespace attribute {
 
+/** Attribute update callback type */
+typedef enum callback_type {
+    /** Callback before updating the value in the database */
+    PRE_UPDATE,
+    /** Callback after updating the value in the database */
+    POST_UPDATE,
+    /** Callback for reading the attribute value. This is used when the `ATTRIBUTE_FLAG_OVERRIDE` is set. */
+    READ,
+    /** Callback for writing the attribute value. This is used when the `ATTRIBUTE_FLAG_OVERRIDE` is set. */
+    WRITE,
+} callback_type_t;
+
+/** Callback for attribute update
+ *
+ * @note If the callback type is `PRE_UPDATE` and an error is returned from the callback, the attribute will
+ * not be updated.
+ *
+ * @param[in] type callback type.
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
+ * @param[in] priv_data Pointer to the private data passed while setting the callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+typedef esp_err_t (*callback_t)(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
+                                esp_matter_attr_val_t *val, void *priv_data);
+
+/** Set attribute callback
+ *
+ * Set the common attribute update callback. Whenever an attribute managed by the application is updated, the callback
+ * will be called with the appropriate `callback_type_t`.
+ *
+ * @param[in] callback attribute update callback.
+ * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
+ * should stay allocated throughout the lifetime of the device.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_callback(callback_t callback, void *priv_data);
+
 /** Attribute update
  *
- * This API updates the attribute value
+ * This API updates the attribute value.
+ * After this API is called, the application gets the attribute update callback with `PRE_UPDATE`, then the
+ * attribute is updated in the database, then the application get the callback with `POST_UPDATE`.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
  */
 esp_err_t update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 
 /** Attribute value print
  *
- * This API prints the attribute value according to the type
+ * This API prints the attribute value according to the type.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ * @param[in] val Pointer to `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
  */
 void val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
 

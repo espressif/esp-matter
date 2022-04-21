@@ -19,6 +19,12 @@
 namespace esp_matter {
 namespace cluster {
 
+/** Specific command create APIs
+ *
+ * If some standard command is not present here, it can be added.
+ * If a custom command needs to be created, the low level esp_matter::command::create() API can be used.
+ */
+
 namespace group_key_management {
 namespace command {
 command_t *create_key_set_write(cluster_t *cluster);

@@ -41,10 +41,10 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, 
 {
     esp_err_t err = ESP_OK;
 
-    if (type == PRE_ATTRIBUTE) {
+    if (type == PRE_UPDATE) {
         /* Driver update */
         err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
-    } else if (type == POST_ATTRIBUTE) {
+    } else if (type == POST_UPDATE) {
         /* Other ecosystems update */
     }
 
@@ -63,7 +63,7 @@ extern "C" void app_main()
     node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
     on_off_switch::config_t switch_config;
-    endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ESP_MATTER_ENDPOINT_FLAG_NONE);
+    endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE);
     switch_endpoint_id = endpoint::get_id(endpoint);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
