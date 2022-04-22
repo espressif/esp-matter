@@ -11,6 +11,7 @@
 #include <core/CHIPError.h>
 #include <esp_log.h>
 #include <platform/CHIPDeviceLayer.h>
+#include <platform/CommissionableDataProvider.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
 #include <setup_payload/SetupPayload.h>
@@ -38,13 +39,13 @@ esp_err_t app_qrcode_get_payload(char **qrcode_text, char **short_manual_code_te
     std::string long_manual_code_payload;
 
     /* Get details */
-    err = ConfigurationMgr().GetSetupDiscriminator(discriminator);
+    err = GetCommissionableDataProvider()->GetSetupDiscriminator(discriminator);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Couldn't get discriminator: %s", ErrorStr(err));
         return ESP_FAIL;
     }
 
-    err = ConfigurationMgr().GetSetupPinCode(setup_pin_code);
+    err = GetCommissionableDataProvider()->GetSetupPasscode(setup_pin_code);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Couldn't get setup_pin_code: %s", ErrorStr(err));
         return ESP_FAIL;

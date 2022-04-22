@@ -31,6 +31,7 @@ static esp_err_t init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
     }
     on_off::config_t config;
     on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
+    endpoint::set_device_type_id(dev->endpoint, endpoint::on_off_light::get_device_type_id());
     if (endpoint::enable(dev->endpoint) != ESP_OK) {
         ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
         endpoint::destroy(dev->node, dev->endpoint);

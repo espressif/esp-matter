@@ -201,12 +201,12 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id);
  *
  * Get the device type ID for the endpoint.
  *
- * @param[in] endpoint_id Endpoint ID for the endpoint.
+ * @param[in] endpoint Endpoint handle.
  *
  * @return device type ID on success.
  * @return 0xFFFF in case of failure or if the device type ID was not set.
  */
-int get_device_type_id(int endpoint_id);
+int get_device_type_id(endpoint_t *endpoint);
 
 /** Enable endpoint
  *

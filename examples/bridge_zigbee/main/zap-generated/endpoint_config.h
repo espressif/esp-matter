@@ -1,6 +1,6 @@
 /*
  *
- *    Copyright (c) 2022 Project CHIP Authors
+ *    Copyright (c) 2021 Project CHIP Authors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -53,12 +53,16 @@
 #define FIXED_PROFILE_IDS                                                      \
   {0}
 
-// Array of device ids
-#define FIXED_DEVICE_IDS                                                       \
+// Array of device types
+#define FIXED_DEVICE_TYPES                                                     \
   {0}
 
-// Array of device versions
-#define FIXED_DEVICE_VERSIONS                                                  \
+// Array of device type offsets
+#define FIXED_DEVICE_TYPE_OFFSETS                                              \
+  {0}
+
+// Array of device type lengths
+#define FIXED_DEVICE_TYPE_LENGTHS                                              \
   {0}
 
 // Array of endpoint types supported on each endpoint
