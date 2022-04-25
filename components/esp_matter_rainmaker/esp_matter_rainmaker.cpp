@@ -146,9 +146,13 @@ static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVRe
 
     /* The expected format of the data is "<user_id>::<secret_key>" */
     char ch = ':';
-    char *check = strchr(data, (int)ch);
-    if (check == NULL) {
-        ESP_LOGE(TAG, "':' not found in the received data: %.*s. The expected format is \"<user_id>::<secret_key>\"",
+    char *check_first = strchr(data, (int)ch);
+    char *check_second = NULL;
+    if (check_first && (size >= (int)((check_first + 1) - data))) {
+        check_second = strchr(check_first + 1, (int)ch);
+    }
+    if (!check_first || !check_second) {
+        ESP_LOGE(TAG, "\"::\" not found in the received data: %.*s. The expected format is \"<user_id>::<secret_key>\"",
                  size, data);
         return ESP_FAIL;
     }
@@ -156,12 +160,12 @@ static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVRe
     /* Get sizes */
     int user_id_index = 0;
     int user_id_len = (int)(strchr(data, (int)ch) - data); /* (first ':') - (start of string) */
-    int secret_key_index = (int)(strrchr(data, (int)ch) - data) + 1; /* (last ':') - (start of string) + 1 */
+    int secret_key_index = (int)(&data[user_id_len] - data) + 2; /* (user id end) - (start of string) + 2 */
     int secret_key_len = size - secret_key_index;
     if (user_id_len <= 0 || user_id_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN || secret_key_len <= 0 ||
         secret_key_len >= ESP_MATTER_RAINMAKER_MAX_DATA_LEN) {
-        ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d", user_id_len,
-                 secret_key_len);
+        ESP_LOGE(TAG, "User id or secret key length invalid: user_id_len: %d, secret_key_len: %d, received_data: %.*s",
+                 user_id_len, secret_key_len, size, data);
         return ESP_FAIL;
     }
 
