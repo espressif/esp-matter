@@ -1,5 +1,5 @@
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
-set(light_requires )
+set(light_requires driver)
 if ("${light_type}" STREQUAL "ws2812")
     list(APPEND light_requires led_strip)
 elseif ("${light_type}" STREQUAL "vled")
