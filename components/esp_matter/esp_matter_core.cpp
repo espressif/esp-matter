@@ -683,7 +683,6 @@ static esp_err_t chip_init(event_callback_t callback)
     }
     PlatformMgr().AddEventHandler(callback, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    esp_matter_openthread_launch_task();
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize Thread stack");
         return ESP_FAIL;
