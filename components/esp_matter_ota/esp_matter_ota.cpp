@@ -16,27 +16,30 @@
 #include <esp_matter_ota.h>
 #include <string.h>
 
-#include "app/clusters/ota-requestor/BDXDownloader.h"
-#include "app/clusters/ota-requestor/OTARequestor.h"
-#include "OTAImageProcessorImpl.h"
-#include "app/clusters/ota-requestor/GenericOTARequestorDriver.h"
-#include "app/clusters/ota-requestor/OTARequestorInterface.h"
+#include <app/clusters/ota-requestor/BDXDownloader.h>
+#include <app/clusters/ota-requestor/DefaultOTARequestor.h>
+#include <app/clusters/ota-requestor/DefaultOTARequestorDriver.h>
+#include <app/clusters/ota-requestor/DefaultOTARequestorStorage.h>
+#include <platform/ESP32/OTAImageProcessorImpl.h>
 
 using chip::BDXDownloader;
+using chip::DefaultOTARequestor;
+using chip::DefaultOTARequestorStorage;
+using chip::DeviceLayer::DefaultOTARequestorDriver;
 using chip::OTAImageProcessorImpl;
-using chip::OTARequestor;
-using chip::DeviceLayer::GenericOTARequestorDriver;
 using chip::Server;
 #if CONFIG_ENABLE_OTA_REQUESTOR 
-OTARequestor gRequestorCore;
-GenericOTARequestorDriver gRequestorUser;
+DefaultOTARequestor gRequestorCore;
+DefaultOTARequestorStorage gRequestorStorage;
+DefaultOTARequestorDriver gRequestorUser;
 BDXDownloader gDownloader;
 OTAImageProcessorImpl gImageProcessor;
 
 void esp_matter_ota_requestor_init(void)
 {
     chip::SetRequestorInstance(&gRequestorCore);
-    gRequestorCore.Init(&(Server::GetInstance()), &gRequestorUser, &gDownloader);
+    gRequestorStorage.Init(Server::GetInstance().GetPersistentStorage());
+    gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, gRequestorUser, gDownloader);
     gImageProcessor.SetOTADownloader(&gDownloader);
     gDownloader.SetImageProcessorDelegate(&gImageProcessor);
     gRequestorUser.Init(&gRequestorCore, &gImageProcessor);

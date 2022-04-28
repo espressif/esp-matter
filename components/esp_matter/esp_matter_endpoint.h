@@ -126,6 +126,10 @@ int get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* thermostat */
 
+namespace bridge {
+int get_device_type_id();
+} /* bridge */
+
 namespace bridged_node {
 typedef struct config {
     bridged_device_basic::config_t bridged_device_basic;

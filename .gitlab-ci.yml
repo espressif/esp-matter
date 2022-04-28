@@ -13,10 +13,21 @@ variables:
 .setup_idf: &setup_idf
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using release/v4.4 branch of espressif/esp-idf github repo
-    - git clone --recursive --single-branch -b release/v4.4 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
+    - git clone --recursive -b release/v4.4 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - ./install.sh
     - . export.sh
+
+.setup_idf_v5_0: &setup_idf_v5_0
+    # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
+    # using commit 047903c612 of espressif/esp-idf github repo
+    # idf_v5_0 is used for bridge_zigbee_example and examples of ESP32-H2
+    - git clone --recursive --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
+    - cd esp-idf
+    - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
+    - git submodule update --init --recursive
+    - ./install.sh
+    - . ./export.sh
 
 .setup_matter: &setup_matter
     - cd $ESP_MATTER_PATH
@@ -56,14 +67,9 @@ variables:
     - idf.py build
 
 .build_bridge_zigbee_app: &build_bridge_zigbee_app
-    - idf.py build
-    - cd $IDF_PATH
-    - git checkout b05b70c7f39a45b9bb8d09498b45edbe3b7bfc22
-    - git submodule update --init --recursive
-    - rm -rf $HOME/.espressif/python_env
-    - ./install.sh
-    - . ./export.sh
     - cd $ESP_MATTER_PATH/examples/bridge_zigbee
+# pyparsing in python_env created by matter is version 2.4.0 IDF v5.0 requires 3.0.8
+    - pip install pyparsing==3.0.8
     - idf.py set-target esp32
     - idf.py build
 
@@ -81,6 +87,20 @@ build_esp_matter_examples:
         - *setup_idf
         - *setup_matter
         - *build_examples
+
+build_esp_matter_examples_idf_v5_0:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
+    tags:
+      - build
+
+    script:
+        - export ESP_MATTER_PATH=$PWD
+        - mkdir repos
+        - export REPOS_PATH=$PWD/repos
+        - *chip_submodule_update
+        - *setup_idf_v5_0
+        - *setup_matter
         - *build_bridge_zigbee_app
 
 build_upstream_examples:

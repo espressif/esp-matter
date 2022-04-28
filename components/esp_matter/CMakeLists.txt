@@ -86,3 +86,5 @@ idf_component_register( SRC_DIRS        ${SRC_DIRS_LIST}
 # esp-matter/connectedhomeip/connectedhomeip/src/app/EventManagement.cpp:467:23: error: 'writer' is
 # used uninitialized in this function
 idf_build_set_property(COMPILE_OPTIONS "-Wno-error=uninitialized;-Wno-error=maybe-uninitialized;-Wno-missing-field-initializers;" APPEND)
+target_compile_options(${COMPONENT_LIB} PUBLIC
+                       "-DCHIP_ADDRESS_RESOLVE_IMPL_INCLUDE_HEADER=<lib/address_resolve/AddressResolve_DefaultImpl.h>")

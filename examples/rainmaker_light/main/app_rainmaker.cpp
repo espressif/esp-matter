@@ -322,7 +322,7 @@ static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t 
         return NULL;
     }
     /* Add this device only if endpoint_id has been handled */
-    int device_type_id = endpoint::get_device_type_id(endpoint_id);
+    int device_type_id = endpoint::get_device_type_id(endpoint);
     const char *device_type = app_rainmaker_get_device_type_from_id(device_type_id);
     esp_rmaker_device_t *device = esp_rmaker_device_create(device_name, device_type, NULL);
     if (!device) {

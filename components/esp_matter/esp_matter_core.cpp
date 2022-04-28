@@ -91,6 +91,7 @@ typedef struct _endpoint {
     _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
     DataVersion *data_versions_ptr;
+    EmberAfDeviceType *device_types_ptr;
     struct _endpoint *next;
 } _endpoint_t;
 
@@ -294,11 +295,11 @@ static esp_err_t disable(endpoint_t *endpoint)
         /* Free attributes */
         free((void *)endpoint_type->cluster[cluster_index].attributes);
         /* Free commands */
-        if (endpoint_type->cluster[cluster_index].clientGeneratedCommandList) {
-            free((void *)endpoint_type->cluster[cluster_index].clientGeneratedCommandList);
+        if (endpoint_type->cluster[cluster_index].acceptedCommandList) {
+            free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
         }
-        if (endpoint_type->cluster[cluster_index].serverGeneratedCommandList) {
-            free((void *)endpoint_type->cluster[cluster_index].serverGeneratedCommandList);
+        if (endpoint_type->cluster[cluster_index].generatedCommandList) {
+            free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
         }
     }
     free((void *)endpoint_type->cluster);
@@ -307,6 +308,12 @@ static esp_err_t disable(endpoint_t *endpoint)
     if (current_endpoint->data_versions_ptr) {
         free(current_endpoint->data_versions_ptr);
         current_endpoint->data_versions_ptr = NULL;
+    }
+
+    /* Free device types */
+    if (current_endpoint->device_types_ptr) {
+        free(current_endpoint->device_types_ptr);
+        current_endpoint->device_types_ptr = NULL;
     }
 
     /* Free endpoint type */
@@ -332,6 +339,32 @@ esp_err_t enable(endpoint_t *endpoint)
     }
     current_endpoint->endpoint_type = endpoint_type;
 
+    /* Device types */
+    /** TODO: This assumes only 1 device type per endpoint. Also, it is hardcoded for bridge device types. Change it. */
+    int default_device_version = 1;
+    int device_type_count = 1;
+    if (current_endpoint->flags & ENDPOINT_FLAG_BRIDGE) {
+        device_type_count++;
+    }
+    EmberAfDeviceType *device_types_ptr = (EmberAfDeviceType *)calloc(device_type_count, sizeof(EmberAfDeviceType));
+    if (!device_types_ptr) {
+        ESP_LOGE(TAG, "Couldn't allocate device_types");
+        free(endpoint_type);
+        current_endpoint->endpoint_type = NULL;
+        /* goto cleanup is not used here to avoid 'crosses initialization' of device_types below */
+        return ESP_ERR_NO_MEM;
+    }
+    device_types_ptr[0].deviceId = current_endpoint->device_type_id;
+    device_types_ptr[0].deviceVersion = default_device_version;
+    if (current_endpoint->flags & ENDPOINT_FLAG_BRIDGE) {
+        device_types_ptr[1].deviceId = current_endpoint->endpoint_id == 0 ?
+                                       endpoint::bridge::get_device_type_id() :
+                                       endpoint::bridged_node::get_device_type_id();
+        device_types_ptr[1].deviceVersion = default_device_version;
+    }
+    chip::Span<EmberAfDeviceType> device_types(device_types_ptr, device_type_count);
+    current_endpoint->device_types_ptr = device_types_ptr;
+
     /* Clusters */
     _cluster_t *cluster = current_endpoint->cluster_list;
     int cluster_count = cluster::get_count(cluster);
@@ -340,7 +373,9 @@ esp_err_t enable(endpoint_t *endpoint)
     DataVersion *data_versions_ptr = (DataVersion *)calloc(1, cluster_count * sizeof(DataVersion));
     if (!data_versions_ptr) {
         ESP_LOGE(TAG, "Couldn't allocate data_versions");
+        free(data_versions_ptr);
         free(endpoint_type);
+        current_endpoint->data_versions_ptr = NULL;
         current_endpoint->endpoint_type = NULL;
         /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
         return ESP_ERR_NO_MEM;
@@ -358,14 +393,13 @@ esp_err_t enable(endpoint_t *endpoint)
     int attribute_count = 0;
     int attribute_index = 0;
     EmberAfAttributeMetadata *matter_attributes = NULL;
-    CommandId *client_generated_command_ids = NULL;
-    CommandId *server_generated_command_ids = NULL;
+    CommandId *accepted_command_ids = NULL;
+    CommandId *generated_command_ids = NULL;
     _command_t *command = NULL;
     int command_count = 0;
     int command_index = 0;
     int command_flag = COMMAND_FLAG_NONE;
     int endpoint_index = 0;
-    int default_device_version = 1;
 
     matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
     if (!matter_clusters) {
@@ -403,51 +437,51 @@ esp_err_t enable(endpoint_t *endpoint)
         command_count = 0;
         command_index = 0;
         command_flag = COMMAND_FLAG_NONE;
-        client_generated_command_ids = NULL;
-        server_generated_command_ids = NULL;
+        accepted_command_ids = NULL;
+        generated_command_ids = NULL;
 
         /* Client Generated Commands */
-        command_flag = COMMAND_FLAG_CLIENT_GENERATED;
+        command_flag = COMMAND_FLAG_ACCEPTED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
-            client_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
-            if (!client_generated_command_ids) {
-                ESP_LOGE(TAG, "Couldn't allocate client_generated_command_ids");
+            accepted_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            if (!accepted_command_ids) {
+                ESP_LOGE(TAG, "Couldn't allocate accepted_command_ids");
                 err = ESP_ERR_NO_MEM;
                 break;
             }
             while (command) {
                 if (command->flags & command_flag) {
-                    client_generated_command_ids[command_index] = command->command_id;
+                    accepted_command_ids[command_index] = command->command_id;
                     command_index++;
                 }
                 command = command->next;
             }
-            client_generated_command_ids[command_index] = kInvalidCommandId;
+            accepted_command_ids[command_index] = kInvalidCommandId;
         }
 
         /* Server Generated Commands */
-        command_flag = COMMAND_FLAG_SERVER_GENERATED;
+        command_flag = COMMAND_FLAG_GENERATED;
         command = cluster->command_list;
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
-            server_generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
-            if (!server_generated_command_ids) {
-                ESP_LOGE(TAG, "Couldn't allocate server_generated_command_ids");
+            generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            if (!generated_command_ids) {
+                ESP_LOGE(TAG, "Couldn't allocate generated_command_ids");
                 err = ESP_ERR_NO_MEM;
                 break;
             }
             while (command) {
                 if (command->flags & command_flag) {
-                    server_generated_command_ids[command_index] = command->command_id;
+                    generated_command_ids[command_index] = command->command_id;
                     command_index++;
                 }
                 command = command->next;
             }
-            server_generated_command_ids[command_index] = kInvalidCommandId;
+            generated_command_ids[command_index] = kInvalidCommandId;
         }
 
         /* Fill up the cluster */
@@ -456,8 +490,8 @@ esp_err_t enable(endpoint_t *endpoint)
         matter_clusters[cluster_index].attributeCount = attribute_count;
         matter_clusters[cluster_index].mask = cluster->flags;
         matter_clusters[cluster_index].functions = (EmberAfGenericClusterFunction *)cluster->function_list;
-        matter_clusters[cluster_index].clientGeneratedCommandList = client_generated_command_ids;
-        matter_clusters[cluster_index].serverGeneratedCommandList = server_generated_command_ids;
+        matter_clusters[cluster_index].acceptedCommandList = accepted_command_ids;
+        matter_clusters[cluster_index].generatedCommandList = generated_command_ids;
 
         /* Get next cluster */
         endpoint_type->endpointSize += matter_clusters[cluster_index].clusterSize;
@@ -466,8 +500,8 @@ esp_err_t enable(endpoint_t *endpoint)
 
         /* This is to avoid double free in case of errors */
         matter_attributes = NULL;
-        client_generated_command_ids = NULL;
-        server_generated_command_ids = NULL;
+        accepted_command_ids = NULL;
+        generated_command_ids = NULL;
     }
     if (err != ESP_OK) {
         goto cleanup;
@@ -485,9 +519,8 @@ esp_err_t enable(endpoint_t *endpoint)
 
     /* Add Endpoint */
     endpoint_index = endpoint::get_next_index();
-    status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type,
-                                       current_endpoint->device_type_id, default_device_version,
-                                       chip::Span<chip::DataVersion>(data_versions));
+    status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, data_versions,
+                                       device_types);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: 0x%x", current_endpoint->endpoint_id, status);
         err = ESP_FAIL;
@@ -503,11 +536,11 @@ esp_err_t enable(endpoint_t *endpoint)
     return err;
 
 cleanup:
-    if (server_generated_command_ids) {
-        free(server_generated_command_ids);
+    if (generated_command_ids) {
+        free(generated_command_ids);
     }
-    if (client_generated_command_ids) {
-        free(client_generated_command_ids);
+    if (accepted_command_ids) {
+        free(accepted_command_ids);
     }
     if (matter_attributes) {
         free(matter_attributes);
@@ -519,11 +552,11 @@ cleanup:
                 free((void *)matter_clusters[cluster_index].attributes);
             }
             /* Free commands */
-            if (matter_clusters[cluster_index].clientGeneratedCommandList) {
-                free((void *)matter_clusters[cluster_index].clientGeneratedCommandList);
+            if (matter_clusters[cluster_index].acceptedCommandList) {
+                free((void *)matter_clusters[cluster_index].acceptedCommandList);
             }
-            if (matter_clusters[cluster_index].serverGeneratedCommandList) {
-                free((void *)matter_clusters[cluster_index].serverGeneratedCommandList);
+            if (matter_clusters[cluster_index].generatedCommandList) {
+                free((void *)matter_clusters[cluster_index].generatedCommandList);
             }
         }
         free(matter_clusters);
@@ -531,6 +564,10 @@ cleanup:
     if (data_versions_ptr) {
         free(data_versions_ptr);
         current_endpoint->data_versions_ptr = NULL;
+    }
+    if (device_types_ptr) {
+        free(device_types_ptr);
+        current_endpoint->device_types_ptr = NULL;
     }
     if (endpoint_type) {
         free(endpoint_type);
@@ -593,7 +630,13 @@ esp_err_t chip_stack_unlock()
 static void esp_matter_chip_init_task(intptr_t context)
 {
     xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
-    chip::Server::GetInstance().Init();
+
+    static chip::CommonCaseDeviceServerInitParams initParams;
+    initParams.InitializeStaticResourcesBeforeServerInit();
+    /** TODO: Add these callbacks and pass them on to the application */
+    // initParams.appDelegate = &sCallbacks;
+    chip::Server::GetInstance().Init(initParams);
+
 #if CONFIG_ESP_MATTER_USE_ESP_DAC_PROVIDER
     SetDeviceAttestationCredentialsProvider(esp_matter_dac_provider_get());
 #else
@@ -1225,7 +1268,7 @@ endpoint_t *create(node_t *node, uint8_t flags)
 
     /* Set */
     endpoint->endpoint_id = current_node->current_endpoint_id++;
-    endpoint->device_type_id = 0xFFFF;
+    endpoint->device_type_id = 0xFFFF'FFFF;
     endpoint->flags = flags;
 
     /* Add */
@@ -1352,9 +1395,14 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id)
     return ESP_OK;
 }
 
-int get_device_type_id(int endpoint_id)
+int get_device_type_id(endpoint_t *endpoint)
 {
-    int device_type_id = emberAfGetDeviceIdForEndpoint(endpoint_id);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    int device_type_id = current_endpoint->device_type_id;
     return device_type_id;
 }
 

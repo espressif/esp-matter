@@ -24,6 +24,7 @@
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
+#define ESP_MATTER_BRIDGE_DEVICE_TYPE_ID 0x000E
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
@@ -225,6 +226,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     return endpoint;
 }
 } /* thermostat */
+
+namespace bridge {
+int get_device_type_id()
+{
+    return ESP_MATTER_BRIDGE_DEVICE_TYPE_ID;
+}
+} /* bridge */
 
 namespace bridged_node {
 int get_device_type_id()

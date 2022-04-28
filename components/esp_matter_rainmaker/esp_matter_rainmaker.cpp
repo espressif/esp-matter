@@ -191,13 +191,11 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom rainmaker cluster */
     cluster_t *cluster = esp_matter::cluster::create(endpoint, cluster::rainmaker::Id, CLUSTER_FLAG_SERVER);
-    attribute::create(cluster, Globals::Attributes::ClusterRevision::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_uint16(1));
+    attribute::create(cluster, Globals::Attributes::ClusterRevision::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(1));
 
     /* Create custom status attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
-    attribute::create(cluster, cluster::rainmaker::attribute::status::Id, ATTRIBUTE_FLAG_NONE,
-                      esp_matter_bool(false));
+    attribute::create(cluster, cluster::rainmaker::attribute::status::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bool(false));
 
     /* Create custom node_id attribute */
     /* Update the value of the attribute after esp_rmaker_node_init() is done */
@@ -207,7 +205,7 @@ static esp_err_t custom_cluster_create()
 
     /* Create custom configuration command */
     command::create(cluster, cluster::rainmaker::command::configuration::Id,
-                    COMMAND_FLAG_CLIENT_GENERATED | COMMAND_FLAG_CUSTOM, command_callback);
+                    COMMAND_FLAG_ACCEPTED | COMMAND_FLAG_CUSTOM, command_callback);
     return ESP_OK;
 }
 

@@ -43,6 +43,8 @@ typedef enum endpoint_flags {
     ENDPOINT_FLAG_NONE = 0x00,
     /** The endpoint can be destroyed using `endpoint::destroy()` */
     ENDPOINT_FLAG_DESTROYABLE = 0x01,
+    /** The endpoint is a bridged node */
+    ENDPOINT_FLAG_BRIDGE = 0x02,
 } endpoint_flags_t;
 
 /** Cluster flags */
@@ -97,9 +99,9 @@ typedef enum command_flags {
     /** The command is not a standard command */
     COMMAND_FLAG_CUSTOM = 0x01,
     /** The command is client generated */
-    COMMAND_FLAG_CLIENT_GENERATED = 0x02,
+    COMMAND_FLAG_ACCEPTED = 0x02,
     /** The command is server generated */
-    COMMAND_FLAG_SERVER_GENERATED = 0x04,
+    COMMAND_FLAG_GENERATED = 0x04,
 } command_flags_t;
 
 } /* esp_matter */
