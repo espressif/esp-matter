@@ -358,6 +358,9 @@ static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *devic
     app_rainmaker_param_add_ui_type(param, cluster, attribute);
     app_rainmaker_param_add_bounds(param, cluster, attribute);
     esp_rmaker_device_add_param(device, param);
+    if (strcmp(param_type, ESP_RMAKER_PARAM_POWER) == 0) {
+        esp_rmaker_device_assign_primary_param(device, param);
+    }
     return param;
 }
 
