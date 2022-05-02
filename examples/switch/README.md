@@ -2,22 +2,7 @@
 
 ## Building and Flashing the Firmware
 
-### Commissioning using  chip-tool
-
-#### Pair a device over BLE
-
-Commission switch and light using chip-tool
-
-##### Command:
-
-```
-./out/debug/chip-tool pairing ble-wifi node-id SSID PSK SETUP_PINCODE DISCRIMINATOR
-
-```
-for switch SETUP_PINCODE = 20212020 DISCRIMINATOR = 240 (0xF0)
-
 See the [README.md](../../README.md) file for more information about building and flashing the firmware.
-
 
 ## What to expect in this example?
 
@@ -26,25 +11,23 @@ Supported features:
  - Switch will connect to light when Bind command is sent 
  - CLIs to control remote light from switch
 
-
 ## Bind light to switch
 
-Send Bind command from chip tool to switch which adds entry of remote device (light) in binding table. 
+Update the light's acl attribute which adds entry of remote device (switch) in the access control list:
+```
+./out/debug/chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 12344321 ], "targets": null}]' 12344322 0
+```
 
+Update the switch's binding attribute which adds entry of remote device (light) in binding table:
 ```
- ./out/debug/chip-tool binding bind RemoteNodeId RemoteGroupId RemoteEndpointId RemoteClusterId node-id endpoint-id
+./out/debug/chip-tool binding write binding '[{"fabricIndex": 1, "node":12344322, "endpoint":1, "cluster":6}]' 12344321 1
 ```
-e.g.
-```
-./out/debug/chip-tool binding bind 12344322 0 1 6 12344321 1
-```
+
 note: 
 - 12344321 : node Id of switch used during commissioning
 - 12344322 : node Id of light used during commissioning 
 - Cluster Id for OnOff cluster is 6
--  binding cluster is currently present on endpoint 1
-
-When bind command is sent switch will establish a CASE Session with light. After bind command on chip tool returns success, wait for 5-10 seconds until you see `CASE Session established` message in logs on switch side.
+- Binding cluster is currently present on endpoint 1
 
 ### Useful shell commands
 
@@ -74,4 +57,3 @@ e.g.
 ```
 >  matter esp driver send_bind 0x0001 0x0006 0x0002
 ```
-

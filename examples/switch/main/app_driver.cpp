@@ -94,7 +94,7 @@ static void app_driver_button_toggle_cb(void *arg)
     ESP_LOGI(TAG, "Toggle button pressed");
     int endpoint_id = switch_endpoint_id;
     int cluster_id = OnOff::Id;
-    int command_id = OnOff::Commands::Off::Id;
+    int command_id = OnOff::Commands::Toggle::Id;
 
     g_cluster_id = cluster_id;
     g_command_id = command_id;
