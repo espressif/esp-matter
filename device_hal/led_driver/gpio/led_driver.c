@@ -15,13 +15,13 @@
 #include <esp_log.h>
 #include <hal/ledc_types.h>
 
-#include <light_driver.h>
+#include <led_driver.h>
 
-static const char *TAG = "light_driver_gpio";
+static const char *TAG = "led_driver_gpio";
 static bool current_power = false;
 static uint8_t current_brightness = 0;
 
-esp_err_t light_driver_init(light_driver_config_t *config)
+esp_err_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
     esp_err_t err = ESP_OK;
@@ -56,13 +56,13 @@ esp_err_t light_driver_init(light_driver_config_t *config)
     return err;
 }
 
-esp_err_t light_driver_set_power(bool power)
+esp_err_t led_driver_set_power(bool power)
 {
     current_power = power;
-    return light_driver_set_brightness(current_brightness);
+    return led_driver_set_brightness(current_brightness);
 }
 
-esp_err_t light_driver_set_brightness(uint8_t brightness)
+esp_err_t led_driver_set_brightness(uint8_t brightness)
 {
     esp_err_t err;
 
@@ -85,42 +85,42 @@ esp_err_t light_driver_set_brightness(uint8_t brightness)
     return err;
 }
 
-esp_err_t light_driver_set_hue(uint16_t hue)
+esp_err_t led_driver_set_hue(uint16_t hue)
 {
     return ESP_ERR_NOT_SUPPORTED;
 }
 
-esp_err_t light_driver_set_saturation(uint8_t saturation)
+esp_err_t led_driver_set_saturation(uint8_t saturation)
 {
     return ESP_ERR_NOT_SUPPORTED;
 }
 
-esp_err_t light_driver_set_temperature(uint32_t temperature)
+esp_err_t led_driver_set_temperature(uint32_t temperature)
 {
     return ESP_ERR_NOT_SUPPORTED;
 }
 
-bool light_driver_get_power()
+bool led_driver_get_power()
 {
     return current_power;
 }
 
-uint8_t light_driver_get_brightness()
+uint8_t led_driver_get_brightness()
 {
     return current_brightness;
 }
 
-uint16_t light_driver_get_hue()
+uint16_t led_driver_get_hue()
 {
     return 0;
 }
 
-uint8_t light_driver_get_saturation()
+uint8_t led_driver_get_saturation()
 {
     return 0;
 }
 
-uint32_t light_driver_get_temperature()
+uint32_t led_driver_get_temperature()
 {
     return 0;
 }

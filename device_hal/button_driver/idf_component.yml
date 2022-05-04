@@ -1,0 +1,5 @@
+## IDF Component Manager Manifest File
+dependencies:
+  button:
+    path: components/button
+    git: https://github.com/espressif/esp-iot-solution.git

@@ -16,6 +16,7 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 #include <esp_matter_factory.h>
+#include <nvs.h>
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/server/Dnssd.h>
@@ -45,6 +46,7 @@ using chip::kInvalidCommandId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
+using chip::DeviceLayer::ConfigurationMgr;
 using chip::DeviceLayer::ConnectivityManager;
 using chip::DeviceLayer::ConnectivityMgr;
 using chip::DeviceLayer::PlatformMgr;
@@ -52,11 +54,15 @@ using chip::DeviceLayer::PlatformMgr;
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
 
+#define ESP_MATTER_NVS_PART_NAME "nvs"
+
 static const char *TAG = "esp_matter_core";
 
 namespace esp_matter {
 typedef struct _attribute {
     int attribute_id;
+    int cluster_id;
+    int endpoint_id;
     uint16_t flags;
     esp_matter_attr_val_t val;
     esp_matter_attr_bounds_t *bounds;
@@ -75,6 +81,7 @@ typedef struct _command {
 
 typedef struct _cluster {
     int cluster_id;
+    int endpoint_id;
     uint16_t flags;
     const cluster::function_generic_t *function_list;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
@@ -713,6 +720,41 @@ esp_err_t start(event_callback_t callback)
     return err;
 }
 
+esp_err_t factory_reset()
+{
+    esp_err_t err = ESP_OK;
+    node_t *node = node::get();
+    if (node) {
+        /* ESP Matter data model is used. Erase all the data that we have added in nvs. */
+        endpoint_t *endpoint = endpoint::get_first(node);
+        while (endpoint) {
+            int endpoint_id = endpoint::get_id(endpoint);
+            char nvs_namespace[16] = {0};
+            snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+
+            nvs_handle_t handle;
+            err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Error opening partition: %s, %d", nvs_namespace, err);
+                continue;
+            }
+            err = nvs_erase_all(handle);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
+                continue;
+            }
+            endpoint = endpoint::get_next(endpoint);
+        }
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "Erasing attribute data completed");
+        }
+    }
+
+    /* Submodule factory reset. This also restarts after completion. */
+    ConfigurationMgr().InitiateFactoryReset();
+    return err;
+}
+
 namespace attribute {
 attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val)
 {
@@ -732,9 +774,21 @@ attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_mat
 
     /* Set */
     attribute->attribute_id = attribute_id;
+    attribute->cluster_id = current_cluster->cluster_id;
+    attribute->endpoint_id = current_cluster->endpoint_id;
     attribute->flags = flags;
     attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
-    set_val((attribute_t *)attribute, &val);
+    if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
+        esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
+        esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
+        if (err == ESP_OK) {
+            set_val((attribute_t *)attribute, &val_nvs);
+        } else {
+            set_val((attribute_t *)attribute, &val);
+        }
+    } else {
+        set_val((attribute_t *)attribute, &val);
+    }
     set_default_value_from_current_val((attribute_t *)attribute);
 
     /* Add */
@@ -860,6 +914,9 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         }
     }
     memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
+    if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
+        store_val_in_nvs(attribute);
+    }
     return ESP_OK;
 }
 
@@ -953,6 +1010,93 @@ callback_t get_override_callback(attribute_t *attribute)
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->override_callback;
+}
+
+esp_err_t store_val_in_nvs(attribute_t *attribute)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    /* Get keys */
+    int attribute_id = current_attribute->attribute_id;
+    int cluster_id = current_attribute->cluster_id;
+    int endpoint_id = current_attribute->endpoint_id;
+    char nvs_namespace[16] = {0};
+    char attribute_key[16] = {0};
+    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+    snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
+
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        return err;
+    }
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        /* Store only if value is not NULL */
+        if (current_attribute->val.val.a.b) {
+            err = nvs_set_blob(handle, attribute_key, current_attribute->val.val.a.b, current_attribute->val.val.a.s);
+            nvs_commit(handle);
+        } else {
+            err = ESP_OK;
+        }
+    } else {
+        err = nvs_set_blob(handle, attribute_key, &current_attribute->val, sizeof(esp_matter_attr_val_t));
+        nvs_commit(handle);
+    }
+    nvs_close(handle);
+    return err;
+}
+
+esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
+{
+    if (!attribute) {
+        ESP_LOGE(TAG, "Attribute cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _attribute_t *current_attribute = (_attribute_t *)attribute;
+
+    /* Get keys */
+    int attribute_id = current_attribute->attribute_id;
+    int cluster_id = current_attribute->cluster_id;
+    int endpoint_id = current_attribute->endpoint_id;
+    char nvs_namespace[16] = {0};
+    char attribute_key[16] = {0};
+    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+    snprintf(attribute_key, 16, "%X:%X", cluster_id, attribute_id); /* cluster_id:attribute_id */
+
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READONLY, &handle);
+    if (err != ESP_OK) {
+        return err;
+    }
+    if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        size_t len = 0;
+        if ((err = nvs_get_blob(handle, attribute_key, NULL, &len)) == ESP_OK) {
+            uint8_t *buffer = (uint8_t *)calloc(1, len);
+            if (!buffer) {
+                err = ESP_ERR_NO_MEM;
+            } else {
+                nvs_get_blob(handle, attribute_key, buffer, &len);
+                val->type = current_attribute->val.type;
+                val->val.a.b = buffer;
+                val->val.a.s = len;
+                val->val.a.n = len;
+                val->val.a.t = len + (current_attribute->val.val.a.t - current_attribute->val.val.a.s);
+            }
+        }
+    } else {
+        size_t len = sizeof(esp_matter_attr_val_t);
+        err = nvs_get_blob(handle, attribute_key, val, &len);
+    }
+    nvs_close(handle);
+    return err;
 }
 
 } /* attribute */
@@ -1097,6 +1241,7 @@ cluster_t *create(endpoint_t *endpoint, int cluster_id, uint8_t flags)
 
     /* Set */
     cluster->cluster_id = cluster_id;
+    cluster->endpoint_id = current_endpoint->endpoint_id;
     cluster->flags = flags;
 
     /* Add */
