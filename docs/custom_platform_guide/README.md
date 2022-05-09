@@ -10,23 +10,24 @@ Create a directory `platform/${NEW_PLATFORM_NAME}` in your codebase. You can typ
 
 We've provided an example BUILD.gn file for the `ESP32_custom` example platform. It simply compiles the ESP32 platform in Matter without any modifications.
 
-The new platform directory must be added to the Matter include path. See the `ESP32_custion_include` config in the [BUILD.gn](./BUILD.gn).
+The new platform directory must be added to the Matter include path. See the `ESP32_custom_include` config in the [BUILD.gn](./BUILD.gn).
 
 Multiple build configs must be exported to the build system. See the `buildconfig_header` section in the [BUILD.gn](./BUILD.gn) for the required definitions.
 
 ## Required Kconfigs
 
 The config `CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM` shall be enabled.
-The config `CONFIG_CHIP_EXTERNAL_PLATFORM_TARGET` shall be the relative path from `${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/config/esp32` to the external platform directory. For instance, if your source tree is:
+The config `CONFIG_CHIP_EXTERNAL_PLATFORM_DIR` shall be the relative path from `${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/config/esp32` to the external platform directory.
+For instance, if your source tree is:
 
 ```
-.
+my_project
 ├── esp-matter
 └── platform
     └── ESP32_custom
 ```
 
-Then `CONFIG_CHIP_EXTERNAL_PLATFORM_TARGET` will be `//../../../../../platform/ESP32_custom`
+Then `CONFIG_CHIP_EXTERNAL_PLATFORM_DIR` will be `../../../../../platform/ESP32_custom`.
 
 The config `CONFIG_BUILD_CHIP_TESTS` shall be disabled.
 
