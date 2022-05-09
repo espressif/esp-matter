@@ -29,30 +29,14 @@
 #define GENERATED_DEFAULTS                                                     \
   {                                                                            \
                                                                                \
-    /* Endpoint: 0, Cluster: Basic (server), big-endian */                     \
+    /* Endpoint: 0, Cluster: General Commissioning (server), big-endian */     \
                                                                                \
-    /* 0 - Location, */                                                        \
-    2, 'X', 'X',                                                               \
-                                                                               \
-        /* 3 - SoftwareVersion, */                                             \
-        0x00, 0x00, 0x00, 0x00,                                                \
-                                                                               \
-        /* Endpoint: 0, Cluster: General Commissioning (server), big-endian */ \
-                                                                               \
-        /* 7 - Breadcrumb, */                                                  \
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,                        \
+    /* 0 - Breadcrumb, */                                                      \
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,                            \
                                                                                \
         /* Endpoint: 0, Cluster: Network Commissioning (server), big-endian */ \
                                                                                \
-        /* 15 - LastConnectErrorValue, */                                      \
-        0x00, 0x00, 0x00, 0x00,                                                \
-                                                                               \
-        /* Endpoint: 1, Cluster: Basic (server), big-endian */                 \
-                                                                               \
-        /* 19 - Location, */                                                   \
-        2, 'X', 'X',                                                           \
-                                                                               \
-        /* 22 - SoftwareVersion, */                                            \
+        /* 8 - LastConnectErrorValue, */                                       \
         0x00, 0x00, 0x00, 0x00,                                                \
   }
 
@@ -60,38 +44,21 @@
 #define GENERATED_DEFAULTS                                                     \
   {                                                                            \
                                                                                \
-    /* Endpoint: 0, Cluster: Basic (server), little-endian */                  \
+    /* Endpoint: 0, Cluster: General Commissioning (server), little-endian */  \
                                                                                \
-    /* 0 - Location, */                                                        \
-    2, 'X', 'X',                                                               \
-                                                                               \
-        /* 3 - SoftwareVersion, */                                             \
-        0x00, 0x00, 0x00, 0x00,                                                \
-                                                                               \
-        /* Endpoint: 0, Cluster: General Commissioning (server), little-endian \
-         */                                                                    \
-                                                                               \
-        /* 7 - Breadcrumb, */                                                  \
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,                        \
+    /* 0 - Breadcrumb, */                                                      \
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,                            \
                                                                                \
         /* Endpoint: 0, Cluster: Network Commissioning (server), little-endian \
          */                                                                    \
                                                                                \
-        /* 15 - LastConnectErrorValue, */                                      \
-        0x00, 0x00, 0x00, 0x00,                                                \
-                                                                               \
-        /* Endpoint: 1, Cluster: Basic (server), little-endian */              \
-                                                                               \
-        /* 19 - Location, */                                                   \
-        2, 'X', 'X',                                                           \
-                                                                               \
-        /* 22 - SoftwareVersion, */                                            \
+        /* 8 - LastConnectErrorValue, */                                       \
         0x00, 0x00, 0x00, 0x00,                                                \
   }
 
 #endif // BIGENDIAN_CPU
 
-#define GENERATED_DEFAULTS_COUNT (6)
+#define GENERATED_DEFAULTS_COUNT (2)
 
 #define ZAP_TYPE(type) ZCL_##type##_ATTRIBUTE_TYPE
 #define ZAP_LONG_DEFAULTS_INDEX(index)                                         \
@@ -146,29 +113,39 @@
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
                                                                                \
         /* Endpoint: 0, Cluster: Basic (server) */                             \
-        {0x00000000, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
+        {0x00000000, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* DataModelRevision */                         \
-        {0x00000001, ZAP_TYPE(CHAR_STRING), 33, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000001, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* VendorName */                                \
-        {0x00000002, ZAP_TYPE(VENDOR_ID), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),    \
+        {0x00000002, ZAP_TYPE(VENDOR_ID), 0,                                   \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* VendorID */                                  \
-        {0x00000003, ZAP_TYPE(CHAR_STRING), 33, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000003, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* ProductName */                               \
-        {0x00000004, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
+        {0x00000004, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* ProductID */                                 \
         {0x00000005, ZAP_TYPE(CHAR_STRING), 33,                                \
          ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),         \
          ZAP_EMPTY_DEFAULT()}, /* NodeLabel */                                 \
-        {0x00000006, ZAP_TYPE(CHAR_STRING), 3,                                 \
-         ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),         \
-         ZAP_LONG_DEFAULTS_INDEX(0)}, /* Location */                           \
-        {0x00000007, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
-         ZAP_SIMPLE_DEFAULT(0)}, /* HardwareVersion */                         \
-        {0x00000008, ZAP_TYPE(CHAR_STRING), 65, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000006, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) |                                \
+             ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),     \
+         ZAP_EMPTY_DEFAULT()}, /* Location */                                  \
+        {0x00000007, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
+         ZAP_EMPTY_DEFAULT()}, /* HardwareVersion */                           \
+        {0x00000008, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* HardwareVersionString */                     \
-        {0x00000009, ZAP_TYPE(INT32U), 4, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
-         ZAP_LONG_DEFAULTS_INDEX(3)}, /* SoftwareVersion */                    \
-        {0x0000000A, ZAP_TYPE(CHAR_STRING), 65, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000009, ZAP_TYPE(INT32U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
+         ZAP_EMPTY_DEFAULT()}, /* SoftwareVersion */                           \
+        {0x0000000A, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* SoftwareVersionString */                     \
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
@@ -194,7 +171,7 @@
                                                                                \
         /* Endpoint: 0, Cluster: General Commissioning (server) */             \
         {0x00000000, ZAP_TYPE(INT64U), 8, ZAP_ATTRIBUTE_MASK(WRITABLE),        \
-         ZAP_LONG_DEFAULTS_INDEX(7)}, /* Breadcrumb */                         \
+         ZAP_LONG_DEFAULTS_INDEX(0)}, /* Breadcrumb */                         \
         {0x00000001, ZAP_TYPE(STRUCT), 0,                                      \
          ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE),                                 \
          ZAP_EMPTY_DEFAULT()}, /* BasicCommissioningInfo */                    \
@@ -221,7 +198,7 @@
         {0x00000006, ZAP_TYPE(OCTET_STRING), 33, ZAP_ATTRIBUTE_MASK(NULLABLE), \
          ZAP_EMPTY_DEFAULT()}, /* LastNetworkID */                             \
         {0x00000007, ZAP_TYPE(INT32S), 4, ZAP_ATTRIBUTE_MASK(NULLABLE),        \
-         ZAP_LONG_DEFAULTS_INDEX(15)}, /* LastConnectErrorValue */             \
+         ZAP_LONG_DEFAULTS_INDEX(8)}, /* LastConnectErrorValue */              \
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
                                                                                \
@@ -234,11 +211,13 @@
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
                                                                                \
         /* Endpoint: 0, Cluster: AdministratorCommissioning (server) */        \
-        {0x00000000, ZAP_TYPE(INT8U), 1, 0,                                    \
+        {0x00000000, ZAP_TYPE(INT8U), 0, ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE), \
          ZAP_EMPTY_DEFAULT()}, /* WindowStatus */                              \
-        {0x00000001, ZAP_TYPE(FABRIC_IDX), 1, 0,                               \
+        {0x00000001, ZAP_TYPE(FABRIC_IDX), 0,                                  \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE),                                 \
          ZAP_EMPTY_DEFAULT()}, /* AdminFabricIndex */                          \
-        {0x00000002, ZAP_TYPE(INT16U), 2, 0,                                   \
+        {0x00000002, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE),                                 \
          ZAP_EMPTY_DEFAULT()}, /* AdminVendorId */                             \
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
@@ -313,29 +292,39 @@
          ZAP_SIMPLE_DEFAULT(5)}, /* ClusterRevision */                         \
                                                                                \
         /* Endpoint: 1, Cluster: Basic (server) */                             \
-        {0x00000000, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
+        {0x00000000, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* DataModelRevision */                         \
-        {0x00000001, ZAP_TYPE(CHAR_STRING), 33, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000001, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* VendorName */                                \
-        {0x00000002, ZAP_TYPE(VENDOR_ID), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),    \
+        {0x00000002, ZAP_TYPE(VENDOR_ID), 0,                                   \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* VendorID */                                  \
-        {0x00000003, ZAP_TYPE(CHAR_STRING), 33, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000003, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* ProductName */                               \
-        {0x00000004, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
+        {0x00000004, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* ProductID */                                 \
         {0x00000005, ZAP_TYPE(CHAR_STRING), 33,                                \
          ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),         \
          ZAP_EMPTY_DEFAULT()}, /* NodeLabel */                                 \
-        {0x00000006, ZAP_TYPE(CHAR_STRING), 3,                                 \
-         ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),         \
-         ZAP_LONG_DEFAULTS_INDEX(19)}, /* Location */                          \
-        {0x00000007, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
-         ZAP_SIMPLE_DEFAULT(0)}, /* HardwareVersion */                         \
-        {0x00000008, ZAP_TYPE(CHAR_STRING), 65, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000006, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) |                                \
+             ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),     \
+         ZAP_EMPTY_DEFAULT()}, /* Location */                                  \
+        {0x00000007, ZAP_TYPE(INT16U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
+         ZAP_EMPTY_DEFAULT()}, /* HardwareVersion */                           \
+        {0x00000008, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* HardwareVersionString */                     \
-        {0x00000009, ZAP_TYPE(INT32U), 4, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
-         ZAP_LONG_DEFAULTS_INDEX(22)}, /* SoftwareVersion */                   \
-        {0x0000000A, ZAP_TYPE(CHAR_STRING), 65, ZAP_ATTRIBUTE_MASK(SINGLETON), \
+        {0x00000009, ZAP_TYPE(INT32U), 0,                                      \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
+         ZAP_EMPTY_DEFAULT()}, /* SoftwareVersion */                           \
+        {0x0000000A, ZAP_TYPE(CHAR_STRING), 0,                                 \
+         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
          ZAP_EMPTY_DEFAULT()}, /* SoftwareVersionString */                     \
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
@@ -575,7 +564,7 @@
       .clusterId = 0x00000028,  \
       .attributes = ZAP_ATTRIBUTE_INDEX(8), \
       .attributeCount = 12, \
-      .clusterSize = 246, \
+      .clusterSize = 35, \
       .mask = ZAP_CLUSTER_MASK(SERVER) | ZAP_CLUSTER_MASK(INIT_FUNCTION), \
       .functions = chipFuncArrayBasicServer, \
       .acceptedCommandList = nullptr ,\
@@ -652,7 +641,7 @@
       .clusterId = 0x0000003C,  \
       .attributes = ZAP_ATTRIBUTE_INDEX(43), \
       .attributeCount = 4, \
-      .clusterSize = 6, \
+      .clusterSize = 2, \
       .mask = ZAP_CLUSTER_MASK(SERVER), \
       .functions = NULL, \
       .acceptedCommandList = ZAP_GENERATED_COMMANDS_INDEX( 16 ) ,\
@@ -740,7 +729,7 @@
       .clusterId = 0x00000028,  \
       .attributes = ZAP_ATTRIBUTE_INDEX(74), \
       .attributeCount = 12, \
-      .clusterSize = 246, \
+      .clusterSize = 35, \
       .mask = ZAP_CLUSTER_MASK(SERVER) | ZAP_CLUSTER_MASK(INIT_FUNCTION), \
       .functions = chipFuncArrayBasicServer, \
       .acceptedCommandList = nullptr ,\
@@ -767,7 +756,7 @@
 
 // This is an array of EmberAfEndpointType structures.
 #define GENERATED_ENDPOINT_TYPES                                               \
-  { {ZAP_CLUSTER_INDEX(0), 12, 370}, {ZAP_CLUSTER_INDEX(12), 7, 281}, }
+  { {ZAP_CLUSTER_INDEX(0), 12, 155}, {ZAP_CLUSTER_INDEX(12), 7, 70}, }
 
 // Largest attribute size is needed for various buffers
 #define ATTRIBUTE_LARGEST (255)
@@ -776,10 +765,10 @@ static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE,
               "ATTRIBUTE_LARGEST larger than expected");
 
 // Total size of singleton attributes
-#define ATTRIBUTE_SINGLETONS_SIZE (492)
+#define ATTRIBUTE_SINGLETONS_SIZE (70)
 
 // Total size of attribute storage
-#define ATTRIBUTE_MAX_SIZE (651)
+#define ATTRIBUTE_MAX_SIZE (225)
 
 // Number of fixed endpoints
 #define FIXED_ENDPOINT_COUNT (2)
