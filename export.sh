@@ -49,6 +49,9 @@ esp_matter_export_main() {
 
      # PATH for gn
      export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/
+
+    # PATH for chip-tool
+    export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool/out/
 }
 
 esp_matter_export_main

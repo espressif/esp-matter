@@ -34,11 +34,11 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
     if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
         printf("Driver commands:\n"
                "\thelp: Print help\n"
-               "\tsend_bind: <endpoint_id> <cluster_id> <command_id>. "
-               "Example: matter esp driver send_bind 0x0001 0x0006 0x0002.\n"
+               "\tsend_to_binded: <endpoint_id> <cluster_id> <command_id>. "
+               "Example: matter esp client send_to_binded 0x0001 0x0006 0x0002.\n"
                "\tsend: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>. "
-               "Example: matter esp driver send 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
-    } else if (argc == 4 && strncmp(argv[0], "send_bind", sizeof("send_bind")) == 0) {
+               "Example: matter esp client send 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
+    } else if (argc == 4 && strncmp(argv[0], "send_to_binded", sizeof("send_to_binded")) == 0) {
         int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
         int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
         int command_id = strtol((const char *)&argv[3][2], NULL, 16);
@@ -66,9 +66,9 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
 static void app_driver_register_commands()
 {
     esp_matter_console_command_t command = {
-        .name = "driver",
-        .description = "This can be used to simulate on-device control. Usage: matter esp driver <driver_command>. "
-                       "Driver commands: help, send, send_bind",
+        .name = "client",
+        .description = "This can be used to simulate on-device control. Usage: matter esp client <driver_command>. "
+                       "Driver commands: help, send, send_to_binded",
         .handler = app_driver_console_handler,
     };
     esp_matter_console_add_command(&command);

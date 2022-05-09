@@ -1,5 +1,6 @@
 stages:
-  - build
+    - build
+    - docs
 
 variables:
     IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
@@ -139,3 +140,59 @@ build_upstream_examples:
         - *setup_idf
         - *setup_matter
         - *build_matter_examples
+
+build_docs:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    tags:
+        - matter_build
+    artifacts:
+        when: always
+        paths:
+            - docs/_build/*/*/*.txt
+            - docs/_build/*/*/html/*
+        expire_in: 1 days
+    script:
+        - cd docs
+        - pip install -r requirements.txt
+        - build-docs -t esp32c3 esp32 -l en
+
+.deploy_docs_template:
+    stage: docs
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    tags:
+        - docs
+    needs:
+        - build_docs
+    script:
+        - source ${CI_PROJECT_DIR}/docs/utils.sh
+        - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
+        - export GIT_VER=$(git describe --always)
+        - pip install -r ${CI_PROJECT_DIR}/docs/requirements.txt
+        - deploy-docs
+
+deploy_docs_preview:
+    extends:
+        - .deploy_docs_template
+    when: manual
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/docs/esp-matter"
+
+deploy_docs_production:
+    extends:
+        - .deploy_docs_template
+    when: manual
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PROD_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PROD_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://docs.espressif.com/projects/esp-matter"
