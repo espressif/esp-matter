@@ -66,6 +66,18 @@ variables:
     - idf.py set-target esp32
     - idf.py build
 
+.build_external_platform_example: &build_external_platform_example
+    - rm -rf $ESP_MATTER_PATH/../platform
+    - mkdir $ESP_MATTER_PATH/../platform
+    - cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cp $ESP_MATTER_PATH/docs/custom_platform_guide/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cd $ESP_MATTER_PATH/examples/light
+    - cp sdkconfig.defaults sdkconfig.defaults.backup
+    - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+    - idf.py set-target esp32
+    - idf.py build
+    - cp sdkconfig.defaults.backup sdkconfig.defaults
+
 .build_bridge_zigbee_app: &build_bridge_zigbee_app
     - cd $ESP_MATTER_PATH/examples/bridge_zigbee
 # pyparsing in python_env created by matter is version 2.4.0 IDF v5.0 requires 3.0.8
@@ -87,6 +99,7 @@ build_esp_matter_examples:
         - *setup_idf
         - *setup_matter
         - *build_examples
+        - *build_external_platform_example
 
 build_esp_matter_examples_idf_v5_0:
     stage: build

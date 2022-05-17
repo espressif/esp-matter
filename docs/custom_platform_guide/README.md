@@ -32,3 +32,16 @@ Then `CONFIG_CHIP_EXTERNAL_PLATFORM_DIR` will be `../../../../../platform/ESP32_
 The config `CONFIG_BUILD_CHIP_TESTS` shall be disabled.
 
 If your external platform does not support the [shell interface](../../connectedhomeip/connectedhomeip/src/lib/shell) provided in the Matter shell library, then `CONFIG_ENABLE_CHIP_SHELL` shall also be disabled.
+
+## Example
+
+As an example, you can build [light](../../examples/light) example on `ESP32_custom` platform with following steps:
+
+```
+$ mkdir $ESP_MATTER_PATH/../platform
+$ cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
+$ cp $ESP_MATTER_PATH/docs/custom_platform_guide/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+$ cd $ESP_MATTER_PATH/examples/light
+$ cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
+$ idf.py build
+```
