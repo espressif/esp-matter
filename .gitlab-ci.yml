@@ -89,7 +89,7 @@ build_esp_matter_examples:
     stage: build
     image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
     tags:
-      - build
+      - matter_build
 
     script:
         - export ESP_MATTER_PATH=$PWD
@@ -105,7 +105,7 @@ build_esp_matter_examples_idf_v5_0:
     stage: build
     image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
     tags:
-      - build
+      - matter_build
 
     script:
         - export ESP_MATTER_PATH=$PWD
@@ -120,7 +120,7 @@ build_upstream_examples:
     stage: build
     image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
     tags:
-      - build
+      - matter_build
     when: manual
     script:
         - export ESP_MATTER_PATH=$PWD
