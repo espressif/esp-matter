@@ -47,9 +47,9 @@ $ rainmaker.py claim --addr 0x3E0000 $ESPPORT
 
 This needs to be done after commissioning.
 
-Check if the device already has user node association done, using the custom RainMaker cluster (cluster_id: 0xc00):
+Check if the device already has user node association done, using the custom RainMaker cluster (cluster_id: 0x131B0000):
 ```
-$ ./out/debug/chip-tool any read-by-id 0xc00 0x0 0x1 0x0
+$ ./out/debug/chip-tool any read-by-id 0x131B0000 0x0 0x1 0x0
 ```
 * If the above custom status attribute (attribute_id: 0x0) returns true, the association has already been done.
 * If the attribute returns false, the association has not been done. And the below custom configuration command
@@ -72,7 +72,7 @@ payload: <user_id>::<secret_key>
 
 Now use the payload to run the RainMaker configuration command from chip-tool:
 ```
-$ ./out/debug/chip-tool any command-by-id 0xc00 0x0 '"<user_id>::<secret_key>"' 0x1 0x0
+$ ./out/debug/chip-tool any command-by-id 0x131B0000 0x0 '"<user_id>::<secret_key>"' 0x1 0x0
 ```
 
 The device/node should now be associated with the user.
