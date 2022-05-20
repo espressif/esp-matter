@@ -12,7 +12,7 @@
 #include <esp_log.h>
 #include <esp_matter.h>
 
-#include <app_bridge_zigbee_device.h>
+#include <app_zigbee_bridge_device.h>
 #include <app_zboss.h>
 #include <esp_matter_core.h>
 #include <zboss_api_buf.h>
@@ -56,7 +56,7 @@ void zigbee_bridge_match_bridged_onoff_light_cb(zb_bufid_t bufid)
             ESP_LOGI(TAG, "Bridged node for 0x%04x zigbee device on endpoint %d has been created", p_ind->src_addr,
                      app_bridge_get_matter_endpointid_by_zigbee_shortaddr(p_ind->src_addr));
         } else {
-            app_bridge_zigbee_device_t *dev = app_bridge_create_zigbee_device(node, *p_match_ep, p_ind->src_addr);
+            app_zigbee_bridge_device_t *dev = app_bridge_create_zigbee_device(node, *p_match_ep, p_ind->src_addr);
             ESP_GOTO_ON_FALSE(dev, ESP_FAIL, exit, TAG, "Failed to create zigbee bridged device (on_off light)");
             ESP_GOTO_ON_ERROR(init_bridged_onoff_light(dev->dev), exit, TAG, "Failed to initialize the bridged node");
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x zigbee device on endpoint %d", p_ind->src_addr,
@@ -106,7 +106,7 @@ void zigbee_bridge_match_bridged_onoff_light_timeout(zb_bufid_t bufid)
 
 void zigbee_bridge_send_on(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 {
-    app_bridge_zigbee_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
+    app_zigbee_bridge_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
     ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, dev->zigbee_endpointid,
                            dev->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
                            ZB_ZCL_CMD_ON_OFF_ON_ID, NULL);
@@ -114,7 +114,7 @@ void zigbee_bridge_send_on(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 
 void zigbee_bridge_send_off(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 {
-    app_bridge_zigbee_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
+    app_zigbee_bridge_device_t *dev = app_bridge_get_zigbee_device_by_zigbee_shortaddr(zigbee_shortaddr);
     ZB_ZCL_ON_OFF_SEND_REQ(buf, zigbee_shortaddr, ZB_APS_ADDR_MODE_16_ENDP_PRESENT, dev->zigbee_endpointid,
                            dev->dev->endpoint_id, ZB_AF_HA_PROFILE_ID, ZB_ZCL_DISABLE_DEFAULT_RESPONSE,
                            ZB_ZCL_CMD_ON_OFF_OFF_ID, NULL);
@@ -122,7 +122,7 @@ void zigbee_bridge_send_off(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
 
 esp_err_t zigbee_bridge_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
 {
-    app_bridge_zigbee_device_t *zigbee_device = app_bridge_get_zigbee_device_by_matter_endpointid(endpoint_id);
+    app_zigbee_bridge_device_t *zigbee_device = app_bridge_get_zigbee_device_by_matter_endpointid(endpoint_id);
     if (zigbee_device && zigbee_device->dev && zigbee_device->dev->endpoint) {
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {

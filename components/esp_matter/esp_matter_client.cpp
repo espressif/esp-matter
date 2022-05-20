@@ -61,6 +61,10 @@ esp_err_t connect(int fabric_index, int node_id, int remote_endpoint_id)
 {
     /* Get info */
     FabricInfo *fabric_info = chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
+    if (!fabric_info) {
+        ESP_LOGE(TAG, "Couldn't find fabric info");
+        return ESP_FAIL;
+    }
     PeerId peer_id = fabric_info->GetPeerIdForNode(node_id);
 
     /* Find existing */

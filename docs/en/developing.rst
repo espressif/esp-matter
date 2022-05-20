@@ -68,7 +68,7 @@ for it to work. Check the example's "Additional Environment Setup" section for m
    RainMaker Light <examples/rainmaker_light>
    Switch <examples/switch>
    Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/bridge_zigbee>
+   ZigBee Bridge <examples/zigbee_bridge>
 
 2.1.5 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -181,7 +181,7 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
    RainMaker Light <examples/rainmaker_light>
    Switch <examples/switch>
    Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/bridge_zigbee>
+   ZigBee Bridge <examples/zigbee_bridge>
 
 
 2.2.1.4 Cluster Control

@@ -19,23 +19,23 @@
 
 using esp_matter::node_t;
 
-typedef struct app_bridge_zigbee_device {
+typedef struct app_zigbee_bridge_device {
     esp_matter_bridge_device_t *dev;
     uint8_t zigbee_endpointid;
     uint16_t zigbee_shortaddr;
-    struct app_bridge_zigbee_device *next;
-} app_bridge_zigbee_device_t;
+    struct app_zigbee_bridge_device *next;
+} app_zigbee_bridge_device_t;
 
-app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
+app_zigbee_bridge_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
                                                             uint16_t zigbee_shortaddr);
 
 uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpointid);
 
 int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
 
-app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid);
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid);
 
-app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
 
-esp_err_t app_bridge_remove_zigbee_device(app_bridge_zigbee_device_t *bridged_device);
+esp_err_t app_bridge_remove_zigbee_device(app_zigbee_bridge_device_t *bridged_device);
 #endif

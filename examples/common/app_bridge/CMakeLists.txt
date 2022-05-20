@@ -1,5 +1,5 @@
 if(CONFIG_ZB_ENABLED)
-    set(srcs app_bridge_zigbee_device.cpp)
+    set(srcs app_zigbee_bridge_device.cpp)
 endif()
 
 idf_component_register(SRCS         "${srcs}"

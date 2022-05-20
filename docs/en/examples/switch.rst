@@ -44,25 +44,25 @@ Switch specific console commands:
 
    ::
 
-      matter esp client send_to_binded <endpoint_id> <cluster_id> <command_id>
+      matter esp bound invoke <endpoint_id> <cluster_id> <command_id>
 
    -  Example: Off:
 
       ::
 
-         matter esp client send_to_binded 0x1 0x6 0x0
+         matter esp bound invoke 0x1 0x6 0x0
 
    -  Example: On:
 
       ::
 
-         matter esp client send_to_binded 0x1 0x6 0x1
+         matter esp bound invoke 0x1 0x6 0x1
 
    -  Example: Toggle:
 
       ::
 
-         matter esp client send_to_binded 0x1 0x6 0x2
+         matter esp bound invoke 0x1 0x6 0x2
 
 3. Device Performance
 ---------------------
@@ -118,8 +118,8 @@ I cannot send commands to the light from my switch:
 -  Make sure the binding command was a success.
 -  Make sure you are passing the local endpoint_id, and not the remote
    endpoint_id, to the cluster_update() API.
--  If using device console, make sure you are running the ``send_to_binded``
-   command and not the ``send`` command. The send command is for devices
+-  If using device console, make sure you are running the ``bound invoke``
+   command and not the ``client invoke`` command. The client commands are for devices
    which have not been binded.
 -  If you are still facing issues, reproduce the issue on the default
    example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`. Make sure

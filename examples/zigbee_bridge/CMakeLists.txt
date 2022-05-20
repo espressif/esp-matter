@@ -36,7 +36,7 @@ set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/device_hal/device"
     ${extra_components_dirs_append})
 
-project(bridge_zigbee)
+project(zigbee_bridge)
 
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++14;-Os;-DLWIP_IPV6_SCOPES=0;-DCHIP_HAVE_CONFIG_H;-fpermissive" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os;-DLWIP_IPV6_SCOPES=0" APPEND)

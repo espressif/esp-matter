@@ -111,7 +111,7 @@ void zboss_signal_handler(zb_bufid_t bufid)
 
 void zboss_task()
 {
-    ZB_INIT("bridge zigbee");
+    ZB_INIT("zigbee bridge");
     zb_set_network_coordinator_role(IEEE_CHANNEL_MASK);
     zb_set_nvram_erase_at_start(ERASE_PERSISTENT_CONFIG);
     zb_set_max_children(MAX_CHILDREN);

@@ -16,22 +16,22 @@
 #include <esp_matter.h>
 #include <string.h>
 
-#include <app_bridge_zigbee_device.h>
+#include <app_zigbee_bridge_device.h>
 
 using esp_matter::node_t;
 
-static const char *TAG = "esp_matter_bridge_zigbee";
-static app_bridge_zigbee_device_t *device_list = NULL;
+static const char *TAG = "esp_matter_zigbee_bridge";
+static app_zigbee_bridge_device_t *device_list = NULL;
 static uint8_t current_bridged_device_count = 0;
 
-app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
+app_zigbee_bridge_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
                                                             uint16_t zigbee_shortaddr)
 {
     if (current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
         ESP_LOGE(TAG, "The device list is full, Could not add a zigbee bridged device");
         return NULL;
     }
-    app_bridge_zigbee_device_t *new_dev = (app_bridge_zigbee_device_t *)calloc(1, sizeof(app_bridge_zigbee_device_t));
+    app_zigbee_bridge_device_t *new_dev = (app_zigbee_bridge_device_t *)calloc(1, sizeof(app_zigbee_bridge_device_t));
     new_dev->dev = esp_matter_bridge_create_device(node);
     if (!(new_dev->dev)) {
         ESP_LOGE(TAG, "Failed to create the basic bridged device");
@@ -48,7 +48,7 @@ app_bridge_zigbee_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_
 
 uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpointid)
 {
-    app_bridge_zigbee_device_t *current_dev = device_list;
+    app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
         if (current_dev->dev && (current_dev->dev->endpoint_id == matter_endpointid)) {
             return current_dev->zigbee_shortaddr;
@@ -60,7 +60,7 @@ uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpoin
 
 int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
 {
-    app_bridge_zigbee_device_t *current_dev = device_list;
+    app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
         if (current_dev->zigbee_shortaddr == zigbee_shortaddr && current_dev->dev) {
             return current_dev->dev->endpoint_id;
@@ -70,9 +70,9 @@ int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortad
     return -1;
 }
 
-app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid)
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid)
 {
-    app_bridge_zigbee_device_t *current_dev = device_list;
+    app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
         if (current_dev->dev && (current_dev->dev->endpoint_id == matter_endpointid)) {
             return current_dev;
@@ -82,9 +82,9 @@ app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(in
     return NULL;
 }
 
-app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
 {
-    app_bridge_zigbee_device_t *current_dev = device_list;
+    app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
         if (current_dev->zigbee_shortaddr == zigbee_shortaddr && current_dev->dev) {
             return current_dev;
@@ -94,10 +94,10 @@ app_bridge_zigbee_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uin
     return NULL;
 }
 
-esp_err_t app_bridge_remove_zigbee_device(app_bridge_zigbee_device_t *bridged_device)
+esp_err_t app_bridge_remove_zigbee_device(app_zigbee_bridge_device_t *bridged_device)
 {
     esp_err_t error = ESP_OK;
-    app_bridge_zigbee_device_t *current_dev = NULL;
+    app_zigbee_bridge_device_t *current_dev = NULL;
     if (!bridged_device) {
         return ESP_ERR_INVALID_ARG;
     }

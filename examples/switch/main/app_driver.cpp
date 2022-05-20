@@ -29,16 +29,14 @@ extern int switch_endpoint_id;
 static int g_cluster_id = kInvalidClusterId;
 static int g_command_id = kInvalidCommandId;
 
-static esp_err_t app_driver_console_handler(int argc, char **argv)
+static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
 {
     if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
-        printf("Driver commands:\n"
+        printf("Bound commands:\n"
                "\thelp: Print help\n"
-               "\tsend_to_binded: <endpoint_id> <cluster_id> <command_id>. "
-               "Example: matter esp client send_to_binded 0x0001 0x0006 0x0002.\n"
-               "\tsend: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>. "
-               "Example: matter esp client send 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
-    } else if (argc == 4 && strncmp(argv[0], "send_to_binded", sizeof("send_to_binded")) == 0) {
+               "\tinvoke: <endpoint_id> <cluster_id> <command_id>. "
+               "Example: matter esp bound invoke 0x0001 0x0006 0x0002.\n");
+    } else if (argc == 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
         int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
         int command_id = strtol((const char *)&argv[3][2], NULL, 16);
@@ -46,7 +44,21 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
         g_cluster_id = cluster_id;
         g_command_id = command_id;
         client::cluster_update(endpoint_id, cluster_id);
-    } else if (argc == 6 && strncmp(argv[0], "send", sizeof("send")) == 0) {
+    } else {
+        ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
+        return ESP_ERR_INVALID_ARG;
+    }
+    return ESP_OK;
+}
+
+static esp_err_t app_driver_client_console_handler(int argc, char **argv)
+{
+    if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
+        printf("Client commands:\n"
+               "\thelp: Print help\n"
+               "\tinvoke: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>. "
+               "Example: matter esp client invoke 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
+    } else if (argc == 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         int fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
         int node_id = strtol((const char *)&argv[2][2], NULL, 16);
         int remote_endpoint_id = strtol((const char *)&argv[3][2], NULL, 16);
@@ -65,13 +77,25 @@ static esp_err_t app_driver_console_handler(int argc, char **argv)
 
 static void app_driver_register_commands()
 {
-    esp_matter_console_command_t command = {
-        .name = "client",
-        .description = "This can be used to simulate on-device control. Usage: matter esp client <driver_command>. "
-                       "Driver commands: help, send, send_to_binded",
-        .handler = app_driver_console_handler,
+    /* Add console command for bound devices */
+    esp_matter_console_command_t bound_command = {
+        .name = "bound",
+        .description = "This can be used to simulate on-device control for bound devices."
+                       "Usage: matter esp bound <bound_command>. "
+                       "Bound commands: help, invoke",
+        .handler = app_driver_bound_console_handler,
     };
-    esp_matter_console_add_command(&command);
+    esp_matter_console_add_command(&bound_command);
+
+    /* Add console command for client to control non-bound devices */
+    esp_matter_console_command_t client_command = {
+        .name = "client",
+        .description = "This can be used to simulate on-device control for client devices."
+                       "Usage: matter esp client <client_command>. "
+                       "Client commands: help, invoke",
+        .handler = app_driver_client_console_handler,
+    };
+    esp_matter_console_add_command(&client_command);
 }
 
 void app_driver_client_command_callback(client::peer_device_t *peer_device, int remote_endpoint_id, void *priv_data)

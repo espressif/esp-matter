@@ -17,12 +17,12 @@ variables:
     - git clone --recursive --single-branch -b v4.4.1 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - ./install.sh
-    - . export.sh
+    - . ./export.sh
 
 .setup_idf_v5_0: &setup_idf_v5_0
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using commit 047903c612 of espressif/esp-idf github repo
-    # idf_v5_0 is used for bridge_zigbee_example and examples of ESP32-H2
+    # idf_v5_0 is used for zigbee_bridge example and examples of ESP32-H2
     - git clone --recursive --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
@@ -32,8 +32,8 @@ variables:
 
 .setup_matter: &setup_matter
     - cd $ESP_MATTER_PATH
-    - source connectedhomeip/connectedhomeip/scripts/bootstrap.sh
-    - . export.sh
+    - ./install.sh
+    - . ./export.sh
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -91,7 +91,7 @@ variables:
     - cd $ESP_MATTER_PATH/examples/light
     - idf.py --preview set-target esp32h2
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/bridge_zigbee
+    - cd $ESP_MATTER_PATH/examples/zigbee_bridge
     - idf.py set-target esp32
     - idf.py build
 

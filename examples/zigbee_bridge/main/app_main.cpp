@@ -15,7 +15,7 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
-#include <app_bridge_zigbee_device.h>
+#include <app_zigbee_bridge_device.h>
 #include <app_qrcode.h>
 #include <app_zboss.h>
 

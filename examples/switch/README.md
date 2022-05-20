@@ -34,7 +34,7 @@ note:
 After the binding is successful you can send the following command to control light from switch
 
 ```
-> matter esp client send_to_binded <endpoint_id> <cluster_id> <command_id>
+> matter esp bound invoke <endpoint_id> <cluster_id> <command_id>
 ```
 here, endpoint_id, cluster_id, command_id of switch must be given in hex format 
 
@@ -43,17 +43,17 @@ e.g.
 - Power Off command
 
 ```
-> matter esp client send_to_binded 0x0001 0x0006 0x0000 
+> matter esp bound invoke 0x0001 0x0006 0x0000
 ```
 
 - Power On command
 
 ```
-> matter esp client send_to_binded 0x0001 0x0006 0x0001
+> matter esp bound invoke 0x0001 0x0006 0x0001
 ```
 
 - Toggle command
 
 ```
->  matter esp client send_to_binded 0x0001 0x0006 0x0002
+>  matter esp bound invoke 0x0001 0x0006 0x0002
 ```

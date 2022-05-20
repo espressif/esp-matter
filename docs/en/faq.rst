@@ -150,4 +150,4 @@ The LED on my devkit is not working:
    RainMaker Light <examples/rainmaker_light>
    Switch <examples/switch>
    Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/bridge_zigbee>
+   ZigBee Bridge <examples/zigbee_bridge>
