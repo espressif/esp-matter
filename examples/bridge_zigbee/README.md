@@ -1,8 +1,6 @@
-# Bridge Example
+# Zigbee Bridge Example
 
 ## Building and Flashing the Firmware
-
-This example should be built on IDF commit [b05b70c7f3](https://github.com/espressif/esp-idf/tree/b05b70c7f39a45b9bb8d09498b45edbe3b7bfc22)
 
 See the [README.md](../../README.md) file for more information about building and flashing the firmware.
 
@@ -12,6 +10,7 @@ running on ESP32.
 ### Hardware connection
 
 Connect the two SoCs via UART, below is an example setup with ESP32 DevKitC and ESP32-H2 DevKitC:
+![zigbee_bridge](../docs/_static/esp32-esp32h2.jpg)
 
   ESP32 Pin  | ESP32-H2 Pin
 -------------|--------------

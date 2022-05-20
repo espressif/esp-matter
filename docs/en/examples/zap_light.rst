@@ -16,8 +16,8 @@ also be edited.
 
 ::
 
-   $ cd esp-matter/connectedhomeip/connectedhomeip
-   $ ./scripts/tools/zap/run_zaptool.sh <optional_existing_zap_file>
+   cd esp-matter/connectedhomeip/connectedhomeip
+   ./scripts/tools/zap/run_zaptool.sh <optional_existing_zap_file>
 
 -  If this command fails, run it again.
 -  Once the customization is done, click on 'save' to save the .zap
@@ -28,7 +28,7 @@ command:
 
 ::
 
-   $ ./scripts/tools/zap/generate.py /path/to/<saved>.zap -o /path/to/<output_folder>
+   ./scripts/tools/zap/generate.py /path/to/<saved>.zap -o /path/to/<output_folder>
 
 Now the files in zap_light/main/zap-generated can be replaced with the
 new generated files.

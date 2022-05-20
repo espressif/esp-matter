@@ -155,7 +155,7 @@ build_docs:
     script:
         - cd docs
         - pip install -r requirements.txt
-        - build-docs -t esp32c3 esp32 -l en
+        - build-docs -t esp32 esp32c3 esp32h2 -l en
 
 .deploy_docs_template:
     stage: docs

@@ -22,12 +22,23 @@ host. Linux and Mac OS-X are the supported development hosts in Matter.
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. only:: esp32 or esp32c3
 
-   git clone --recursive https://github.com/espressif/esp-idf.git
-   cd esp-idf; git checkout v4.4.1; git submodule update --init --recursive;
-   ./install.sh
-   cd ..
+   ::
+
+      git clone --recursive https://github.com/espressif/esp-idf.git
+      cd esp-idf; git checkout v4.4.1; git submodule update --init --recursive;
+      ./install.sh
+      cd ..
+
+.. only:: esp32h2
+
+   ::
+
+      git clone --recursive https://github.com/espressif/esp-idf.git
+      cd esp-idf; git checkout 047903c; git submodule update --init --recursive;
+      ./install.sh
+      cd ..
 
 ::
 
@@ -57,12 +68,18 @@ for it to work. Check the example's "Additional Environment Setup" section for m
    RainMaker Light <examples/rainmaker_light>
    Switch <examples/switch>
    Zap Light <examples/zap_light>
-   Zigbee Bridge <examples/bridge_zigbee>
+   ZigBee Bridge <examples/bridge_zigbee>
 
 2.1.5 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Choose IDF target.
+
+.. only:: esp32
+
+   ::
+
+      idf.py set-target esp32
 
 .. only:: esp32c3
 
@@ -70,11 +87,11 @@ Choose IDF target.
 
       idf.py set-target esp32c3
 
-.. only:: esp32
+.. only:: esp32h2
 
    ::
 
-      idf.py set-target esp32
+      idf.py --preview set-target esp32h2
 
 -  If IDF target has not been set explicitly, then ``esp32`` is
    considered as default.
@@ -114,6 +131,9 @@ Choose IDF target.
 2.2 Commissioning and Control
 -----------------------------
 
+-  For a Wi-Fi device, a Wi-Fi AP which supports IPv6 is required.
+-  For a Thread device, a Thread Border Router is required.
+
 2.2.1 Test Setup (Python Controller Setup)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -122,7 +142,7 @@ The Python Controller, also referred to as chip-tool can be used as a Matter cli
 2.2.1.1 Environment setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The environment setup should already have been done when the esp-matter/install.sh script was run. If the setup was done without using the script, the below commands can be run to build the chip-tool executable.
+The environment setup should already have been done when the *esp-matter/install.sh* script was run in the 'Getting the Repositories' section. If the setup was done without using the script, the below commands can be run to build the chip-tool executable.
 
 ::
 
@@ -136,9 +156,17 @@ The environment setup should already have been done when the esp-matter/install.
 
 Use ``chip-tool`` to pair the device:
 
+Pair a Wi-Fi Device over BLE:
+
 ::
 
    chip-tool pairing ble-wifi 1 <ssid> <password> 20202021 3840
+
+Pair a Thread Device over BLE:
+
+::
+
+   chip-tool pairing ble-thread 1 hex:<operationalDataset> 20202021 3840
 
 2.2.1.3 Post Commissioning Setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -153,7 +181,7 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
    RainMaker Light <examples/rainmaker_light>
    Switch <examples/switch>
    Zap Light <examples/zap_light>
-   Zigbee Bridge <examples/bridge_zigbee>
+   ZigBee Bridge <examples/bridge_zigbee>
 
 
 2.2.1.4 Cluster Control
