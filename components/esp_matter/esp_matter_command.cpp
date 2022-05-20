@@ -35,9 +35,9 @@ namespace command {
 
 void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
-    int endpoint_id = command_path.mEndpointId;
-    int cluster_id = command_path.mClusterId;
-    int command_id = command_path.mCommandId;
+    uint16_t endpoint_id = command_path.mEndpointId;
+    uint32_t cluster_id = command_path.mClusterId;
+    uint32_t command_id = command_path.mCommandId;
     ESP_LOGI(TAG, "Received command 0x%04X for enpoint 0x%04X's cluster 0x%08X", command_id, endpoint_id, cluster_id);
 
     node_t *node = node::get();

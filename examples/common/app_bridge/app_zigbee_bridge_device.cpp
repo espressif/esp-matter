@@ -46,7 +46,7 @@ app_zigbee_bridge_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_
     return new_dev;
 }
 
-uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpointid)
+uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_endpointid)
 {
     app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
@@ -58,7 +58,7 @@ uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpoin
     return 0xffff;
 }
 
-int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
+uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr)
 {
     app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {
@@ -67,10 +67,10 @@ int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortad
         }
         current_dev = current_dev->next;
     }
-    return -1;
+    return 0xFFFF;
 }
 
-app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid)
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(uint16_t matter_endpointid)
 {
     app_zigbee_bridge_device_t *current_dev = device_list;
     while (current_dev) {

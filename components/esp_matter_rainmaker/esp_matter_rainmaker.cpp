@@ -81,18 +81,18 @@ static void register_commands()
 
 static esp_err_t status_attribute_update(bool status)
 {
-    int endpoint_id = cluster::rainmaker::endpoint_id;
-    int cluster_id = cluster::rainmaker::Id;
-    int attribute_id = cluster::rainmaker::attribute::status::Id;
+    uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
+    uint32_t cluster_id = cluster::rainmaker::Id;
+    uint32_t attribute_id = cluster::rainmaker::attribute::status::Id;
     esp_matter_attr_val_t val = esp_matter_bool(status);
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
 static esp_err_t node_id_attribute_update(char *node_id)
 {
-    int endpoint_id = cluster::rainmaker::endpoint_id;
-    int cluster_id = cluster::rainmaker::Id;
-    int attribute_id = cluster::rainmaker::attribute::node_id::Id;
+    uint16_t endpoint_id = cluster::rainmaker::endpoint_id;
+    uint32_t cluster_id = cluster::rainmaker::Id;
+    uint32_t attribute_id = cluster::rainmaker::attribute::node_id::Id;
     esp_matter_attr_val_t val = esp_matter_char_str(node_id, strlen(node_id));
     return attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
@@ -115,9 +115,9 @@ static void user_node_association_event_handler(void *arg, esp_event_base_t even
 static esp_err_t command_callback(const ConcreteCommandPath &command_path, TLVReader &tlv_data, void *opaque_ptr)
 {
     /* Get ids */
-    int endpoint_id = command_path.mEndpointId;
-    int cluster_id = command_path.mClusterId;
-    int command_id = command_path.mCommandId;
+    uint16_t endpoint_id = command_path.mEndpointId;
+    uint32_t cluster_id = command_path.mClusterId;
+    uint32_t command_id = command_path.mCommandId;
 
     /* Return if this is not the rainmaker configuration command */
     if (endpoint_id != cluster::rainmaker::endpoint_id || cluster_id != cluster::rainmaker::Id ||

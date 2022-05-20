@@ -36,7 +36,7 @@ using namespace cluster;
 
 namespace endpoint {
 namespace root_node {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID;
 }
@@ -67,7 +67,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* root_node */
 
 namespace on_off_light {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID;
 }
@@ -93,7 +93,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* on_off_light */
 
 namespace dimmable_light {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
 }
@@ -121,7 +121,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* dimmable_light */
 
 namespace color_dimmable_light {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
 }
@@ -151,7 +151,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* color_dimmable_light */
 
 namespace on_off_switch {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID;
 }
@@ -178,7 +178,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* on_off_switch */
 
 namespace fan {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_FAN_DEVICE_TYPE_ID;
 }
@@ -202,7 +202,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* fan */
 
 namespace thermostat {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID;
 }
@@ -228,14 +228,14 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* thermostat */
 
 namespace bridge {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_BRIDGE_DEVICE_TYPE_ID;
 }
 } /* bridge */
 
 namespace bridged_node {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID;
 }
@@ -260,7 +260,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* bridged_node */
 
 namespace door_lock {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID;
 }
@@ -285,7 +285,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 } /* door_lock */
 
 namespace temperature_sensor {
-int get_device_type_id()
+uint32_t get_device_type_id()
 {
     return ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID;
 }

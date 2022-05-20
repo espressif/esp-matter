@@ -159,7 +159,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint);
  * @return Endpoint handle on success.
  * @return NULL in case of failure.
  */
-endpoint_t *get(node_t *node, int endpoint_id);
+endpoint_t *get(node_t *node, uint16_t endpoint_id);
 
 /** Get first endpoint
  *
@@ -190,9 +190,9 @@ endpoint_t *get_next(endpoint_t *endpoint);
  * @param[in] endpoint Endpoint handle.
  *
  * @return Endpoint ID on success.
- * @return -1 in case of failure.
+ * @return Invalid Endpoint ID (0xFFFF) in case of failure.
  */
-int get_id(endpoint_t *endpoint);
+uint16_t get_id(endpoint_t *endpoint);
 
 /** Set device type ID
  *
@@ -204,7 +204,7 @@ int get_id(endpoint_t *endpoint);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id);
+esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
 
 /** Get device type ID
  *
@@ -213,9 +213,9 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id);
  * @param[in] endpoint Endpoint handle.
  *
  * @return device type ID on success.
- * @return 0xFFFF in case of failure or if the device type ID was not set.
+ * @return 0xFFFF'FFFF in case of failure or if the device type ID was not set.
  */
-int get_device_type_id(endpoint_t *endpoint);
+uint32_t get_device_type_id(endpoint_t *endpoint);
 
 /** Enable endpoint
  *
@@ -266,7 +266,7 @@ typedef void (*function_generic_t)();
  * @return Cluster handle on success.
  * @return NULL in case of failure.
  */
-cluster_t *create(endpoint_t *endpoint, int cluster_id, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags);
 
 /** Get cluster
  *
@@ -278,7 +278,7 @@ cluster_t *create(endpoint_t *endpoint, int cluster_id, uint8_t flags);
  * @return Cluster handle on success.
  * @return NULL in case of failure.
  */
-cluster_t *get(endpoint_t *endpoint, int cluster_id);
+cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id);
 
 /** Get first cluster
  *
@@ -309,9 +309,9 @@ cluster_t *get_next(cluster_t *cluster);
  * @param[in] cluster Cluster handle.
  *
  * @return Cluster ID on success.
- * @return -1 in case of failure.
+ * @return Invalid CLuster ID (0xFFFF'FFFF) in case of failure.
  */
-int get_id(cluster_t *cluster);
+uint32_t get_id(cluster_t *cluster);
 
 /** Set cluster plugin server init callback
  *
@@ -395,7 +395,7 @@ namespace attribute {
  * @return Attribute handle on success.
  * @return NULL in case of failure.
  */
-attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val);
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val);
 
 /** Get attribute
  *
@@ -407,7 +407,7 @@ attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_mat
  * @return Attribute handle on success.
  * @return NULL in case of failure.
  */
-attribute_t *get(cluster_t *cluster, int attribute_id);
+attribute_t *get(cluster_t *cluster, uint32_t attribute_id);
 
 /** Get first attribute
  *
@@ -438,9 +438,9 @@ attribute_t *get_next(attribute_t *attribute);
  * @param[in] attribute Attribute handle.
  *
  * @return Attribute ID on success.
- * @return -1 in case of failure.
+ * @return Invalid Attribute ID (0xFFFF'FFFF) in case of failure.
  */
-int get_id(attribute_t *attribute);
+uint32_t get_id(attribute_t *attribute);
 
 /** Set attribute val
  *
@@ -481,7 +481,8 @@ esp_err_t get_val(attribute_t *attribute, esp_matter_attr_val_t *val);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value, uint16_t attribute_size);
+esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, uint8_t *value,
+                      uint16_t attribute_size);
 
 /** Add attribute bounds
  *
@@ -602,7 +603,7 @@ typedef esp_err_t (*callback_t)(const ConcreteCommandPath &command_path, TLVRead
  * @return Command handle on success.
  * @return NULL in case of failure.
  */
-command_t *create(cluster_t *cluster, int command_id, uint8_t flags, callback_t callback);
+command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callback_t callback);
 
 /** Get command
  *
@@ -614,7 +615,7 @@ command_t *create(cluster_t *cluster, int command_id, uint8_t flags, callback_t 
  * @return Command handle on success.
  * @return NULL in case of failure.
  */
-command_t *get(cluster_t *cluster, int command_id);
+command_t *get(cluster_t *cluster, uint32_t command_id);
 
 /** Get first command
  *
@@ -645,9 +646,9 @@ command_t *get_next(command_t *command);
  * @param[in] command Command handle.
  *
  * @return Command ID on success.
- * @return -1 in case of failure.
+ * @return Invalid Command ID (0xFFFF'FFFF) in case of failure.
  */
-int get_id(command_t *command);
+uint32_t get_id(command_t *command);
 
 /** Get command callback
  *
@@ -688,7 +689,7 @@ typedef chip::DeviceProxy peer_device_t;
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*command_callback_t)(peer_device_t *peer_device, int remote_endpoint_id, void *priv_data);
+typedef void (*command_callback_t)(peer_device_t *peer_device, uint16_t remote_endpoint_id, void *priv_data);
 
 /** Initialize binding
  *
@@ -715,7 +716,7 @@ void binding_manager_init();
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t connect(int fabric_index, int node_id, int remote_endpoint_id);
+esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoint_id);
 
 /** Set command send callback
  *
@@ -742,7 +743,7 @@ esp_err_t set_command_callback(command_callback_t callback, void *priv_data);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t cluster_update(int endpoint_id, int cluster_id);
+esp_err_t cluster_update(uint16_t endpoint_id, uint32_t cluster_id);
 
 } /* client */
 } /* esp_matter */

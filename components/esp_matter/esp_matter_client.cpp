@@ -43,7 +43,7 @@ esp_err_t set_command_callback(command_callback_t callback, void *priv_data)
 }
 
 /** TODO: Change g_remote_endpoint_id to something better. */
-int g_remote_endpoint_id = kInvalidEndpointId;
+uint16_t g_remote_endpoint_id = kInvalidEndpointId;
 void esp_matter_new_connection_success_callback(void *context, OperationalDeviceProxy *peer_device)
 {
     ESP_LOGI(TAG, "New connection success");
@@ -57,7 +57,7 @@ void esp_matter_new_connection_failure_callback(void *context, PeerId peerId, CH
     ESP_LOGI(TAG, "New connection failure");
 }
 
-esp_err_t connect(int fabric_index, int node_id, int remote_endpoint_id)
+esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoint_id)
 {
     /* Get info */
     FabricInfo *fabric_info = chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
@@ -95,7 +95,7 @@ static void esp_matter_command_client_binding_callback(const EmberBindingTableEn
     }
 }
 
-esp_err_t cluster_update(int endpoint_id, int cluster_id)
+esp_err_t cluster_update(uint16_t endpoint_id, uint32_t cluster_id)
 {
     chip::BindingManager::GetInstance().NotifyBoundClusterChanged(endpoint_id, cluster_id, NULL);
     return ESP_OK;
@@ -143,7 +143,7 @@ static void send_command_failure_callback(void *context, CHIP_ERROR error)
 namespace on_off {
 namespace command {
 
-esp_err_t send_on(peer_device_t *remote_device, int remote_endpoint_id)
+esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
     OnOff::Commands::On::Type command_data;
@@ -153,7 +153,7 @@ esp_err_t send_on(peer_device_t *remote_device, int remote_endpoint_id)
     return ESP_OK;
 }
 
-esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id)
+esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
     OnOff::Commands::Off::Type command_data;
@@ -163,7 +163,7 @@ esp_err_t send_off(peer_device_t *remote_device, int remote_endpoint_id)
     return ESP_OK;
 }
 
-esp_err_t send_toggle(peer_device_t *remote_device, int remote_endpoint_id)
+esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     chip::Controller::OnOffCluster cluster;
     OnOff::Commands::Toggle::Type command_data;
@@ -179,7 +179,7 @@ esp_err_t send_toggle(peer_device_t *remote_device, int remote_endpoint_id)
 namespace level_control {
 namespace command {
 
-esp_err_t send_move(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
+esp_err_t send_move(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode, uint8_t rate,
                     uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
@@ -194,7 +194,7 @@ esp_err_t send_move(peer_device_t *remote_device, int remote_endpoint_id, uint8_
     return ESP_OK;
 }
 
-esp_err_t send_move_to_level(peer_device_t *remote_device, int remote_endpoint_id, uint8_t level,
+esp_err_t send_move_to_level(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t level,
                              uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
@@ -209,7 +209,7 @@ esp_err_t send_move_to_level(peer_device_t *remote_device, int remote_endpoint_i
     return ESP_OK;
 }
 
-esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t level,
+esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t level,
                                          uint16_t transition_time)
 {
     chip::Controller::LevelControlCluster cluster;
@@ -222,7 +222,8 @@ esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, int remot
     return ESP_OK;
 }
 
-esp_err_t send_move_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate)
+esp_err_t send_move_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
+                                uint8_t rate)
 {
     chip::Controller::LevelControlCluster cluster;
     LevelControl::Commands::MoveWithOnOff::Type command_data;
@@ -234,7 +235,7 @@ esp_err_t send_move_with_on_off(peer_device_t *remote_device, int remote_endpoin
     return ESP_OK;
 }
 
-esp_err_t send_step(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
+esp_err_t send_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
                     uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
@@ -250,7 +251,7 @@ esp_err_t send_step(peer_device_t *remote_device, int remote_endpoint_id, uint8_
     return ESP_OK;
 }
 
-esp_err_t send_step_with_on_off(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode,
+esp_err_t send_step_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
                                 uint8_t step_size, uint16_t transition_time)
 {
     chip::Controller::LevelControlCluster cluster;
@@ -264,7 +265,8 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, int remote_endpoin
     return ESP_OK;
 }
 
-esp_err_t send_stop(peer_device_t *remote_device, int remote_endpoint_id, uint8_t option_mask, uint8_t option_override)
+esp_err_t send_stop(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t option_mask,
+                    uint8_t option_override)
 {
     chip::Controller::LevelControlCluster cluster;
     LevelControl::Commands::Stop::Type command_data;
@@ -276,7 +278,7 @@ esp_err_t send_stop(peer_device_t *remote_device, int remote_endpoint_id, uint8_
     return ESP_OK;
 }
 
-esp_err_t send_stop_with_on_off(peer_device_t *remote_device, int remote_endpoint_id)
+esp_err_t send_stop_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     chip::Controller::LevelControlCluster cluster;
     LevelControl::Commands::Stop::Type command_data;
@@ -292,7 +294,7 @@ esp_err_t send_stop_with_on_off(peer_device_t *remote_device, int remote_endpoin
 namespace color_control {
 namespace command {
 
-esp_err_t send_move_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
+esp_err_t send_move_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode, uint8_t rate,
                         uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
@@ -307,8 +309,8 @@ esp_err_t send_move_hue(peer_device_t *remote_device, int remote_endpoint_id, ui
     return ESP_OK;
 }
 
-esp_err_t send_move_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t move_mode, uint8_t rate,
-                               uint8_t option_mask, uint8_t option_override)
+esp_err_t send_move_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
+                               uint8_t rate, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
     ColorControl::Commands::MoveSaturation::Type command_data;
@@ -322,7 +324,7 @@ esp_err_t send_move_saturation(peer_device_t *remote_device, int remote_endpoint
     return ESP_OK;
 }
 
-esp_err_t send_move_to_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t hue, uint8_t direction,
+esp_err_t send_move_to_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t hue, uint8_t direction,
                            uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
@@ -338,7 +340,7 @@ esp_err_t send_move_to_hue(peer_device_t *remote_device, int remote_endpoint_id,
     return ESP_OK;
 }
 
-esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t hue,
+esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t hue,
                                           uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
                                           uint8_t option_override)
 {
@@ -355,7 +357,7 @@ esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, int remo
     return ESP_OK;
 }
 
-esp_err_t send_move_to_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t saturation,
+esp_err_t send_move_to_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t saturation,
                                   uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
@@ -370,7 +372,7 @@ esp_err_t send_move_to_saturation(peer_device_t *remote_device, int remote_endpo
     return ESP_OK;
 }
 
-esp_err_t send_step_hue(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
+esp_err_t send_step_hue(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode, uint8_t step_size,
                         uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     chip::Controller::ColorControlCluster cluster;
@@ -386,7 +388,7 @@ esp_err_t send_step_hue(peer_device_t *remote_device, int remote_endpoint_id, ui
     return ESP_OK;
 }
 
-esp_err_t send_step_saturation(peer_device_t *remote_device, int remote_endpoint_id, uint8_t step_mode,
+esp_err_t send_step_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
                                uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
                                uint8_t option_override)
 {

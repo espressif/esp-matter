@@ -19,7 +19,7 @@
 #include <app_qrcode.h>
 
 static const char *TAG = "app_main";
-int switch_endpoint_id = 0;
+uint16_t switch_endpoint_id = 0;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -36,8 +36,8 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
-static esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
-                                         esp_matter_attr_val_t *val, void *priv_data)
+static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                                         uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
 

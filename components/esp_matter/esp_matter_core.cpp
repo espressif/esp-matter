@@ -32,7 +32,9 @@
 
 using chip::CommandId;
 using chip::DataVersion;
+using chip::kInvalidAttributeId;
 using chip::kInvalidCommandId;
+using chip::kInvalidClusterId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
 using chip::Credentials::Examples::GetExampleDACProvider;
@@ -58,9 +60,9 @@ chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 }  // namespace
 
 typedef struct _attribute {
-    int attribute_id;
-    int cluster_id;
-    int endpoint_id;
+    uint32_t attribute_id;
+    uint32_t cluster_id;
+    uint16_t endpoint_id;
     uint16_t flags;
     esp_matter_attr_val_t val;
     esp_matter_attr_bounds_t *bounds;
@@ -71,15 +73,15 @@ typedef struct _attribute {
 } _attribute_t;
 
 typedef struct _command {
-    int command_id;
+    uint32_t command_id;
     uint16_t flags;
     command::callback_t callback;
     struct _command *next;
 } _command_t;
 
 typedef struct _cluster {
-    int cluster_id;
-    int endpoint_id;
+    uint32_t cluster_id;
+    uint16_t endpoint_id;
     uint16_t flags;
     const cluster::function_generic_t *function_list;
     cluster::plugin_server_init_callback_t plugin_server_init_callback;
@@ -90,8 +92,8 @@ typedef struct _cluster {
 } _cluster_t;
 
 typedef struct _endpoint {
-    int endpoint_id;
-    int device_type_id;
+    uint16_t endpoint_id;
+    uint32_t device_type_id;
     uint16_t flags;
     _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
@@ -102,7 +104,7 @@ typedef struct _endpoint {
 
 typedef struct _node {
     _endpoint_t *endpoint_list;
-    int current_endpoint_id;
+    uint16_t current_endpoint_id;
 } _node_t;
 
 namespace cluster {
@@ -250,7 +252,7 @@ namespace endpoint {
 
 static int get_next_index()
 {
-    int endpoint_id = 0;
+    uint16_t endpoint_id = 0;
     for (int index = 0; index < MAX_ENDPOINT_COUNT; index++) {
         endpoint_id = emberAfEndpointFromIndex(index);
         if (endpoint_id == kInvalidEndpointId) {
@@ -729,7 +731,7 @@ esp_err_t factory_reset()
         /* ESP Matter data model is used. Erase all the data that we have added in nvs. */
         endpoint_t *endpoint = endpoint::get_first(node);
         while (endpoint) {
-            int endpoint_id = endpoint::get_id(endpoint);
+            uint16_t endpoint_id = endpoint::get_id(endpoint);
             char nvs_namespace[16] = {0};
             snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
 
@@ -757,7 +759,7 @@ esp_err_t factory_reset()
 }
 
 namespace attribute {
-attribute_t *create(cluster_t *cluster, int attribute_id, uint8_t flags, esp_matter_attr_val_t val)
+attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, esp_matter_attr_val_t val)
 {
     /* Find */
     if (!cluster) {
@@ -839,7 +841,7 @@ static esp_err_t destroy(attribute_t *attribute)
     return ESP_OK;
 }
 
-attribute_t *get(cluster_t *cluster, int attribute_id)
+attribute_t *get(cluster_t *cluster, uint32_t attribute_id)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -876,11 +878,11 @@ attribute_t *get_next(attribute_t *attribute)
     return (attribute_t *)current_attribute->next;
 }
 
-int get_id(attribute_t *attribute)
+uint32_t get_id(attribute_t *attribute)
 {
     if (!attribute) {
         ESP_LOGE(TAG, "Attribute cannot be NULL");
-        return -1;
+        return kInvalidAttributeId;
     }
     _attribute_t *current_attribute = (_attribute_t *)attribute;
     return current_attribute->attribute_id;
@@ -1022,9 +1024,9 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     /* Get keys */
-    int attribute_id = current_attribute->attribute_id;
-    int cluster_id = current_attribute->cluster_id;
-    int endpoint_id = current_attribute->endpoint_id;
+    uint32_t attribute_id = current_attribute->attribute_id;
+    uint32_t cluster_id = current_attribute->cluster_id;
+    uint16_t endpoint_id = current_attribute->endpoint_id;
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
     snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
@@ -1062,9 +1064,9 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
     _attribute_t *current_attribute = (_attribute_t *)attribute;
 
     /* Get keys */
-    int attribute_id = current_attribute->attribute_id;
-    int cluster_id = current_attribute->cluster_id;
-    int endpoint_id = current_attribute->endpoint_id;
+    uint32_t attribute_id = current_attribute->attribute_id;
+    uint32_t cluster_id = current_attribute->cluster_id;
+    uint16_t endpoint_id = current_attribute->endpoint_id;
     char nvs_namespace[16] = {0};
     char attribute_key[16] = {0};
     snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
@@ -1103,7 +1105,7 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
 } /* attribute */
 
 namespace command {
-command_t *create(cluster_t *cluster, int command_id, uint8_t flags, callback_t callback)
+command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callback_t callback)
 {
     /* Find */
     if (!cluster) {
@@ -1153,7 +1155,7 @@ static esp_err_t destroy(command_t *command)
     return ESP_OK;
 }
 
-command_t *get(cluster_t *cluster, int command_id)
+command_t *get(cluster_t *cluster, uint32_t command_id)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -1190,11 +1192,11 @@ command_t *get_next(command_t *command)
     return (command_t *)current_command->next;
 }
 
-int get_id(command_t *command)
+uint32_t get_id(command_t *command)
 {
     if (!command) {
         ESP_LOGE(TAG, "Command cannot be NULL");
-        return -1;
+        return kInvalidCommandId;
     }
     _command_t *current_command = (_command_t *)command;
     return current_command->command_id;
@@ -1224,7 +1226,7 @@ uint16_t get_flags(command_t *command)
 
 namespace cluster {
 
-cluster_t *create(endpoint_t *endpoint, int cluster_id, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
 {
     /* Find */
     if (!endpoint) {
@@ -1290,7 +1292,7 @@ static esp_err_t destroy(cluster_t *cluster)
     return ESP_OK;
 }
 
-cluster_t *get(endpoint_t *endpoint, int cluster_id)
+cluster_t *get(endpoint_t *endpoint, uint32_t cluster_id)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -1327,11 +1329,11 @@ cluster_t *get_next(cluster_t *cluster)
     return (cluster_t *)current_cluster->next;
 }
 
-int get_id(cluster_t *cluster)
+uint32_t get_id(cluster_t *cluster)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
-        return -1;
+        return kInvalidClusterId;
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     return current_cluster->cluster_id;
@@ -1482,7 +1484,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     return ESP_OK;
 }
 
-endpoint_t *get(node_t *node, int endpoint_id)
+endpoint_t *get(node_t *node, uint16_t endpoint_id)
 {
     if (!node) {
         ESP_LOGE(TAG, "Node cannot be NULL");
@@ -1519,17 +1521,17 @@ endpoint_t *get_next(endpoint_t *endpoint)
     return (endpoint_t *)current_endpoint->next;
 }
 
-int get_id(endpoint_t *endpoint)
+uint16_t get_id(endpoint_t *endpoint)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return -1;
+        return kInvalidEndpointId;
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->endpoint_id;
 }
 
-esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id)
+esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -1540,15 +1542,14 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, int device_type_id)
     return ESP_OK;
 }
 
-int get_device_type_id(endpoint_t *endpoint)
+uint32_t get_device_type_id(endpoint_t *endpoint)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
-        return ESP_ERR_INVALID_ARG;
+        return 0xFFFF'FFFF;
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
-    int device_type_id = current_endpoint->device_type_id;
-    return device_type_id;
+    return current_endpoint->device_type_id;
 }
 
 } /* endpoint */

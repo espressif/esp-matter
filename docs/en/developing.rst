@@ -347,8 +347,8 @@ the terms like endpoints, clusters, etc. that are used in this section.
 
    ::
 
-      esp_err_t app_attribute_update_cb(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
-                                        esp_matter_attr_val_t *val, void *priv_data)
+      esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                                        uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
       {
           esp_err_t err = ESP_OK;
 
@@ -393,26 +393,28 @@ the terms like endpoints, clusters, etc. that are used in this section.
 
    ::
 
-      esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val) {
-         esp_err_t err = ESP_OK;
-         if (endpoint_id == light_endpoint_id) {
-            if (cluster_id == OnOff::Id) {
-               if (attribute_id == OnOff::Attributes::OnOff::Id) {      
-                     err = app_driver_light_set_power(val);
-               }
-            } else if (cluster_id == LevelControl::Id) {
-               if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
-                     err = app_driver_light_set_brightness(val);
-               }
-            } else if (cluster_id == ColorControl::Id) {
-               if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
-                     err = app_driver_light_set_hue(val);
-               } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
-                     err = app_driver_light_set_saturation(val);
-               }
-            }
-         }
-         return err;
+      esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                            esp_matter_attr_val_t *val)
+      {
+          esp_err_t err = ESP_OK;
+          if (endpoint_id == light_endpoint_id) {
+              if (cluster_id == OnOff::Id) {
+                  if (attribute_id == OnOff::Attributes::OnOff::Id) {
+                      err = app_driver_light_set_power(val);
+                  }
+              } else if (cluster_id == LevelControl::Id) {
+                  if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
+                      err = app_driver_light_set_brightness(val);
+                  }
+              } else if (cluster_id == ColorControl::Id) {
+                  if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
+                      err = app_driver_light_set_hue(val);
+                  } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
+                      err = app_driver_light_set_saturation(val);
+                  }
+              }
+          }
+          return err;
       }
 
 2.4.1.4 Matter Device Ready

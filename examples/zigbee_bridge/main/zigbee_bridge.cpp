@@ -120,7 +120,8 @@ void zigbee_bridge_send_off(zb_uint8_t buf, zb_uint16_t zigbee_shortaddr)
                            ZB_ZCL_CMD_ON_OFF_OFF_ID, NULL);
 }
 
-esp_err_t zigbee_bridge_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                         esp_matter_attr_val_t *val)
 {
     app_zigbee_bridge_device_t *zigbee_device = app_bridge_get_zigbee_device_by_matter_endpointid(endpoint_id);
     if (zigbee_device && zigbee_device->dev && zigbee_device->dev->endpoint) {

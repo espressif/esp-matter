@@ -29,11 +29,11 @@ typedef struct app_zigbee_bridge_device {
 app_zigbee_bridge_device_t *app_bridge_create_zigbee_device(node_t *node, uint8_t zigbee_endpointid,
                                                             uint16_t zigbee_shortaddr);
 
-uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(int matter_endpointid);
+uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_endpointid);
 
-int app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
+uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
 
-app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(int matter_endpointid);
+app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_matter_endpointid(uint16_t matter_endpointid);
 
 app_zigbee_bridge_device_t *app_bridge_get_zigbee_device_by_zigbee_shortaddr(uint16_t zigbee_shortaddr);
 

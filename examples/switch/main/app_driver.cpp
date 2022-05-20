@@ -25,9 +25,9 @@ using namespace esp_matter;
 using namespace esp_matter::cluster;
 
 static const char *TAG = "app_driver";
-extern int switch_endpoint_id;
-static int g_cluster_id = kInvalidClusterId;
-static int g_command_id = kInvalidCommandId;
+extern uint16_t switch_endpoint_id;
+static uint32_t g_cluster_id = kInvalidClusterId;
+static uint32_t g_command_id = kInvalidCommandId;
 
 static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
 {
@@ -37,9 +37,9 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
                "\tinvoke: <endpoint_id> <cluster_id> <command_id>. "
                "Example: matter esp bound invoke 0x0001 0x0006 0x0002.\n");
     } else if (argc == 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
-        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int command_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint16_t endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        uint32_t cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        uint32_t command_id = strtol((const char *)&argv[3][2], NULL, 16);
 
         g_cluster_id = cluster_id;
         g_command_id = command_id;
@@ -59,11 +59,11 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
                "\tinvoke: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>. "
                "Example: matter esp client invoke 0x0001 0xBC5C01 0x0001 0x0006 0x0002.\n");
     } else if (argc == 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
-        int fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
-        int node_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int remote_endpoint_id = strtol((const char *)&argv[3][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[4][2], NULL, 16);
-        int command_id = strtol((const char *)&argv[5][2], NULL, 16);
+        uint8_t fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
+        uint64_t node_id = strtol((const char *)&argv[2][2], NULL, 16);
+        uint16_t remote_endpoint_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint32_t cluster_id = strtol((const char *)&argv[4][2], NULL, 16);
+        uint32_t command_id = strtol((const char *)&argv[5][2], NULL, 16);
 
         g_cluster_id = cluster_id;
         g_command_id = command_id;
@@ -98,7 +98,8 @@ static void app_driver_register_commands()
     esp_matter_console_add_command(&client_command);
 }
 
-void app_driver_client_command_callback(client::peer_device_t *peer_device, int remote_endpoint_id, void *priv_data)
+void app_driver_client_command_callback(client::peer_device_t *peer_device, uint16_t remote_endpoint_id,
+                                        void *priv_data)
 {
     /** TODO: Find a better way to get the cluster_id and command_id.
     Once done, move the console commands to esp_matter_client. */
@@ -116,16 +117,17 @@ void app_driver_client_command_callback(client::peer_device_t *peer_device, int 
 static void app_driver_button_toggle_cb(void *arg)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
-    int endpoint_id = switch_endpoint_id;
-    int cluster_id = OnOff::Id;
-    int command_id = OnOff::Commands::Toggle::Id;
+    uint16_t endpoint_id = switch_endpoint_id;
+    uint32_t cluster_id = OnOff::Id;
+    uint32_t command_id = OnOff::Commands::Toggle::Id;
 
     g_cluster_id = cluster_id;
     g_command_id = command_id;
     client::cluster_update(endpoint_id, cluster_id);
 }
 
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                      esp_matter_attr_val_t *val)
 {
     /* Nothing to do here */
     return ESP_OK;
@@ -138,13 +140,13 @@ static esp_err_t app_driver_attribute_set_defaults()
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
-        int endpoint_id = endpoint::get_id(endpoint);
+        uint16_t endpoint_id = endpoint::get_id(endpoint);
         cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            int cluster_id = cluster::get_id(cluster);
+            uint32_t cluster_id = cluster::get_id(cluster);
             attribute_t *attribute = attribute::get_first(cluster);
             while (attribute) {
-                int attribute_id = attribute::get_id(attribute);
+                uint32_t attribute_id = attribute::get_id(attribute);
                 esp_matter_attr_val_t val = esp_matter_invalid(NULL);
                 err |= attribute::get_val(attribute, &val);
                 err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
