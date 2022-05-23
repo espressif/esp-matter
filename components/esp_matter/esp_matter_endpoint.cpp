@@ -18,14 +18,24 @@
 
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_BRIDGE_DEVICE_TYPE_ID 0x000E
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
+
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
 #define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
 #define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
+#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID 0x010C
+#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
+
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
+#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
+
+#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
+#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
+
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
-#define ESP_MATTER_BRIDGE_DEVICE_TYPE_ID 0x000E
-#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
 
@@ -150,6 +160,64 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 }
 } /* color_dimmable_light */
 
+namespace color_temperature_light {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
+                          color_control::feature::color_temperature::get_id());
+
+    return endpoint;
+}
+} /* color_temperature_light */
+
+namespace extended_color_light {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
+                          color_control::feature::color_temperature::get_id() | color_control::feature::xy::get_id());
+
+    return endpoint;
+}
+} /* extended_color_light */
+
 namespace on_off_switch {
 uint32_t get_device_type_id()
 {
@@ -176,6 +244,115 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     return endpoint;
 }
 } /* on_off_switch */
+
+namespace dimmer_switch {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* dimmer_switch */
+
+namespace color_dimmer_switch {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* color_dimmer_switch */
+
+namespace on_off_plugin_unit {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* on_off_plugin_unit */
+
+namespace dimmable_plugin_unit {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
+    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
+    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
+    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
+                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* dimmable_plugin_unit */
 
 namespace fan {
 uint32_t get_device_type_id()

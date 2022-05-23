@@ -830,6 +830,75 @@ static esp_err_t esp_matter_command_callback_stop_move_step(const ConcreteComman
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_move_to_color_temperature(const ConcreteCommandPath &command_path,
+                                                                       TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::MoveToColorTemperature::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterMoveToColorTemperatureCallback((CommandHandler *)opaque_ptr, command_path,
+                                                                 command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_move_color_temperature(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::MoveColorTemperature::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterMoveColorTemperatureCallback((CommandHandler *)opaque_ptr, command_path,
+                                                               command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_step_color_temperature(const ConcreteCommandPath &command_path,
+                                                                    TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::StepColorTemperature::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterStepColorTemperatureCallback((CommandHandler *)opaque_ptr, command_path,
+                                                               command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_move_to_color(const ConcreteCommandPath &command_path,
+                                                           TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::MoveToColor::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterMoveToColorCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_move_color(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                        void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::MoveColor::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterMoveColorCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_step_color(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                        void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::StepColor::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterStepColorCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_lock_door(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1482,6 +1551,42 @@ command_t *create_stop_move_step(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, ColorControl::Commands::StopMoveStep::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_stop_move_step);
+}
+
+command_t *create_move_to_color_temperature(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveToColorTemperature::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_move_to_color_temperature);
+}
+
+command_t *create_move_color_temperature(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveColorTemperature::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_move_color_temperature);
+}
+
+command_t *create_step_color_temperature(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::StepColorTemperature::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_step_color_temperature);
+}
+
+command_t *create_move_to_color(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveToColor::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_move_to_color);
+}
+
+command_t *create_move_color(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::MoveColor::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_move_color);
+}
+
+command_t *create_step_color(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::StepColor::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_step_color);
 }
 
 } /* command */

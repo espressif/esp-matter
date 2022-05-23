@@ -599,6 +599,48 @@ attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
                                          esp_matter_bitmap16(value));
 }
 
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperature::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMin::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMax::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::StartUpColorTemperatureMireds::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+}
+
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentX::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentY::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
 } /* attribute */
 } /* color_control */
 

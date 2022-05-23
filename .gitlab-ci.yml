@@ -8,6 +8,8 @@ variables:
     GIT_SUBMODULE_STRATEGY: none
 
 .chip_submodule_update: &chip_submodule_update
+    # - rm -rf .git/modules/connectedhomeip/
+    # - git config --remove-section submodule.connectedhomeip
     - git submodule sync --recursive
     - git submodule update --recursive --init --reference /local_references/github/
 

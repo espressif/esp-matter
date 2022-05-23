@@ -206,6 +206,7 @@ typedef struct config {
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
     feature::hue_saturation::config_t hue_saturation;
+    feature::color_temperature::config_t color_temperature;
     config() : cluster_revision(3), color_mode(1), color_control_options(0), enhanced_color_mode(1),
                color_capabilities(0) {}
 } config_t;

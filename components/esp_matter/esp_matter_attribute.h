@@ -190,6 +190,13 @@ attribute_t *create_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value);
 attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value);
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* color_control */
 

@@ -172,6 +172,69 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* hue_saturation */
+
+namespace color_temperature {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kColorTemperatureSupported;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds);
+    attribute::create_color_temp_physical_min_mireds(cluster, config->color_temp_physical_min_mireds);
+    attribute::create_color_temp_physical_max_mireds(cluster, config->color_temp_physical_max_mireds);
+    attribute::create_couple_color_temp_to_level_min_mireds(cluster, config->couple_color_temp_to_level_min_mireds);
+    attribute::create_startup_color_temperature_mireds(cluster, config->startup_color_temperature_mireds);
+
+    /* Commands */
+    command::create_move_to_color_temperature(cluster);
+    command::create_stop_move_step(cluster);
+    command::create_move_color_temperature(cluster);
+    command::create_step_color_temperature(cluster);
+
+    return ESP_OK;
+}
+
+} /* color_temperature */
+
+namespace xy {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kXYAttributesSupported;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_current_x(cluster, config->current_x);
+    attribute::create_current_y(cluster, config->current_y);
+
+    /* Commands */
+    command::create_move_to_color(cluster);
+    command::create_stop_move_step(cluster);
+    command::create_move_color(cluster);
+    command::create_step_color(cluster);
+
+    return ESP_OK;
+}
+
+} /* xy */
 } /* feature */
 } /* color_control */
 

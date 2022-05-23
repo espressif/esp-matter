@@ -178,6 +178,12 @@ command_t *create_move_saturation(cluster_t *cluster);
 command_t *create_step_saturation(cluster_t *cluster);
 command_t *create_move_to_hue_and_saturation(cluster_t *cluster);
 command_t *create_stop_move_step(cluster_t *cluster);
+command_t *create_move_to_color_temperature(cluster_t *cluster);
+command_t *create_move_color_temperature(cluster_t *cluster);
+command_t *create_step_color_temperature(cluster_t *cluster);
+command_t *create_move_to_color(cluster_t *cluster);
+command_t *create_move_color(cluster_t *cluster);
+command_t *create_step_color(cluster_t *cluster);
 } /* command */
 } /* color_control */
 

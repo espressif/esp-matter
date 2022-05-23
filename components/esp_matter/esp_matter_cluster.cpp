@@ -752,6 +752,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     if (features & feature::hue_saturation::get_id()) {
         feature::hue_saturation::add(cluster, &(config->hue_saturation));
     }
+    if (features & feature::color_temperature::get_id()) {
+        feature::color_temperature::add(cluster, &(config->color_temperature));
+    }
 
     return cluster;
 }
