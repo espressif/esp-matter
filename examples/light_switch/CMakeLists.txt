@@ -22,7 +22,7 @@ endif(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
 
 set(ESP_MATTER_PATH $ENV{ESP_MATTER_PATH})
 set(MATTER_SDK_PATH ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip)
-set(ZAP_GENERATED_PATH ${ESP_MATTER_PATH}/examples/switch/main/zap-generated)
+set(ZAP_GENERATED_PATH ${CMAKE_CURRENT_LIST_DIR}/main/zap-generated)
 
 # This should be done before using the IDF_TARGET variable.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
@@ -36,7 +36,7 @@ set(EXTRA_COMPONENT_DIRS
     "${ESP_MATTER_PATH}/device_hal/device"
     ${extra_components_dirs_append})
 
-project(switch)
+project(light_switch)
 
 idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++14;-Os;-DLWIP_IPV6_SCOPES=0;-DCHIP_HAVE_CONFIG_H" APPEND)
 idf_build_set_property(C_COMPILE_OPTIONS "-Os;-DLWIP_IPV6_SCOPES=0" APPEND)

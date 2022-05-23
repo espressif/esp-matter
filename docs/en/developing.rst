@@ -65,8 +65,8 @@ for it to work. Check the example's "Additional Environment Setup" section for m
    :maxdepth: 1
 
    Light <examples/light>
+   Light Switch <examples/light_switch>
    RainMaker Light <examples/rainmaker_light>
-   Switch <examples/switch>
    Zap Light <examples/zap_light>
    ZigBee Bridge <examples/zigbee_bridge>
 
@@ -178,8 +178,8 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
    :maxdepth: 1
 
    Light <examples/light>
+   Light Switch <examples/light_switch>
    RainMaker Light <examples/rainmaker_light>
-   Switch <examples/switch>
    Zap Light <examples/zap_light>
    ZigBee Bridge <examples/zigbee_bridge>
 
@@ -636,7 +636,7 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
 ~~~~~~~~~~~~~~~~~~~
 
 -  In the examples, the boot button on the devkit is mapped to
-   ``toggle``. In case the device is a client (eg. switch), the toggle
+   ``toggle``. In case the device is a client (eg. light_switch), the toggle
    command is sent to the binded devices.
 -  Factory reset has also been mapped to the same boot button. When the
    button is pressed for more than 5 seconds, factory reset is

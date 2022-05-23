@@ -1,4 +1,4 @@
-# Switch Example
+# Light Switch Example
 
 ## Building and Flashing the Firmware
 

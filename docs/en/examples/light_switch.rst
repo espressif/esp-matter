@@ -1,5 +1,5 @@
-Switch
-======
+Light Switch
+============
 
 1. Additional Environment Setup
 -------------------------------

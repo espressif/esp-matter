@@ -27,11 +27,21 @@ using namespace esp_matter::attribute;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
-    if (event->Type == chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged) {
+    switch (event->Type) {
+    case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged:
+#if !CHIP_DEVICE_CONFIG_ENABLE_THREAD
         chip::app::DnssdServer::Instance().StartServer();
         esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
+#endif
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kCommissioningComplete:
+        ESP_LOGI(TAG, "Commissioning complete");
+        break;
+
+    default:
+        break;
     }
-    ESP_LOGI(TAG, "Current free heap: %zu", heap_caps_get_free_size(MALLOC_CAP_8BIT));
 }
 
 static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
@@ -52,13 +62,13 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
-    /* Create matter device */
+    /* Create a Matter node */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node) {
-        ESP_LOGE(TAG, "Matter device creation failed");
+        ESP_LOGE(TAG, "Matter node creation failed");
     }
 
     /* Matter start */

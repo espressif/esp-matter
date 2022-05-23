@@ -51,6 +51,11 @@ Espressif's AIoT cloud platform `ESP RainMaker <https://rainmaker.espressif.com/
 
 todo. Add a supported services diagram similar to the one ad the end of this page https://rainmaker.espressif.com/?
 
+.. figure:: ../_static/supported_services.png
+    :align: center
+    :alt: ESP Matter Supported Services
+    :figclass: align-center
+
 By combining the above-mentioned Matter hardware and software solutions with ESP RainMaker, this one-stop Matter ecosystem solution provides:
 
    -  Interconnection with Amazon, Google and Apple
@@ -126,8 +131,8 @@ It also initializes ESP RainMaker which enables Device Management and
 OTA using the RainMaker cloud. If user node association is done, it also
 enables Remote Control through RainMaker.
 
-1.3.3 Switch
-~~~~~~~~~~~~
+1.3.3 Light Switch
+~~~~~~~~~~~~~~~~~~
 
 This application creates an On/Off Light Switch device using the ESP Matter
 data model.

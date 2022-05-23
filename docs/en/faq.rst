@@ -6,18 +6,17 @@ A1.1 Compilation errors
 
 I cannot build the application:
 
--  Make sure you are on the correct esp-idf branch. Run ``git submodule
+-  Make sure you are on the correct esp-idf branch/release. Run ``git submodule
    update —init —recursive`` to make sure the submodules are at the
    correct heads
--  Make sure you have the correct ESP_MATTER_PATH (and any other paths)
-   is (are) exported.
+-  Make sure you have the correct ESP_MATTER_PATH (and any other required paths).
 -  Delete the build/ directory and also sdkconfig and sdkconfig.old and
    then build again.
--  If you are still facing issues, reproduce the issue on the default
-   example and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Please make sure to
+-  If you are still facing issues, reproduce it on the default
+   example and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Please make sure to
    share these:
 
-   -  The complete build logs.
+   -  The complete device logs taken over UART.
    -  The esp-matter and esp-idf branch you are using.
 
 A1.2 Device commissioning using chip-tool
@@ -28,8 +27,8 @@ I cannot commission a new device through the chip-tool:
 -  If the ``chip-tool pairing ble-wifi`` command is failing,
    make sure the arguments are correct.
 -  Make sure Bluetooth is turned on, on your client (host).
--  If you are still facing issues, reproduce the issue on the default
-   example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Make sure
+-  If you are still facing issues, reproduce it on the default
+   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
    to share these:
 
    -  The complete device logs.
@@ -38,7 +37,7 @@ I cannot commission a new device through the chip-tool:
 
 Bluetooth/BLE does not work on by device:
 
--  There are some known issues where BLE does not work on MacOS.
+-  There are some `known issues <https://github.com/project-chip/connectedhomeip/issues/13303>`__ where BLE does not work on MacOS.
 -  In this case, the following can be done:
 
    -  Run the device console command:
@@ -46,8 +45,8 @@ Bluetooth/BLE does not work on by device:
    -  Run the chip-tool command for commissioning over ip:
       ``chip-tool pairing onnetwork 1 20202021``.
 
--  If you are still facing issues, reproduce the issue on the default
-   example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Make sure
+-  If you are still facing issues, reproduce it on the default
+   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
    to share these:
 
    -  The complete device logs taken over UART.
@@ -71,8 +70,8 @@ My device is crashing:
    is (are) exported.
 -  Delete the build/ directory and also sdkconfig and sdkconfig.old and
    then build and flash again.
--  If you are still facing issues, reproduce the issue on the default
-   example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Make sure
+-  If you are still facing issues, reproduce it on the default
+   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
    to share these:
 
    -  The steps you followed to reproduce the issue.
@@ -101,8 +100,8 @@ My device is not responding to commands:
    to the Wi-Fi.
 -  Make sure the node_id and the endpoint_id are correct in the command
    from chip-tool.
--  If you are still facing issues, reproduce the issue on the default
-   example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Make sure
+-  If you are still facing issues, reproduce it on the default
+   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
    to share these:
 
    -  The steps you followed to reproduce the issue.
@@ -133,8 +132,8 @@ The LED on my devkit is not working:
 -  Check the version of your board, and if it has the LED connected to a
    different pin. If it is different, you can change the
    led_driver_config_t accordingly in the device.c file.
--  If you are still facing issues, reproduce the issue on the default
-   example for the device and then raise an `issue <https://github.com/espressif/esp-matter/issues>`__. Make sure
+-  If you are still facing issues, reproduce it on the default
+   example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
    to share these:
 
    -  The complete device logs taken over UART.
@@ -147,7 +146,7 @@ The LED on my devkit is not working:
    :maxdepth: 1
 
    Light <examples/light>
+   Light Switch <examples/light_switch>
    RainMaker Light <examples/rainmaker_light>
-   Switch <examples/switch>
    Zap Light <examples/zap_light>
    ZigBee Bridge <examples/zigbee_bridge>

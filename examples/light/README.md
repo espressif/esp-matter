@@ -47,7 +47,7 @@ Connect to Wi-Fi network.
 Dump the device static configuration
 
 
-- Facotry reset
+- Factory reset
 
 ```
 > matter device factoryreset
