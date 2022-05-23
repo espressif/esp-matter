@@ -15,11 +15,12 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
-#include <app_zigbee_bridge_device.h>
+#include <app_ble.h>
 #include <app_qrcode.h>
 #include <app_zboss.h>
+#include <app_zigbee_bridge_device.h>
+#include <zigbee_bridge.h>
 
-#include "zigbee_bridge.h"
 static const char *TAG = "app_main";
 
 using namespace esp_matter;
@@ -37,6 +38,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
+        app_ble_disable();
         break;
 
     default:
