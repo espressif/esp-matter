@@ -1,100 +1,130 @@
-# Zigbee Bridge Example
+# ZigBee Bridge
 
-## Building and Flashing the Firmware
+This example demonstrates a Matter-ZigBee Bridge that bridges ZigBee devices to Matter fabric.
 
-See the [README.md](../../README.md) file for more information about building and flashing the firmware.
+The Matter Bridge device is composed of two parts: The RCP running on
+ESP32-H2 and the bridge app running on ESP32.
 
-The Matter Bridge device is composed of two parts: The RCP running on ESP32-H2 and the bridge app
-running on ESP32.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
-### Hardware connection
+## 1. Additional Environment Setup
 
-Connect the two SoCs via UART, below is an example setup with ESP32 DevKitC and ESP32-H2 DevKitC:
-![zigbee_bridge](../docs/_static/esp32-esp32h2.jpg)
+### 1.1 Hardware connection
 
-  ESP32 Pin  | ESP32-H2 Pin
--------------|--------------
-   GND       |    GND
-   GPIO4     |    GPIO7
-   GPIO5     |    GPIO8
+Connect the two SoCs via UART, below is an example setup with ESP32
+DevKitC and ESP32-H2 DevKitC:
 
-### Build and flash the RCP (ESP32-H2)
+![ZigBee Bridge Hardware Connection](../../docs/_static/zigbee_bridge_hardware_connection.jpg)
 
-```
-$ cd ${IDF_PATH}/examples/zigbee/esp_zigbee_rcp/
-$ idf.py --preview set-target esp32h2
-$ idf.py -p <port> build flash
-```
+|  ESP32 Pin  | ESP32-H2 Pin |
+|-------------|--------------|
+|   GND       |    GND       |
+|   GPIO4     |    GPIO7     |
+|   GPIO5     |    GPIO8     |
 
-The Matter Bridge app will run on the ESP32 and ZigBee network will be formed.
-
-## Build chip-tool and provision the Matter Bridge device
-
-Open a new terminal window and active matter environment
+### 1.2 Build and flash the RCP (ESP32-H2)
 
 ```
-$ cd esp-matter/connectedhomeip/connectedhomeip/examples/chip-tool 
-$ gn gen out
-$ ninja -C out
+cd ${IDF_PATH}/examples/zigbee/esp_zigbee_rcp/
+idf.py --preview set-target esp32h2
+idf.py -p <port> build flash
 ```
 
-Now you can provision the Matter Bridge device with `./out/chip-tool` (Please ensure that your PC
-and the bridge device are on the same local network).
+The Matter Bridge will run on the ESP32 and ZigBee network will be
+formed.
+
+## 2. Post Commissioning Setup
+
+### 2.1 Discovering Zigbee Devices
+
+You can read the parts list from the Bridge to get the number of the
+bridged devices.
 
 ```
-$ ./out/chip-tool pairing ble-wifi 12344321 {wifi-ssid} {wifi-password} 20202021 3840
+chip-tool descriptor read parts-list 0x7283 0x0
 ```
 
-After Provisioning success, you can read the parts list in Bridge app to get the number of the bridged devices.
+If there is no other ZigBee device on the ZigBee Network, you will get
+an empty result. Example:
 
 ```
-$ ./out/chip-tool descriptor read parts-list 12344321 0
+Data = [
+
+],
 ```
 
-If there is no other ZigBee device on the ZigBee Network, you will get an empty result.
+### 2.2 Setup ZigBee Bulb on ESP32-H2
+
+Build and run ZigBee Bulb app on another ESP32-H2 board.
 
 ```
-[1639378931.513638][1808055:1808060] CHIP:DMG:                                  Data = [
-[1639378931.513641][1808055:1808060] CHIP:DMG: 
-[1639378931.513645][1808055:1808060] CHIP:DMG:                                  ],
+cd ${IDF_PATH}/examples/zigbee/light_sample/light_bulb
+idf.py --preview set-target esp32h2
+idf.py -p <port> build flash monitor
 ```
 
-## Setup ZigBee Bulb on ESP32-H2
-
-Build and run ZigBee Bulb app on another ESP32-H2 board. Open another terminal window and repeat Step 2 again.
-
-```
-$ cd ${IDF_PATH}/examples/zigbee/light_sample/light_bulb
-$ idf.py --preview set-target esp32h2
-$ idf.py -p <port> build flash monitor
-```
-
-The Zigbee Bulb will be added to the ZigBee Network and a dynamic endpoint will be added on the Bridge device. You can read the parts list again to get the dynamic endpoint ID.
+The ZigBee Bulb will be added to the ZigBee Network and a dynamic
+endpoint will be added on the Bridge device. You can read the parts list
+again to get the dynamic endpoint ID.
 
 ```
-$ ./out/chip-tool descriptor read parts-list 12344321 0
-...
-[1639379769.737877][1809119:1809124] CHIP:DMG:                                  Data = [
-[1639379769.737881][1809119:1809124] CHIP:DMG:                                          1, 
-[1639379769.737885][1809119:1809124] CHIP:DMG:                                  ],
+chip-tool descriptor read parts-list 0x7283 0x0
 ```
 
-It means that the ZigBee Bulb is added as Endpoint 1 on the Bridge device. You can read the cluster servers list on the dynamic endpoint.
+The data will now contain the information of the connected ZigBee
+devices. Example:
 
 ```
-$ ./out/chip-tool descriptor read server-list 12344321 1
-...
-[1639380020.748687][1809427:1809432] CHIP:TOO: OnDescriptorServerListListAttributeResponse: 4 entries
-[1639380020.748695][1809427:1809432] CHIP:TOO:   [1]: 6
-[1639380020.748699][1809427:1809432] CHIP:TOO:   [2]: 29
-[1639380020.748703][1809427:1809432] CHIP:TOO:   [3]: 57
-[1639380020.748706][1809427:1809432] CHIP:TOO:   [4]: 64
+Data = [
+    1, 
+],
 ```
 
-## Control the bulb with chip-tool
+It means that the ZigBee Bulb is added as Endpoint 1 on the Bridge
+device. You can read the cluster servers list on the dynamic endpoint.
 
-Now you can control the ZigBee bulb on chip tool.
 ```
-$ ./out/chip-tool onoff toggle 12344321 1
+chip-tool descriptor read server-list 0x7283 0x1
 ```
 
+This will give the list of supported server clusters. Example:
+
+```
+OnDescriptorServerListListAttributeResponse: 4 entries
+    [1]: 6
+    [2]: 29
+    [3]: 57
+    [4]: 64
+```
+
+### 2.3 Control the bulb with chip-tool
+
+Now you can control the ZigBee bulb using the chip tool.
+
+```
+chip-tool onoff toggle 0x7283 0x1
+```
+
+## 3. Device Performance
+
+### 3.1 Memory usage
+
+The following is the Memory and Flash Usage.
+
+-   `Bootup` == Device just finished booting up. Device is not
+    commissionined or connected to wifi yet.
+-   `After Commissioning` == Device is conneted to wifi and is also
+    commissioned and is rebooted.
+-   device used: esp32c3_devkit_m
+-   tested on:
+    [bd951b8](https://github.com/espressif/esp-matter/commit/bd951b84993d9d0b5742872be4f51bb6c9ccf15e)
+    (2022-05-05)
+
+|                         | Bootup | After Commissioning |
+|:-                       |:-:     |:-:                  |
+|**Free Internal Memory** |109KB   |105KB                |
+
+**Flash Usage**: Firmware binary size: 1.26MB
+
+This should give you a good idea about the amount of free memory that is
+available for you to run your application's code.

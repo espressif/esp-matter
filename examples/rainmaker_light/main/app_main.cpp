@@ -55,7 +55,7 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
         /* Driver update */
         err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     } else if (type == POST_UPDATE) {
-        /* Other ecosystems update */
+        /* Rainmaker update */
         err = app_rainmaker_attribute_update(endpoint_id, cluster_id, attribute_id, val);
     }
 

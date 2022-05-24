@@ -1,59 +1,120 @@
-# Light Switch Example
+# Light Switch
 
-## Building and Flashing the Firmware
+This example creates an On/Off Light Switch device using the ESP Matter
+data model.
 
-See the [README.md](../../README.md) file for more information about building and flashing the firmware.
+It creates the On/Off client and other devices can be bound to the
+switch and then controlled from the switch.
 
-## What to expect in this example?
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
-Supported features:
- - Matter Commissioning
- - Switch will connect to light when Bind command is sent 
- - CLIs to control remote light from switch
+## 1. Additional Environment Setup
 
-## Bind light to switch
+No additional setup is required.
 
-Update the light's acl attribute which adds entry of remote device (switch) in the access control list:
+## 2. Post Commissioning Setup
+
+### 2.1 Bind light to switch
+
+Using the chip-tool, commission 2 devices, the switch and a light. Then
+use the below commands to bind the light to the switch.
+
+For the commands below:
+
+-   Node Id of switch used during commissioning is 0x7283 (29315 in decimal)
+-   Node Id of light used during commissioning is 0x5164 (20836 in decimal)
+-   Cluster Id for OnOff cluster is 6
+-   Binding cluster is currently present on endpoint 1 on the switch
+
+Update the light's acl attribute to add the entry of remote device
+(switch) in the access control list:
 ```
-./out/debug/chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 12344321 ], "targets": null}]' 12344322 0
-```
-
-Update the switch's binding attribute which adds entry of remote device (light) in binding table:
-```
-./out/debug/chip-tool binding write binding '[{"fabricIndex": 1, "node":12344322, "endpoint":1, "cluster":6}]' 12344321 1
-```
-
-note: 
-- 12344321 : node Id of switch used during commissioning
-- 12344322 : node Id of light used during commissioning 
-- Cluster Id for OnOff cluster is 6
-- Binding cluster is currently present on endpoint 1
-
-### Useful shell commands
-
-After the binding is successful you can send the following command to control light from switch
-
-```
-> matter esp bound invoke <endpoint_id> <cluster_id> <command_id>
-```
-here, endpoint_id, cluster_id, command_id of switch must be given in hex format 
-
-e.g.
-
-- Power Off command
-
-```
-> matter esp bound invoke 0x0001 0x0006 0x0000
+chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 29315 ], "targets": null}]' 0x5164 0x0
 ```
 
-- Power On command
+Update the switch's binding attribute to add the entry of remote device
+(light) in the binding table:
+```
+    chip-tool binding write binding '[{"fabricIndex": 1, "node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
+```
 
-```
-> matter esp bound invoke 0x0001 0x0006 0x0001
-```
+### 2.2 Device console
 
-- Toggle command
+Switch specific console commands:
 
-```
->  matter esp bound invoke 0x0001 0x0006 0x0002
-```
+-   Send command to all the bound devices on the specified cluster:
+    (The IDs are in hex):
+    ```
+    matter esp bound invoke <endpoint_id> <cluster_id> <command_id>
+    ```
+
+    -   Example: Off:
+        ```
+        matter esp bound invoke 0x1 0x6 0x0
+        ```
+
+    -   Example: On:
+        ```
+        matter esp bound invoke 0x1 0x6 0x1
+        ```
+
+    -   Example: Toggle:
+        ```
+        matter esp bound invoke 0x1 0x6 0x2
+        ```
+
+## 3. Device Performance
+
+### 3.1 Memory usage
+
+The following is the Memory and Flash Usage.
+
+-   `Bootup` == Device just finished booting up. Device is not
+    commissionined or connected to wifi yet.
+-   `After Commissioning` == Device is conneted to wifi and is also
+    commissioned and is rebooted.
+-   device used: esp32c3_devkit_m
+-   tested on:
+    [bd951b8](https://github.com/espressif/esp-matter/commit/bd951b84993d9d0b5742872be4f51bb6c9ccf15e)
+    (2022-05-05)
+
+|                         | Bootup | After Commissioning |
+|:-                       |:-:     |:-:                  |
+|**Free Internal Memory** |113KB   |110KB                |
+
+**Flash Usage**: Firmware binary size: 1.24MB
+
+This should give you a good idea about the amount of free memory that is
+available for you to run your application's code.
+
+## A2 Appendix FAQs
+
+### A2.1 Binding Failed
+
+My light is not getting bound to my switch:
+
+-   Make sure the light's acl is updated. You can read it again to make
+    sure it is correct: `chip-tool accesscontrol read acl 0x5164 0x0`.
+-   If you are still facing issues, reproduce the issue on the default
+    example for the device and then raise an [issue](https://github.com/espressif/esp-matter/issues).
+    Make sure to share these:
+    -   The complete device logs for both the devices taken over UART.
+    -   The complete chip-tool logs.
+    -   The esp-matter and esp-idf branch you are using.
+
+### A2.2 Command Send Failed
+
+I cannot send commands to the light from my switch:
+
+-   Make sure the binding command was a success.
+-   Make sure you are passing the local endpoint_id, and not the remote
+    endpoint_id, to the cluster_update() API.
+-   If using device console, make sure you are running the
+    `bound invoke` command and not the `client invoke` command. The
+    client commands are for devices which have not been bound.
+-   If you are still facing issues, reproduce the issue on the default
+    example for the device and then raise an [issue](https://github.com/espressif/esp-matter/issues).
+    Make sure to share these:
+    -   The complete device logs for both the devices taken over UART.
+    -   The complete chip-tool logs.
+    -   The esp-matter and esp-idf branch you are using.

@@ -1,7 +1,7 @@
 2. Developing with ESP Matter
 =============================
 
-Please refer to :project_file:`CHANGELOG.md` to track release changes
+Please refer to :project_file:`Changelog <CHANGELOG.md>` to track release changes
 and known-issues.
 
 2.1 Development Setup
@@ -61,14 +61,11 @@ host. Linux and Mac OS-X are the supported development hosts in Matter.
 The device would need additional configuration depending on the example,
 for it to work. Check the example's "Additional Environment Setup" section for more information.
 
-.. toctree::
-   :maxdepth: 1
-
-   Light <examples/light>
-   Light Switch <examples/light_switch>
-   RainMaker Light <examples/rainmaker_light>
-   Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/zigbee_bridge>
+-  :project_file:`Light <examples/light/README.md>`
+-  :project_file:`Light Switch <examples/light_switch/README.md>`
+-  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
+-  :project_file:`Zap Light <examples/zap_light/README.md>`
+-  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`
 
 2.1.5 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,13 +157,19 @@ Pair a Wi-Fi Device over BLE:
 
 ::
 
-   chip-tool pairing ble-wifi 1 <ssid> <password> 20202021 3840
+   chip-tool pairing ble-wifi 0x7283 <ssid> <password> 20202021 3840
 
 Pair a Thread Device over BLE:
 
 ::
 
-   chip-tool pairing ble-thread 1 hex:<operationalDataset> 20202021 3840
+   chip-tool pairing ble-thread 0x7283 hex:<operationalDataset> 20202021 3840
+
+In the above commands:
+
+-  ``0x7283`` is the randomly generated ``node_id``
+-  ``20202021`` is the ``setup_pin_code``
+-  ``3840`` is the ``discriminator``
 
 2.2.1.3 Post Commissioning Setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -174,15 +177,11 @@ Pair a Thread Device over BLE:
 The device would need additional configuration depending on the example,
 for it to work. Check the example's "Post Commissioning Setup" section for more information.
 
-.. toctree::
-   :maxdepth: 1
-
-   Light <examples/light>
-   Light Switch <examples/light_switch>
-   RainMaker Light <examples/rainmaker_light>
-   Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/zigbee_bridge>
-
+-  :project_file:`Light <examples/light/README.md>`
+-  :project_file:`Light Switch <examples/light_switch/README.md>`
+-  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
+-  :project_file:`Zap Light <examples/zap_light/README.md>`
+-  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`
 
 2.2.1.4 Cluster Control
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -191,27 +190,27 @@ Use the cluster commands to control the attributes.
 
 ::
 
-   chip-tool onoff toggle 1 1
+   chip-tool onoff toggle 0x7283 0x1
 
 ::
 
-   chip-tool onoff on 1 1
+   chip-tool onoff on 0x7283 0x1
 
 ::
 
-   chip-tool levelcontrol move-to-level 10 0 0 0 1 1
+   chip-tool levelcontrol move-to-level 10 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool levelcontrol move-to-level 100 0 0 0 1 1
+   chip-tool levelcontrol move-to-level 100 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool colorcontrol move-to-saturation 200 0 0 0 1 1
+   chip-tool colorcontrol move-to-saturation 200 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool colorcontrol move-to-hue 150 0 0 0 0 1 1
+   chip-tool colorcontrol move-to-hue 150 0 0 0 0 0x7283 0x1
 
 For more chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
 
@@ -315,7 +314,7 @@ the terms like endpoints, clusters, etc. that are used in this section.
       node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
 -  We will use the ``color_dimmable_light`` standard device type in this
-   case. All standard device types are available in :project_file:`components/esp_matter/esp_matter_endpoint.h` header file.
+   case. All standard device types are available in :project_file:`esp_matter_endpoint.h <components/esp_matter/esp_matter_endpoint.h>` header file.
    Each device type has a set of default configuration that can be
    specific as well.
 
@@ -585,7 +584,7 @@ path conventions.
 2.4.4.2 Modifying the BUILD.gn target
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There is an example :project_file:`examples/common/external_platform/BUILD.gn` file for
+There is an example :project_file:`BUILD.gn <examples/common/external_platform/BUILD.gn>` file for
 the ``ESP32_custom`` example platform. It simply compiles the ESP32
 platform in Matter without any modifications.
 
@@ -664,7 +663,7 @@ If the Button driver that you wish to use is not part of Espressif's
 supported list, you can write a driver for it yourself.
 
 A reference hollow_button is available within the SDK at
-:project_file:`device_hal/button_driver/hollow_button/button_driver.c`. This includes all
+:project_file:`hollow_button/button_driver.c <device_hal/button_driver/hollow_button/button_driver.c>`. This includes all
 the skeletal code and the empty APIs that the button driver is supposed
 to implement to plug into the SDK.
 
@@ -708,7 +707,7 @@ If the LED driver that you wish to use is not part of Espressif's
 supported list, you can write a driver for it yourself.
 
 A reference hollow_led is available within the SDK at
-:project_file:`device_hal/led_driver/hollow_led/led_driver.c`. This includes all the
+:project_file:`hollow_led/led_driver.c <device_hal/led_driver/hollow_led/led_driver.c>`. This includes all the
 skeletal code and the empty APIs that the LED driver is supposed to
 implement to plug into the SDK.
 

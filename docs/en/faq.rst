@@ -43,7 +43,7 @@ Bluetooth/BLE does not work on by device:
    -  Run the device console command:
       ``matter wifi connect <ssid> <password>``.
    -  Run the chip-tool command for commissioning over ip:
-      ``chip-tool pairing onnetwork 1 20202021``.
+      ``chip-tool pairing onnetwork 0x7283 20202021``.
 
 -  If you are still facing issues, reproduce it on the default
    example for the device and then raise it `here <https://github.com/espressif/esp-matter/issues>`__. Make sure
@@ -142,11 +142,8 @@ The LED on my devkit is not working:
 
 **Also check the "Appendix FAQs" sections of the respective examples.**
 
-.. toctree::
-   :maxdepth: 1
-
-   Light <examples/light>
-   Light Switch <examples/light_switch>
-   RainMaker Light <examples/rainmaker_light>
-   Zap Light <examples/zap_light>
-   ZigBee Bridge <examples/zigbee_bridge>
+-  :project_file:`Light <examples/light/README.md>`
+-  :project_file:`Light Switch <examples/light_switch/README.md>`
+-  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
+-  :project_file:`Zap Light <examples/zap_light/README.md>`
+-  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`

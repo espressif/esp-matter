@@ -137,7 +137,7 @@ enables Remote Control through RainMaker.
 This application creates an On/Off Light Switch device using the ESP Matter
 data model.
 
-It creates the On/Off client and other devices can be binded to the
+It creates the On/Off client and other devices can be bound to the
 switch and then controlled from the switch.
 
 1.3.4 Zap Light

@@ -33,7 +33,7 @@ per device. ESP-Matter provides a utility (mfg_tool.py) to create instances of t
 When using the utility, by default, the above details will be included in the generated NVS partition image. The utility also has provision to include additional details in the same NVS image by using the config and value CSV files.
 
 Details about using the ESP Matter mass manufacturing utility can be found here:
-:project_file:`tools/mfg_tool/README.md`.
+:project_file:`mfg_tool<tools/mfg_tool/README.md>`.
 
 4.3.2 Pre-Provisioned Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

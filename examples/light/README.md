@@ -1,62 +1,38 @@
-# Light Example
+# Light
 
-## Building and Flashing the Firmware
+This example creates a Color Dimmable Light device using the ESP
+Matter data model.
 
-See the [README.md](../../README.md) file for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
+## 1. Additional Environment Setup
 
-## What to expect in this example?
+No additional setup is required.
 
-The example provides a minimal implementation to build a Matter light device on ESP32 series SoCs.
+## 2. Post Commissioning Setup
 
-Supported features:
- - Matter Commissioning
- - On/Off, Brightness and Color (on ESP32-C3 for now) control
- - (Optional) Interactive shell
+No additional setup is required.
 
-### Useful shell commands
+## 3. Device Performance
 
-- BLE commands
+### 3.1 Memory usage
 
-```
-> matter ble <start|stop|state>
-```
+The following is the Memory and Flash Usage.
 
-Set and get the BLE advertisement state.
+-   `Bootup` == Device just finished booting up. Device is not
+    commissionined or connected to wifi yet.
+-   `After Commissioning` == Device is conneted to wifi and is also
+    commissioned and is rebooted.
+-   device used: esp32c3_devkit_m
+-   tested on:
+    [bd951b8](https://github.com/espressif/esp-matter/commit/bd951b84993d9d0b5742872be4f51bb6c9ccf15e)
+    (2022-05-05)
 
-- Wi-Fi commands
+|                         | Bootup | After Commissioning |
+|:-                       |:-:     |:-:                  |
+|**Free Internal Memory** |109KB   |105KB                |
 
-```
-> matter wifi mode [disable|ap|sta]
-```
+**Flash Usage**: Firmware binary size: 1.26MB
 
-Set and get the Wi-Fi mode.
-
-```
-> matter wifi connect <ssid> <psk>
-```
-
-Connect to Wi-Fi network.
-
-- Device configuration
-
-```
-> matter config
-```
-
-Dump the device static configuration
-
-
-- Factory reset
-
-```
-> matter device factoryreset
-```
-
-- On-boarding codes
-
-```
-> matter onboardingcodes
-```
-
-Dump the on-boarding pairing code payloads.
+This should give you a good idea about the amount of free memory that is
+available for you to run your application's code.
