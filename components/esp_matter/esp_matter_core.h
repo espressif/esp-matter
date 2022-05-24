@@ -611,11 +611,12 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
  *
  * @param[in] cluster Cluster handle.
  * @param[in] command_id Command ID for the command.
+ * @param[in] flags Command flags for the command to be fetched.
  *
  * @return Command handle on success.
  * @return NULL in case of failure.
  */
-command_t *get(cluster_t *cluster, uint32_t command_id);
+command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags);
 
 /** Get first command
  *

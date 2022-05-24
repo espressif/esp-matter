@@ -422,9 +422,11 @@ esp_err_t enable(endpoint_t *endpoint)
         attribute_index = 0;
         matter_attributes = (EmberAfAttributeMetadata *)calloc(1, attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
-            ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
-            err = ESP_ERR_NO_MEM;
-            break;
+            if (attribute_count != 0) {
+                ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
+                err = ESP_ERR_NO_MEM;
+                break;
+            }
         }
 
         while (attribute) {
@@ -767,6 +769,11 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
         return NULL;
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
+    attribute_t *existing_attribute = get(cluster, attribute_id);
+    if (existing_attribute) {
+        ESP_LOGE(TAG, "Attribute 0x%04x on cluster 0x%04x already exists", attribute_id, current_cluster->cluster_id);
+        return existing_attribute;
+    }
 
     /* Allocate */
     _attribute_t *attribute = (_attribute_t *)calloc(1, sizeof(_attribute_t));
@@ -1113,6 +1120,11 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
         return NULL;
     }
     _cluster_t *current_cluster = (_cluster_t *)cluster;
+    command_t *existing_command = get(cluster, command_id, flags);
+    if (existing_command) {
+        ESP_LOGE(TAG, "Command 0x%04x on cluster 0x%04x already exists", command_id, current_cluster->cluster_id);
+        return existing_command;
+    }
 
     /* Allocate */
     _command_t *command = (_command_t *)calloc(1, sizeof(_command_t));
@@ -1155,7 +1167,7 @@ static esp_err_t destroy(command_t *command)
     return ESP_OK;
 }
 
-command_t *get(cluster_t *cluster, uint32_t command_id)
+command_t *get(cluster_t *cluster, uint32_t command_id, uint16_t flags)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -1164,7 +1176,7 @@ command_t *get(cluster_t *cluster, uint32_t command_id)
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     _command_t *current_command = (_command_t *)current_cluster->command_list;
     while (current_command) {
-        if (current_command->command_id == command_id) {
+        if ((current_command->command_id == command_id) && (current_command->flags & flags)) {
             break;
         }
         current_command = current_command->next;
@@ -1234,6 +1246,11 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         return NULL;
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    cluster_t *existing_cluster = get(endpoint, cluster_id);
+    if (existing_cluster) {
+        ESP_LOGE(TAG, "Cluster 0x%04x on endpoint 0x%04x already exists", cluster_id, current_endpoint->endpoint_id);
+        return existing_cluster;
+    }
 
     /* Allocate */
     _cluster_t *cluster = (_cluster_t *)calloc(1, sizeof(_cluster_t));
@@ -1560,6 +1577,10 @@ static _node_t *node = NULL;
 
 node_t *create_raw()
 {
+    if (node) {
+        ESP_LOGE(TAG, "Node already exists");
+        return (node_t *)node;
+    }
     node = (_node_t *)calloc(1, sizeof(_node_t));
     if (!node) {
         ESP_LOGE(TAG, "Couldn't allocate _node_t");

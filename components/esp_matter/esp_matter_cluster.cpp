@@ -71,12 +71,14 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterDescriptorPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    global::attribute::create_cluster_revision(cluster, 0);
-    attribute::create_device_list(cluster, NULL, 0, 0);
-    attribute::create_server_list(cluster, NULL, 0, 0);
-    attribute::create_client_list(cluster, NULL, 0, 0);
-    attribute::create_parts_list(cluster, NULL, 0, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_cluster_revision(cluster, 0);
+        attribute::create_device_list(cluster, NULL, 0, 0);
+        attribute::create_server_list(cluster, NULL, 0, 0);
+        attribute::create_client_list(cluster, NULL, 0, 0);
+        attribute::create_parts_list(cluster, NULL, 0, 0);
+    }
 
     return cluster;
 }
@@ -101,10 +103,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterAccessControlPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    global::attribute::create_cluster_revision(cluster, 0);
-    attribute::create_acl(cluster, NULL, 0, 0);
-    attribute::create_extension(cluster, NULL, 0, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_cluster_revision(cluster, 0);
+        attribute::create_acl(cluster, NULL, 0, 0);
+        attribute::create_extension(cluster, NULL, 0, 0);
+    }
+
     return cluster;
 }
 } /* access_control */
@@ -131,21 +136,23 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_data_model_revision(cluster, 0);
-    attribute::create_location(cluster, NULL, 0);
-    attribute::create_vendor_name(cluster, NULL, 0);
-    attribute::create_vendor_id(cluster, 0);
-    attribute::create_product_name(cluster, NULL, 0);
-    attribute::create_product_id(cluster, 0);
-    attribute::create_hardware_version(cluster, 0);
-    attribute::create_hardware_version_string(cluster, NULL, 0);
-    attribute::create_software_version(cluster, 0);
-    attribute::create_software_version_string(cluster, NULL, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_data_model_revision(cluster, 0);
+        attribute::create_location(cluster, NULL, 0);
+        attribute::create_vendor_name(cluster, NULL, 0);
+        attribute::create_vendor_id(cluster, 0);
+        attribute::create_product_name(cluster, NULL, 0);
+        attribute::create_product_id(cluster, 0);
+        attribute::create_hardware_version(cluster, 0);
+        attribute::create_hardware_version_string(cluster, NULL, 0);
+        attribute::create_software_version(cluster, 0);
+        attribute::create_software_version_string(cluster, NULL, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_node_label(cluster, config->node_label, sizeof(config->node_label));
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_node_label(cluster, config->node_label, sizeof(config->node_label));
+    }
 
     return cluster;
 }
@@ -174,11 +181,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     /* Extra initialization */
     client::binding_init();
 
-    /* Attributes managed internally */
-    attribute::create_binding(cluster, NULL, 0, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_binding(cluster, NULL, 0, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     return cluster;
 }
@@ -204,8 +213,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateProviderPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     /* Commands */
     command::create_query_image(cluster);
@@ -238,14 +249,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterOtaSoftwareUpdateRequestorPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_default_ota_providers(cluster, NULL, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_default_ota_providers(cluster, NULL, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_update_possible(cluster, config->update_possible);
-    attribute::create_update_state(cluster, config->update_state);
-    attribute::create_update_state_progress(cluster, config->update_state_progress);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_update_possible(cluster, config->update_possible);
+        attribute::create_update_state(cluster, config->update_state);
+        attribute::create_update_state_progress(cluster, config->update_state_progress);
+    }
 
     /* Commands */
     command::create_announce_ota_provider(cluster);
@@ -274,14 +287,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterGeneralCommissioningPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_regulatory_config(cluster, 0);
-    attribute::create_location_capability(cluster, 0);
-    attribute::create_basic_commissioning_info(cluster, NULL, 0, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_regulatory_config(cluster, 0);
+        attribute::create_location_capability(cluster, 0);
+        attribute::create_basic_commissioning_info(cluster, NULL, 0, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_breadcrumb(cluster, config->breadcrumb);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_breadcrumb(cluster, config->breadcrumb);
+    }
 
     /* Commands */
     command::create_arm_fail_safe(cluster);
@@ -315,19 +330,21 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterNetworkCommissioningPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_max_networks(cluster, 0);
-    attribute::create_networks(cluster, NULL, 0, 0);
-    attribute::create_scan_max_time_seconds(cluster, 0);
-    attribute::create_connect_max_time_seconds(cluster, 0);
-    attribute::create_interface_enabled(cluster, 0);
-    attribute::create_last_networking_status(cluster, 0);
-    attribute::create_last_network_id(cluster, NULL, 0);
-    attribute::create_last_connect_error_value(cluster, 0);
-    global::attribute::create_feature_map(cluster, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_max_networks(cluster, 0);
+        attribute::create_networks(cluster, NULL, 0, 0);
+        attribute::create_scan_max_time_seconds(cluster, 0);
+        attribute::create_connect_max_time_seconds(cluster, 0);
+        attribute::create_interface_enabled(cluster, 0);
+        attribute::create_last_networking_status(cluster, 0);
+        attribute::create_last_network_id(cluster, NULL, 0);
+        attribute::create_last_connect_error_value(cluster, 0);
+        global::attribute::create_feature_map(cluster, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     /* Commands */
     command::create_scan_networks(cluster);
@@ -364,12 +381,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterGeneralDiagnosticsPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_network_interfaces(cluster, NULL, 0, 0);
-    attribute::create_reboot_count(cluster, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_network_interfaces(cluster, NULL, 0, 0);
+        attribute::create_reboot_count(cluster, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     return cluster;
 }
@@ -395,13 +414,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterAdministratorCommissioningPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_window_status(cluster, 0);
-    attribute::create_admin_fabric_index(cluster, 0);
-    attribute::create_admin_vendor_id(cluster, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_window_status(cluster, 0);
+        attribute::create_admin_fabric_index(cluster, 0);
+        attribute::create_admin_vendor_id(cluster, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     /* Commands */
     command::create_open_commissioning_window(cluster);
@@ -432,16 +453,18 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterOperationalCredentialsPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_nocs(cluster, NULL, 0, 0);
-    attribute::create_supported_fabrics(cluster, 0);
-    attribute::create_commissioned_fabrics(cluster, 0);
-    attribute::create_fabrics(cluster, NULL, 0, 0);
-    attribute::create_trusted_root_certificates(cluster, NULL, 0, 0);
-    attribute::create_current_fabric_index(cluster, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_nocs(cluster, NULL, 0, 0);
+        attribute::create_supported_fabrics(cluster, 0);
+        attribute::create_commissioned_fabrics(cluster, 0);
+        attribute::create_fabrics(cluster, NULL, 0, 0);
+        attribute::create_trusted_root_certificates(cluster, NULL, 0, 0);
+        attribute::create_current_fabric_index(cluster, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     /* Commands */
     command::create_attestation_request(cluster);
@@ -482,12 +505,14 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterGroupKeyManagementPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    global::attribute::create_cluster_revision(cluster, 0);
-    attribute::create_group_key_map(cluster, NULL, 0, 0);
-    attribute::create_group_table(cluster, NULL, 0, 0);
-    attribute::create_max_groups_per_fabric(cluster, 0);
-    attribute::create_max_group_keys_per_fabric(cluster, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_cluster_revision(cluster, 0);
+        attribute::create_group_key_map(cluster, NULL, 0, 0);
+        attribute::create_group_table(cluster, NULL, 0, 0);
+        attribute::create_max_groups_per_fabric(cluster, 0);
+        attribute::create_max_group_keys_per_fabric(cluster, 0);
+    }
 
     /* Commands */
     command::create_key_set_write(cluster);
@@ -525,9 +550,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_identify_time(cluster, config->identify_time, 0x0, 0xFE);
-    attribute::create_identify_type(cluster, config->identify_type);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_identify_time(cluster, config->identify_time, 0x0, 0xFE);
+        attribute::create_identify_type(cluster, config->identify_type);
+    }
 
     /* Commands */
     command::create_identify(cluster);
@@ -560,9 +587,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterGroupsPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_group_name_support(cluster, config->group_name_support);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_group_name_support(cluster, config->group_name_support);
+    }
 
     /* Commands */
     command::create_add_group(cluster);
@@ -602,13 +631,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterScenesPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_scene_count(cluster, config->scene_count);
-    attribute::create_current_scene(cluster, config->current_scene);
-    attribute::create_current_group(cluster, config->current_group);
-    attribute::create_scene_valid(cluster, config->scene_valid);
-    attribute::create_scene_name_support(cluster, config->scene_name_support);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_scene_count(cluster, config->scene_count);
+        attribute::create_current_scene(cluster, config->current_scene);
+        attribute::create_current_group(cluster, config->current_group);
+        attribute::create_scene_valid(cluster, config->scene_valid);
+        attribute::create_scene_name_support(cluster, config->scene_name_support);
+    }
 
     /* Commands */
     command::create_add_scene(cluster);
@@ -651,9 +682,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         set_plugin_client_init_callback(cluster, MatterOnOffPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_on_off(cluster, config->on_off);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_on_off(cluster, config->on_off);
+    }
 
     /* Commands */
     command::create_off(cluster);
@@ -691,11 +724,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         set_plugin_client_init_callback(cluster, MatterLevelControlPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_current_level(cluster, config->current_level);
-    attribute::create_on_level(cluster, config->on_level);
-    attribute::create_options(cluster, config->options, 0x0, 0x3);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_current_level(cluster, config->current_level);
+        attribute::create_on_level(cluster, config->on_level);
+        attribute::create_options(cluster, config->options, 0x0, 0x3);
+    }
 
     /* Commands */
     command::create_move_to_level(cluster);
@@ -741,12 +776,14 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         set_plugin_client_init_callback(cluster, MatterColorControlPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_color_mode(cluster, config->color_mode);
-    attribute::create_color_control_options(cluster, config->color_control_options);
-    attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
-    attribute::create_color_capabilities(cluster, config->color_capabilities);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_color_mode(cluster, config->color_mode);
+        attribute::create_color_control_options(cluster, config->color_control_options);
+        attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
+        attribute::create_color_capabilities(cluster, config->color_capabilities);
+    }
 
     /* Features */
     if (features & feature::hue_saturation::get_id()) {
@@ -782,14 +819,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, NULL);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_fan_mode(cluster, config->fan_mode);
-    attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
-    /* Not implemented
-    attribute::create_percent_setting(cluster, config->percent_setting);
-    attribute::create_percent_current(cluster, config->percent_current);
-    */
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_fan_mode(cluster, config->fan_mode);
+        attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
+        /* Not implemented
+        attribute::create_percent_setting(cluster, config->percent_setting);
+        attribute::create_percent_current(cluster, config->percent_current);
+        */
+    }
 
     return cluster;
 }
@@ -817,13 +856,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterThermostatPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_local_temperature(cluster, config->local_temperature);
-    attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
-    attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
-    attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
-    attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x7);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_local_temperature(cluster, config->local_temperature);
+        attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
+        attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
+        attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
+        attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x7);
+    }
 
     /* Commands */
     command::create_setpoint_raise_lower(cluster);
@@ -855,14 +896,16 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterDoorLockPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_lock_state(cluster, config->lock_state);
-    attribute::create_lock_type(cluster, config->lock_type);
-    attribute::create_actuator_enabled(cluster, config->actuator_enabled);
-    attribute::create_auto_relock_time(cluster, config->auto_relock_time);
-    attribute::create_operating_mode(cluster, config->operating_mode, 0x0, 0x4);
-    attribute::create_supported_operating_modes(cluster, config->supported_operating_modes);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_lock_state(cluster, config->lock_state);
+        attribute::create_lock_type(cluster, config->lock_type);
+        attribute::create_actuator_enabled(cluster, config->actuator_enabled);
+        attribute::create_auto_relock_time(cluster, config->auto_relock_time);
+        attribute::create_operating_mode(cluster, config->operating_mode, 0x0, 0x4);
+        attribute::create_supported_operating_modes(cluster, config->supported_operating_modes);
+    }
 
     /* Commands */
     command::create_lock_door(cluster);
@@ -892,8 +935,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     return cluster;
 }
@@ -916,10 +961,12 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         add_function_list(cluster, function_list, function_flags);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_bridged_device_basic_node_label(cluster, config->node_label, sizeof(config->node_label));
-    attribute::create_reachable(cluster, config->reachable);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_bridged_device_basic_node_label(cluster, config->node_label, sizeof(config->node_label));
+        attribute::create_reachable(cluster, config->reachable);
+    }
 
     return cluster;
 }
@@ -945,11 +992,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
     }
 
-    /* Attributes managed internally */
-    attribute::create_label_list(cluster, NULL, 0, 0);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_label_list(cluster, NULL, 0, 0);
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    }
 
     return cluster;
 }
@@ -975,11 +1024,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterSwitchPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_number_of_positions(cluster, config->number_of_positions);
-    attribute::create_current_position(cluster, config->current_position);
-    attribute::create_multi_press_max(cluster, config->multi_press_max);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_number_of_positions(cluster, config->number_of_positions);
+        attribute::create_current_position(cluster, config->current_position);
+        attribute::create_multi_press_max(cluster, config->multi_press_max);
+    }
 
     return cluster;
 }
@@ -1005,11 +1056,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         set_plugin_client_init_callback(cluster, MatterTemperatureMeasurementPluginClientInitCallback);
     }
 
-    /* Attributes not managed internally */
-    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-    attribute::create_temperature_measured_value(cluster, config->measured_value);
-    attribute::create_temperature_min_measured_value(cluster, config->min_measured_value);
-    attribute::create_temperature_max_measured_value(cluster, config->max_measured_value);
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_temperature_measured_value(cluster, config->measured_value);
+        attribute::create_temperature_min_measured_value(cluster, config->min_measured_value);
+        attribute::create_temperature_max_measured_value(cluster, config->max_measured_value);
+    }
 
     return cluster;
 }
