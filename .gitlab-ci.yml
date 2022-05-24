@@ -8,8 +8,6 @@ variables:
     GIT_SUBMODULE_STRATEGY: none
 
 .chip_submodule_update: &chip_submodule_update
-    # - rm -rf .git/modules/connectedhomeip/
-    # - git config --remove-section submodule.connectedhomeip
     - git submodule sync --recursive
     - git submodule update --recursive --init --reference /local_references/github/
 
@@ -18,6 +16,7 @@ variables:
     # using release/v4.4 branch of espressif/esp-idf github repo
     - git clone --recursive --single-branch -b v4.4.1 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
+    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
 
@@ -29,6 +28,7 @@ variables:
     - cd esp-idf
     - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
     - git submodule update --init --recursive
+    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
 
@@ -180,10 +180,10 @@ deploy_docs_preview:
     variables:
         TYPE: "preview"
         DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
-        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_DEPLOY_KEY"
-        DOCS_DEPLOY_SERVER: "$DOCS_SERVER"
-        DOCS_DEPLOY_SERVER_USER: "$DOCS_SERVER_USER"
-        DOCS_DEPLOY_PATH: "$DOCS_PATH"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PREVIEW_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PREVIEW_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PREVIEW_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PREVIEW_PATH"
         DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/docs/esp-matter"
 
 deploy_docs_production:
