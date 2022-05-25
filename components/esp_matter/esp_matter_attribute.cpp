@@ -837,5 +837,41 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t v
 } /* attribute */
 } /* temperature_measurement */
 
+namespace occupancy_sensing {
+namespace attribute {
+
+attribute_t *create_occupancy(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::Occupancy::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_occupancy_sensor_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::OccupancySensorType::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::OccupancySensorTypeBitmap::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+}
+
+} /* attribute */
+} /* occupancy_sensing */
+
+namespace boolean_state {
+namespace attribute {
+
+attribute_t *state_value(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, BooleanState::Attributes::StateValue::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bool(value));
+}
+
+} /* attribute */
+} /* boolean_state */
+
 } /* cluster */
 } /* esp_matter */

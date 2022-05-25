@@ -96,7 +96,7 @@ A1.4 Device not crashed but not responding
 
 My device is not responding to commands:
 
--  Make sure your device is commissioned successfully and connected is
+-  Make sure your device is commissioned successfully and is connected
    to the Wi-Fi.
 -  Make sure the node_id and the endpoint_id are correct in the command
    from chip-tool.

@@ -34,10 +34,13 @@
 #define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
 
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
+#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID 0x0107
+#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID 0x0015
+
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
-#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
 
 static const char *TAG = "esp_matter_endpoint";
 
@@ -483,6 +486,50 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     return endpoint;
 }
 } /* temperature_sensor */
+
+namespace occupancy_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* occupancy_sensor */
+
+namespace contact_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    set_device_type_id(endpoint, get_device_type_id());
+
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* contact_sensor */
 } /* endpoint */
 
 namespace node {

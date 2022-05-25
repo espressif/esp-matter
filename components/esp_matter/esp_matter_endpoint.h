@@ -244,6 +244,27 @@ typedef struct config {
 uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* temperature_sensor */
+
+namespace occupancy_sensor {
+typedef struct config {
+    identify::config_t identify;
+    occupancy_sensing::config_t occupancy_sensing;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* occupancy_sensor */
+
+namespace contact_sensor {
+typedef struct config {
+    identify::config_t identify;
+    boolean_state::config_t boolean_state;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* contact_sensor */
+
 } /* endpoint */
 
 namespace node {

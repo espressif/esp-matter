@@ -1068,5 +1068,67 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* temperature_measurement */
 
+namespace occupancy_sensing {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, OccupancySensing::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterOccupancySensingPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterOccupancySensingPluginClientInitCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::create_occupancy(cluster, config->occupancy);
+        attribute::create_occupancy_sensor_type(cluster, config->occupancy_sensor_type);
+        attribute::create_occupancy_sensor_type_bitmap(cluster, config->occupancy_sensor_type_bitmap);
+    }
+
+    return cluster;
+}
+} /* occupancy_sensing */
+
+namespace boolean_state {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, BooleanState::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterBooleanStatePluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterBooleanStatePluginClientInitCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        attribute::state_value(cluster, config->state_value);
+    }
+
+    return cluster;
+}
+} /* boolean_state */
+
 } /* cluster */
 } /* esp_matter */

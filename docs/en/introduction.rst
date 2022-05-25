@@ -49,13 +49,6 @@ In addition, ESP Matter SDK also integrates `ESP RainMaker <https://rainmaker.es
 
 Espressif's AIoT cloud platform `ESP RainMaker <https://rainmaker.espressif.com/>`__ can provide remote control for Matter devices and enable the Cloud-based device management of Matter devices' massive data resources.
 
-todo. Add a supported services diagram similar to the one ad the end of this page https://rainmaker.espressif.com/?
-
-.. figure:: ../_static/supported_services.png
-    :align: center
-    :alt: ESP Matter Supported Services
-    :figclass: align-center
-
 By combining the above-mentioned Matter hardware and software solutions with ESP RainMaker, this one-stop Matter ecosystem solution provides:
 
    -  Interconnection with Amazon, Google and Apple
@@ -112,52 +105,12 @@ These can be used to control other Matter devices.
    -  Touch-screen control panel
    -  Hub with internet connectivity for remote control
 
-1.3 Examples
-------------
-
-1.3.1 Light
-~~~~~~~~~~~
-
-This application creates a Color Dimmable Light device using the ESP
-Matter data model.
-
-1.3.2 RainMaker Light
-~~~~~~~~~~~~~~~~~~~~~
-
-This application creates a Color Dimmable Light device using the ESP
-Matter data model.
-
-It also initializes ESP RainMaker which enables Device Management and
-OTA using the RainMaker cloud. If user node association is done, it also
-enables Remote Control through RainMaker.
-
-1.3.3 Light Switch
-~~~~~~~~~~~~~~~~~~
-
-This application creates an On/Off Light Switch device using the ESP Matter
-data model.
-
-It creates the On/Off client and other devices can be bound to the
-switch and then controlled from the switch.
-
-1.3.4 Zap Light
-~~~~~~~~~~~~~~~
-
-This application creates a Color Dimmable Light device using the Zap
-data model instead of the ESP Matter data model.
-
-1.3.5 ZigBee Bridge
-~~~~~~~~~~~~~~~~~~~
-
-This application demonstrates a Matter-ZigBee Bridge that bridges ZigBee devices to Matter fabric.
-
-1.4 Try it yourself
+1.3 Try it yourself
 -------------------
 
-1.4.1 ESP Launchpad
+1.3.1 ESP Launchpad
 ~~~~~~~~~~~~~~~~~~~
 
 This allows you to quickly try out Matter on Espressif devices through a web browser.
-
 
 ESP Launchpad: https://espressif.github.io/esp-launchpad/.

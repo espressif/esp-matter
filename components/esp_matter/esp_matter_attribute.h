@@ -257,5 +257,19 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t v
 } /* attribute */
 } /* temperature_measurement */
 
+namespace occupancy_sensing {
+namespace attribute {
+attribute_t *create_occupancy(cluster_t *cluster, uint8_t value);
+attribute_t *create_occupancy_sensor_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* occupancy_sensing */
+
+namespace boolean_state {
+namespace attribute {
+attribute_t *state_value(cluster_t *cluster, bool value);
+} /* attribute */
+} /* boolean_state */
+
 } /* cluster */
 } /* esp_matter */
