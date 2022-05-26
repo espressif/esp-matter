@@ -827,7 +827,8 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
     } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
                  cluster_id, attribute_id, val->val.f);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
+               || val->type == ESP_MATTER_VAL_TYPE_ENUM8) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {

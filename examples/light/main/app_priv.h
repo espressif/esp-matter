@@ -15,11 +15,13 @@
 #define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
 #define STANDARD_SATURATION 100
+#define STANDARD_TEMPERATURE_FACTOR 1000000
 
 /** Matter max values (used for remapping attributes) */
 #define MATTER_BRIGHTNESS 254
 #define MATTER_HUE 255
 #define MATTER_SATURATION 255
+#define MATTER_TEMPERATURE_FACTOR 1000000
 
 /** Default attribute values used during initialization */
 #define DEFAULT_POWER true

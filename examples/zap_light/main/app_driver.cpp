@@ -46,6 +46,12 @@ static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t *val)
     return led_driver_set_saturation(value);
 }
 
+static esp_err_t app_driver_light_set_temperature(esp_matter_attr_val_t *val)
+{
+    uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
+    return led_driver_set_temperature(value);
+}
+
 static void app_driver_button_toggle_cb(void *arg)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
@@ -78,6 +84,8 @@ esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
                 err = app_driver_light_set_hue(val);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                 err = app_driver_light_set_saturation(val);
+            } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+                err = app_driver_light_set_temperature(val);
             }
         }
     }
