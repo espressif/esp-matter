@@ -16,8 +16,10 @@ No additional setup is required.
 
 ### 2.1 Bind light to switch
 
-Using the chip-tool, commission 2 devices, the switch and a light. Then
-use the below commands to bind the light to the switch.
+Using the chip-tool, commission 2 devices, the switch and a light.
+If you are having trouble, try commissioning them one at a time (by powering off the other device) as
+the default discriminator and passcode are same for both of them.
+Then use the below commands to bind the light to the switch.
 
 For the commands below:
 
