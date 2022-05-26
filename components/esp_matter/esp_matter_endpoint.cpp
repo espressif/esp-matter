@@ -237,12 +237,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -264,12 +264,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -291,13 +291,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
