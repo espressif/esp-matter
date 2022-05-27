@@ -78,10 +78,19 @@ variables:
     - idf.py build
     - cp sdkconfig.defaults.backup sdkconfig.defaults
 
-.build_bridge_zigbee_app: &build_bridge_zigbee_app
-    - cd $ESP_MATTER_PATH/examples/bridge_zigbee
+.build_examples_idf_v5_0: &build_examples_idf_v5_0
 # pyparsing in python_env created by matter is version 2.4.0 IDF v5.0 requires 3.0.8
     - pip install pyparsing==3.0.8
+    - cd $ESP_MATTER_PATH/examples/zap_light
+    - idf.py --preview set-target esp32h2
+    - idf.py build
+    - cd $ESP_MATTER_PATH/examples/switch
+    - idf.py --preview set-target esp32h2
+    - idf.py build
+    - cd $ESP_MATTER_PATH/examples/light
+    - idf.py --preview set-target esp32h2
+    - idf.py build
+    - cd $ESP_MATTER_PATH/examples/bridge_zigbee
     - idf.py set-target esp32
     - idf.py build
 
@@ -114,7 +123,7 @@ build_esp_matter_examples_idf_v5_0:
         - *chip_submodule_update
         - *setup_idf_v5_0
         - *setup_matter
-        - *build_bridge_zigbee_app
+        - *build_examples_idf_v5_0
 
 build_upstream_examples:
     stage: build
