@@ -1,14 +1,14 @@
 2. Developing with ESP Matter
 =============================
 
-Please refer to :project_file:`Changelog <CHANGELOG.md>` to track release changes
-and known-issues.
+Please refer the :project_file:`Changelog <CHANGELOG.md>` to know more about
+ESP Matter releases
 
 2.1 Development Setup
 ---------------------
 
 This section talks about setting up your development host, fetching the
-git repositories, and instructions for build and flash.
+Git repositories, and instructions for build and flash.
 
 2.1.1 Host Setup
 ~~~~~~~~~~~~~~~~
@@ -50,16 +50,14 @@ host. Linux and Mac OS-X are the supported development hosts in Matter.
 2.1.3 Configuring the Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+This should be done each time a new terminal is opened
 ::
 
    cd esp-idf; . ./export.sh; cd ..
    cd esp-matter; . ./export.sh; cd ..
 
-2.1.4 Additional Environment Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The device would need additional configuration depending on the example,
-for it to work. Check the example's "Additional Environment Setup" section for more information.
+2.1.4 Building Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  :project_file:`Light <examples/light/README.md>`
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
@@ -102,7 +100,7 @@ Choose IDF target.
       working as expected, you can create a new device and export your
       device path.
    -  The other peripheral components like led_driver, button_driver,
-      etc are selected based on the device selected.
+      etc. are selected based on the device selected.
    -  The configuration of the peripheral components can be found in
       ``$ESP_MATTER_DEVICE_PATH/esp_matter_device.cmake``.
 
@@ -131,35 +129,23 @@ Choose IDF target.
 -  For a Wi-Fi device, a Wi-Fi AP which supports IPv6 is required.
 -  For a Thread device, a Thread Border Router is required.
 
-2.2.1 Test Setup (Python Controller Setup)
+2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Python Controller, also referred to as chip-tool can be used as a Matter client to commission and control the device.
+A host-based chip-tool can be used as a Matter client to commission and control the device.
 
-2.2.1.1 Environment setup
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The environment setup should already have been done when the *esp-matter/install.sh* script was run in the 'Getting the Repositories' section. If the setup was done without using the script, the below commands can be run to build the chip-tool executable.
-
-::
-
-   cd esp-matter/connectedhomeip/connectedhomeip
-   scripts/examples/gn_build_example.sh examples/chip-tool examples/chip-tool/out/
-   export PATH=$PATH:$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples/chip-tool/out/
-   cd ../../
-
-2.2.1.2 Commissioning
+2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
 
 Use ``chip-tool`` to pair the device:
 
-Pair a Wi-Fi Device over BLE:
+Commission a Wi-Fi Device over BLE:
 
 ::
 
    chip-tool pairing ble-wifi 0x7283 <ssid> <password> 20202021 3840
 
-Pair a Thread Device over BLE:
+Commission a Thread Device over BLE:
 
 ::
 
@@ -167,11 +153,11 @@ Pair a Thread Device over BLE:
 
 In the above commands:
 
--  ``0x7283`` is the randomly generated ``node_id``
--  ``20202021`` is the ``setup_pin_code``
+-  ``0x7283`` is the randomly chosen ``node_id``
+-  ``20202021`` is the ``setup_passcode``
 -  ``3840`` is the ``discriminator``
 
-2.2.1.3 Post Commissioning Setup
+2.2.1.2 Post Commissioning Setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The device would need additional configuration depending on the example,
@@ -183,7 +169,7 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`
 
-2.2.1.4 Cluster Control
+2.2.1.3 Cluster Control
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Use the cluster commands to control the attributes.
@@ -212,14 +198,14 @@ Use the cluster commands to control the attributes.
 
    chip-tool colorcontrol move-to-hue 150 0 0 0 0 0x7283 0x1
 
-For more chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
+For more details on chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
 
 2.3 Device console
 ------------------
 
-The console on the device can be used to run commands for testing. It is enabled by default in the firmware. Here are some useful commands:
+The console on the device can be used to run commands for testing. It is configurable through menuconfig and enabled by default in the firmware. Here are some useful commands:
 
--  BLE commands: Set and get the BLE advertisement state:
+-  BLE commands: Start and stop BLE advertisement:
 
    ::
 
@@ -231,7 +217,7 @@ The console on the device can be used to run commands for testing. It is enabled
 
       matter wifi mode [disable|ap|sta]
 
--  Wi-Fi connect:
+-  Wi-Fi connect: Connect to the Access Point
 
    ::
 
@@ -293,13 +279,15 @@ Additional ESP Matter specific commands:
 Understanding the structure before actually modifying and customising
 the device is helpful.
 
-2.4.1 Building a Dimmable Lightbulb
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.4.1 Building a Color Temperature Lightbulb
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A device is represented in Matter in terms of its data model. As a first
-step of building your product you will define the data model for your
-device. Matter has a standard set of device types already defined that you can preferably use. Please refer to the `Espressif Matter Blog <https://blog.espressif.com/matter-clusters-attributes-commands-82b8ec1640a0>`__ for clarity on
-the terms like endpoints, clusters, etc. that are used in this section.
+step of building your product, you will define the data model for your
+device. Matter has a standard set of device types already defined that you
+can use. Please refer to the
+`Espressif Matter Blog <https://blog.espressif.com/matter-clusters-attributes-commands-82b8ec1640a0>`__
+for clarity on the terms like endpoints, clusters, etc. that are used in this section.
 
 2.4.1.1 Data Model
 ^^^^^^^^^^^^^^^^^^
@@ -313,7 +301,7 @@ the terms like endpoints, clusters, etc. that are used in this section.
       node::config_t node_config;
       node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
 
--  We will use the ``color_dimmable_light`` standard device type in this
+-  We will use the ``color_temperature_light`` standard device type in this
    case. All standard device types are available in :project_file:`esp_matter_endpoint.h <components/esp_matter/esp_matter_endpoint.h>` header file.
    Each device type has a set of default configuration that can be
    specific as well.
