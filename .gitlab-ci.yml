@@ -13,7 +13,7 @@ variables:
 .setup_idf: &setup_idf
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using release/v4.4 branch of espressif/esp-idf github repo
-    - git clone --recursive -b release/v4.4 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
+    - git clone --recursive --single-branch -b v4.4.1 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - ./install.sh
     - . export.sh
