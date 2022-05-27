@@ -17,15 +17,6 @@
 
 #include <app_priv.h>
 #include <app_qrcode.h>
-#include <app_insights.h>
-
-#if CONFIG_ESP_MATTER_ENABLE_INSIGHTS
-/*
- * Please check the below link to obtain the ESP Insights Auth Key
- * https://github.com/espressif/esp-insights/tree/4bc3b0685223a75df0ce71c73af70014f4dd1633/examples#set-up-esp-insights-account
- */
-const char * INSIGHTS_AUTH_KEY = "<paste_insights_auth_key_here>";
-#endif
 
 static const char *TAG = "app_main";
 int light_endpoint_id = 0;
@@ -102,9 +93,5 @@ extern "C" void app_main()
 
 #if CONFIG_ENABLE_OTA_REQUESTOR
     esp_matter_ota_requestor_init();
-#endif
-
-#if CONFIG_ESP_MATTER_ENABLE_INSIGHTS
-    app_insights_enable(INSIGHTS_AUTH_KEY);
 #endif
 }
