@@ -14,10 +14,15 @@ Git repositories, and instructions for build and flash.
 ~~~~~~~~~~~~~~~~
 
 You should install drivers and support packages for your development
-host. Linux and Mac OS-X are the supported development hosts in Matter.
+host. Linux and Mac OS-X are the supported development hosts in Matter, the recommended host versions:
 
--  Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
--  Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Ubuntu 20.04 LTS
+- macOS 10.15 or later
+
+The Prerequisites for ESP-IDF and Matter:
+
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,7 +68,7 @@ This should be done each time a new terminal is opened
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
 -  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
--  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`
+-  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
 
 2.1.5 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,7 +135,7 @@ Choose IDF target.
 -  For a Thread device, a Thread Border Router is required.
 
 2.2.1 Test Setup (CHIP Tool)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A host-based chip-tool can be used as a Matter client to commission and control the device.
 
@@ -139,17 +144,17 @@ A host-based chip-tool can be used as a Matter client to commission and control 
 
 Use ``chip-tool`` to pair the device:
 
-Commission a Wi-Fi Device over BLE:
+.. only:: esp32 or esp32c3
 
-::
+   ::
 
-   chip-tool pairing ble-wifi 0x7283 <ssid> <password> 20202021 3840
+      chip-tool pairing ble-wifi 0x7283 <ssid> <password> 20202021 3840
 
-Commission a Thread Device over BLE:
+.. only:: esp32h2
 
-::
+   ::
 
-   chip-tool pairing ble-thread 0x7283 hex:<operationalDataset> 20202021 3840
+      chip-tool pairing ble-thread 0x7283 hex:<operationalDataset> 20202021 3840
 
 In the above commands:
 
@@ -167,7 +172,7 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
 -  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
--  :project_file:`ZigBee Bridge <examples/zigbee_bridge/README.md>`
+-  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
 
 2.2.1.3 Cluster Control
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -475,14 +480,14 @@ Examples:
    ::
 
       bool default_on_off = true;
-      attrbute_t *attribute = on_off::attribute::create_on_off(cluster, default_on_off);
+      attribute_t *attribute = on_off::attribute::create_on_off(cluster, default_on_off);
 
 -  attribute: cluster_revision:
 
    ::
 
       uint16_t default_cluster_revision = 1;
-      attrbute_t *attribute = global::attribute::create_cluster_revision(cluster, default_cluster_revision);
+      attribute_t *attribute = global::attribute::create_cluster_revision(cluster, default_cluster_revision);
 
 -  command: toggle:
 

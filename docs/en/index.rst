@@ -9,6 +9,11 @@ standard enables communications among a wide range of smart devices.
 ESP Matter is the official Matter development framework for
 Espressif's ESP32 series SoCs.
 
+.. figure:: ../_static/solution_architecture.png
+    :align: center
+    :alt: ESP Matter Solution Architecture
+    :figclass: align-center
+
 Espressif has put together a series of blog posts that talk about various aspects of Matter. You can see here: `Espressif Matter Blog <https://blog.espressif.com/matter-38ccf1d60bcd>`__.
 
 Table of Contents
