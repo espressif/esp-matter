@@ -19,7 +19,6 @@ variables:
     - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
-    - pip install --upgrade idf-component-manager
 
 .setup_idf_v5_0: &setup_idf_v5_0
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
@@ -32,7 +31,6 @@ variables:
     - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
-    - pip install --upgrade idf-component-manager
 
 .setup_matter: &setup_matter
     - cd $ESP_MATTER_PATH
@@ -56,7 +54,7 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py set-target esp32
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/switch
+    - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py set-target esp32
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
@@ -75,7 +73,7 @@ variables:
     - rm -rf $ESP_MATTER_PATH/../platform
     - mkdir $ESP_MATTER_PATH/../platform
     - cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cp $ESP_MATTER_PATH/docs/custom_platform_guide/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cp $ESP_MATTER_PATH/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
     - cd $ESP_MATTER_PATH/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
@@ -89,7 +87,7 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/switch
+    - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py --preview set-target esp32h2
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/light

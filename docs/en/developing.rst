@@ -651,7 +651,7 @@ If the Button driver that you wish to use is not part of Espressif's
 supported list, you can write a driver for it yourself.
 
 A reference hollow_button is available within the SDK at
-:project_file:`hollow_button/button_driver.c <device_hal/button_driver/hollow_button/button_driver.c>`. This includes all
+:project_file:`hollow_button/button_driver.c <device_hal/button_driver/button/hollow_button/button_driver.c>`. This includes all
 the skeletal code and the empty APIs that the button driver is supposed
 to implement to plug into the SDK.
 
