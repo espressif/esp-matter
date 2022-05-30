@@ -1,14 +1,14 @@
 2. Developing with ESP Matter
 =============================
 
-Please refer the :project_file:`Changelog <CHANGELOG.md>` to know more about
+Please refer the :project_file:`Release Notes <RELEASE_NOTES.txt>` to know more about
 ESP Matter releases
 
 2.1 Development Setup
 ---------------------
 
 This section talks about setting up your development host, fetching the
-Git repositories, and instructions for build and flash.
+Git repositories, and instructions to build and flash.
 
 2.1.1 Host Setup
 ~~~~~~~~~~~~~~~~
@@ -99,7 +99,7 @@ Choose IDF target.
 -  The default device for ``esp32``/``esp32c3`` is
    ``esp32-devkit-c``/``esp32c3-devkit-m``. If you want to use another
    device, you can export ``ESP_MATTER_DEVICE_PATH`` after choosing
-   correct target, e.g for ``m5stack`` device:
+   the correct target, e.g. for ``m5stack`` device:
    ``export ESP_MATTER_DEVICE_PATH=/path/to/esp_matter/device_hal/device/m5stack``
 
    -  If the device that you have is of a different revision, and is not
@@ -138,18 +138,18 @@ Choose IDF target.
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A host-based chip-tool can be used as a Matter client to commission and control the device.
+A host-based chip-tool can be used as a commissioner to commission and control a Matter device.
 
 2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
 
-Use ``chip-tool`` to pair the device:
+Use ``chip-tool`` to commission the device:
 
 .. only:: esp32 or esp32c3
 
    ::
 
-      chip-tool pairing ble-wifi 0x7283 <ssid> <password> 20202021 3840
+      chip-tool pairing ble-wifi 0x7283 <ssid> <passphrase> 20202021 3840
 
 .. only:: esp32h2
 
@@ -167,7 +167,7 @@ In the above commands:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The device would need additional configuration depending on the example,
-for it to work. Check the example's "Post Commissioning Setup" section for more information.
+for it to work. Check the "Post Commissioning Setup" section in examples for more information.
 
 -  :project_file:`Light <examples/light/README.md>`
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
@@ -290,7 +290,7 @@ the device is helpful.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A device is represented in Matter in terms of its data model. As a first
-step of building your product, you will define the data model for your
+step of building your product, you will have to define the data model for your
 device. Matter has a standard set of device types already defined that you
 can use. Please refer to the
 `Espressif Matter Blog <https://blog.espressif.com/matter-clusters-attributes-commands-82b8ec1640a0>`__
@@ -300,7 +300,7 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
 ^^^^^^^^^^^^^^^^^^
 
 -  Typically, the data model is defined in the example's *app_main.cpp*.
-   First off we start by creating the Matter node, which is the root of
+   First off we start by creating a Matter node, which is the root of
    the Data Model.
 
    ::
@@ -330,7 +330,7 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
 -  Whenever a Matter client makes changes to the device, they end up
    updating the attributes in the data model.
 
--  When an attribute is updated, the attribute_update callback is used
+-  When an attribute is updated, the attribute_update_cb is used
    to notify the application of this change. You would typically call
    device driver specific APIs for executing the required action. Here,
    if the callback type is ``PRE_UPDATE``, the driver is updated first.
@@ -411,22 +411,17 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
           return err;
       }
 
-2.4.1.4 Matter Device Ready
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-With the few lines of code that we've written above, your
-full-certifiable Matter device is now ready.
 
 2.4.2 Defining your own data model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Creating standard endpoints, clusters, attributes, commands. This can be
-used for the fields which HAVE been defined in the Matter specification.
+This section demonstrates creating standard endpoints, clusters, attributes,
+and commands that are defined in the Matter specification
 
 2.4.2.1 Endpoints
 ^^^^^^^^^^^^^^^^^
 
-The 'device' can be customized by editing the endpoint/device_type
+The device can be customized by editing the endpoint/device_type
 creating in the *app_main.cpp* of the example. Examples:
 
 -  on_off_light:
@@ -474,7 +469,7 @@ Additional clusters can also be added to an endpoint. Examples:
 2.4.2.3 Attributes and Commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Additional attributes or commands can also be added to a cluster.
+Additional attributes and commands can also be added to a cluster.
 Examples: 
 
 -  attribute: on_off:
@@ -506,9 +501,9 @@ Examples:
 2.4.3 Adding custom data model fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Creating custom endpoints, clusters, attributes, commands. This can be
-used for the fields which HAVE NOT been defined in the Matter
-specification.
+This section demonstrates creating custom endpoints, clusters, attributes,
+and commands that are not defined in the Matter specification and can be
+specific to the vendor.
 
 2.4.3.1 Endpoints
 ^^^^^^^^^^^^^^^^^
@@ -560,10 +555,9 @@ Non-Standard/Custom attributes can also be created on any cluster:
       uint32_t custom_command_id = 0x0;
       command_t *command = command::create(cluster, custom_command_id, COMMAND_FLAG_ACCEPTED, command_callback);
 
-2.4.4 Adding External Platforms for Matter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This step is **optional** for most devices. ESP Matter provides support for overriding the default platform layer, so the BLE and Wi-Fi implementations can be customized. Here are the required steps for adding an external platform layer.
+2.4.4 Advanced Setup
+~~~~~~~~~~~~~~~~~~~~
+This section explains adding external platforms for Matter. This step is **optional** for most devices. ESP Matter provides support for overriding the default platform layer, so the BLE and Wi-Fi implementations can be customized. Here are the required steps for adding an external platform layer.
 
 2.4.4.1 Creating the external platform directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -622,99 +616,3 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
    cd $ESP_MATTER_PATH/examples/light
    cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
    idf.py build
-
-You can also refer to the :project_file:`BLE Mesh Bridge example <examples/blemesh_bridge/README.md>`, this example customizes the BLE implementation to meet the BLE mesh bridge application.
-
-2.5. Common Peripherals
------------------------
-
-2.5.1 Button Driver
-~~~~~~~~~~~~~~~~~~~
-
--  In the examples, the boot button on the devkit is mapped to
-   ``toggle``. In case the device is a client (eg. light_switch), the toggle
-   command is sent to the binded devices.
--  Factory reset has also been mapped to the same boot button. When the
-   button is pressed for more than 5 seconds, factory reset is
-   triggered.
-
-.. _using-a-different-button-driver:
-
-2.5.1.1 Using a different button driver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Out of the box, the SDK supports the button driver for buttons connected
-through GPIO or through ADC using a resistor divider circuit. You can
-switch the button driver by changing the *button_type* appropriately in
-your *esp_matter_device.cmake* file.
-
-The selected button driver will be initialised in *app_driver_init()* by
-calling the *button_driver_get_config()* and the *iot_button_create()*
-APIs for that driver. More button driver configurations for button
-events can be done in *app_driver_init()*.
-
-2.5.1.2 Writing your own button driver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If the Button driver that you wish to use is not part of Espressif's
-supported list, you can write a driver for it yourself.
-
-A reference hollow_button is available within the SDK at
-:project_file:`hollow_button/button_driver.c <device_hal/button_driver/button/hollow_button/button_driver.c>`. This includes all
-the skeletal code and the empty APIs that the button driver is supposed
-to implement to plug into the SDK.
-
-The driver has to implement the APIs in *button_driver.c*. These
-typically include APIs for initializing the driver and checking for
-button events. Take a look at *iot_button.h* for API definitions. You
-can also take a look at other button drivers for reference.
-
-The configurations that this driver needs can be done from
-*button_driver_get_config()* in *device.c*
-
-Once this driver is implemented, use this driver as mentioned in the
-subsection for :ref:`Using a different button driver <using-a-different-button-driver>`.
-
-2.5.2 LED Driver
-~~~~~~~~~~~~~~~~
-
--  In the light examples, the led on the devkit is initialized and the
-   default values for power, brightness, hue, saturation, temperature, etc. are set
-   to the default values from the data model.
-
-.. _using-a-different-led-driver:
-
-2.5.2.1 Using a different LED driver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Espressif has production-ready drivers for a known set of LED drivers
-that we support out of the box. Please reach out to your Espressif
-representative to get a list of these drivers. Once you have the driver,
-you can rebuild the SDK by modifying your *esp_matter_device.cmake* file
-to point to the appropriate LED driver.
-
-The selected LED driver will be initialised in *app_driver_init()* by
-calling the *led_driver_get_config()* and the *led_driver_init()* APIs
-for that driver.
-
-2.5.2.2 Writing your own LED driver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If the LED driver that you wish to use is not part of Espressif's
-supported list, you can write a driver for it yourself.
-
-A reference hollow_led is available within the SDK at
-:project_file:`hollow_led/led_driver.c <device_hal/led_driver/hollow_led/led_driver.c>`. This includes all the
-skeletal code and the empty APIs that the LED driver is supposed to
-implement to plug into the SDK.
-
-The driver has to implement the APIs in *led_driver.c*. These typically
-include APIs for initializing the driver and controlling the LEDs. Take
-a look at *led_driver.h* for API definitions. You can also take a look
-at other LED drivers for reference.
-
-If there are any configurations that this driver needs, that can be done
-from *led_driver_get_config()* in *device.c*
-
-Once this driver is implemented, use this driver as mentioned in the
-subsection for :ref:`Using a different led driver <using-a-different-led-driver>`.
