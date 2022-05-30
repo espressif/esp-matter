@@ -771,8 +771,9 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
-        ESP_LOGE(TAG, "Attribute 0x%04x on cluster 0x%04x already exists", attribute_id, current_cluster->cluster_id);
-        return existing_attribute;
+        ESP_LOGE(TAG, "Attribute 0x%04x on cluster 0x%04x already exists. Not creating again.", attribute_id,
+                 current_cluster->cluster_id);
+        return NULL;
     }
 
     /* Allocate */
@@ -1122,8 +1123,9 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
-        ESP_LOGE(TAG, "Command 0x%04x on cluster 0x%04x already exists", command_id, current_cluster->cluster_id);
-        return existing_command;
+        ESP_LOGE(TAG, "Command 0x%04x on cluster 0x%04x already exists. Not creating again.", command_id,
+                 current_cluster->cluster_id);
+        return NULL;
     }
 
     /* Allocate */
@@ -1245,10 +1247,32 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
+    if (!(flags & CLUSTER_FLAG_SERVER) && !(flags & CLUSTER_FLAG_CLIENT)) {
+        ESP_LOGE(TAG, "Server or client cluster flag not set");
+        return NULL;
+    }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     cluster_t *existing_cluster = get(endpoint, cluster_id);
     if (existing_cluster) {
-        ESP_LOGE(TAG, "Cluster 0x%04x on endpoint 0x%04x already exists", cluster_id, current_endpoint->endpoint_id);
+        /* If a server already exists, do not create it again */
+        _cluster_t *_existing_cluster = (_cluster_t *)existing_cluster;
+        if ((_existing_cluster->flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SERVER)) {
+            ESP_LOGE(TAG, "Server Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+                     current_endpoint->endpoint_id);
+            return NULL;
+        }
+
+        /* If a client already exists, do not create it again */
+        if ((_existing_cluster->flags & CLUSTER_FLAG_CLIENT) && (flags & CLUSTER_FLAG_CLIENT)) {
+            ESP_LOGE(TAG, "Client Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+                     current_endpoint->endpoint_id);
+            return NULL;
+        }
+
+        /* The cluster already exists, but is of a different type. Just update the 'Set' part from below. */
+        ESP_LOGI(TAG, "Cluster 0x%04x on endpoint 0x%04x already exists. Updating values.", cluster_id,
+                 current_endpoint->endpoint_id);
+        _existing_cluster->flags |= flags;
         return existing_cluster;
     }
 
