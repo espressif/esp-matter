@@ -246,9 +246,9 @@ static void *attribute_callback_priv_data = NULL;
 static esp_err_t console_handler(int argc, char **argv)
 {
     if (argc == 5 && strncmp(argv[0], "set", sizeof("set")) == 0) {
-        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint16_t endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        uint32_t cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        uint32_t attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
@@ -300,9 +300,9 @@ static esp_err_t console_handler(int argc, char **argv)
         }
         update(endpoint_id, cluster_id, attribute_id, &val);
     } else if (argc == 4 && strncmp(argv[0], "get", sizeof("get")) == 0) {
-        int endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
-        int cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
-        int attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
+        uint16_t endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
+        uint32_t cluster_id = strtol((const char *)&argv[2][2], NULL, 16);
+        uint32_t attribute_id = strtol((const char *)&argv[3][2], NULL, 16);
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
@@ -405,8 +405,8 @@ esp_err_t set_callback(callback_t callback, void *priv_data)
     return ESP_OK;
 }
 
-static esp_err_t execute_callback(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
-                                  esp_matter_attr_val_t *val)
+static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+                                  uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
         return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, attribute_callback_priv_data);
@@ -414,8 +414,8 @@ static esp_err_t execute_callback(callback_type_t type, int endpoint_id, int clu
     return ESP_OK;
 }
 
-static esp_err_t execute_override_callback(attribute_t *attribute, callback_type_t type, int endpoint_id,
-                                           int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+static esp_err_t execute_override_callback(attribute_t *attribute, callback_type_t type, uint16_t endpoint_id,
+                                           uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     callback_t override_callback = attribute::get_override_callback(attribute);
     if (override_callback) {
@@ -816,7 +816,7 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
     return ESP_OK;
 }
 
-void val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
@@ -827,7 +827,8 @@ void val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_att
     } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
                  cluster_id, attribute_id, val->val.f);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
+               || val->type == ESP_MATTER_VAL_TYPE_ENUM8) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u8);
     } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
@@ -851,7 +852,8 @@ void val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_att
     }
 }
 
-esp_err_t get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t *value, uint16_t attribute_size)
+esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, uint8_t *value,
+                      uint16_t attribute_size)
 {
     /* Take lock if not already taken */
     lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
@@ -874,7 +876,7 @@ esp_err_t get_val_raw(int endpoint_id, int cluster_id, int attribute_id, uint8_t
     return ESP_OK;
 }
 
-esp_err_t update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     /* Take lock if not already taken */
     lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
@@ -925,9 +927,9 @@ esp_err_t update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_a
 Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
                                         uint16_t size, uint8_t *value)
 {
-    int endpoint_id = path.mEndpointId;
-    int cluster_id = path.mClusterId;
-    int attribute_id = path.mAttributeId;
+    uint16_t endpoint_id = path.mEndpointId;
+    uint32_t cluster_id = path.mClusterId;
+    uint32_t attribute_id = path.mAttributeId;
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_attr_val_from_data(&val, type, size, value);
 
@@ -945,9 +947,9 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
 void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
                                        uint16_t size, uint8_t *value)
 {
-    int endpoint_id = path.mEndpointId;
-    int cluster_id = path.mClusterId;
-    int attribute_id = path.mAttributeId;
+    uint16_t endpoint_id = path.mEndpointId;
+    uint32_t cluster_id = path.mClusterId;
+    uint32_t attribute_id = path.mAttributeId;
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_attr_val_from_data(&val, type, size, value);
 
@@ -960,7 +962,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
                                                    uint16_t max_read_length)
 {
     /* Get value */
-    int attribute_id = matter_attribute->attributeId;
+    uint32_t attribute_id = matter_attribute->attributeId;
     node_t *node = node::get();
     if (!node) {
         return EMBER_ZCL_STATUS_FAILURE;
@@ -1002,7 +1004,7 @@ EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, Clus
                                                     const EmberAfAttributeMetadata *matter_attribute, uint8_t *buffer)
 {
     /* Get value */
-    int attribute_id = matter_attribute->attributeId;
+    uint32_t attribute_id = matter_attribute->attributeId;
     node_t *node = node::get();
     if (!node) {
         return EMBER_ZCL_STATUS_FAILURE;

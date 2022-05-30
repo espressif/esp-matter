@@ -206,6 +206,7 @@ typedef struct config {
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
     feature::hue_saturation::config_t hue_saturation;
+    feature::color_temperature::config_t color_temperature;
     config() : cluster_revision(3), color_mode(1), color_control_options(0), enhanced_color_mode(1),
                color_capabilities(0) {}
 } config_t;
@@ -311,6 +312,29 @@ typedef struct config {
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* temperature_measurement */
+
+namespace occupancy_sensing {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t occupancy;
+    uint8_t occupancy_sensor_type;
+    uint8_t occupancy_sensor_type_bitmap;
+    config() : cluster_revision(3), occupancy(0), occupancy_sensor_type(0),
+               occupancy_sensor_type_bitmap(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* occupancy_sensing */
+
+namespace boolean_state {
+typedef struct config {
+    uint16_t cluster_revision;
+    bool state_value;
+    config() : cluster_revision(3), state_value(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* boolean_state */
 
 } /* cluster */
 } /* esp_matter */

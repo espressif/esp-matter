@@ -26,7 +26,7 @@ using namespace esp_matter;
 typedef struct esp_matter_bridge_device {
     node_t *node;
     endpoint_t *endpoint;
-    int endpoint_id;
+    uint16_t endpoint_id;
 } esp_matter_bridge_device_t;
 
 esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node);

@@ -90,6 +90,37 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* hue_saturation */
+
+namespace color_temperature {
+
+typedef struct config {
+    uint16_t color_temperature_mireds;
+    uint16_t color_temp_physical_min_mireds;
+    uint16_t color_temp_physical_max_mireds;
+    uint16_t couple_color_temp_to_level_min_mireds;
+    uint16_t startup_color_temperature_mireds;
+    config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(1),
+               color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(0),
+               startup_color_temperature_mireds(0x00fa) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* color_temperature */
+
+namespace xy {
+
+typedef struct config {
+    uint16_t current_x;
+    uint16_t current_y;
+    config() : current_x(0x616b), current_y(0x607d) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* xy */
 } /* feature */
 } /* color_control */
 

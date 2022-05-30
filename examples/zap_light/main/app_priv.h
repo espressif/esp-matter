@@ -15,11 +15,13 @@
 #define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
 #define STANDARD_SATURATION 100
+#define STANDARD_TEMPERATURE_FACTOR 1000000
 
 /** Matter max values (used for remapping attributes) */
 #define MATTER_BRIGHTNESS 254
 #define MATTER_HUE 255
 #define MATTER_SATURATION 255
+#define MATTER_TEMPERATURE_FACTOR 1000000
 
 /** Initialize the board and the drivers
  *
@@ -43,7 +45,8 @@ esp_err_t app_driver_init(void);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
+esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                      esp_matter_attr_val_t *val);
 
 /** Set driver defaults
  *

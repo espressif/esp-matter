@@ -28,11 +28,12 @@
 using namespace esp_matter;
 
 static const char *TAG = "app_rainmaker";
-extern int light_endpoint_id;
+extern uint16_t light_endpoint_id;
 
 #define DEFAULT_LIGHT_NAME "Light"
 
-static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t *val, int cluster_id, int attribute_id)
+static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t *val, uint32_t cluster_id,
+                                                           uint32_t attribute_id)
 {
     /* Attributes which need to be remapped */
     if (cluster_id == LevelControl::Id) {
@@ -46,6 +47,9 @@ static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t
             return esp_rmaker_int(value);
         } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             int value = REMAP_TO_RANGE(val->val.u8, MATTER_SATURATION, STANDARD_SATURATION);
+            return esp_rmaker_int(value);
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            int value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
             return esp_rmaker_int(value);
         }
     }
@@ -69,7 +73,8 @@ static esp_rmaker_param_val_t app_rainmaker_get_rmaker_val(esp_matter_attr_val_t
     return esp_rmaker_int(0);
 }
 
-static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t *val, int cluster_id, int attribute_id)
+static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t *val, uint32_t cluster_id,
+                                                          uint32_t attribute_id)
 {
     /* Attributes which need to be remapped */
     if (cluster_id == LevelControl::Id) {
@@ -84,6 +89,9 @@ static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t
         } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             uint8_t value = REMAP_TO_RANGE(val->val.i, STANDARD_SATURATION, MATTER_SATURATION);
             return esp_matter_uint8(value);
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            uint16_t value = REMAP_TO_RANGE_INVERSE(val->val.i, MATTER_TEMPERATURE_FACTOR);
+            return esp_matter_uint16(value);
         }
     }
 
@@ -100,7 +108,7 @@ static esp_matter_attr_val_t app_rainmaker_get_matter_val(esp_rmaker_param_val_t
     return esp_matter_int(0);
 }
 
-static const char *app_rainmaker_get_device_name_from_id(int endpoint_id)
+static const char *app_rainmaker_get_device_name_from_id(uint32_t endpoint_id)
 {
     if (endpoint_id == light_endpoint_id) {
         return DEFAULT_LIGHT_NAME;
@@ -108,23 +116,25 @@ static const char *app_rainmaker_get_device_name_from_id(int endpoint_id)
     return NULL;
 }
 
-static const char *app_rainmaker_get_device_type_from_id(int device_type_id)
+static const char *app_rainmaker_get_device_type_from_id(uint32_t device_type_id)
 {
     if (device_type_id == endpoint::color_dimmable_light::get_device_type_id()) {
+        return ESP_RMAKER_DEVICE_LIGHTBULB;
+    } else if (device_type_id == endpoint::color_temperature_light::get_device_type_id()) {
         return ESP_RMAKER_DEVICE_LIGHTBULB;
     }
     return NULL;
 }
 
-static int app_rainmaker_get_endpoint_id_from_name(const char *device_name)
+static uint16_t app_rainmaker_get_endpoint_id_from_name(const char *device_name)
 {
     if (strcmp(device_name, DEFAULT_LIGHT_NAME) == 0) {
         return light_endpoint_id;
     }
-    return 0;
+    return 0xFFFF;
 }
 
-static const char *app_rainmaker_get_param_name_from_id(int cluster_id, int attribute_id)
+static const char *app_rainmaker_get_param_name_from_id(uint32_t cluster_id, uint32_t attribute_id)
 {
     if (cluster_id == OnOff::Id) {
         if (attribute_id == OnOff::Attributes::OnOff::Id) {
@@ -139,12 +149,14 @@ static const char *app_rainmaker_get_param_name_from_id(int cluster_id, int attr
             return ESP_RMAKER_DEF_HUE_NAME;
         } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_DEF_SATURATION_NAME;
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            return ESP_RMAKER_DEF_CCT_NAME;
         }
     }
     return NULL;
 }
 
-static const char *app_rainmaker_get_param_type_from_id(int cluster_id, int attribute_id)
+static const char *app_rainmaker_get_param_type_from_id(uint32_t cluster_id, uint32_t attribute_id)
 {
     if (cluster_id == OnOff::Id) {
         if (attribute_id == OnOff::Attributes::OnOff::Id) {
@@ -159,12 +171,14 @@ static const char *app_rainmaker_get_param_type_from_id(int cluster_id, int attr
             return ESP_RMAKER_PARAM_HUE;
         } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_PARAM_SATURATION;
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            return ESP_RMAKER_PARAM_CCT;
         }
     }
     return NULL;
 }
 
-static const char *app_rainmaker_get_param_ui_type_from_id(int cluster_id, int attribute_id)
+static const char *app_rainmaker_get_param_ui_type_from_id(uint32_t cluster_id, uint32_t attribute_id)
 {
     if (cluster_id == OnOff::Id) {
         if (attribute_id == OnOff::Attributes::OnOff::Id) {
@@ -179,12 +193,15 @@ static const char *app_rainmaker_get_param_ui_type_from_id(int cluster_id, int a
             return ESP_RMAKER_UI_HUE_SLIDER;
         } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
             return ESP_RMAKER_UI_SLIDER;
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            return ESP_RMAKER_UI_SLIDER;
         }
     }
     return NULL;
 }
 
-static bool app_rainmaker_get_param_bounds_from_id(int cluster_id, int attribute_id, int *min, int *max, int *step)
+static bool app_rainmaker_get_param_bounds_from_id(uint32_t cluster_id, uint32_t attribute_id, int *min, int *max,
+                                                   int *step)
 {
     if (cluster_id == LevelControl::Id) {
         if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
@@ -204,6 +221,11 @@ static bool app_rainmaker_get_param_bounds_from_id(int cluster_id, int attribute
             *max = STANDARD_SATURATION;
             *step = 1;
             return true;
+        } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            *min = 2700;
+            *max = 6500;
+            *step = 100;
+            return true;
         }
     }
     return false;
@@ -211,8 +233,8 @@ static bool app_rainmaker_get_param_bounds_from_id(int cluster_id, int attribute
 
 static esp_err_t app_rainmaker_param_add_ui_type(esp_rmaker_param_t *param, cluster_t *cluster, attribute_t *attribute)
 {
-    int cluster_id = cluster::get_id(cluster);
-    int attribute_id = attribute::get_id(attribute);
+    uint32_t cluster_id = cluster::get_id(cluster);
+    uint32_t attribute_id = attribute::get_id(attribute);
     const char *ui_type = app_rainmaker_get_param_ui_type_from_id(cluster_id, attribute_id);
     if (!ui_type) {
         return ESP_OK;
@@ -222,8 +244,8 @@ static esp_err_t app_rainmaker_param_add_ui_type(esp_rmaker_param_t *param, clus
 
 static esp_err_t app_rainmaker_param_add_bounds(esp_rmaker_param_t *param, cluster_t *cluster, attribute_t *attribute)
 {
-    int cluster_id = cluster::get_id(cluster);
-    int attribute_id = attribute::get_id(attribute);
+    uint32_t cluster_id = cluster::get_id(cluster);
+    uint32_t attribute_id = attribute::get_id(attribute);
     esp_matter_attr_bounds_t *bounds = attribute::get_bounds(attribute);
     if (bounds) {
         esp_rmaker_param_val_t min_val = app_rainmaker_get_rmaker_val(&bounds->min, cluster_id, attribute_id);
@@ -245,7 +267,7 @@ static esp_err_t app_rainmaker_param_add_bounds(esp_rmaker_param_t *param, clust
     return ESP_OK;
 }
 
-static int app_rainmaker_get_cluster_id_from_name(const char *param_name)
+static uint32_t app_rainmaker_get_cluster_id_from_name(const char *param_name)
 {
     if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
         return OnOff::Id;
@@ -255,11 +277,13 @@ static int app_rainmaker_get_cluster_id_from_name(const char *param_name)
         return ColorControl::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_SATURATION_NAME) == 0) {
         return ColorControl::Id;
+    } else if (strcmp(param_name, ESP_RMAKER_DEF_CCT_NAME) == 0) {
+        return ColorControl::Id;
     }
     return 0;
 }
 
-static int app_rainmaker_get_attribute_id_from_name(const char *param_name)
+static uint32_t app_rainmaker_get_attribute_id_from_name(const char *param_name)
 {
     if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
         return OnOff::Attributes::OnOff::Id;
@@ -269,11 +293,14 @@ static int app_rainmaker_get_attribute_id_from_name(const char *param_name)
         return ColorControl::Attributes::CurrentHue::Id;
     } else if (strcmp(param_name, ESP_RMAKER_DEF_SATURATION_NAME) == 0) {
         return ColorControl::Attributes::CurrentSaturation::Id;
+    } else if (strcmp(param_name, ESP_RMAKER_DEF_CCT_NAME) == 0) {
+        return ColorControl::Attributes::ColorTemperature::Id;
     }
     return 0;
 }
 
-esp_err_t app_rainmaker_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_err_t app_rainmaker_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                         esp_matter_attr_val_t *val)
 {
     const char *device_name = app_rainmaker_get_device_name_from_id(endpoint_id);
     const char *param_name = app_rainmaker_get_param_name_from_id(cluster_id, attribute_id);
@@ -305,9 +332,9 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
     const char *device_name = esp_rmaker_device_get_name(device);
     const char *param_name = esp_rmaker_param_get_name(param);
 
-    int endpoint_id = app_rainmaker_get_endpoint_id_from_name(device_name);
-    int cluster_id = app_rainmaker_get_cluster_id_from_name(param_name);
-    int attribute_id = app_rainmaker_get_attribute_id_from_name(param_name);
+    uint16_t endpoint_id = app_rainmaker_get_endpoint_id_from_name(device_name);
+    uint32_t cluster_id = app_rainmaker_get_cluster_id_from_name(param_name);
+    uint32_t attribute_id = app_rainmaker_get_attribute_id_from_name(param_name);
     esp_matter_attr_val_t matter_val = app_rainmaker_get_matter_val((esp_rmaker_param_val_t *)&val, cluster_id,
                                                                     attribute_id);
 
@@ -316,13 +343,13 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
 
 static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t *node, endpoint_t *endpoint)
 {
-    int endpoint_id = endpoint::get_id(endpoint);
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
     const char *device_name = app_rainmaker_get_device_name_from_id(endpoint_id);
     if (!device_name) {
         return NULL;
     }
     /* Add this device only if endpoint_id has been handled */
-    int device_type_id = endpoint::get_device_type_id(endpoint);
+    uint32_t device_type_id = endpoint::get_device_type_id(endpoint);
     const char *device_type = app_rainmaker_get_device_type_from_id(device_type_id);
     esp_rmaker_device_t *device = esp_rmaker_device_create(device_name, device_type, NULL);
     if (!device) {
@@ -337,8 +364,8 @@ static esp_rmaker_device_t *app_rainmaker_device_create(const esp_rmaker_node_t 
 static esp_rmaker_param_t *app_rainmaker_param_create(esp_rmaker_device_t *device, cluster_t *cluster,
                                                       attribute_t *attribute)
 {
-    int cluster_id = cluster::get_id(cluster);
-    int attribute_id = attribute::get_id(attribute);
+    uint32_t cluster_id = cluster::get_id(cluster);
+    uint32_t attribute_id = attribute::get_id(attribute);
     const char *param_name = app_rainmaker_get_param_name_from_id(cluster_id, attribute_id);
     if (!param_name) {
         return NULL;

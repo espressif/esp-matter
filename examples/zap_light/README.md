@@ -1,62 +1,88 @@
-# Light Example
+# Zap Light
 
-## Building and Flashing the Firmware
+This example creates a Color Dimmable Light device using the Zap
+data model instead of the ESP Matter data model.
 
-See the [README.md](../../README.md) file for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
+## 1. Additional Environment Setup
 
-## What to expect in this example?
+### 1.1 Customization
 
-The example provides a minimal implementation to build a Matter light device on ESP32 series SoCs.
-
-Supported features:
- - Matter Commissioning
- - On/Off, Brightness and Color (on ESP32-C3 for now) control
- - (Optional) Interactive shell
-
-### Useful shell commands
-
-- BLE commands
+For customizing the 'device', the zap-tool can be used to create the
+`.zap` file, if you don't already have one. An existing .zap file can
+also be edited.
 
 ```
-> matter ble <start|stop|state>
+cd esp-matter/connectedhomeip/connectedhomeip
+./scripts/tools/zap/run_zaptool.sh <optional_existing_zap_file>
 ```
 
-Set and get the BLE advertisement state.
+-   If this command fails, run it again.
+-   Once the customization is done, click on 'save' to save the .zap
+    file.
 
-- Wi-Fi commands
-
-```
-> matter wifi mode [disable|ap|sta]
-```
-
-Set and get the Wi-Fi mode.
+The other zap-generated files can be generated using the generate
+command:
 
 ```
-> matter wifi connect <ssid> <psk>
+./scripts/tools/zap/generate.py /path/to/<saved>.zap -o /path/to/<output_folder>
 ```
 
-Connect to Wi-Fi network.
+Now the files in zap_light/main/zap-generated can be replaced with the
+new generated files.
 
-- Device configuration
+## 2. Post Commissioning Setup
 
-```
-> matter config
-```
+No additional setup is required.
 
-Dump the device static configuration
+## 3. Device Performance
 
+### 3.1 Memory usage
 
-- Facotry reset
+The following is the Memory and Flash Usage.
 
-```
-> matter device factoryreset
-```
+-   `Bootup` == Device just finished booting up. Device is not
+    commissionined or connected to wifi yet.
+-   `After Commissioning` == Device is conneted to wifi and is also
+    commissioned and is rebooted.
+-   device used: esp32c3_devkit_m
+-   tested on:
+    [bd951b8](https://github.com/espressif/esp-matter/commit/bd951b84993d9d0b5742872be4f51bb6c9ccf15e)
+    (2022-05-05)
 
-- On-boarding codes
+|                         | Bootup | After Commissioning |
+|:-                       |:-:     |:-:                  |
+|**Free Internal Memory** |121KB   |118KB                |
 
-```
-> matter onboardingcodes
-```
+**Flash Usage**: Firmware binary size: 1.24MB
 
-Dump the on-boarding pairing code payloads.
+This should give you a good idea about the amount of free memory that is
+available for you to run your application's code.
+
+## A2 Appendix FAQs
+
+### A2.1 Zaptool is not working
+
+The run_zaptool.py command is failing:
+
+-   Check that the connectedhomeip submodule is updated.
+-   Revert any modifications in any of te files in the connectedhomeip
+    submodule, or any submodules in connectedhomeip, and try again.
+-   If you are still facing issues, reproduce the issue on the default
+    example for the device and then raise an [issue](https://github.com/espressif/esp-matter/issues).
+    Make sure to share these:
+    -   The complete logs for the command.
+    -   The esp-matter and esp-idf branch you are using.
+
+### A2.2 Missing files in zap-generated
+
+Some files are not generated on running the generate command
+(generate.py):
+
+-   This can happen depending on your zap configuration, and it should
+    be okay to use the file which was already present in zap-generated.
+-   We have observed that af-gen-event.h does not get generated on
+    running the generate command.
+-   If the file is missing from the zap-generated folder, there might be
+    other compilation errors of the file not being found.

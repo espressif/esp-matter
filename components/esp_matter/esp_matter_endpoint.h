@@ -42,7 +42,7 @@ typedef struct config {
     operational_credentials::config_t operational_credentials;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* root_node */
 
@@ -55,7 +55,7 @@ typedef struct config {
     basic::config_t basic;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* on_off_light */
 
@@ -69,7 +69,7 @@ typedef struct config {
     basic::config_t basic;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* dimmable_light */
 
@@ -84,9 +84,37 @@ typedef struct config {
     color_control::config_t color_control;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* color_dimmable_light */
+
+namespace color_temperature_light {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    color_control::config_t color_control;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* color_temperature_light */
+
+namespace extended_color_light {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    color_control::config_t color_control;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* extended_color_light */
 
 namespace on_off_switch {
 typedef struct config {
@@ -98,9 +126,64 @@ typedef struct config {
     binding::config_t binding;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* on_off_switch */
+
+namespace dimmer_switch {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    binding::config_t binding;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* dimmer_switch */
+
+namespace color_dimmer_switch {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+    color_control::config_t color_control;
+    binding::config_t binding;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* color_dimmer_switch */
+
+namespace on_off_plugin_unit {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* on_off_plugin_unit */
+
+namespace dimmable_plugin_unit {
+typedef struct config {
+    identify::config_t identify;
+    groups::config_t groups;
+    scenes::config_t scenes;
+    on_off::config_t on_off;
+    level_control::config_t level_control;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* dimmable_plugin_unit */
 
 namespace fan {
 typedef struct config {
@@ -109,7 +192,7 @@ typedef struct config {
     fan_control::config_t fan_control;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* fan */
 
@@ -122,12 +205,12 @@ typedef struct config {
     cluster::thermostat::config_t thermostat;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* thermostat */
 
 namespace bridge {
-int get_device_type_id();
+uint32_t get_device_type_id();
 } /* bridge */
 
 namespace bridged_node {
@@ -136,7 +219,7 @@ typedef struct config {
     fixed_label::config_t fixed_label;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* bridged_node */
 
@@ -147,7 +230,7 @@ typedef struct config {
     time_synchronization::config_t time_synchronization;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* door_lock */
 
@@ -158,9 +241,30 @@ typedef struct config {
     temperature_measurement::config_t temperature_measurement;
 } config_t;
 
-int get_device_type_id();
+uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* temperature_sensor */
+
+namespace occupancy_sensor {
+typedef struct config {
+    identify::config_t identify;
+    occupancy_sensing::config_t occupancy_sensing;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* occupancy_sensor */
+
+namespace contact_sensor {
+typedef struct config {
+    identify::config_t identify;
+    boolean_state::config_t boolean_state;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
+} /* contact_sensor */
+
 } /* endpoint */
 
 namespace node {

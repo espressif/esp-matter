@@ -25,6 +25,14 @@
  */
 #define REMAP_TO_RANGE(value, from, to) ((value * to) / from)
 
+/** Remap attribute values with inverse dependency
+ *
+ * This can be used to remap attribute values with inverse dependency to different ranges.
+ * Example: To convert the temperature mireds into temperature kelvin and vice-versa where the relation between them
+ * is: Mireds = 1,000,000/Kelvin.
+ */
+#define REMAP_TO_RANGE_INVERSE(value, factor) (factor / value)
+
 /** ESP Matter Attribute Value type */
 typedef enum {
     /** Invalid */
@@ -197,7 +205,7 @@ typedef enum callback_type {
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-typedef esp_err_t (*callback_t)(callback_type_t type, int endpoint_id, int cluster_id, int attribute_id,
+typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                 esp_matter_attr_val_t *val, void *priv_data);
 
 /** Set attribute callback
@@ -228,7 +236,7 @@ esp_err_t set_callback(callback_t callback, void *priv_data);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
+esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
 
 /** Attribute value print
  *
@@ -239,7 +247,7 @@ esp_err_t update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_a
  * @param[in] attribute_id Attribute ID of the attribute.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Appropriate elements should be used as per the value type.
  */
-void val_print(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val);
+void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
 
 } /* attribute */
 } /* esp_matter */

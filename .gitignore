@@ -8,3 +8,5 @@ dependencies.lock
 managed_components/
 __pycache__/
 out/
+_build/
+tools/chip-tool/

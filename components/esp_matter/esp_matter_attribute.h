@@ -190,6 +190,13 @@ attribute_t *create_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value);
 attribute_t *create_enhanced_color_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value);
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* color_control */
 
@@ -249,6 +256,20 @@ attribute_t *create_temperature_min_measured_value(cluster_t *cluster, int16_t v
 attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t value);
 } /* attribute */
 } /* temperature_measurement */
+
+namespace occupancy_sensing {
+namespace attribute {
+attribute_t *create_occupancy(cluster_t *cluster, uint8_t value);
+attribute_t *create_occupancy_sensor_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* occupancy_sensing */
+
+namespace boolean_state {
+namespace attribute {
+attribute_t *state_value(cluster_t *cluster, bool value);
+} /* attribute */
+} /* boolean_state */
 
 } /* cluster */
 } /* esp_matter */

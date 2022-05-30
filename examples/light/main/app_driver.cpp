@@ -20,7 +20,7 @@
 using namespace esp_matter;
 
 static const char *TAG = "app_driver";
-extern int light_endpoint_id;
+extern uint16_t light_endpoint_id;
 
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(esp_matter_attr_val_t *val)
@@ -46,12 +46,18 @@ static esp_err_t app_driver_light_set_saturation(esp_matter_attr_val_t *val)
     return led_driver_set_saturation(value);
 }
 
+static esp_err_t app_driver_light_set_temperature(esp_matter_attr_val_t *val)
+{
+    uint32_t value = REMAP_TO_RANGE_INVERSE(val->val.u16, STANDARD_TEMPERATURE_FACTOR);
+    return led_driver_set_temperature(value);
+}
+
 static void app_driver_button_toggle_cb(void *arg)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
-    int endpoint_id = light_endpoint_id;
-    int cluster_id = OnOff::Id;
-    int attribute_id = OnOff::Attributes::OnOff::Id;
+    uint16_t endpoint_id = light_endpoint_id;
+    uint32_t cluster_id = OnOff::Id;
+    uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
 
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
@@ -64,7 +70,8 @@ static void app_driver_button_toggle_cb(void *arg)
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
-esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attribute_id, esp_matter_attr_val_t *val)
+esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
+                                      esp_matter_attr_val_t *val)
 {
     esp_err_t err = ESP_OK;
     if (endpoint_id == light_endpoint_id) {
@@ -81,6 +88,8 @@ esp_err_t app_driver_attribute_update(int endpoint_id, int cluster_id, int attri
                 err = app_driver_light_set_hue(val);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                 err = app_driver_light_set_saturation(val);
+            } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+                err = app_driver_light_set_temperature(val);
             }
         }
     }
@@ -94,13 +103,13 @@ static esp_err_t app_driver_attribute_set_defaults()
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
-        int endpoint_id = endpoint::get_id(endpoint);
+        uint16_t endpoint_id = endpoint::get_id(endpoint);
         cluster_t *cluster = cluster::get_first(endpoint);
         while (cluster) {
-            int cluster_id = cluster::get_id(cluster);
+            uint32_t cluster_id = cluster::get_id(cluster);
             attribute_t *attribute = attribute::get_first(cluster);
             while (attribute) {
-                int attribute_id = attribute::get_id(attribute);
+                uint32_t attribute_id = attribute::get_id(attribute);
                 esp_matter_attr_val_t val = esp_matter_invalid(NULL);
                 err |= attribute::get_val(attribute, &val);
                 err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);

@@ -599,6 +599,48 @@ attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
                                          esp_matter_bitmap16(value));
 }
 
+attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperature::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMin::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMax::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CoupleColorTempToLevelMinMireds::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::StartUpColorTemperatureMireds::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+}
+
+attribute_t *create_current_x(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentX::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_current_y(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentY::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
 } /* attribute */
 } /* color_control */
 
@@ -794,6 +836,42 @@ attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t v
 
 } /* attribute */
 } /* temperature_measurement */
+
+namespace occupancy_sensing {
+namespace attribute {
+
+attribute_t *create_occupancy(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::Occupancy::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_occupancy_sensor_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::OccupancySensorType::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_occupancy_sensor_type_bitmap(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, OccupancySensing::Attributes::OccupancySensorTypeBitmap::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
+}
+
+} /* attribute */
+} /* occupancy_sensing */
+
+namespace boolean_state {
+namespace attribute {
+
+attribute_t *state_value(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, BooleanState::Attributes::StateValue::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bool(value));
+}
+
+} /* attribute */
+} /* boolean_state */
 
 } /* cluster */
 } /* esp_matter */

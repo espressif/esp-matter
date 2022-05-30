@@ -1,5 +1,6 @@
 stages:
-  - build
+    - build
+    - docs
 
 variables:
     IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
@@ -15,24 +16,26 @@ variables:
     # using release/v4.4 branch of espressif/esp-idf github repo
     - git clone --recursive --single-branch -b v4.4.1 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
+    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
-    - . export.sh
+    - . ./export.sh
 
 .setup_idf_v5_0: &setup_idf_v5_0
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using commit 047903c612 of espressif/esp-idf github repo
-    # idf_v5_0 is used for bridge_zigbee_example and examples of ESP32-H2
+    # idf_v5_0 is used for zigbee_bridge example and examples of ESP32-H2
     - git clone --recursive --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
     - git submodule update --init --recursive
+    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
 
 .setup_matter: &setup_matter
     - cd $ESP_MATTER_PATH
-    - source connectedhomeip/connectedhomeip/scripts/bootstrap.sh
-    - . export.sh
+    - ./install.sh
+    - . ./export.sh
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -51,7 +54,7 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py set-target esp32
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/switch
+    - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py set-target esp32
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
@@ -70,7 +73,7 @@ variables:
     - rm -rf $ESP_MATTER_PATH/../platform
     - mkdir $ESP_MATTER_PATH/../platform
     - cp -r $ESP_MATTER_PATH/connectedhomeip/connectedhomeip/src/platform/ESP32 $ESP_MATTER_PATH/../platform/ESP32_custom
-    - cp $ESP_MATTER_PATH/docs/custom_platform_guide/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
+    - cp $ESP_MATTER_PATH/examples/common/external_platform/BUILD.gn $ESP_MATTER_PATH/../platform/ESP32_custom
     - cd $ESP_MATTER_PATH/examples/light
     - cp sdkconfig.defaults sdkconfig.defaults.backup
     - cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
@@ -84,13 +87,13 @@ variables:
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/switch
+    - cd $ESP_MATTER_PATH/examples/light_switch
     - idf.py --preview set-target esp32h2
     - idf.py build
     - cd $ESP_MATTER_PATH/examples/light
     - idf.py --preview set-target esp32h2
     - idf.py build
-    - cd $ESP_MATTER_PATH/examples/bridge_zigbee
+    - cd $ESP_MATTER_PATH/examples/zigbee_bridge
     - idf.py set-target esp32
     - idf.py build
 
@@ -139,3 +142,59 @@ build_upstream_examples:
         - *setup_idf
         - *setup_matter
         - *build_matter_examples
+
+build_docs:
+    stage: build
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    tags:
+        - matter_build
+    artifacts:
+        when: always
+        paths:
+            - docs/_build/*/*/*.txt
+            - docs/_build/*/*/html/*
+        expire_in: 1 days
+    script:
+        - cd docs
+        - pip install -r requirements.txt
+        - build-docs -t esp32 esp32c3 esp32h2 -l en
+
+.deploy_docs_template:
+    stage: docs
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    tags:
+        - docs
+    needs:
+        - build_docs
+    script:
+        - source ${CI_PROJECT_DIR}/docs/utils.sh
+        - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
+        - export GIT_VER=$(git describe --always)
+        - pip install -r ${CI_PROJECT_DIR}/docs/requirements.txt
+        - deploy-docs
+
+deploy_docs_preview:
+    extends:
+        - .deploy_docs_template
+    when: manual
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PREVIEW_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PREVIEW_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PREVIEW_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PREVIEW_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://$DOCS_PREVIEW_SERVER_URL/docs/esp-matter"
+
+deploy_docs_production:
+    extends:
+        - .deploy_docs_template
+    when: manual
+    variables:
+        TYPE: "preview"
+        DOCS_BUILD_DIR: "${CI_PROJECT_DIR}/docs/_build/"
+        DOCS_DEPLOY_PRIVATEKEY: "$DOCS_PROD_DEPLOY_KEY"
+        DOCS_DEPLOY_SERVER: "$DOCS_PROD_SERVER"
+        DOCS_DEPLOY_SERVER_USER: "$DOCS_PROD_SERVER_USER"
+        DOCS_DEPLOY_PATH: "$DOCS_PROD_PATH"
+        DOCS_DEPLOY_URL_BASE: "https://docs.espressif.com/projects/esp-matter"
