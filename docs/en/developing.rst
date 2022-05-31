@@ -69,6 +69,7 @@ This should be done each time a new terminal is opened
 -  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
+-  :project_file:`BLE Mesh Bridge <examples/blemesh_bridge/README.md>`
 
 2.1.5 Flashing the Firmware
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,6 +174,7 @@ for it to work. Check the example's "Post Commissioning Setup" section for more 
 -  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
+-  :project_file:`BLE Mesh Bridge <examples/blemesh_bridge/README.md>`
 
 2.2.1.3 Cluster Control
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -620,6 +622,8 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
    cd $ESP_MATTER_PATH/examples/light
    cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
    idf.py build
+
+You can also refer to the :project_file:`BLE Mesh Bridge example <examples/blemesh_bridge/README.md>`, this example customizes the BLE implementation to meet the BLE mesh bridge application.
 
 2.5. Common Peripherals
 -----------------------

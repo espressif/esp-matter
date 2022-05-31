@@ -51,6 +51,11 @@ variables:
     - idf.py build
 
 .build_examples: &build_examples
+    - cd $ESP_MATTER_PATH/examples/blemesh_bridge
+    - idf.py set-target esp32
+    - idf.py build
+    - idf.py set-target esp32c3
+    - idf.py build
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py set-target esp32
     - idf.py build
