@@ -44,10 +44,10 @@ rainmaker.py claim --addr 0x3E0000 $ESPPORT
 This needs to be done after commissioning.
 
 Check if the device already has user node association done, using the
-custom RainMaker cluster (cluster_id: 0x131b0000):
+custom RainMaker cluster (cluster_id: 0x131bfc00):
 
 ```
-chip-tool any read-by-id 0x131b0000 0x0 0x7283 0x0
+chip-tool any read-by-id 0x131bfc00 0x0 0x7283 0x0
 ```
 
 -   If the above custom status attribute (attribute_id: 0x0) returns
@@ -59,7 +59,7 @@ chip-tool any read-by-id 0x131b0000 0x0 0x7283 0x0
 Get the RainMaker node id (attribute_id: 0x1):
 
 ```
-chip-tool any read-by-id 0x131b0000 0x1 0x7283 0x0
+chip-tool any read-by-id 0x131bfc00 0x1 0x7283 0x0
 ```
 
 RainMaker CLI:
@@ -83,7 +83,7 @@ Now use the payload to run the RainMaker configuration command from
 chip-tool:
 
 ```
-chip-tool any command-by-id 0x131b0000 0x0 '"<user-id>::<secret-key>"' 0x7283 0x0
+chip-tool any command-by-id 0x131bfc00 0x0 '"<user-id>::<secret-key>"' 0x7283 0x0
 ```
 
 The device/node should now be associated with the user.
@@ -132,7 +132,7 @@ User Node association is failing on my device:
 -   If the device prints "This command has reached a limit", reboot the
     device to run the command again.
 -   Read the status attribute:
-    `chip-tool any read-by-id 0x131b0000 0x0 0x7283 0x0`. If this custom
+    `chip-tool any read-by-id 0x131bfc00 0x0 0x7283 0x0`. If this custom
     status attribute (attribute_id: 0x0) returns true, the association
     has already been done.
 -   If you are still facing issues, reproduce the issue on the default
