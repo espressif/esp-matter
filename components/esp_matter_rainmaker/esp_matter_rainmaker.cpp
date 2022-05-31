@@ -32,7 +32,8 @@ namespace cluster {
 namespace rainmaker {
 static constexpr chip::EndpointId endpoint_id = 0x00000000; /* Same as root node endpoint. This will always be
                                                             endpoint_id 0. */
-static constexpr chip::ClusterId Id = 0x131B0000; /* 0x131B == manufacturer code */
+static constexpr chip::ClusterId Id = 0x131BFC00; /* 0x131B == manufacturer code.
+                                                     0xFCOO == start of manufacturer specific cluster_id */
 
 namespace attribute {
 namespace status {

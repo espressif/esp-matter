@@ -528,7 +528,7 @@ Non-Standard/Custom clusters can also be created:
 
    ::
       
-      uint32_t custom_cluster_id = 0x131b0000;
+      uint32_t custom_cluster_id = 0x131bfc00;
       cluster_t *cluster = cluster::create(endpoint, custom_cluster_id, CLUSTER_FLAG_SERVER);
 
 2.4.3.3 Attributes and Commands
