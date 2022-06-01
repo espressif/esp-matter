@@ -207,9 +207,10 @@ server cluster ColorControl = 768 {
 
   readonly attribute int8u currentHue = 0;
   readonly attribute int8u currentSaturation = 1;
-  readonly attribute int16u currentX = 3;
-  readonly attribute int16u currentY = 4;
+  readonly attribute int16u colorTemperature = 7;
   attribute bitmap8 colorControlOptions = 15;
+  readonly attribute int16u colorTempPhysicalMin = 16395;
+  readonly attribute int16u colorTempPhysicalMax = 16396;
   readonly attribute int16u coupleColorTempToLevelMinMireds = 16397;
   attribute access(write: manage) int16u startUpColorTemperatureMireds = 16400;
   readonly attribute command_id generatedCommandList[] = 65528;
@@ -293,6 +294,37 @@ server cluster ColorControl = 768 {
     BITMAP8 optionsOverride = 4;
   }
 
+  request struct MoveToColorTemperatureRequest {
+    INT16U colorTemperature = 0;
+    INT16U transitionTime = 1;
+    BITMAP8 optionsMask = 2;
+    BITMAP8 optionsOverride = 3;
+  }
+
+  request struct StopMoveStepRequest {
+    BITMAP8 optionsMask = 0;
+    BITMAP8 optionsOverride = 1;
+  }
+
+  request struct MoveColorTemperatureRequest {
+    HueMoveMode moveMode = 0;
+    INT16U rate = 1;
+    INT16U colorTemperatureMinimum = 2;
+    INT16U colorTemperatureMaximum = 3;
+    BITMAP8 optionsMask = 4;
+    BITMAP8 optionsOverride = 5;
+  }
+
+  request struct StepColorTemperatureRequest {
+    HueStepMode stepMode = 0;
+    INT16U stepSize = 1;
+    INT16U transitionTime = 2;
+    INT16U colorTemperatureMinimum = 3;
+    INT16U colorTemperatureMaximum = 4;
+    BITMAP8 optionsMask = 5;
+    BITMAP8 optionsOverride = 6;
+  }
+
   command MoveToHue(MoveToHueRequest): DefaultSuccess = 0;
   command MoveHue(MoveHueRequest): DefaultSuccess = 1;
   command StepHue(StepHueRequest): DefaultSuccess = 2;
@@ -303,6 +335,10 @@ server cluster ColorControl = 768 {
   command MoveToColor(MoveToColorRequest): DefaultSuccess = 7;
   command MoveColor(MoveColorRequest): DefaultSuccess = 8;
   command StepColor(StepColorRequest): DefaultSuccess = 9;
+  command MoveToColorTemperature(MoveToColorTemperatureRequest): DefaultSuccess = 10;
+  command StopMoveStep(StopMoveStepRequest): DefaultSuccess = 71;
+  command MoveColorTemperature(MoveColorTemperatureRequest): DefaultSuccess = 75;
+  command StepColorTemperature(StepColorTemperatureRequest): DefaultSuccess = 76;
 }
 
 server cluster Descriptor = 29 {
@@ -1174,8 +1210,8 @@ endpoint 0 {
 }
 
 endpoint 1 {
-  server  cluster Basic;
   server  cluster ColorControl;
+  server  cluster Descriptor;
   server  cluster Groups;
   server  cluster Identify;
   server  cluster LevelControl;

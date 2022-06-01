@@ -99,6 +99,7 @@ esp_err_t app_driver_attribute_set_defaults()
     /* Get the default value (current value) from matter submodule and update the app_driver */
     esp_err_t err = ESP_OK;
     uint8_t value;
+    uint16_t value_u16;
     uint16_t endpoint_id = 0;
     uint32_t cluster_id = 0;
     uint32_t attribute_id = 0;
@@ -130,6 +131,13 @@ esp_err_t app_driver_attribute_set_defaults()
     attribute_id = ColorControl::Attributes::CurrentSaturation::Id;
     attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, &value, sizeof(uint8_t));
     val = esp_matter_uint8(value);
+    err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
+
+    endpoint_id = light_endpoint_id;
+    cluster_id = ColorControl::Id;
+    attribute_id = ColorControl::Attributes::ColorTemperature::Id;
+    attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value_u16, sizeof(uint16_t));
+    val = esp_matter_uint16(value_u16);
     err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
 
     return err;
