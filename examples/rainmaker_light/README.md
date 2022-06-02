@@ -1,6 +1,6 @@
 # RainMaker Light
 
-This example creates a Color Dimmable Light device using the ESP
+This example creates a Color Temperature Light device using the ESP
 Matter data model.
 
 It also initializes [ESP RainMaker](https://rainmaker.espressif.com/) which enables Device Management and

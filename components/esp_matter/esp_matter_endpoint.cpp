@@ -23,7 +23,6 @@
 
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
 #define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
-#define ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0102
 #define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID 0x010C
 #define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
 
@@ -66,7 +65,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, CLUSTER_FLAG_SERVER);
     basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    ota_provider::create(endpoint, &(config->ota_provider), CLUSTER_FLAG_CLIENT);
+    ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
     general_commissioning::create(endpoint, &(config->general_commissioning), CLUSTER_FLAG_SERVER);
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
@@ -94,12 +93,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -120,48 +118,17 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
 } /* dimmable_light */
-
-namespace color_dimmable_light {
-uint32_t get_device_type_id()
-{
-    return ESP_MATTER_COLOR_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
-}
-
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
-{
-    endpoint_t *endpoint = endpoint::create(node, flags);
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
-        return NULL;
-    }
-    set_device_type_id(endpoint, get_device_type_id());
-
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
-                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
-                          color_control::feature::hue_saturation::get_id());
-
-    return endpoint;
-}
-} /* color_dimmable_light */
 
 namespace color_temperature_light {
 uint32_t get_device_type_id()
@@ -178,13 +145,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
                           color_control::feature::color_temperature::get_id());
 
@@ -207,13 +174,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_SERVER,
                           color_control::feature::color_temperature::get_id() | color_control::feature::xy::get_id());
 
@@ -236,13 +203,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
 }
@@ -263,13 +229,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
 }
@@ -290,14 +256,14 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_CLIENT);
-    on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
-    color_control::create(endpoint, &(config->color_control), CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
+    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+    color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
 }
@@ -318,13 +284,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -345,13 +311,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
     level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
                           level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -372,9 +338,9 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
     return endpoint;
@@ -396,11 +362,10 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
 
     return endpoint;
@@ -455,8 +420,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster::door_lock::create(endpoint, &(config->door_lock), CLUSTER_FLAG_SERVER);
     time_synchronization::create(endpoint, &(config->time_synchronization), CLUSTER_FLAG_SERVER);
 
@@ -480,7 +445,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_CLIENT);
+    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
     return endpoint;

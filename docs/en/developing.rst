@@ -313,15 +313,13 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
 
    ::
 
-      color_dimmable_light::config_t light_config;
+      color_temperature_light::config_t light_config;
       light_config.on_off.on_off = DEFAULT_POWER;
       light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-      light_config.color_control.hue_saturation.current_hue = DEFAULT_HUE;
-      light_config.color_control.hue_saturation.current_saturation = DEFAULT_SATURATION;
-      endpoint_t *endpoint = color_dimmable_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
+      endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
 
-   In this case, we create the light using the ``color_dimmable_light::create()`` function. Similarly, multiple
-   endpoints can be created on the same endpoint. Check the following
+   In this case, we create the light using the ``color_temperature_light::create()`` function. Similarly, multiple
+   endpoints can be created on the same node. Check the following
    sections for more info.
 
 2.4.1.2 Attribute Callback
@@ -380,8 +378,8 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
 
 -  The driver's attribute update API just handles the attributes that
    are actually relevant for the device. For example, a
-   color_dimmable_light handles the power, brightness, hue and
-   saturation.
+   color_temperature_light handles the power, brightness, hue,
+   saturation and temperature.
 
    ::
 
@@ -403,6 +401,8 @@ for clarity on the terms like endpoints, clusters, etc. that are used in this se
                       err = app_driver_light_set_hue(val);
                   } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                       err = app_driver_light_set_saturation(val);
+                  } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+                      err = app_driver_light_set_temperature(val);
                   }
               }
           }
@@ -675,7 +675,7 @@ subsection for :ref:`Using a different button driver <using-a-different-button-d
 ~~~~~~~~~~~~~~~~
 
 -  In the light examples, the led on the devkit is initialized and the
-   default values for power, brightness, hue, saturation, etc. are set
+   default values for power, brightness, hue, saturation, temperature, etc. are set
    to the default values from the data model.
 
 .. _using-a-different-led-driver:

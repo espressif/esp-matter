@@ -1,6 +1,6 @@
 # Zap Light
 
-This example creates a Color Dimmable Light device using the Zap
+This example creates a Color Temperature Light device using the Zap
 data model instead of the ESP Matter data model.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.

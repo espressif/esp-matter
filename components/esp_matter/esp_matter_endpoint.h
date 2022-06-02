@@ -33,7 +33,6 @@ namespace endpoint {
 namespace root_node {
 typedef struct config {
     basic::config_t basic;
-    ota_provider::config_t ota_provider;
     ota_requestor::config_t ota_requestor;
     general_commissioning::config_t general_commissioning;
     network_commissioning::config_t network_commissioning;
@@ -52,7 +51,6 @@ typedef struct config {
     groups::config_t groups;
     scenes::config_t scenes;
     on_off::config_t on_off;
-    basic::config_t basic;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -66,27 +64,11 @@ typedef struct config {
     scenes::config_t scenes;
     on_off::config_t on_off;
     level_control::config_t level_control;
-    basic::config_t basic;
 } config_t;
 
 uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 } /* dimmable_light */
-
-namespace color_dimmable_light {
-typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
-    basic::config_t basic;
-    color_control::config_t color_control;
-} config_t;
-
-uint32_t get_device_type_id();
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
-} /* color_dimmable_light */
 
 namespace color_temperature_light {
 typedef struct config {
@@ -119,10 +101,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 namespace on_off_switch {
 typedef struct config {
     identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    basic::config_t basic;
     binding::config_t binding;
 } config_t;
 
@@ -133,10 +111,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 namespace dimmer_switch {
 typedef struct config {
     identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
     binding::config_t binding;
 } config_t;
 
@@ -147,11 +121,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 namespace color_dimmer_switch {
 typedef struct config {
     identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
-    color_control::config_t color_control;
     binding::config_t binding;
 } config_t;
 
@@ -201,7 +170,6 @@ typedef struct config {
     identify::config_t identify;
     groups::config_t groups;
     scenes::config_t scenes;
-    basic::config_t basic;
     cluster::thermostat::config_t thermostat;
 } config_t;
 
@@ -237,7 +205,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 namespace temperature_sensor {
 typedef struct config {
     identify::config_t identify;
-    groups::config_t groups;
     temperature_measurement::config_t temperature_measurement;
 } config_t;
 
