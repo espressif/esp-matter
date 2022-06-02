@@ -80,13 +80,13 @@
                                                                                \
     /* Endpoint: 1, Cluster: Color Control (server) */                         \
     {                                                                          \
-      (uint16_t)0x0, (uint16_t)0x0, (uint16_t)0xFEFF                           \
+      (uint16_t)0xFA, (uint16_t)0x0, (uint16_t)0xFEFF                          \
     } /* start up color temperature mireds */                                  \
   }
 
 #define ZAP_ATTRIBUTE_MASK(mask) ATTRIBUTE_MASK_##mask
 // This is an array of EmberAfAttributeMetadata structures.
-#define GENERATED_ATTRIBUTE_COUNT 94
+#define GENERATED_ATTRIBUTE_COUNT 88
 #define GENERATED_ATTRIBUTES                                                   \
   {                                                                            \
                                                                                \
@@ -291,42 +291,16 @@
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_SIMPLE_DEFAULT(5)}, /* ClusterRevision */                         \
                                                                                \
-        /* Endpoint: 1, Cluster: Basic (server) */                             \
-        {0x00000000, ZAP_TYPE(INT16U), 0,                                      \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* DataModelRevision */                         \
-        {0x00000001, ZAP_TYPE(CHAR_STRING), 0,                                 \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* VendorName */                                \
-        {0x00000002, ZAP_TYPE(VENDOR_ID), 0,                                   \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* VendorID */                                  \
-        {0x00000003, ZAP_TYPE(CHAR_STRING), 0,                                 \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* ProductName */                               \
-        {0x00000004, ZAP_TYPE(INT16U), 0,                                      \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* ProductID */                                 \
-        {0x00000005, ZAP_TYPE(CHAR_STRING), 33,                                \
-         ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),         \
-         ZAP_EMPTY_DEFAULT()}, /* NodeLabel */                                 \
-        {0x00000006, ZAP_TYPE(CHAR_STRING), 0,                                 \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) |                                \
-             ZAP_ATTRIBUTE_MASK(SINGLETON) | ZAP_ATTRIBUTE_MASK(WRITABLE),     \
-         ZAP_EMPTY_DEFAULT()}, /* Location */                                  \
-        {0x00000007, ZAP_TYPE(INT16U), 0,                                      \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* HardwareVersion */                           \
-        {0x00000008, ZAP_TYPE(CHAR_STRING), 0,                                 \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* HardwareVersionString */                     \
-        {0x00000009, ZAP_TYPE(INT32U), 0,                                      \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* SoftwareVersion */                           \
-        {0x0000000A, ZAP_TYPE(CHAR_STRING), 0,                                 \
-         ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE) | ZAP_ATTRIBUTE_MASK(SINGLETON), \
-         ZAP_EMPTY_DEFAULT()}, /* SoftwareVersionString */                     \
-        {0x0000FFFD, ZAP_TYPE(INT16U), 2, ZAP_ATTRIBUTE_MASK(SINGLETON),       \
+        /* Endpoint: 1, Cluster: Descriptor (server) */                        \
+        {0x00000000, ZAP_TYPE(ARRAY), 0, ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE), \
+         ZAP_EMPTY_DEFAULT()}, /* device list */                               \
+        {0x00000001, ZAP_TYPE(ARRAY), 0, ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE), \
+         ZAP_EMPTY_DEFAULT()}, /* server list */                               \
+        {0x00000002, ZAP_TYPE(ARRAY), 0, ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE), \
+         ZAP_EMPTY_DEFAULT()}, /* client list */                               \
+        {0x00000003, ZAP_TYPE(ARRAY), 0, ZAP_ATTRIBUTE_MASK(EXTERNAL_STORAGE), \
+         ZAP_EMPTY_DEFAULT()}, /* parts list */                                \
+        {0x0000FFFD, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_SIMPLE_DEFAULT(1)}, /* ClusterRevision */                         \
                                                                                \
         /* Endpoint: 1, Cluster: Color Control (server) */                     \
@@ -334,12 +308,14 @@
          ZAP_SIMPLE_DEFAULT(0x80)}, /* current hue */                          \
         {0x00000001, ZAP_TYPE(INT8U), 1, 0,                                    \
          ZAP_SIMPLE_DEFAULT(0xFF)}, /* current saturation */                   \
-        {0x00000003, ZAP_TYPE(INT16U), 2, 0,                                   \
-         ZAP_SIMPLE_DEFAULT(0x616B)}, /* current x */                          \
-        {0x00000004, ZAP_TYPE(INT16U), 2, 0,                                   \
-         ZAP_SIMPLE_DEFAULT(0x607D)}, /* current y */                          \
+        {0x00000007, ZAP_TYPE(INT16U), 2, 0,                                   \
+         ZAP_SIMPLE_DEFAULT(0x00FA)}, /* color temperature */                  \
         {0x0000000F, ZAP_TYPE(BITMAP8), 1, ZAP_ATTRIBUTE_MASK(WRITABLE),       \
          ZAP_SIMPLE_DEFAULT(0x00)}, /* color control options */                \
+        {0x0000400B, ZAP_TYPE(INT16U), 2, 0,                                   \
+         ZAP_SIMPLE_DEFAULT(0x0000)}, /* color temp physical min */            \
+        {0x0000400C, ZAP_TYPE(INT16U), 2, 0,                                   \
+         ZAP_SIMPLE_DEFAULT(0xFEFF)}, /* color temp physical max */            \
         {0x0000400D, ZAP_TYPE(INT16U), 2, 0,                                   \
          ZAP_EMPTY_DEFAULT()}, /* couple color temp to level min-mireds */     \
         {0x00004010, ZAP_TYPE(INT16U), 2,                                      \
@@ -347,7 +323,7 @@
          ZAP_MIN_MAX_DEFAULTS_INDEX(                                           \
              1)}, /* start up color temperature mireds */                      \
         {0x0000FFFD, ZAP_TYPE(INT16U), 2, 0,                                   \
-         ZAP_SIMPLE_DEFAULT(3)}, /* ClusterRevision */                         \
+         ZAP_SIMPLE_DEFAULT(5)}, /* ClusterRevision */                         \
   }
 
 // This is an array of EmberAfCluster structures.
@@ -527,6 +503,10 @@
   0x00000007 /* MoveToColor */, \
   0x00000008 /* MoveColor */, \
   0x00000009 /* StepColor */, \
+  0x0000000A /* MoveToColorTemperature */, \
+  0x00000047 /* StopMoveStep */, \
+  0x0000004B /* MoveColorTemperature */, \
+  0x0000004C /* StepColorTemperature */, \
   chip::kInvalidCommandId /* end of list */, \
 }
 
@@ -725,22 +705,22 @@
       .generatedCommandList = nullptr ,\
     },\
   { \
-      /* Endpoint: 1, Cluster: Basic (server) */ \
-      .clusterId = 0x00000028,  \
+      /* Endpoint: 1, Cluster: Descriptor (server) */ \
+      .clusterId = 0x0000001D,  \
       .attributes = ZAP_ATTRIBUTE_INDEX(74), \
-      .attributeCount = 12, \
-      .clusterSize = 35, \
-      .mask = ZAP_CLUSTER_MASK(SERVER) | ZAP_CLUSTER_MASK(INIT_FUNCTION), \
-      .functions = chipFuncArrayBasicServer, \
+      .attributeCount = 5, \
+      .clusterSize = 2, \
+      .mask = ZAP_CLUSTER_MASK(SERVER), \
+      .functions = NULL, \
       .acceptedCommandList = nullptr ,\
       .generatedCommandList = nullptr ,\
     },\
   { \
       /* Endpoint: 1, Cluster: Color Control (server) */ \
       .clusterId = 0x00000300,  \
-      .attributes = ZAP_ATTRIBUTE_INDEX(86), \
-      .attributeCount = 8, \
-      .clusterSize = 13, \
+      .attributes = ZAP_ATTRIBUTE_INDEX(79), \
+      .attributeCount = 9, \
+      .clusterSize = 15, \
       .mask = ZAP_CLUSTER_MASK(SERVER) | ZAP_CLUSTER_MASK(INIT_FUNCTION), \
       .functions = chipFuncArrayColorControlServer, \
       .acceptedCommandList = ZAP_GENERATED_COMMANDS_INDEX( 88 ) ,\
@@ -756,7 +736,7 @@
 
 // This is an array of EmberAfEndpointType structures.
 #define GENERATED_ENDPOINT_TYPES                                               \
-  { {ZAP_CLUSTER_INDEX(0), 12, 155}, {ZAP_CLUSTER_INDEX(12), 7, 70}, }
+  { {ZAP_CLUSTER_INDEX(0), 12, 155}, {ZAP_CLUSTER_INDEX(12), 7, 39}, }
 
 // Largest attribute size is needed for various buffers
 #define ATTRIBUTE_LARGEST (255)
@@ -765,10 +745,10 @@ static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE,
               "ATTRIBUTE_LARGEST larger than expected");
 
 // Total size of singleton attributes
-#define ATTRIBUTE_SINGLETONS_SIZE (70)
+#define ATTRIBUTE_SINGLETONS_SIZE (35)
 
 // Total size of attribute storage
-#define ATTRIBUTE_MAX_SIZE (225)
+#define ATTRIBUTE_MAX_SIZE (194)
 
 // Number of fixed endpoints
 #define FIXED_ENDPOINT_COUNT (2)
@@ -780,12 +760,12 @@ static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE,
 
 // Array of profile ids
 #define FIXED_PROFILE_IDS                                                      \
-  { 0x0103, 0x0104 }
+  { 0x0103, 0x0103 }
 
 // Array of device types
 #define FIXED_DEVICE_TYPES                                                     \
   {                                                                            \
-    {0x0016, 1}, { 0x0102, 1 }                                                 \
+    {0x0016, 1}, { 0x010C, 1 }                                                 \
   }
 
 // Array of device type offsets

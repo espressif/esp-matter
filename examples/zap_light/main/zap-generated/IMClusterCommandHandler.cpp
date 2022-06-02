@@ -205,6 +205,42 @@ void DispatchServerCommand(CommandHandler *apCommandObj,
       }
       break;
     }
+    case Commands::MoveToColorTemperature::Id: {
+      Commands::MoveToColorTemperature::DecodableType commandData;
+      TLVError = DataModel::Decode(aDataTlv, commandData);
+      if (TLVError == CHIP_NO_ERROR) {
+        wasHandled = emberAfColorControlClusterMoveToColorTemperatureCallback(
+            apCommandObj, aCommandPath, commandData);
+      }
+      break;
+    }
+    case Commands::StopMoveStep::Id: {
+      Commands::StopMoveStep::DecodableType commandData;
+      TLVError = DataModel::Decode(aDataTlv, commandData);
+      if (TLVError == CHIP_NO_ERROR) {
+        wasHandled = emberAfColorControlClusterStopMoveStepCallback(
+            apCommandObj, aCommandPath, commandData);
+      }
+      break;
+    }
+    case Commands::MoveColorTemperature::Id: {
+      Commands::MoveColorTemperature::DecodableType commandData;
+      TLVError = DataModel::Decode(aDataTlv, commandData);
+      if (TLVError == CHIP_NO_ERROR) {
+        wasHandled = emberAfColorControlClusterMoveColorTemperatureCallback(
+            apCommandObj, aCommandPath, commandData);
+      }
+      break;
+    }
+    case Commands::StepColorTemperature::Id: {
+      Commands::StepColorTemperature::DecodableType commandData;
+      TLVError = DataModel::Decode(aDataTlv, commandData);
+      if (TLVError == CHIP_NO_ERROR) {
+        wasHandled = emberAfColorControlClusterStepColorTemperatureCallback(
+            apCommandObj, aCommandPath, commandData);
+      }
+      break;
+    }
     default: {
       // Unrecognized command ID, error status will apply.
       apCommandObj->AddStatus(
