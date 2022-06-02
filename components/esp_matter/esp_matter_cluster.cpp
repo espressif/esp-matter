@@ -585,6 +585,86 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 }
 } /* group_key_management */
 
+namespace diagnostics_network_wifi {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, WiFiNetworkDiagnostics::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterWiFiNetworkDiagnosticsPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterWiFiNetworkDiagnosticsPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_bssid(cluster, NULL, 0);
+        attribute::create_security_type(cluster, 0);
+        attribute::create_wifi_version(cluster, 0);
+        attribute::create_channel_number(cluster, 0);
+        attribute::create_rssi(cluster, 0);
+    }
+
+    return cluster;
+}
+} /* diagnostics_network_wifi */
+
+namespace diagnostics_network_thread {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, ThreadNetworkDiagnostics::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterThreadNetworkDiagnosticsPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterThreadNetworkDiagnosticsPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        attribute::create_channel(cluster, 0);
+        attribute::create_routing_role(cluster, 0);
+        attribute::create_network_name(cluster, NULL, 0);
+        attribute::create_pan_id(cluster, 0);
+        attribute::create_extended_pan_id(cluster, 0);
+        attribute::create_mesh_local_prefix(cluster, NULL, 0);
+        attribute::create_neighbor_table(cluster, NULL, 0, 0);
+        attribute::create_route_table(cluster, NULL, 0, 0);
+        attribute::create_extended_partition_id(cluster, 0);
+        attribute::create_weighting(cluster, 0);
+        attribute::create_data_version(cluster, 0);
+        attribute::create_stable_data_version(cluster, 0);
+        attribute::create_leader_router_id(cluster, 0);
+        attribute::create_security_policy(cluster, NULL, 0, 0);
+        attribute::create_channel_mask(cluster, NULL, 0);
+        attribute::create_operational_dataset_components(cluster, NULL, 0, 0);
+        attribute::create_active_network_faults(cluster, NULL, 0, 0);
+    }
+
+    return cluster;
+}
+} /* diagnostics_network_thread */
+
 namespace identify {
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfIdentifyClusterServerInitCallback,

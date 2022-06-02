@@ -398,6 +398,151 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* group_key_management */
 
+namespace diagnostics_network_wifi {
+namespace attribute {
+
+attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Bssid::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_security_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::SecurityType::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::WiFiVersion::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_channel_number(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::ChannelNumber::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_rssi(cluster_t *cluster, int8_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_int8(value));
+}
+
+} /* attribute */
+} /* diagnostics_network_wifi */
+
+namespace diagnostics_network_thread {
+namespace attribute {
+
+attribute_t *create_channel(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Channel::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_routing_role(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RoutingRole::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NetworkName::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
+}
+
+attribute_t *create_pan_id(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PanId::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_extended_pan_id(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ExtendedPanId::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::MeshLocalPrefix::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NeighborTableList::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RouteTableList::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_extended_partition_id(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PartitionId::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_weighting(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Weighting::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_data_version(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::DataVersion::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::StableDataVersion::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_leader_router_id(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::LeaderRouterId::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::SecurityPolicy::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_channel_mask(cluster_t *cluster, uint8_t *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ChannelMask::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
+}
+
+attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster,
+                                         ThreadNetworkDiagnostics::Attributes::OperationalDatasetComponents::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ActiveNetworkFaultsList::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* diagnostics_network_thread */
+
 namespace identify {
 namespace attribute {
 

@@ -137,6 +137,38 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* group_key_management */
 
+namespace diagnostics_network_wifi {
+namespace attribute {
+attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_security_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value);
+attribute_t *create_channel_number(cluster_t *cluster, uint16_t value);
+attribute_t *create_rssi(cluster_t *cluster, int8_t value);
+} /* attribute */
+} /* diagnostics_network_wifi */
+
+namespace diagnostics_network_thread {
+namespace attribute {
+attribute_t *create_channel(cluster_t *cluster, uint16_t value);
+attribute_t *create_routing_role(cluster_t *cluster, uint8_t value);
+attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_pan_id(cluster_t *cluster, uint16_t value);
+attribute_t *create_extended_pan_id(cluster_t *cluster, uint64_t value);
+attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_extended_partition_id(cluster_t *cluster, uint32_t value);
+attribute_t *create_weighting(cluster_t *cluster, uint8_t value);
+attribute_t *create_data_version(cluster_t *cluster, uint8_t value);
+attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value);
+attribute_t *create_leader_router_id(cluster_t *cluster, uint8_t value);
+attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_channel_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* diagnostics_network_thread */
+
 namespace identify {
 namespace attribute {
 attribute_t *create_identify_time(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);

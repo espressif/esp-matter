@@ -74,6 +74,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     operational_credentials::create(endpoint, &(config->operational_credentials), CLUSTER_FLAG_SERVER);
     group_key_management::create(endpoint, CLUSTER_FLAG_SERVER);
 
+#if CHIP_DEVICE_CONFIG_ENABLE_WIFI
+    diagnostics_network_wifi::create(endpoint, CLUSTER_FLAG_SERVER);
+#endif
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    diagnostics_network_thread::create(endpoint, CLUSTER_FLAG_SERVER);
+#endif
+
     return endpoint;
 }
 } /* root_node */
