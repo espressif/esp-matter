@@ -1,0 +1,44 @@
+Version 0.8
+===========
+
+Features
+--------
+    - Aligns to Matter Test Event 9 and ESP-IDF v4.4.1
+    - ESP Matter Data Model - Intuitive, simple and dynamic
+    - Utility device types supported:
+        Root Node
+        OTA Requestor
+        OTA Provider
+        Bridged Node
+    - Application device types supported:
+        Lighting
+          On/Off Light
+          Dimmable Light
+          Color Temperature Light
+          Extended Color Light
+        Smart Plugs/Outlets
+          On/Off Plug-in Unit
+          Dimmable Plug-in Unit
+        Switches
+          On/Off Light Switch
+          Dimmer Switch
+          Color Dimmer Switch
+        Sensors
+          Contact Sensor
+          Occupancy Sensor
+          Temperature Sensor
+        Closure
+          Door Lock
+        HVAC
+          Thermostat
+          Fan
+    - Mass manufacturing tool that generates manufacturing NVS partition image and onboarding codes
+    - RainMaker integration
+    - Zigbee to Matter and BLE Mesh to Matter Bridge
+
+Known Issues
+------------
+    - Device disconnects and reconnects to Wi-Fi after BLE deinit, post commissioning
+    - BLE memory is not freed if the device has already been commissioned on bootup
+    - Host-based chip-tool shows the following error during commissioning/cluster control, but the functionality works fine:
+        CHIP Error 0x00000070: Unsolicited msg with originator bit clear
