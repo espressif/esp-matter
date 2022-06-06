@@ -118,9 +118,7 @@ static const char *app_rainmaker_get_device_name_from_id(uint32_t endpoint_id)
 
 static const char *app_rainmaker_get_device_type_from_id(uint32_t device_type_id)
 {
-    if (device_type_id == endpoint::color_dimmable_light::get_device_type_id()) {
-        return ESP_RMAKER_DEVICE_LIGHTBULB;
-    } else if (device_type_id == endpoint::color_temperature_light::get_device_type_id()) {
+    if (device_type_id == endpoint::color_temperature_light::get_device_type_id()) {
         return ESP_RMAKER_DEVICE_LIGHTBULB;
     }
     return NULL;

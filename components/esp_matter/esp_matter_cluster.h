@@ -138,6 +138,14 @@ namespace group_key_management {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* group_key_management */
 
+namespace diagnostics_network_wifi {
+cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+} /* diagnostics_network_wifi */
+
+namespace diagnostics_network_thread {
+cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+} /* diagnostics_network_thread */
+
 namespace identify {
 typedef struct config {
     uint16_t cluster_revision;
