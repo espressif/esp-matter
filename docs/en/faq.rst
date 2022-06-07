@@ -147,3 +147,4 @@ The LED on my devkit is not working:
 -  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
+-  :project_file:`BLE Mesh Bridge <examples/blemesh_bridge/README.md>`
