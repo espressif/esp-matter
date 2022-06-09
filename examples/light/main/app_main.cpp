@@ -15,7 +15,6 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
-#include <app_ble.h>
 #include <app_priv.h>
 #include <app_qrcode.h>
 
@@ -38,7 +37,6 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
-        app_ble_disable();
         break;
 
     default:
