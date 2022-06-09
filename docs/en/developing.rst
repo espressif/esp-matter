@@ -1,7 +1,7 @@
 2. Developing with ESP Matter
 =============================
 
-Please refer the :project_file:`Changelog <CHANGELOG.md>` to know more about
+Please refer the :project_file:`Release Notes <RELEASE_NOTES.txt>` to know more about
 ESP Matter releases
 
 2.1 Development Setup

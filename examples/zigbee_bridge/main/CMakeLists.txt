@@ -1,4 +1,4 @@
-set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_ble app_qrcode esp_matter_ota app_bridge
+set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode esp_matter_ota app_bridge
                        esp-zboss-lib)
 
 idf_component_register(SRC_DIRS          "."
