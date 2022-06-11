@@ -1,5 +1,4 @@
 3. Matter Certification
 =======================
 
-todo. Get your product certified. also mention about dcl.
-
+This section will be updated soon.
