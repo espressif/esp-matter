@@ -66,7 +66,6 @@ This should be done each time a new terminal is opened
 
 -  :project_file:`Light <examples/light/README.md>`
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
--  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
 -  :project_file:`BLE Mesh Bridge <examples/blemesh_bridge/README.md>`
@@ -171,7 +170,6 @@ for it to work. Check the "Post Commissioning Setup" section in examples for mor
 
 -  :project_file:`Light <examples/light/README.md>`
 -  :project_file:`Light Switch <examples/light_switch/README.md>`
--  :project_file:`RainMaker Light <examples/rainmaker_light/README.md>`
 -  :project_file:`Zap Light <examples/zap_light/README.md>`
 -  :project_file:`Zigbee Bridge <examples/zigbee_bridge/README.md>`
 -  :project_file:`BLE Mesh Bridge <examples/blemesh_bridge/README.md>`
