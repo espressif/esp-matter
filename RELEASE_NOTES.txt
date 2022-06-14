@@ -1,10 +1,11 @@
-Version 0.8
-===========
+# 14-June-2022
+
+First Github release of ESP Matter
 
 Features
 --------
-    - Aligns to Matter Test Event 9 and ESP-IDF v4.4.1
-    - ESP Matter Data Model - Intuitive, simple and dynamic
+    - Aligns to Matter Test Event 9 and ESP-IDF v4.4.1.
+    - ESP Matter Data Model - Intuitive, simple and dynamic.
     - Utility device types supported:
         Root Node
         OTA Requestor
@@ -32,13 +33,12 @@ Features
         HVAC
           Thermostat
           Fan
-    - Mass manufacturing tool that generates manufacturing NVS partition image and onboarding codes
-    - RainMaker integration
-    - Zigbee to Matter and BLE Mesh to Matter Bridge
+    - Mass manufacturing tool that generates manufacturing NVS partition image and onboarding codes.
+    - RainMaker integration.
+    - Zigbee to Matter and BLE Mesh to Matter Bridge.
 
 Known Issues
 ------------
-    - Device disconnects and reconnects to Wi-Fi after BLE deinit, post commissioning
-    - BLE memory is not freed if the device has already been commissioned on bootup
+    - BLE memory is not freed if the device has already been commissioned on bootup.
     - Host-based chip-tool shows the following error during commissioning/cluster control, but the functionality works fine:
-        CHIP Error 0x00000070: Unsolicited msg with originator bit clear
+        CHIP Error 0x00000070: Unsolicited msg with originator bit clear.
