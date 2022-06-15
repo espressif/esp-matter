@@ -758,6 +758,12 @@ attribute_t *create_current_saturation(cluster_t *cluster, uint8_t value)
                                          esp_matter_uint8(value));
 }
 
+attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::RemainingTime::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
 attribute_t *create_color_mode(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorMode::Id, ATTRIBUTE_FLAG_NONE,
@@ -822,6 +828,42 @@ attribute_t *create_current_y(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::CurrentY::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
+}
+
+attribute_t *create_enhanced_current_hue(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::EnhancedCurrentHue::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_color_loop_active(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorLoopActive::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorLoopDirection::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorLoopTime::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorLoopStartEnhancedHue::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+}
+
+attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorLoopStoredEnhancedHue::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 } /* attribute */

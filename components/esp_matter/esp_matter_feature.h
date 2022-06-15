@@ -121,6 +121,35 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* xy */
+
+namespace enhanced_hue {
+
+typedef struct config {
+    uint16_t enhanced_current_hue;
+    config() : enhanced_current_hue(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* enhanced_hue */
+
+namespace color_loop {
+
+typedef struct config {
+    uint8_t color_loop_active;
+    uint8_t color_loop_direction;
+    uint16_t color_loop_time;
+    uint16_t color_loop_start_enhanced_hue;
+    uint16_t color_loop_stored_enhanced_hue;
+    config() : color_loop_active(0), color_loop_direction(0), color_loop_time(0),
+               color_loop_start_enhanced_hue(0), color_loop_stored_enhanced_hue(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* color_loop */
 } /* feature */
 } /* color_control */
 

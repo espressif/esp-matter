@@ -237,6 +237,62 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* xy */
+
+namespace enhanced_hue {
+
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kEnhancedHueSupported;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
+
+    /* Commands */
+    command::create_enhanced_move_to_hue(cluster);
+    command::create_enhanced_move_hue(cluster);
+    command::create_enhanced_step_hue(cluster);
+    command::create_enhanced_move_to_hue_and_saturation(cluster);
+
+    return ESP_OK;
+}
+} /* enhanced_hue */
+
+namespace color_loop {
+uint32_t get_id()
+{
+    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kColorLoopSupported;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_color_loop_active(cluster, config->color_loop_active);
+    attribute::create_color_loop_direction(cluster, config->color_loop_direction);
+    attribute::create_color_loop_time(cluster, config->color_loop_time);
+    attribute::create_color_loop_start_enhanced_hue(cluster, config->color_loop_start_enhanced_hue);
+    attribute::create_color_loop_stored_enhanced_hue(cluster, config->color_loop_stored_enhanced_hue);
+
+    /* Commands */
+    command::create_color_loop_set(cluster);
+
+    return ESP_OK;
+}
+} /* color_loop */
 } /* feature */
 } /* color_control */
 
