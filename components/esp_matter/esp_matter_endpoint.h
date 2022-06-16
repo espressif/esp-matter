@@ -39,6 +39,8 @@ typedef struct config {
     general_diagnostics::config_t general_diagnostics;
     administrator_commissioning::config_t administrator_commissioning;
     operational_credentials::config_t operational_credentials;
+    diagnostics_network_wifi::config_t diagnostics_network_wifi;
+    diagnostics_network_thread::config_t diagnostics_network_thread;
 } config_t;
 
 uint32_t get_device_type_id();

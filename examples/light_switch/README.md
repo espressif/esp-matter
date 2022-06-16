@@ -6,7 +6,7 @@ data model.
 It creates the On/Off client and other devices can be bound to the
 switch and then controlled from the switch.
 
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup
 
@@ -77,17 +77,19 @@ The following is the Memory and Flash Usage.
     commissioned and is rebooted.
 -   device used: esp32c3_devkit_m
 -   tested on:
-    [bd951b8](https://github.com/espressif/esp-matter/commit/bd951b84993d9d0b5742872be4f51bb6c9ccf15e)
-    (2022-05-05)
+    [6a244a7](https://github.com/espressif/esp-matter/commit/6a244a7b1e5c70b0aa1bf57254f19718b0755d95)
+    (2022-06-16)
 
 |                         | Bootup | After Commissioning |
 |:-                       |:-:     |:-:                  |
-|**Free Internal Memory** |113KB   |110KB                |
+|**Free Internal Memory** |114KB   |111KB                |
 
-**Flash Usage**: Firmware binary size: 1.24MB
+**Flash Usage**: Firmware binary size: 1.25MB
 
 This should give you a good idea about the amount of free memory that is
 available for you to run your application's code.
+
+Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete. It is not done explicitly because of a known issue with esp32c3 and will be fixed with the next IDF release (v4.4.2).
 
 ## A2 Appendix FAQs
 
