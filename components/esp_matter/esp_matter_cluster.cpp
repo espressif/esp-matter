@@ -720,6 +720,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     command::create_identify(cluster);
     command::create_identify_query(cluster);
     command::create_identify_query_response(cluster);
+    command::create_trigger_effect(cluster);
 
     return cluster;
 }

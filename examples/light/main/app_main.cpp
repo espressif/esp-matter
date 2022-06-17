@@ -12,6 +12,7 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
+#include <esp_matter_identify.h>
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
@@ -24,6 +25,12 @@ uint16_t light_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
+
+static void on_identify_trigger_effect(Identify *identify)
+{
+    ESP_LOGI(TAG, "currenr identify trigger effect id: %d", identify->mCurrentEffectIdentifier);
+}
+
 using namespace chip::app::Clusters;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
@@ -88,6 +95,10 @@ extern "C" void app_main()
     hue_saturation_config.current_hue = DEFAULT_HUE;
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
+
+    /* Initialize identify */
+    esp_matter_init_identify(light_endpoint_id, NULL, NULL, EMBER_ZCL_IDENTIFY_IDENTIFY_TYPE_VISIBLE_LED,
+                             on_identify_trigger_effect);
 
     /* Initialize driver */
     app_driver_init();
