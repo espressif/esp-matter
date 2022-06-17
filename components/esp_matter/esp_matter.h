@@ -33,8 +33,6 @@ application.
 #include <app/server/Dnssd.h>
 #include <platform/CHIPDeviceLayer.h>
 
-using namespace chip::app::Clusters;
-
 namespace esp_matter {
 
 /** Endpoint flags */

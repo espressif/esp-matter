@@ -18,7 +18,6 @@
 #include <esp_matter_core.h>
 
 namespace esp_matter {
-using namespace cluster;
 
 /** Specific endpoint (device type) create APIs
  *
@@ -32,15 +31,15 @@ using namespace cluster;
 namespace endpoint {
 namespace root_node {
 typedef struct config {
-    basic::config_t basic;
-    ota_requestor::config_t ota_requestor;
-    general_commissioning::config_t general_commissioning;
-    network_commissioning::config_t network_commissioning;
-    general_diagnostics::config_t general_diagnostics;
-    administrator_commissioning::config_t administrator_commissioning;
-    operational_credentials::config_t operational_credentials;
-    diagnostics_network_wifi::config_t diagnostics_network_wifi;
-    diagnostics_network_thread::config_t diagnostics_network_thread;
+    cluster::basic::config_t basic;
+    cluster::ota_requestor::config_t ota_requestor;
+    cluster::general_commissioning::config_t general_commissioning;
+    cluster::network_commissioning::config_t network_commissioning;
+    cluster::general_diagnostics::config_t general_diagnostics;
+    cluster::administrator_commissioning::config_t administrator_commissioning;
+    cluster::operational_credentials::config_t operational_credentials;
+    cluster::diagnostics_network_wifi::config_t diagnostics_network_wifi;
+    cluster::diagnostics_network_thread::config_t diagnostics_network_thread;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -49,10 +48,10 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace on_off_light {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -61,11 +60,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace dimmable_light {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
+    cluster::level_control::config_t level_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -74,12 +73,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace color_temperature_light {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
-    color_control::config_t color_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
+    cluster::level_control::config_t level_control;
+    cluster::color_control::config_t color_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -88,12 +87,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace extended_color_light {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
-    color_control::config_t color_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
+    cluster::level_control::config_t level_control;
+    cluster::color_control::config_t color_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -102,8 +101,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace on_off_switch {
 typedef struct config {
-    identify::config_t identify;
-    binding::config_t binding;
+    cluster::identify::config_t identify;
+    cluster::binding::config_t binding;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -112,8 +111,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace dimmer_switch {
 typedef struct config {
-    identify::config_t identify;
-    binding::config_t binding;
+    cluster::identify::config_t identify;
+    cluster::binding::config_t binding;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -122,8 +121,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace color_dimmer_switch {
 typedef struct config {
-    identify::config_t identify;
-    binding::config_t binding;
+    cluster::identify::config_t identify;
+    cluster::binding::config_t binding;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -132,11 +131,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace on_off_plugin_unit {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
+    cluster::level_control::config_t level_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -145,11 +144,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace dimmable_plugin_unit {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
-    on_off::config_t on_off;
-    level_control::config_t level_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::on_off::config_t on_off;
+    cluster::level_control::config_t level_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -158,9 +157,9 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace fan {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    fan_control::config_t fan_control;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::fan_control::config_t fan_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -169,9 +168,9 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace thermostat {
 typedef struct config {
-    identify::config_t identify;
-    groups::config_t groups;
-    scenes::config_t scenes;
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
     cluster::thermostat::config_t thermostat;
 } config_t;
 
@@ -185,8 +184,8 @@ uint32_t get_device_type_id();
 
 namespace bridged_node {
 typedef struct config {
-    bridged_device_basic::config_t bridged_device_basic;
-    fixed_label::config_t fixed_label;
+    cluster::bridged_device_basic::config_t bridged_device_basic;
+    cluster::fixed_label::config_t fixed_label;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -195,9 +194,9 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace door_lock {
 typedef struct config {
-    identify::config_t identify;
+    cluster::identify::config_t identify;
     cluster::door_lock::config_t door_lock;
-    time_synchronization::config_t time_synchronization;
+    cluster::time_synchronization::config_t time_synchronization;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -206,8 +205,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace temperature_sensor {
 typedef struct config {
-    identify::config_t identify;
-    temperature_measurement::config_t temperature_measurement;
+    cluster::identify::config_t identify;
+    cluster::temperature_measurement::config_t temperature_measurement;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -216,8 +215,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace occupancy_sensor {
 typedef struct config {
-    identify::config_t identify;
-    occupancy_sensing::config_t occupancy_sensing;
+    cluster::identify::config_t identify;
+    cluster::occupancy_sensing::config_t occupancy_sensing;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -226,8 +225,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags);
 
 namespace contact_sensor {
 typedef struct config {
-    identify::config_t identify;
-    boolean_state::config_t boolean_state;
+    cluster::identify::config_t identify;
+    cluster::boolean_state::config_t boolean_state;
 } config_t;
 
 uint32_t get_device_type_id();

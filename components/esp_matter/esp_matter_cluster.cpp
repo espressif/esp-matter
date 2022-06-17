@@ -24,6 +24,8 @@
 
 static const char *TAG = "esp_matter_cluster";
 
+using namespace chip::app::Clusters;
+
 namespace esp_matter {
 namespace cluster {
 

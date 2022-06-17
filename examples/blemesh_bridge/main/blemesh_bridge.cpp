@@ -20,6 +20,7 @@
 
 static const char *TAG = "blemesh_bridge";
 
+using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 

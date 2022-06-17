@@ -20,6 +20,7 @@
 
 static const char *TAG = "zigbee_bridge";
 
+using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 

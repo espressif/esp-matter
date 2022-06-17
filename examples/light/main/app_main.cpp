@@ -24,6 +24,7 @@ uint16_t light_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
+using namespace chip::app::Clusters;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -83,10 +84,10 @@ extern "C" void app_main()
 
     /* Add additional features to the node */
     cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
-    color_control::feature::hue_saturation::config_t hue_saturation_config;
+    cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
     hue_saturation_config.current_hue = DEFAULT_HUE;
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
-    color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
+    cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
     /* Initialize driver */
     app_driver_init();
