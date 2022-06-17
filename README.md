@@ -18,11 +18,11 @@ git clone --recursive https://github.com/espressif/esp-matter.git
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-ESP Matter currently works with [TE9 tag](https://github.com/project-chip/connectedhomeip/releases/tag/TE9) of connectedhomeip.
-For Wi-Fi devices (ESP32, ESP32-C3, ESP32-S3), ESP-IDF [v4.4.1 release](https://github.com/espressif/esp-idf/releases/tag/v4.4.1) is required.
-For Thread devices (ESP32-H2), ESP-IDF master branch at [commit 047903c](https://github.com/espressif/esp-idf/commit/047903c) should be used.
+- ESP Matter currently works with [TE9 tag](https://github.com/project-chip/connectedhomeip/releases/tag/TE9) of connectedhomeip.
+- For Wi-Fi devices (ESP32, ESP32-C3, ESP32-S3), ESP-IDF [v4.4.1 release](https://github.com/espressif/esp-idf/releases/tag/v4.4.1) is required.
+- For Thread devices (ESP32-H2), ESP-IDF master branch at [commit 047903c](https://github.com/espressif/esp-idf/commit/047903c) should be used.
 
 
-### Documentation Build Status
+## Documentation
 
-[![Documentation Status](https://readthedocs.com/projects/espressif-esp-matter/badge/?version=latest)](https://docs.espressif.com/projects/esp-matter/en/latest/)
+Refer [ESP Matter Programming Guide](https://docs.espressif.com/projects/esp-matter/en/main/) for the latest version of the documentation.

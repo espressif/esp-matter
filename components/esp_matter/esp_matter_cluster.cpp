@@ -589,7 +589,7 @@ namespace diagnostics_network_wifi {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, WiFiNetworkDiagnostics::Id, flags);
     if (!cluster) {
@@ -613,6 +613,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         attribute::create_wifi_version(cluster, 0);
         attribute::create_channel_number(cluster, 0);
         attribute::create_rssi(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
@@ -623,7 +630,7 @@ namespace diagnostics_network_thread {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
-cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
     cluster_t *cluster = cluster::create(endpoint, ThreadNetworkDiagnostics::Id, flags);
     if (!cluster) {
@@ -659,6 +666,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         attribute::create_channel_mask(cluster, NULL, 0);
         attribute::create_operational_dataset_components(cluster, NULL, 0, 0);
         attribute::create_active_network_faults(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
     }
 
     return cluster;
