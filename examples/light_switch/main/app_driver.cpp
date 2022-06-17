@@ -21,6 +21,7 @@
 using chip::kInvalidClusterId;
 static constexpr chip::CommandId kInvalidCommandId = 0xFFFF'FFFF;
 
+using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 

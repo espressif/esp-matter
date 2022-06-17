@@ -18,7 +18,7 @@
 
 #include <app_bridged_device.h>
 
-using esp_matter::node_t;
+using namespace esp_matter;
 
 static const char *TAG = "app_bridged_device";
 static app_bridged_device_t *g_bridged_device_list = NULL;

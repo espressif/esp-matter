@@ -17,6 +17,7 @@
 #include <app_reset.h>
 #include <app_priv.h>
 
+using namespace chip::app::Clusters;
 using namespace esp_matter;
 
 static const char *TAG = "app_driver";

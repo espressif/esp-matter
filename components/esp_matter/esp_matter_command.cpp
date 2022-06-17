@@ -22,6 +22,7 @@
 #include <app/util/af.h>
 #include <app/util/ember-compatibility-functions.h>
 
+using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
 using chip::app::DataModel::Decode;
 using chip::TLV::TLVReader;

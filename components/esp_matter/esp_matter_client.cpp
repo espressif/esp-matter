@@ -19,6 +19,7 @@
 #include <app/clusters/bindings/BindingManager.h>
 #include <zap-generated/CHIPClusters.h>
 
+using namespace chip::app::Clusters;
 using chip::DeviceProxy;
 using chip::FabricInfo;
 using chip::kInvalidEndpointId;
