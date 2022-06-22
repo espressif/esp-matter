@@ -108,6 +108,7 @@ namespace command {
 command_t *create_identify(cluster_t *cluster);
 command_t *create_identify_query(cluster_t *cluster);
 command_t *create_identify_query_response(cluster_t *cluster);
+command_t *create_trigger_effect(cluster_t *cluster);
 } /* command */
 } /* identify */
 

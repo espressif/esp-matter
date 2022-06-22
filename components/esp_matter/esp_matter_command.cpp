@@ -444,6 +444,17 @@ static esp_err_t esp_matter_command_callback_identify_query(const ConcreteComman
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_trigger_effect(const ConcreteCommandPath &command_path,
+                                                            TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Identify::Commands::TriggerEffect::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfIdentifyClusterTriggerEffectCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_add_group(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                        void *opaque_ptr)
 {
@@ -1257,6 +1268,12 @@ command_t *create_identify_query_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::IdentifyQueryResponse::Id, COMMAND_FLAG_GENERATED,
                                        NULL);
+}
+
+command_t *create_trigger_effect(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Identify::Commands::TriggerEffect::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_trigger_effect);
 }
 
 } /* command */
