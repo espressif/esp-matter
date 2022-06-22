@@ -539,7 +539,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     command::create_update_fabric_label(cluster);
     command::create_remove_fabric(cluster);
     command::create_add_trusted_root_certificate(cluster);
-    command::create_remove_trusted_root_certificate(cluster);
 
     return cluster;
 }
@@ -718,8 +717,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     command::create_identify(cluster);
-    command::create_identify_query(cluster);
-    command::create_identify_query_response(cluster);
     command::create_trigger_effect(cluster);
 
     return cluster;

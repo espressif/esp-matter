@@ -252,7 +252,7 @@ static esp_err_t console_handler(int argc, char **argv)
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
-                                                                        attribute_id, CLUSTER_FLAG_SERVER);
+                                                                        attribute_id);
         if (!matter_attribute) {
             ESP_LOGE(TAG, "Matter attribute not found");
             return ESP_ERR_INVALID_ARG;
@@ -306,7 +306,7 @@ static esp_err_t console_handler(int argc, char **argv)
 
         /* Get type from matter_attribute */
         const EmberAfAttributeMetadata *matter_attribute = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
-                                                                        attribute_id, CLUSTER_FLAG_SERVER);
+                                                                        attribute_id);
         if (!matter_attribute) {
             ESP_LOGE(TAG, "Matter attribute not found");
             return ESP_ERR_INVALID_ARG;
@@ -924,7 +924,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
 } /* attribute */
 } /* esp_matter */
 
-Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
+Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t type,
                                         uint16_t size, uint8_t *value)
 {
     uint16_t endpoint_id = path.mEndpointId;
@@ -944,7 +944,7 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     return Status::Success;
 }
 
-void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t mask, uint8_t type,
+void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &path, uint8_t type,
                                        uint16_t size, uint8_t *value)
 {
     uint16_t endpoint_id = path.mEndpointId;

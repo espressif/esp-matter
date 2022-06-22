@@ -362,18 +362,6 @@ static esp_err_t esp_matter_command_callback_add_trusted_root_certificate(const 
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_remove_trusted_root_certificate(const ConcreteCommandPath &command_path,
-                                                                             TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::OperationalCredentials::Commands::RemoveTrustedRootCertificate::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfOperationalCredentialsClusterRemoveTrustedRootCertificateCallback((CommandHandler *)opaque_ptr,
-                                                                                 command_path, command_data);
-    }
-    return ESP_OK;
-}
-
 static esp_err_t esp_matter_command_callback_query_image(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                          void *opaque_ptr)
 {
@@ -429,17 +417,6 @@ static esp_err_t esp_matter_command_callback_identify(const ConcreteCommandPath 
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfIdentifyClusterIdentifyCallback((CommandHandler *)opaque_ptr, command_path, command_data);
-    }
-    return ESP_OK;
-}
-
-static esp_err_t esp_matter_command_callback_identify_query(const ConcreteCommandPath &command_path,
-                                                            TLVReader &tlv_data, void *opaque_ptr)
-{
-    chip::app::Clusters::Identify::Commands::IdentifyQuery::DecodableType command_data;
-    CHIP_ERROR error = Decode(tlv_data, command_data);
-    if (error == CHIP_NO_ERROR) {
-        emberAfIdentifyClusterIdentifyQueryCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1167,13 +1144,6 @@ command_t *create_add_trusted_root_certificate(cluster_t *cluster)
                                        COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_add_trusted_root_certificate);
 }
 
-command_t *create_remove_trusted_root_certificate(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, OperationalCredentials::Commands::RemoveTrustedRootCertificate::Id,
-                                       COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_remove_trusted_root_certificate);
-}
-
 command_t *create_attestation_response(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, OperationalCredentials::Commands::AttestationResponse::Id,
@@ -1256,18 +1226,6 @@ command_t *create_identify(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Identify::Commands::Identify::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_identify);
-}
-
-command_t *create_identify_query(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Identify::Commands::IdentifyQuery::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_identify_query);
-}
-
-command_t *create_identify_query_response(cluster_t *cluster)
-{
-    return esp_matter::command::create(cluster, Identify::Commands::IdentifyQueryResponse::Id, COMMAND_FLAG_GENERATED,
-                                       NULL);
 }
 
 command_t *create_trigger_effect(cluster_t *cluster)

@@ -186,5 +186,5 @@
 #define EMBER_AF_WAKE_ON_LAN_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in wake on lan
 #define EMBER_AF_WINDOW_COVERING_CLUSTER_SERVER_ENDPOINT_COUNT (16) // used in window covering
 
-#define EMBER_AF_PLUGIN_SCENES_TABLE_SIZE 3                         // used in scenes       // TODO: check this again
+#define MATTER_SCENES_TABLE_SIZE 3                                  // used in scenes       // TODO: check this again
 

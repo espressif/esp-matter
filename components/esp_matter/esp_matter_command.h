@@ -79,7 +79,6 @@ command_t *create_update_noc(cluster_t *cluster);
 command_t *create_update_fabric_label(cluster_t *cluster);
 command_t *create_remove_fabric(cluster_t *cluster);
 command_t *create_add_trusted_root_certificate(cluster_t *cluster);
-command_t *create_remove_trusted_root_certificate(cluster_t *cluster);
 command_t *create_attestation_response(cluster_t *cluster);
 command_t *create_certificate_chain_response(cluster_t *cluster);
 command_t *create_csr_response(cluster_t *cluster);
@@ -106,8 +105,6 @@ command_t *create_announce_ota_provider(cluster_t *cluster);
 namespace identify {
 namespace command {
 command_t *create_identify(cluster_t *cluster);
-command_t *create_identify_query(cluster_t *cluster);
-command_t *create_identify_query_response(cluster_t *cluster);
 command_t *create_trigger_effect(cluster_t *cluster);
 } /* command */
 } /* identify */

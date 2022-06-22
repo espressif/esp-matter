@@ -730,7 +730,7 @@ attribute_t *create_color_mode(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_color_control_options(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorControlOptions::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::Options::Id,
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_bitmap8(value));
 }
 
@@ -754,13 +754,13 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMin::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMinMireds::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
 attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMax::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTempPhysicalMaxMireds::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
