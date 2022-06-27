@@ -60,7 +60,7 @@ namespace lighting {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::OnOff::OnOffFeature::kLighting;
+    return (uint32_t)OnOff::OnOffFeature::kLighting;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -95,7 +95,7 @@ namespace on_off {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::LevelControl::LevelControlFeature::kOnOff;
+    return (uint32_t)LevelControl::LevelControlFeature::kOnOff;
 }
 
 esp_err_t add(cluster_t *cluster)
@@ -115,7 +115,7 @@ namespace lighting {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::LevelControl::LevelControlFeature::kLighting;
+    return (uint32_t)LevelControl::LevelControlFeature::kLighting;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -145,7 +145,7 @@ namespace hue_saturation {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kHueSaturationSupported;
+    return (uint32_t)ColorControl::ColorCapabilities::kHueSaturationSupported;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -179,7 +179,7 @@ namespace color_temperature {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kColorTemperatureSupported;
+    return (uint32_t)ColorControl::ColorCapabilities::kColorTemperatureSupported;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
@@ -212,7 +212,7 @@ namespace xy {
 
 uint32_t get_id()
 {
-    return (uint32_t)chip::app::Clusters::ColorControl::ColorCapabilities::kXYAttributesSupported;
+    return (uint32_t)ColorControl::ColorCapabilities::kXYAttributesSupported;
 }
 
 esp_err_t add(cluster_t *cluster, config_t *config)
