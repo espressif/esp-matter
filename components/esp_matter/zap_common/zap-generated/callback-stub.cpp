@@ -37,8 +37,8 @@ void __attribute__((weak)) emberAfAddToCurrentAppTasksCallback(EmberAfApplicatio
 void __attribute__((weak)) emberAfRemoveFromCurrentAppTasksCallback(EmberAfApplicationTask tasks) {}
 
 EmberAfAttributeWritePermission __attribute__((weak))
-emberAfAllowNetworkWriteAttributeCallback(EndpointId endpoint, ClusterId clusterId, AttributeId attributeId, uint8_t mask,
-                                          uint8_t * value, uint8_t type)
+emberAfAllowNetworkWriteAttributeCallback(EndpointId endpoint, ClusterId clusterId, AttributeId attributeId,uint8_t * value, 
+                                                        uint8_t type)
 {
     return EMBER_ZCL_ATTRIBUTE_WRITE_PERMISSION_ALLOW_WRITE_NORMAL; // Default
 }

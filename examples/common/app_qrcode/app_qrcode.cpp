@@ -12,6 +12,7 @@
 #include <esp_log.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/CommissionableDataProvider.h>
+#include <platform/DeviceInstanceInfoProvider.h>
 #include <setup_payload/ManualSetupPayloadGenerator.h>
 #include <setup_payload/QRCodeSetupPayloadGenerator.h>
 #include <setup_payload/SetupPayload.h>
@@ -51,13 +52,13 @@ esp_err_t app_qrcode_get_payload(char **qrcode_text, char **short_manual_code_te
         return ESP_FAIL;
     }
 
-    err = ConfigurationMgr().GetVendorId(vendor_id);
+    err = GetDeviceInstanceInfoProvider()->GetVendorId(vendor_id);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Couldn't get vendor_id: %s", ErrorStr(err));
         return ESP_FAIL;
     }
 
-    err = ConfigurationMgr().GetProductId(product_id);
+    err = GetDeviceInstanceInfoProvider()->GetProductId(product_id);
     if (err != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Couldn't get product_id: %s", ErrorStr(err));
         return ESP_FAIL;

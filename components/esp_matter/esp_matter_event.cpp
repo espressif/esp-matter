@@ -15,12 +15,14 @@
 #include <esp_log.h>
 #include <esp_matter_event.h>
 
+#include <app/clusters/switch-server/switch-server.h>
 #include <platform/DeviceControlServer.h>
 
 static const char *TAG = "esp_matter_event";
 
 using chip::DeviceLayer::DeviceControlServer;
-using chip::DeviceLayer::SwitchDeviceControlDelegate;
+using chip::EndpointId;
+using namespace chip::app::Clusters;
 
 namespace esp_matter {
 namespace cluster {
@@ -172,82 +174,45 @@ esp_err_t send_turbine_operation()
 namespace switch_cluster {
 namespace event {
 
-static SwitchDeviceControlDelegate *get_switch_delegate()
+esp_err_t send_switch_latched(EndpointId endpoint, uint8_t new_position)
 {
-    SwitchDeviceControlDelegate *delegate = DeviceControlServer::DeviceControlSvr().GetSwitchDelegate();
-    if (!delegate) {
-        ESP_LOGE(TAG, "No delegate registered to handle switch events");
-    }
-    return delegate;
-}
-
-esp_err_t send_switch_latched(uint8_t new_position)
-{
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnSwitchLatched(new_position);
+    SwitchServer::Instance().OnSwitchLatch(endpoint, new_position);
     return ESP_OK;
 }
 
-esp_err_t send_initial_press(uint8_t new_position)
+esp_err_t send_initial_press(EndpointId endpoint, uint8_t new_position)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnInitialPressed(new_position);
+    SwitchServer::Instance().OnInitialPress(endpoint, new_position);
     return ESP_OK;
 }
 
-esp_err_t send_long_press(uint8_t new_position)
+esp_err_t send_long_press(EndpointId endpoint, uint8_t new_position)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnLongPressed(new_position);
+    SwitchServer::Instance().OnLongPress(endpoint, new_position);
     return ESP_OK;
 }
 
-esp_err_t send_short_release(uint8_t previous_position)
+esp_err_t send_short_release(EndpointId endpoint, uint8_t previous_position)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnShortReleased(previous_position);
+    SwitchServer::Instance().OnShortRelease(endpoint, previous_position);
     return ESP_OK;
 }
 
-esp_err_t send_long_release(uint8_t previous_position)
+esp_err_t send_long_release(EndpointId endpoint, uint8_t previous_position)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnLongReleased(previous_position);
+    SwitchServer::Instance().OnLongRelease(endpoint, previous_position);
     return ESP_OK;
 }
 
-esp_err_t send_multi_press_ongoing(uint8_t new_position, uint8_t count)
+esp_err_t send_multi_press_ongoing(EndpointId endpoint, uint8_t new_position, uint8_t count)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnMultiPressOngoing(new_position, count);
+    SwitchServer::Instance().OnMultiPressOngoing(endpoint, new_position, count);
     return ESP_OK;
 }
 
-esp_err_t send_multi_press_complete(uint8_t new_position, uint8_t count)
+esp_err_t send_multi_press_complete(EndpointId endpoint, uint8_t new_position, uint8_t count)
 {
-    SwitchDeviceControlDelegate *delegate = get_switch_delegate();
-    if (!delegate) {
-        return ESP_FAIL;
-    }
-    delegate->OnMultiPressComplete(new_position, count);
+    SwitchServer::Instance().OnMultiPressComplete(endpoint, new_position, count);
     return ESP_OK;
 }
 

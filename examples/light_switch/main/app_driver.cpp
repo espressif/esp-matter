@@ -124,7 +124,9 @@ static void app_driver_button_toggle_cb(void *arg)
 
     g_cluster_id = cluster_id;
     g_command_id = command_id;
+    lock::chip_stack_lock(portMAX_DELAY);
     client::cluster_update(endpoint_id, cluster_id);
+    lock::chip_stack_unlock();
 }
 
 esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,

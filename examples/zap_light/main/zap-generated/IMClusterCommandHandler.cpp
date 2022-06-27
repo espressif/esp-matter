@@ -510,15 +510,6 @@ void DispatchServerCommand(CommandHandler *apCommandObj,
       }
       break;
     }
-    case Commands::IdentifyQuery::Id: {
-      Commands::IdentifyQuery::DecodableType commandData;
-      TLVError = DataModel::Decode(aDataTlv, commandData);
-      if (TLVError == CHIP_NO_ERROR) {
-        wasHandled = emberAfIdentifyClusterIdentifyQueryCallback(
-            apCommandObj, aCommandPath, commandData);
-      }
-      break;
-    }
     default: {
       // Unrecognized command ID, error status will apply.
       apCommandObj->AddStatus(
@@ -876,16 +867,6 @@ void DispatchServerCommand(CommandHandler *apCommandObj,
       if (TLVError == CHIP_NO_ERROR) {
         wasHandled =
             emberAfOperationalCredentialsClusterAddTrustedRootCertificateCallback(
-                apCommandObj, aCommandPath, commandData);
-      }
-      break;
-    }
-    case Commands::RemoveTrustedRootCertificate::Id: {
-      Commands::RemoveTrustedRootCertificate::DecodableType commandData;
-      TLVError = DataModel::Decode(aDataTlv, commandData);
-      if (TLVError == CHIP_NO_ERROR) {
-        wasHandled =
-            emberAfOperationalCredentialsClusterRemoveTrustedRootCertificateCallback(
                 apCommandObj, aCommandPath, commandData);
       }
       break;
