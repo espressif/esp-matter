@@ -85,6 +85,24 @@ attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t lengt
                                          esp_matter_array(value, length, count));
 }
 
+attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::SubjectsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::TargetsPerAccessControlEntry::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, AccessControl::Attributes::AccessControlEntriesPerFabric::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
 } /* attribute */
 } /* access_control */
 
@@ -155,6 +173,12 @@ attribute_t *create_software_version_string(cluster_t *cluster, char *value, uin
 {
     return esp_matter::attribute::create(cluster, Basic::Attributes::SoftwareVersionString::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_char_str(value, length));
+}
+
+attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::CapabilityMinima::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
 }
 
 } /* attribute */
@@ -229,6 +253,12 @@ attribute_t *create_location_capability(cluster_t *cluster, uint8_t value)
                                          ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
+attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, GeneralCommissioning::Attributes::SupportsConcurrentConnection::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bool(value));
+}
+
 } /* attribute */
 } /* general_commissioning */
 
@@ -299,6 +329,12 @@ attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value)
 {
     return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::RebootCount::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
+}
+
+attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, GeneralDiagnostics::Attributes::TestEventTriggersEnabled::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bool(value));
 }
 
 } /* attribute */

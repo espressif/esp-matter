@@ -89,6 +89,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_cluster_revision(cluster, 0);
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_device_list(cluster, NULL, 0, 0);
         attribute::create_server_list(cluster, NULL, 0, 0);
         attribute::create_client_list(cluster, NULL, 0, 0);
@@ -122,8 +123,12 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_cluster_revision(cluster, 0);
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_acl(cluster, NULL, 0, 0);
         attribute::create_extension(cluster, NULL, 0, 0);
+        attribute::create_subjects_per_access_control_entry(cluster, 0);
+        attribute::create_access_control_entries_per_fabric(cluster, 0);
+        attribute::create_targets_per_access_control_entry(cluster, 0);
     }
 
     return cluster;
@@ -155,6 +160,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_data_model_revision(cluster, 0);
         attribute::create_location(cluster, NULL, 0);
         attribute::create_vendor_name(cluster, NULL, 0);
@@ -165,6 +171,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_hardware_version_string(cluster, NULL, 0);
         attribute::create_software_version(cluster, 0);
         attribute::create_software_version_string(cluster, NULL, 0);
+        attribute::create_capability_minima(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -204,6 +211,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_binding(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
@@ -240,6 +248,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -282,6 +293,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_default_ota_providers(cluster, NULL, 0);
 
         /* Attributes not managed internally */
@@ -325,9 +337,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_regulatory_config(cluster, 0);
         attribute::create_location_capability(cluster, 0);
         attribute::create_basic_commissioning_info(cluster, NULL, 0, 0);
+        attribute::create_supports_concurrent_connection(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -431,6 +445,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         attribute::create_network_interfaces(cluster, NULL, 0, 0);
         attribute::create_reboot_count(cluster, 0);
+        attribute::create_test_event_triggers_enabled(cluster, 0);
+        global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
         if (config) {
@@ -439,6 +455,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    command::create_test_event_trigger(cluster);
 
     return cluster;
 }
@@ -467,6 +485,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_window_status(cluster, 0);
         attribute::create_admin_fabric_index(cluster, 0);
         attribute::create_admin_vendor_id(cluster, 0);
@@ -511,6 +530,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_nocs(cluster, NULL, 0, 0);
         attribute::create_supported_fabrics(cluster, 0);
         attribute::create_commissioned_fabrics(cluster, 0);
@@ -567,6 +587,7 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         global::attribute::create_cluster_revision(cluster, 0);
         attribute::create_group_key_map(cluster, NULL, 0, 0);
         attribute::create_group_table(cluster, NULL, 0, 0);
@@ -609,6 +630,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_bssid(cluster, NULL, 0);
         attribute::create_security_type(cluster, 0);
         attribute::create_wifi_version(cluster, 0);
@@ -650,6 +672,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_channel(cluster, 0);
         attribute::create_routing_role(cluster, 0);
         attribute::create_network_name(cluster, NULL, 0);
@@ -675,6 +698,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
     }
+
+    /* commands */
+    command::create_reset_counts(cluster);
 
     return cluster;
 }
@@ -705,6 +731,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -747,6 +776,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 1);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -796,6 +828,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -852,6 +887,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -899,6 +937,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -956,6 +997,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1004,6 +1048,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1046,6 +1093,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1091,6 +1141,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1135,6 +1188,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1165,6 +1221,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1202,6 +1261,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
         attribute::create_label_list(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
@@ -1238,6 +1298,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1275,6 +1338,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1312,6 +1378,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -1349,6 +1418,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);

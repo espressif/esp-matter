@@ -52,7 +52,7 @@ namespace basic {
 typedef struct config {
     uint16_t cluster_revision;
     char node_label[32];
-    config() : cluster_revision(3), node_label{0} {}
+    config() : cluster_revision(1), node_label{0} {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -161,7 +161,7 @@ typedef struct config {
     uint16_t cluster_revision;
     uint16_t identify_time;
     uint8_t identify_type;
-    config() : cluster_revision(2), identify_time(0), identify_type(0) {}
+    config() : cluster_revision(4), identify_time(0), identify_type(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -171,7 +171,7 @@ namespace groups {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t group_name_support;
-    config() : cluster_revision(3), group_name_support(0) {}
+    config() : cluster_revision(4), group_name_support(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -185,7 +185,7 @@ typedef struct config {
     uint16_t current_group;
     bool scene_valid;
     uint8_t scene_name_support;
-    config() : cluster_revision(3), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
+    config() : cluster_revision(4), scene_count(0), current_scene(0), current_group(0), scene_valid(false),
                scene_name_support(0) {}
 } config_t;
 
@@ -210,7 +210,7 @@ typedef struct config {
     uint8_t on_level;
     uint8_t options;
     feature::lighting::config_t lighting;
-    config() : cluster_revision(3), current_level(0), on_level(0), options(0) {}
+    config() : cluster_revision(5), current_level(0), on_level(1), options(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -225,7 +225,7 @@ typedef struct config {
     uint16_t color_capabilities;
     feature::hue_saturation::config_t hue_saturation;
     feature::color_temperature::config_t color_temperature;
-    config() : cluster_revision(3), color_mode(1), color_control_options(0), enhanced_color_mode(1),
+    config() : cluster_revision(5), color_mode(1), color_control_options(0), enhanced_color_mode(1),
                color_capabilities(0) {}
 } config_t;
 
@@ -241,7 +241,7 @@ typedef struct config {
     uint8_t percent_setting;
     uint8_t percent_current;
     */
-    config() : cluster_revision(3), fan_mode(5), fan_mode_sequence(2) {}
+    config() : cluster_revision(2), fan_mode(5), fan_mode_sequence(2) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -255,7 +255,7 @@ typedef struct config {
     int16_t occupied_heating_setpoint;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
-    config() : cluster_revision(3), local_temperature(0), occupied_cooling_setpoint(0x0A28),
+    config() : cluster_revision(5), local_temperature(0), occupied_cooling_setpoint(0x0A28),
                occupied_heating_setpoint(0x07D0), control_sequence_of_operation(4), system_mode(1) {}
 } config_t;
 
@@ -271,7 +271,7 @@ typedef struct config {
     uint32_t auto_relock_time;
     uint8_t operating_mode;
     uint16_t supported_operating_modes;
-    config() : cluster_revision(3), lock_state(0), lock_type(0), actuator_enabled(0), auto_relock_time(0),
+    config() : cluster_revision(6), lock_state(0), lock_type(0), actuator_enabled(0), auto_relock_time(0),
                operating_mode(0), supported_operating_modes(0) {}
 } config_t;
 
@@ -325,7 +325,7 @@ typedef struct config {
     int16_t measured_value;
     int16_t min_measured_value;
     int16_t max_measured_value;
-    config() : cluster_revision(3), measured_value(-32768), min_measured_value(-32768), max_measured_value(-32768) {}
+    config() : cluster_revision(4), measured_value(-32768), min_measured_value(-32768), max_measured_value(-32768) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -348,7 +348,7 @@ namespace boolean_state {
 typedef struct config {
     uint16_t cluster_revision;
     bool state_value;
-    config() : cluster_revision(3), state_value(0) {}
+    config() : cluster_revision(1), state_value(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);

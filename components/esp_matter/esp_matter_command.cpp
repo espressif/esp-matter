@@ -921,8 +921,54 @@ static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const Concrete
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_reset_counts(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ThreadNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThreadNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::GeneralDiagnostics::Commands::TestEventTrigger::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfGeneralDiagnosticsClusterTestEventTriggerCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
+
+namespace diagnostics_network_thread {
+namespace command {
+
+command_t *create_reset_counts(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ThreadNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_reset_counts);
+}
+
+} /* command */
+} /* diagnostics_network_thread */
+
+namespace general_diagnostics {
+namespace command {
+
+command_t *create_test_event_trigger(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, 
+                                        esp_matter_command_callback_test_event_trigger);
+}
+
+} /* command */
+} /* general_diagnostics */
 
 namespace group_key_management {
 namespace command {
