@@ -25,6 +25,18 @@ namespace cluster {
  * If a custom command needs to be created, the low level esp_matter::command::create() API can be used.
  */
 
+namespace diagnostics_network_thread {
+namespace command {
+command_t *create_reset_counts(cluster_t *cluster);
+} /* command */
+} /* diagnostics_network_thread */
+
+namespace general_diagnostics {
+namespace command {
+command_t *create_test_event_trigger(cluster_t *cluster);
+} /* command */
+} /* general_diagnostics */
+
 namespace group_key_management {
 namespace command {
 command_t *create_key_set_write(cluster_t *cluster);

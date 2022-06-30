@@ -46,6 +46,9 @@ namespace access_control {
 namespace attribute {
 attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_extension(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_subjects_per_access_control_entry(cluster_t *cluster, uint16_t value);
+attribute_t *create_targets_per_access_control_entry(cluster_t *cluster, uint16_t value);
+attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* access_control */
 
@@ -62,6 +65,7 @@ attribute_t *create_hardware_version(cluster_t *cluster, uint16_t value);
 attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* basic */
 
@@ -86,6 +90,7 @@ attribute_t *create_breadcrumb(cluster_t *cluster, uint64_t value);
 attribute_t *create_basic_commissioning_info(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_regulatory_config(cluster_t *cluster, uint8_t value);
 attribute_t *create_location_capability(cluster_t *cluster, uint8_t value);
+attribute_t *create_supports_concurrent_connection(cluster_t *cluster, bool value);
 } /* attribute */
 } /* general_commissioning */
 
@@ -106,6 +111,7 @@ namespace general_diagnostics {
 namespace attribute {
 attribute_t *create_network_interfaces(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_reboot_count(cluster_t *cluster, uint16_t value);
+attribute_t *create_test_event_triggers_enabled(cluster_t *cluster, bool value);
 } /* attribute */
 } /* general_diagnostics */
 
