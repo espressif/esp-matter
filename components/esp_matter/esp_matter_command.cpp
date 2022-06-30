@@ -855,6 +855,66 @@ static esp_err_t esp_matter_command_callback_step_color_temperature(const Concre
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_enhanced_move_to_hue(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::EnhancedMoveToHue::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterEnhancedMoveToHueCallback((CommandHandler *)opaque_ptr, command_path,
+                                                            command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enhanced_move_hue(const ConcreteCommandPath &command_path,
+                                                               TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::EnhancedMoveHue::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterEnhancedMoveHueCallback((CommandHandler *)opaque_ptr, command_path,
+                                                          command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enhanced_step_hue(const ConcreteCommandPath &command_path,
+                                                               TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::EnhancedStepHue::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterEnhancedStepHueCallback((CommandHandler *)opaque_ptr, command_path,
+                                                          command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enhanced_move_to_hue_and_saturation(const ConcreteCommandPath &command_path,
+                                                                                 TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::EnhancedMoveToHueAndSaturation::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterEnhancedMoveToHueAndSaturationCallback((CommandHandler *)opaque_ptr, command_path,
+                                                                         command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_color_loop_set(const ConcreteCommandPath &command_path,
+                                                            TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::ColorControl::Commands::ColorLoopSet::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfColorControlClusterColorLoopSetCallback((CommandHandler *)opaque_ptr, command_path,
+                                                       command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_move_to_color(const ConcreteCommandPath &command_path,
                                                            TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -1609,6 +1669,36 @@ command_t *create_step_color(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, ColorControl::Commands::StepColor::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_step_color);
+}
+
+command_t *create_enhanced_move_to_hue(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::EnhancedMoveToHue::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_enhanced_move_to_hue);
+}
+
+command_t *create_enhanced_move_hue(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::EnhancedMoveHue::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_enhanced_move_hue);
+}
+
+command_t *create_enhanced_step_hue(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::EnhancedStepHue::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_enhanced_step_hue);
+}
+
+command_t *create_enhanced_move_to_hue_and_saturation(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::EnhancedMoveToHueAndSaturation::Id,
+                                       COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_enhanced_move_to_hue_and_saturation);
+}
+
+command_t *create_color_loop_set(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, ColorControl::Commands::ColorLoopSet::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_color_loop_set);
 }
 
 } /* command */

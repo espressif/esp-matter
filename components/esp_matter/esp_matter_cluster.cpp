@@ -1010,6 +1010,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
+
+        /* Attributes managed internally */
+        attribute::create_remaining_time(cluster, 0);
     }
 
     /* Features */
@@ -1018,6 +1021,15 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
     }
     if (features & feature::color_temperature::get_id()) {
         feature::color_temperature::add(cluster, &(config->color_temperature));
+    }
+    if (features & feature::xy::get_id()) {
+        feature::xy::add(cluster, &(config->xy));
+    }
+    if (features & feature::enhanced_hue::get_id()) {
+        feature::enhanced_hue::add(cluster, &(config->enhanced_hue));
+    }
+    if (features & feature::color_loop::get_id()) {
+        feature::color_loop::add(cluster, &(config->color_loop));
     }
 
     return cluster;
