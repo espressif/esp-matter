@@ -61,7 +61,7 @@ void esp_matter_new_connection_failure_callback(void *context, PeerId peerId, CH
 esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoint_id)
 {
     /* Get info */
-    FabricInfo *fabric_info = chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
+    const FabricInfo *fabric_info = chip::Server::GetInstance().GetFabricTable().FindFabricWithIndex(fabric_index);
     if (!fabric_info) {
         ESP_LOGE(TAG, "Couldn't find fabric info");
         return ESP_FAIL;

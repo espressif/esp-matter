@@ -658,7 +658,7 @@ namespace attribute {
 
 attribute_t *create_on_off(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnOff::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnOff::Id, ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_bool(value));
 }
 
@@ -682,8 +682,8 @@ attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, OnOff::Attributes::StartUpOnOff::Id, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::StartUpOnOff::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
 }
 
 } /* attribute */
