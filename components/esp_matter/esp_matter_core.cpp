@@ -665,6 +665,8 @@ static void esp_matter_chip_init_task(intptr_t context)
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
+    // Add this function to record start up event in basic information cluster.
+    PlatformMgr().HandleServerStarted();
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
     {
         static chip::app::Clusters::NetworkCommissioning::Instance sWiFiNetworkCommissioningInstance(0,
