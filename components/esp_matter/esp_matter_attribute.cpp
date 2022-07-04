@@ -683,7 +683,8 @@ attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
 attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, OnOff::Attributes::StartUpOnOff::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_enum8(value));
 }
 
 } /* attribute */
@@ -732,6 +733,48 @@ attribute_t *create_max_level(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::MaxLevel::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
+}
+
+attribute_t *create_current_frequency(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::CurrentFrequency::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_min_frequency(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MinFrequency::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_max_frequency(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::MaxFrequency::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnOffTransitionTime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+}
+
+attribute_t *create_on_transition_time(cluster_t* cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnTransitionTime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+}
+
+attribute_t *create_off_transition_time(cluster_t* cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OffTransitionTime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+}
+
+attribute_t *create_default_move_rate(cluster_t* cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::DefaultMoveRate::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
 }
 
 attribute_t *create_start_up_current_level(cluster_t *cluster, uint8_t value)

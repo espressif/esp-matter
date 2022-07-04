@@ -730,6 +730,17 @@ static esp_err_t esp_matter_command_callback_stop_with_on_off(const ConcreteComm
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_move_to_closest_frequency(const ConcreteCommandPath &command_path,
+                                                                       TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::LevelControl::Commands::MoveToClosestFrequency::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfLevelControlClusterMoveToClosestFrequencyCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_move_to_hue(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                                          void *opaque_ptr)
 {
@@ -1579,6 +1590,12 @@ command_t *create_stop_with_on_off(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, LevelControl::Commands::StopWithOnOff::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_stop_with_on_off);
+}
+
+command_t *create_move_to_closest_frequency(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, LevelControl::Commands::MoveToClosestFrequency::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_move_to_closest_frequency);
 }
 
 } /* command */

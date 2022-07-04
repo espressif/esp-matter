@@ -136,6 +136,33 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 }
 
 } /* lighting */
+
+namespace frequency {
+
+uint32_t get_id()
+{
+    return (uint32_t)LevelControl::LevelControlFeature::kFrequency;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_current_frequency(cluster, config->current_frequency);
+    attribute::create_min_frequency(cluster, config->min_frequency);
+    attribute::create_max_frequency(cluster, config->max_frequency);
+
+    /* Commands */
+    command::create_move_to_closest_frequency(cluster);
+
+    return ESP_OK;
+}
+} /* frequency */
 } /* feature */
 } /* level_control */
 
