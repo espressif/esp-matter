@@ -216,6 +216,13 @@ attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_min_level(cluster_t *cluster, uint8_t value);
 attribute_t *create_max_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_current_frequency(cluster_t *cluster, uint16_t value);
+attribute_t *create_min_frequency(cluster_t *cluster, uint16_t value);
+attribute_t *create_max_frequency(cluster_t *cluster, uint16_t value);
+attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value);
+attribute_t *create_on_transition_time(cluster_t* cluster, uint16_t value);
+attribute_t *create_off_transition_time(cluster_t* cluster, uint16_t value);
+attribute_t *create_default_move_rate(cluster_t* cluster, uint8_t value);
 attribute_t *create_start_up_current_level(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* level_control */

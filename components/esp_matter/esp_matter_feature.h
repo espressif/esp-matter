@@ -73,6 +73,19 @@ uint32_t get_id();
 esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lighting */
+
+namespace frequency {
+
+typedef struct config {
+    uint16_t current_frequency;
+    uint16_t min_frequency;
+    uint16_t max_frequency;
+    config() : current_frequency(0), min_frequency(0), max_frequency(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* frequency */
 } /* feature */
 } /* level_control */
 

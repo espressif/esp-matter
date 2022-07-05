@@ -175,6 +175,7 @@ command_t *create_move_to_level_with_on_off(cluster_t *cluster);
 command_t *create_move_with_on_off(cluster_t *cluster);
 command_t *create_step_with_on_off(cluster_t *cluster);
 command_t *create_stop_with_on_off(cluster_t *cluster);
+command_t *create_move_to_closest_frequency(cluster_t *cluster);
 } /* command */
 } /* level_control */
 
