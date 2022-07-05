@@ -60,11 +60,9 @@ CHIP_KEY_MAP = {
             'type': 'file',
             'encoding': 'binary',
         },
-    },
-    'chip-config': {
         'unique-id': {
             'type': 'data',
-            'encoding': 'string',
+            'encoding': 'hex2bin',
         },
     },
 }

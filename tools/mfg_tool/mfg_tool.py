@@ -43,7 +43,7 @@ if not os.getenv('IDF_PATH'):
 TOOLS = {
     'spake2p'   : None,
     'chip-cert' : None,
-    'qrcodetool': None,
+    'chip-tool': None,
     'mfg_gen'   : None,
 }
 
@@ -74,6 +74,11 @@ INVALID_PASSCODES = [ 00000000, 11111111, 22222222, 33333333, 44444444, 55555555
 
 UUIDs = list()
 
+# Lengths for manual pairing codes and qrcode
+SHORT_MANUALCODE_LEN = 11
+LONG_MANUALCODE_LEN  = 21
+QRCODE_LEN           = 22
+
 def vid_pid_str(vid, pid):
     return '_'.join([hex(vid)[2:], hex(pid)[2:]])
 
@@ -91,9 +96,9 @@ def check_tools_exists():
         logging.error('chip-cert not found, please add chip-cert path to PATH environment variable')
         sys.exit(1)
 
-    TOOLS['qrcodetool'] = shutil.which('qrcodetool')
-    if TOOLS['qrcodetool'] is None:
-        logging.error('qrcodetool not found, please add qrcodetool path to PATH environment variable')
+    TOOLS['chip-tool'] = shutil.which('chip-tool')
+    if TOOLS['chip-tool'] is None:
+        logging.error('chip-tool not found, please add chip-tool path to PATH environment variable')
         sys.exit(1)
 
     TOOLS['mfg_gen'] = os.sep.join([os.getenv('IDF_PATH'), 'tools', 'mass_mfg', 'mfg_gen.py'])
@@ -104,7 +109,7 @@ def check_tools_exists():
     logging.debug('Using following tools:')
     logging.debug('spake2p:    {}'.format(TOOLS['spake2p']))
     logging.debug('chip-cert:  {}'.format(TOOLS['chip-cert']))
-    logging.debug('qrcodetool: {}'.format(TOOLS['qrcodetool']))
+    logging.debug('chip-tool:  {}'.format(TOOLS['chip-tool']))
     logging.debug('mfg_gen:    {}'.format(TOOLS['mfg_gen']))
 
 def execute_cmd(cmd):
@@ -457,46 +462,55 @@ def generate_partitions(suffix, size):
     ]
     execute_cmd(cmd)
 
-def get_setup_payload_data(args, discriminator, passcode):
-    data = 'version 0\n'
-    data += 'vendorID ' + str(args.vendor_id) + '\n'
-    data += 'productID ' + str(args.product_id) + '\n'
-    data += 'commissioningFlow ' + str(args.commissioning_flow) + '\n'
-    data += 'rendezVousInformation ' + str(1 << args.discovery_mode) + '\n'
-    data += 'discriminator ' + str(discriminator) + '\n'
-    data += 'setUpPINCode ' + str(passcode) + '\n'
-    return data
+def get_manualcode_args(args, discriminator, passcode):
+    payload_args = list()
+    payload_args.append('--discriminator')
+    payload_args.append(str(discriminator))
+    payload_args.append('--setup-pin-code')
+    payload_args.append(str(passcode))
+    payload_args.append('--version')
+    payload_args.append('0')
+    payload_args.append('--vendor-id')
+    payload_args.append(str(args.vendor_id))
+    payload_args.append('--product-id')
+    payload_args.append(str(args.product_id))
+    payload_args.append('--commissioning-mode')
+    payload_args.append(str(args.commissioning_flow))
+    return payload_args
 
-def get_chip_qrcode(file):
-    data = subprocess.check_output([TOOLS['qrcodetool'], 'generate-qr-code', '-f', file])
-    data = data.decode('utf-8').splitlines()
-    qrcodeline = data[-1].split(': ')
+def get_qrcode_args(args, discriminator, passcode):
+    payload_args = get_manualcode_args(args, discriminator, passcode)
+    payload_args.append('--rendezvous')
+    payload_args.append(str(1 << args.discovery_mode))
+    return payload_args
 
-    if qrcodeline[1] == 'QR Code':
-        return qrcodeline[-1]
-    else:
-        logging.error('Failed to generate QR code')
-        return None
+def get_chip_qrcode(payload_args):
+    cmd_args = [TOOLS['chip-tool'], 'payload', 'generate-qrcode']
+    cmd_args.extend(payload_args)
+    data = subprocess.check_output(cmd_args)
 
-def get_chip_manualcode(file):
-    data = subprocess.check_output([TOOLS['qrcodetool'], 'generate-manual-code', '-f', file])
-    data = data.decode('utf-8').splitlines()
-    manualcodeline = data[-1].split(': ')
+    # Command output is as below:
+    # \x1b[0;32m[1655386003372] [23483:7823617] CHIP: [TOO] QR Code: MT:Y.K90-WB010E7648G00\x1b[0m
+    return data.decode('utf-8').split('QR Code: ')[1][:QRCODE_LEN]
 
-    if manualcodeline[1] == 'Manual Code':
-        return manualcodeline[-1]
-    else:
-        logging.error('Failed to generate manual code')
-        return None
+def get_chip_manualcode(payload_args, commissioning_flow):
+    cmd_args = [TOOLS['chip-tool'], 'payload', 'generate-manualcode']
+    cmd_args.extend(payload_args)
+    data = subprocess.check_output(cmd_args)
+
+    # Command output is as below:
+    # \x1b[0;32m[1655386909774] [24424:7837894] CHIP: [TOO] Manual Code: 749721123365521327689\x1b[0m\n
+    # OR
+    # \x1b[0;32m[1655386926028] [24458:7838229] CHIP: [TOO] Manual Code: 34972112338\x1b[0m\n
+    # Length of manual code depends on the commissioning flow:
+    #   For standard commissioning flow it is 11 digits
+    #   For User-intent and custom commissioning flow it is 21 digits
+    manual_code_len = LONG_MANUALCODE_LEN if commissioning_flow else SHORT_MANUALCODE_LEN
+    return data.decode('utf-8').split('Manual Code: ')[1][:manual_code_len]
 
 def generate_onboarding_data(args, index, discriminator, passcode):
-    setup_payload_file = os.sep.join(['', 'tmp', 'setup_payload_{}.txt'.format(args.vendor_id, args.product_id)])
-
-    with open(setup_payload_file, 'w') as f:
-        f.write(get_setup_payload_data(args, discriminator, passcode))
-
-    chip_qrcode     = get_chip_qrcode(setup_payload_file)
-    chip_manualcode = get_chip_manualcode(setup_payload_file)
+    chip_manualcode = get_chip_manualcode(get_manualcode_args(args, discriminator, passcode), args.commissioning_flow)
+    chip_qrcode     = get_chip_qrcode(get_qrcode_args(args, discriminator, passcode))
 
     logging.info('Generated QR code: ' + chip_qrcode)
     logging.info('Generated manual code: ' + chip_manualcode)
@@ -514,7 +528,6 @@ def generate_onboarding_data(args, index, discriminator, passcode):
     chip_qr = pyqrcode.create(chip_qrcode, version=2, error='M')
     chip_qr.png(qrcode_file, scale=6)
 
-    os.remove(setup_payload_file)
     logging.info('Generated onboarding data and QR Code')
 
 def validate_args(args):

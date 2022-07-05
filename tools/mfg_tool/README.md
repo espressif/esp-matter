@@ -7,8 +7,8 @@ chip-cert provides command line interface (CLI) utility used for generating and 
 * [SPAKE2P Parameters Tool](https://github.com/project-chip/connectedhomeip/tree/master/src/tools/spake2p),
 spake2p tool provides command line interface (CLI) utility used for generating spake parameters (PIN code and verifier) for device manufacturing provisioning.
 
-* [QR Code Tool](https://github.com/project-chip/connectedhomeip/tree/master/src/qrcodetool),
-qrcodetool generates onboarding QR code payload and manual pairing code.
+* [chip-tool](https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool),
+chip-tool supports generating onboarding QR code payload and manual pairing code.
 
 * [Mass Manufacturing Utility](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/mass_mfg.html#manufacturing-utility),
 mfg_gen.py to create factory NVS partition images.
@@ -29,16 +29,6 @@ gn gen out/host
 ninja -C out/host
 ```
 Above commands will generate spake2p and chip-cert at `esp-matter/connectedhomeip/connectedhomeip/out/host`.
-
-#### Build qrcodetool
-```
-cd path/to/esp-matter/connectedhomeip/connectedhomeip
-ninja -C out/host src/qrcodetool
-
-# This builds the qrcodetool at path out/host/obj/src/qrcodetool/bin
-# Move this to out/host to keep all the tools at the same path
-cp out/host/obj/src/qrcodetool/bin/qrcodetool out/host
-```
 
 #### Add the tools path to $PATH
 ```
