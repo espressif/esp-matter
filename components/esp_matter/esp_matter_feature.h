@@ -166,5 +166,25 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* color_control */
 
+namespace diagnostics_network_wifi {
+namespace feature {
+
+namespace packets_counts {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* packets_counts */
+
+namespace error_counts {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* error_counts */
+
+} /* feature */
+} /* diagnostics_network_wifi */
+
 } /* cluster */
 } /* esp_matter */

@@ -992,13 +992,24 @@ static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const Concrete
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_command_callback_reset_counts(const ConcreteCommandPath &command_path,
-                                                                  TLVReader &tlv_data, void *opaque_ptr)
+static esp_err_t esp_matter_command_callback_thread_reset_counts(const ConcreteCommandPath &command_path,
+                                                                 TLVReader &tlv_data, void *opaque_ptr)
 {
     chip::app::Clusters::ThreadNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
         emberAfThreadNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_wifi_reset_counts(const ConcreteCommandPath &command_path,
+                                                               TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::WiFiNetworkDiagnostics::Commands::ResetCounts::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWiFiNetworkDiagnosticsClusterResetCountsCallback((CommandHandler *)opaque_ptr, command_path, command_data);
     }
     return ESP_OK;
 }
@@ -1023,11 +1034,24 @@ namespace command {
 command_t *create_reset_counts(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, ThreadNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
-                                       esp_matter_command_callback_reset_counts);
+                                       esp_matter_command_callback_thread_reset_counts);
 }
 
 } /* command */
 } /* diagnostics_network_thread */
+
+namespace diagnostics_network_wifi {
+namespace command {
+
+command_t *create_reset_counts(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WiFiNetworkDiagnostics::Commands::ResetCounts::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_wifi_reset_counts);
+}
+
+} /* command */
+} /* diagnostics_network_wifi */
+
 
 namespace general_diagnostics {
 namespace command {

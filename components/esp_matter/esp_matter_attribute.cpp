@@ -181,6 +181,54 @@ attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16
                                          esp_matter_array(value, length, count));
 }
 
+attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::ManufacturingDate::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::PartNumber::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::ProductURL::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::ProductLabel::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::SerialNumber::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_local_config_diabled(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::LocalConfigDisabled::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
+}
+
+attribute_t *create_reachable(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bool(value));
+}
+
+attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Basic::Attributes::UniqueID::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
 } /* attribute */
 } /* basic */
 
@@ -467,6 +515,54 @@ attribute_t *create_rssi(cluster_t *cluster, int8_t value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_int8(value));
+}
+
+attribute_t *create_beacon_lost_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconLostCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_beacon_rx_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconRxCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastRxCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastTxCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastRxCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, uint32_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastTxCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+}
+
+attribute_t *create_current_max_rate(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+}
+
+attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
+{
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::OverrunCount::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
 }
 
 } /* attribute */

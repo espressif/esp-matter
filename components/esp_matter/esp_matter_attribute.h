@@ -66,6 +66,14 @@ attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uin
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_product_label(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_serial_number(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_local_config_diabled(cluster_t *cluster, bool value);
+attribute_t *create_reachable(cluster_t *cluster, bool value);
+attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 } /* attribute */
 } /* basic */
 
@@ -150,6 +158,14 @@ attribute_t *create_security_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value);
 attribute_t *create_channel_number(cluster_t *cluster, uint16_t value);
 attribute_t *create_rssi(cluster_t *cluster, int8_t value);
+attribute_t *create_beacon_lost_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_beacon_rx_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, uint32_t value);
+attribute_t *create_current_max_rate(cluster_t *cluster, uint64_t value);
+attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
 } /* attribute */
 } /* diagnostics_network_wifi */
 

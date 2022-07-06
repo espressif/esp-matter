@@ -323,5 +323,69 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* color_control */
 
+namespace diagnostics_network_wifi {
+namespace feature {
+
+namespace packets_counts {
+
+uint32_t get_id()
+{
+    // The WiFiNetworkDiagnosticsFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x01;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_beacon_rx_count(cluster, 0);
+    attribute::create_packet_multicast_rx_count(cluster, 0);
+    attribute::create_packet_multicast_tx_count(cluster, 0);
+    attribute::create_packet_unicast_rx_count(cluster, 0);
+    attribute::create_packet_unicast_tx_count(cluster, 0);
+
+    return ESP_OK;
+}
+
+} /* packets_counts */
+
+namespace error_counts {
+
+uint32_t get_id()
+{
+    // The WiFiNetworkDiagnosticsFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x02;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes managed internally */
+    attribute::create_beacon_lost_count(cluster, 0);
+    attribute::create_overrun_count(cluster, 0);
+
+    /* Commands */
+    command::create_reset_counts(cluster);
+
+    return ESP_OK;
+}
+
+} /* error_counts */
+
+} /* feature */
+} /* diagnostics_network_wifi */
+
 } /* cluster */
 } /* esp_matter */
