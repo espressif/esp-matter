@@ -294,6 +294,9 @@ static esp_err_t console_handler(int argc, char **argv)
         } else if (type == ESP_MATTER_VAL_TYPE_BITMAP32) {
             uint32_t value = atoi(argv[4]);
             val = esp_matter_bitmap32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_ENUM8) {
+            uint8_t value = atoi(argv[4]);
+            val = esp_matter_enum8(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
@@ -365,6 +368,10 @@ static esp_err_t console_handler(int argc, char **argv)
             uint32_t value = 0;
             get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
             val = esp_matter_bitmap32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_ENUM8) {
+            uint8_t value = 0;
+            get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_enum8(value);
         } else {
             ESP_LOGE(TAG, "Type not handled: %d", type);
             return ESP_ERR_INVALID_ARG;
