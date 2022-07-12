@@ -24,6 +24,8 @@
 #define ESP_MATTER_RAINMAKER_COMMAND_LIMIT 5 /* This command can be called 5 times per reboot */
 #define ESP_MATTER_RAINMAKER_MAX_DATA_LEN 40
 
+using namespace chip::app::Clusters;
+
 static const char *TAG = "esp_matter_rainmaker";
 
 namespace esp_matter {
