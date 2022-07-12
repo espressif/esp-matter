@@ -265,6 +265,10 @@ attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value);
+attribute_t *create_number_of_primaries(cluster_t *cluster, uint8_t value);
+attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index);
+attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t index);
+attribute_t *create_primary_n_intensity(cluster_t * cluster, uint8_t value, uint8_t index);
 } /* attribute */
 } /* color_control */
 

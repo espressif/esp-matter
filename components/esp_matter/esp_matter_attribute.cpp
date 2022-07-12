@@ -1005,6 +1005,111 @@ attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t 
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
+attribute_t *create_number_of_primaries(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::NumberOfPrimaries::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index)
+{
+    switch (index) {
+    case 1:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary1X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 2:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary2X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 3:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary3X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 4:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary4X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 5:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary5X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 6:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary6X::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    default:
+        break;
+    }
+    return NULL;
+}
+
+attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t index)
+{
+    switch (index) {
+    case 1:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary1Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 2:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary2Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 3:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary3Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 4:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary4Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 5:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary5Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    case 6:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary6Y::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint16(value));
+        break;
+    default:
+        break;
+    }
+    return NULL;
+}
+
+attribute_t *create_primary_n_intensity(cluster_t * cluster, uint8_t value, uint8_t index)
+{
+    switch (index) {
+    case 1:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary1Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    case 2:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary2Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    case 3:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary3Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    case 4:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary4Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    case 5:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary5Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    case 6:
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary6Intensity::Id, ATTRIBUTE_FLAG_NONE,
+                                             esp_matter_uint8(value));
+        break;
+    default:
+        break;
+    }
+    return NULL;
+}
+
 } /* attribute */
 } /* color_control */
 

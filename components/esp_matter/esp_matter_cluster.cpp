@@ -1007,12 +1007,18 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
             attribute::create_color_control_options(cluster, config->color_control_options);
             attribute::create_enhanced_color_mode(cluster, config->enhanced_color_mode);
             attribute::create_color_capabilities(cluster, config->color_capabilities);
+            attribute::create_number_of_primaries(cluster, config->number_of_primaries);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
 
         /* Attributes managed internally */
         attribute::create_remaining_time(cluster, 0);
+        for (uint8_t idx = 1; idx <= config->number_of_primaries; ++idx) {
+            attribute::create_primary_n_x(cluster, 0, idx);
+            attribute::create_primary_n_y(cluster, 0, idx);
+            attribute::create_primary_n_intensity(cluster, 0, idx);
+        }
     }
 
     /* Features */

@@ -223,13 +223,14 @@ typedef struct config {
     uint8_t color_control_options;
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
+    uint8_t number_of_primaries;
     feature::hue_saturation::config_t hue_saturation;
     feature::color_temperature::config_t color_temperature;
     feature::xy::config_t xy;
     feature::enhanced_hue::config_t enhanced_hue;
     feature::color_loop::config_t color_loop;
     config() : cluster_revision(5), color_mode(1), color_control_options(0), enhanced_color_mode(1),
-               color_capabilities(0) {}
+               color_capabilities(0), number_of_primaries(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
