@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 basedir=$(dirname "$0")
 ESP_MATTER_PATH=$(cd "${basedir}"; pwd)
 export ESP_MATTER_PATH
