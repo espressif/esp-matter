@@ -31,6 +31,12 @@ command_t *create_reset_counts(cluster_t *cluster);
 } /* command */
 } /* diagnostics_network_thread */
 
+namespace diagnostics_network_wifi {
+namespace command {
+command_t *create_reset_counts(cluster_t *cluster);
+} /* command */
+} /* diagnostics_network_wifi */
+
 namespace general_diagnostics {
 namespace command {
 command_t *create_test_event_trigger(cluster_t *cluster);
