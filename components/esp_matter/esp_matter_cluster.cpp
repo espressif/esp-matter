@@ -294,7 +294,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        attribute::create_default_ota_providers(cluster, NULL, 0);
+        attribute::create_default_ota_providers(cluster, NULL, 0, 0);
 
         /* Attributes not managed internally */
         if (config) {

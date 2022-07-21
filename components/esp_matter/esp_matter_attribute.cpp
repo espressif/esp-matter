@@ -247,10 +247,10 @@ attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length,
 namespace ota_requestor {
 namespace attribute {
 
-attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length)
+attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOtaProviders::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_octet_str(value, length));
+                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_update_possible(cluster_t *cluster, bool value)

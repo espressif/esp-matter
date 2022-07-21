@@ -85,7 +85,7 @@ attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length,
 
 namespace ota_requestor {
 namespace attribute {
-attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_update_possible(cluster_t *cluster, bool value);
 attribute_t *create_update_state(cluster_t *cluster, uint8_t value);
 attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value);
