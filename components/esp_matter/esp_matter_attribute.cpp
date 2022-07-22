@@ -268,7 +268,7 @@ attribute_t *create_update_state(cluster_t *cluster, uint8_t value)
 attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::UpdateStateProgress::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint8(value));
 }
 
 } /* attribute */

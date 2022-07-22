@@ -82,7 +82,7 @@ typedef struct config {
     bool update_possible;
     uint8_t update_state;
     uint8_t update_state_progress;
-    config() : cluster_revision(1), update_possible(0), update_state(0), update_state_progress(0) {}
+    config() : cluster_revision(1), update_possible(1), update_state(0), update_state_progress(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
