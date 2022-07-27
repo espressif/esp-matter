@@ -85,7 +85,7 @@ attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length,
 
 namespace ota_requestor {
 namespace attribute {
-attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_update_possible(cluster_t *cluster, bool value);
 attribute_t *create_update_state(cluster_t *cluster, uint8_t value);
 attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value);
@@ -265,6 +265,10 @@ attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value);
+attribute_t *create_number_of_primaries(cluster_t *cluster, uint8_t value);
+attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index);
+attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t index);
+attribute_t *create_primary_n_intensity(cluster_t * cluster, uint8_t value, uint8_t index);
 } /* attribute */
 } /* color_control */
 

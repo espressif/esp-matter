@@ -18,12 +18,14 @@
 #include <nvs.h>
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
+#include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
+#include <platform/DiagnosticDataProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -43,6 +45,8 @@ using chip::DeviceLayer::ConfigurationMgr;
 using chip::DeviceLayer::ConnectivityManager;
 using chip::DeviceLayer::ConnectivityMgr;
 using chip::DeviceLayer::PlatformMgr;
+using chip::DeviceLayer::DiagnosticDataProvider;
+using chip::DeviceLayer::GetDiagnosticDataProvider;
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
@@ -665,8 +669,15 @@ static void esp_matter_chip_init_task(intptr_t context)
     if (endpoint::enable_all() != ESP_OK) {
         ESP_LOGE(TAG, "Enable all endpoints failure");
     }
-    // Add this function to record start up event in basic information cluster.
+    // The following two events can't be recorded when we start the server because the endpoints are not enabled.
+    // TODO: Find a better way to record the events which should be recorded in matter server init
+    // Record start up event in basic information cluster.
     PlatformMgr().HandleServerStarted();
+    // Record boot reason evnet in general diagnostics cluster.
+    chip::app::Clusters::GeneralDiagnostics::BootReasonType bootReason;
+    if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
+        chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
+    }
 #if CHIP_DEVICE_CONFIG_ENABLE_WIFI
     {
         static chip::app::Clusters::NetworkCommissioning::Instance sWiFiNetworkCommissioningInstance(0,
