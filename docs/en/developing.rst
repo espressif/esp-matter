@@ -45,6 +45,18 @@ The Prerequisites for ESP-IDF and Matter:
       ./install.sh
       cd ..
 
+Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
+so if you want to do a shallow clone use the following command:
+
+::
+
+   git clone --depth 1 --shallow-submodules --recursive https://github.com/espressif/esp-matter.git
+   cd esp-matter
+   ./install.sh
+   cd ..
+
+To clone the esp-matter repository with all the submodules, use the following command:
+
 ::
 
    git clone --recursive https://github.com/espressif/esp-matter.git
@@ -56,10 +68,24 @@ The Prerequisites for ESP-IDF and Matter:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This should be done each time a new terminal is opened
+
 ::
 
    cd esp-idf; . ./export.sh; cd ..
    cd esp-matter; . ./export.sh; cd ..
+
+Enable Ccache for faster IDF builds.
+
+Ccache is a compiler cache.
+Matter builds are very slow and takes a lot of time.
+Ccache caches the previous compilations and speeds up recompilation in subsequent builds.
+
+::
+
+   export IDF_CCACHE_ENABLE=1
+
+Above can also be added to your shell’s profile file (.profile, .bashrc, .zprofile, etc.)
+to enable ccache every time you open a new terminal.
 
 2.1.4 Building Applications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
