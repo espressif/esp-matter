@@ -74,12 +74,12 @@ extern "C" void app_main()
 
     /* Create a Matter node */
     node::config_t node_config;
-    node_t *node = node::create(&node_config, app_attribute_update_cb, NULL);
+    node_t *node = node::create(&node_config, app_attribute_update_cb, app_identify_cb);
 
     color_temperature_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE);
+    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
@@ -95,9 +95,6 @@ extern "C" void app_main()
     hue_saturation_config.current_hue = DEFAULT_HUE;
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
-
-    /* Initialize identify */
-    identify::set_callback(app_identify_cb, NULL);
 
     /* Initialize driver */
     app_driver_init();

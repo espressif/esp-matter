@@ -103,6 +103,7 @@ typedef struct _endpoint {
     EmberAfEndpointType *endpoint_type;
     DataVersion *data_versions_ptr;
     EmberAfDeviceType *device_types_ptr;
+    void *priv_data;
     struct _endpoint *next;
 } _endpoint_t;
 
@@ -1455,7 +1456,7 @@ esp_err_t add_function_list(cluster_t *cluster, const function_generic_t *functi
 
 namespace endpoint {
 
-endpoint_t *create(node_t *node, uint8_t flags)
+endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 {
     /* Find */
     if (!node) {
@@ -1475,6 +1476,7 @@ endpoint_t *create(node_t *node, uint8_t flags)
     endpoint->endpoint_id = current_node->current_endpoint_id++;
     endpoint->device_type_id = 0xFFFF'FFFF;
     endpoint->flags = flags;
+    endpoint->priv_data = priv_data;
 
     /* Add */
     _endpoint_t *previous_endpoint = NULL;
@@ -1608,6 +1610,22 @@ uint32_t get_device_type_id(endpoint_t *endpoint)
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     return current_endpoint->device_type_id;
+}
+
+void *get_priv_data(uint16_t endpoint_id)
+{
+    node_t *node = node::get();
+    if (!node) {
+        /* This is not an error, since the node will not be initialized for application using the data model from zap */
+        return NULL;
+    }
+    endpoint_t *endpoint = get(node, endpoint_id);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint not found");
+        return NULL;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    return current_endpoint->priv_data;
 }
 
 } /* endpoint */

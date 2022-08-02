@@ -63,7 +63,7 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Initialize matter callback */
-    attribute::set_callback(app_attribute_update_cb, NULL);
+    attribute::set_callback(app_attribute_update_cb);
     light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
 
     /* Initialize driver */

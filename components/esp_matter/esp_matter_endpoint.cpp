@@ -53,9 +53,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -91,9 +91,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -116,9 +116,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -143,9 +143,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -172,9 +172,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -201,9 +201,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -227,9 +227,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -254,9 +254,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -282,9 +282,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -309,9 +309,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -336,9 +336,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_FAN_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -360,9 +360,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -392,10 +392,10 @@ uint32_t get_device_type_id()
     return ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     // bridged node endpoints are always deletable
-    endpoint_t *endpoint = endpoint::create(node, flags | ENDPOINT_FLAG_DESTROYABLE);
+    endpoint_t *endpoint = endpoint::create(node, flags | ENDPOINT_FLAG_DESTROYABLE, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -417,9 +417,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -442,9 +442,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -465,9 +465,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -487,9 +487,9 @@ uint32_t get_device_type_id()
     return ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID;
 }
 
-endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
-    endpoint_t *endpoint = endpoint::create(node, flags);
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
     if (!endpoint) {
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
@@ -506,9 +506,11 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
 
 namespace node {
 
-node_t *create(config_t *config, attribute::callback_t callback, void *priv_data)
+node_t *create(config_t *config, attribute::callback_t attribute_callback,
+               esp_matter::identify::callback_t identify_callback)
 {
-    attribute::set_callback(callback, priv_data);
+    attribute::set_callback(attribute_callback);
+    esp_matter::identify::set_callback(identify_callback);
 
     node_t *node = create_raw();
     if (!node) {
@@ -516,7 +518,7 @@ node_t *create(config_t *config, attribute::callback_t callback, void *priv_data
         return NULL;
     }
 
-    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE);
+    endpoint::root_node::create(node, &(config->root_node), ENDPOINT_FLAG_NONE, NULL);
 
     return node;
 }

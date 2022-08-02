@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <esp_log.h>
+#include <esp_matter.h>
 #include <esp_matter_identify.h>
 
 #include <app/clusters/identify-server/identify-server.h>
@@ -23,19 +24,18 @@ namespace esp_matter {
 namespace identify {
 
 static callback_t identify_callback = NULL;
-static void *identify_callback_priv_data = NULL;
 
-esp_err_t set_callback(callback_t callback, void *priv_data)
+esp_err_t set_callback(callback_t callback)
 {
     identify_callback = callback;
-    identify_callback_priv_data = priv_data;
     return ESP_OK;
 }
 
 static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id)
 {
     if (identify_callback) {
-        return identify_callback(type, endpoint_id, effect_id, identify_callback_priv_data);
+        void *priv_data = endpoint::get_priv_data(endpoint_id);
+        return identify_callback(type, endpoint_id, effect_id, priv_data);
     }
     return ESP_OK;
 }

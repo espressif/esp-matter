@@ -241,7 +241,6 @@ namespace attribute {
 
 static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type);
 static callback_t attribute_callback = NULL;
-static void *attribute_callback_priv_data = NULL;
 
 static esp_err_t console_handler(int argc, char **argv)
 {
@@ -402,10 +401,9 @@ static void register_commands()
     init_done = true;
 }
 
-esp_err_t set_callback(callback_t callback, void *priv_data)
+esp_err_t set_callback(callback_t callback)
 {
     attribute_callback = callback;
-    attribute_callback_priv_data = priv_data;
 
     /* Other initialisations */
     register_commands();
@@ -416,7 +414,8 @@ static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, ui
                                   uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     if (attribute_callback) {
-        return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, attribute_callback_priv_data);
+        void *priv_data = endpoint::get_priv_data(endpoint_id);
+        return attribute_callback(type, endpoint_id, cluster_id, attribute_id, val, priv_data);
     }
     return ESP_OK;
 }
