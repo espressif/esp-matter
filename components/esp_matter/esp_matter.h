@@ -28,6 +28,7 @@ application.
 #include <esp_matter_endpoint.h>
 #include <esp_matter_event.h>
 #include <esp_matter_feature.h>
+#include <esp_matter_identify.h>
 
 #include <app-common/zap-generated/att-storage.h>
 #include <app/server/Dnssd.h>

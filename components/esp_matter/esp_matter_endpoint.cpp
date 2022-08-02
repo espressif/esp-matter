@@ -101,7 +101,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -126,7 +126,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -153,7 +153,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -182,7 +182,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -211,7 +211,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
@@ -237,7 +237,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
@@ -264,7 +264,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
@@ -292,7 +292,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -319,7 +319,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -346,7 +346,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     fan_control::create(endpoint, &(config->fan_control), CLUSTER_FLAG_SERVER);
 
@@ -370,7 +370,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
@@ -428,7 +428,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     set_device_type_id(endpoint, get_device_type_id());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster::door_lock::create(endpoint, &(config->door_lock), CLUSTER_FLAG_SERVER);
     time_synchronization::create(endpoint, &(config->time_synchronization), CLUSTER_FLAG_SERVER);
 
@@ -451,7 +451,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
@@ -474,7 +474,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
 
     return endpoint;
@@ -496,7 +496,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags)
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    cluster::identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
     return endpoint;

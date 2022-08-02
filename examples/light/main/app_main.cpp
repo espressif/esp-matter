@@ -12,7 +12,6 @@
 
 #include <esp_matter.h>
 #include <esp_matter_console.h>
-#include <esp_matter_identify.h>
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 
@@ -25,12 +24,6 @@ uint16_t light_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
-
-static void on_identify_trigger_effect(Identify *identify)
-{
-    ESP_LOGI(TAG, "currenr identify trigger effect id: %d", identify->mCurrentEffectIdentifier);
-}
-
 using namespace chip::app::Clusters;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
@@ -52,7 +45,14 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
     }
 }
 
-static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
+static esp_err_t app_identify_cb(identify::callback_type_t type, uint16_t endpoint_id, uint8_t effect_id,
+                                 void *priv_data)
+{
+    ESP_LOGI(TAG, "Identify callback: type: %d, effect: %d", type, effect_id);
+    return ESP_OK;
+}
+
+static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16_t endpoint_id, uint32_t cluster_id,
                                          uint32_t attribute_id, esp_matter_attr_val_t *val, void *priv_data)
 {
     esp_err_t err = ESP_OK;
@@ -97,8 +97,7 @@ extern "C" void app_main()
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
     /* Initialize identify */
-    esp_matter_init_identify(light_endpoint_id, NULL, NULL, EMBER_ZCL_IDENTIFY_IDENTIFY_TYPE_VISIBLE_LED,
-                             on_identify_trigger_effect);
+    identify::set_callback(app_identify_cb, NULL);
 
     /* Initialize driver */
     app_driver_init();
