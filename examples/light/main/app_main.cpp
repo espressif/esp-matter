@@ -17,6 +17,7 @@
 
 #include <app_priv.h>
 #include <app_qrcode.h>
+#include <app_reset.h>
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
@@ -59,7 +60,7 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
 
     if (type == PRE_UPDATE) {
         /* Driver update */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val, priv_data);
     }
 
     return err;
@@ -72,6 +73,11 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
+    /* Initialize driver */
+    void *light_handle = app_driver_light_init();
+    void *switch_handle = app_driver_switch_init();
+    app_reset_button_register(switch_handle);
+
     /* Create a Matter node */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identify_cb);
@@ -79,7 +85,7 @@ extern "C" void app_main()
     color_temperature_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, NULL);
+    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
@@ -96,8 +102,8 @@ extern "C" void app_main()
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
-    /* Initialize driver */
-    app_driver_init();
+    /* Initialize driver defaults */
+    app_driver_attribute_set_defaults();
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);

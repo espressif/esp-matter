@@ -17,6 +17,7 @@
 
 #include <app_priv.h>
 #include <app_qrcode.h>
+#include <app_reset.h>
 
 static const char *TAG = "app_main";
 uint16_t switch_endpoint_id = 0;
@@ -58,7 +59,7 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
 
     if (type == PRE_UPDATE) {
         /* Driver update */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val, priv_data);
     }
 
     return err;
@@ -71,12 +72,16 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
+    /* Initialize driver */
+    void *switch_handle = app_driver_switch_init();
+    app_reset_button_register(switch_handle);
+
     /* Create a Matter node */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identify_cb);
 
     on_off_switch::config_t switch_config;
-    endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, NULL);
+    endpoint_t *endpoint = on_off_switch::create(node, &switch_config, ENDPOINT_FLAG_NONE, switch_handle);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
@@ -85,9 +90,6 @@ extern "C" void app_main()
 
     switch_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Switch created with endpoint_id %d", switch_endpoint_id);
-
-    /* Initialize driver */
-    app_driver_init();
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);

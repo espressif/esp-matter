@@ -16,12 +16,14 @@
 
 #include <app_priv.h>
 #include <app_qrcode.h>
+#include <app_reset.h>
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
+void *light_handle = NULL;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -49,7 +51,7 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
 
     if (type == PRE_UPDATE) {
         /* Driver update */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val, light_handle);
     }
 
     return err;
@@ -62,12 +64,14 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
+    /* Initialize driver */
+    light_handle = app_driver_light_init();
+    void *switch_handle = app_driver_switch_init();
+    app_reset_button_register(switch_handle);
+
     /* Initialize matter callback */
     attribute::set_callback(app_attribute_update_cb);
     light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
-
-    /* Initialize driver */
-    app_driver_init();
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
