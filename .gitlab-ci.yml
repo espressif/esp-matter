@@ -9,12 +9,12 @@ variables:
 
 .chip_submodule_update: &chip_submodule_update
     - git submodule sync --recursive
-    - git submodule update --recursive --init --reference /local_references/github/
+    - git submodule update --init --recursive --depth 1
 
 .setup_idf: &setup_idf
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using release/v4.4 branch of espressif/esp-idf github repo
-    - git clone --recursive --single-branch -b v4.4.1 --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
+    - git clone --recursive --single-branch -b v4.4.1 --shallow-submodules --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
@@ -24,10 +24,10 @@ variables:
     # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
     # using commit 047903c612 of espressif/esp-idf github repo
     # idf_v5_0 is used for zigbee_bridge example and examples of ESP32-H2
-    - git clone --recursive --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
+    - git clone --recursive --shallow-submodules --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
     - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
-    - git submodule update --init --recursive
+    - git submodule update --init --recursive --depth 1
     - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
     - . ./export.sh
@@ -106,6 +106,7 @@ build_esp_matter_examples:
         - export ESP_MATTER_PATH=$PWD
         - mkdir repos
         - export REPOS_PATH=$PWD/repos
+        - export IDF_CCACHE_ENABLE=1
         - *chip_submodule_update
         - *setup_idf
         - *setup_matter
@@ -122,6 +123,7 @@ build_esp_matter_examples_idf_v5_0:
         - export ESP_MATTER_PATH=$PWD
         - mkdir repos
         - export REPOS_PATH=$PWD/repos
+        - export IDF_CCACHE_ENABLE=1
         - *chip_submodule_update
         - *setup_idf_v5_0
         - *setup_matter
@@ -137,6 +139,7 @@ build_upstream_examples:
         - export ESP_MATTER_PATH=$PWD
         - mkdir repos
         - export REPOS_PATH=$PWD/repos
+        - export IDF_CCACHE_ENABLE=1
         - *chip_submodule_update
         - *setup_idf
         - *setup_matter
