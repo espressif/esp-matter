@@ -38,14 +38,14 @@
  */
 void *app_driver_light_init();
 
-/** Initialize the switch driver
+/** Initialize the button driver
  *
- * This initializes the switch driver associated with the selected board.
+ * This initializes the button driver associated with the selected board.
  *
  * @return Handle on success.
  * @return NULL in case of failure.
  */
-void *app_driver_switch_init();
+void *app_driver_button_init();
 
 /** Driver Update
  *
@@ -63,11 +63,13 @@ void *app_driver_switch_init();
 esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                       esp_matter_attr_val_t *val, void *priv_data);
 
-/** Set driver defaults
+/** Set defaults for light driver
  *
  * Set the attribute drivers to their default values from the created data model.
+ *
+ * @param[in] endpoint_id Endpoint ID of the driver.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_driver_attribute_set_defaults();
+esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id);

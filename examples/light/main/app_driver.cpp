@@ -97,30 +97,51 @@ esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
     return err;
 }
 
-esp_err_t app_driver_attribute_set_defaults()
+esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
 {
-    /* Get the default value (current value) from esp_matter and update the app_driver */
     esp_err_t err = ESP_OK;
+    void *priv_data = endpoint::get_priv_data(endpoint_id);
+    led_driver_handle_t handle = (led_driver_handle_t)priv_data;
     node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        uint16_t endpoint_id = endpoint::get_id(endpoint);
-        cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
-            uint32_t cluster_id = cluster::get_id(cluster);
-            attribute_t *attribute = attribute::get_first(cluster);
-            while (attribute) {
-                uint32_t attribute_id = attribute::get_id(attribute);
-                esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-                err |= attribute::get_val(attribute, &val);
-                void *priv_data = endpoint::get_priv_data(endpoint_id);
-                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val, priv_data);
-                attribute = attribute::get_next(attribute);
-            }
-            cluster = cluster::get_next(cluster);
-        }
-        endpoint = endpoint::get_next(endpoint);
+    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
+    cluster_t *cluster = NULL;
+    attribute_t *attribute = NULL;
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+
+    /* Setting brightness */
+    cluster = cluster::get(endpoint, LevelControl::Id);
+    attribute = attribute::get(cluster, LevelControl::Attributes::CurrentLevel::Id);
+    attribute::get_val(attribute, &val);
+    err |= app_driver_light_set_brightness(handle, &val);
+
+    /* Setting color */
+    cluster = cluster::get(endpoint, ColorControl::Id);
+    attribute = attribute::get(cluster, ColorControl::Attributes::ColorMode::Id);
+    attribute::get_val(attribute, &val);
+    if (val.val.u8 == EMBER_ZCL_COLOR_MODE_CURRENT_HUE_AND_CURRENT_SATURATION) {
+        /* Setting hue */
+        attribute = attribute::get(cluster, ColorControl::Attributes::CurrentHue::Id);
+        attribute::get_val(attribute, &val);
+        err |= app_driver_light_set_hue(handle, &val);
+        /* Setting saturation */
+        attribute = attribute::get(cluster, ColorControl::Attributes::CurrentSaturation::Id);
+        attribute::get_val(attribute, &val);
+        err |= app_driver_light_set_saturation(handle, &val);
+    } else if (val.val.u8 == EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE) {
+        /* Setting temperature */
+        attribute = attribute::get(cluster, ColorControl::Attributes::ColorTemperature::Id);
+        attribute::get_val(attribute, &val);
+        err |= app_driver_light_set_temperature(handle, &val);
+    } else {
+        ESP_LOGE(TAG, "Color mode not supported");
     }
+
+    /* Setting power */
+    cluster = cluster::get(endpoint, OnOff::Id);
+    attribute = attribute::get(cluster, OnOff::Attributes::OnOff::Id);
+    attribute::get_val(attribute, &val);
+    err |= app_driver_light_set_power(handle, &val);
+
     return err;
 }
 
@@ -132,7 +153,7 @@ void *app_driver_light_init()
     return (void *)handle;
 }
 
-void *app_driver_switch_init()
+void *app_driver_button_init()
 {
     /* Initialize button */
     button_config_t config = button_driver_get_config();

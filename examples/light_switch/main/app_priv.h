@@ -35,12 +35,3 @@ void *app_driver_switch_init();
  */
 esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
                                       esp_matter_attr_val_t *val, void *priv_data);
-
-/** Set driver defaults
- *
- * Set the attribute drivers to their default values from the created data model.
- *
- * @return ESP_OK on success.
- * @return error in case of failure.
- */
-esp_err_t app_driver_attribute_set_defaults();

@@ -66,8 +66,8 @@ extern "C" void app_main()
 
     /* Initialize driver */
     light_handle = app_driver_light_init();
-    void *switch_handle = app_driver_switch_init();
-    app_reset_button_register(switch_handle);
+    void *button_handle = app_driver_button_init();
+    app_reset_button_register(button_handle);
 
     /* Initialize matter callback */
     attribute::set_callback(app_attribute_update_cb);
@@ -80,7 +80,8 @@ extern "C" void app_main()
     }
     app_qrcode_print();
 
-    app_driver_attribute_set_defaults();
+    /* Starting driver with default values */
+    app_driver_light_set_defaults(light_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();

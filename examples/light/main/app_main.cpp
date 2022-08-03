@@ -75,8 +75,8 @@ extern "C" void app_main()
 
     /* Initialize driver */
     void *light_handle = app_driver_light_init();
-    void *switch_handle = app_driver_switch_init();
-    app_reset_button_register(switch_handle);
+    void *button_handle = app_driver_button_init();
+    app_reset_button_register(button_handle);
 
     /* Create a Matter node */
     node::config_t node_config;
@@ -84,7 +84,10 @@ extern "C" void app_main()
 
     color_temperature_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
+    light_config.on_off.lighting.start_up_on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
+    light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
+    light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
     endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
@@ -102,15 +105,15 @@ extern "C" void app_main()
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
-    /* Initialize driver defaults */
-    app_driver_attribute_set_defaults();
-
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
     app_qrcode_print();
+
+    /* Starting driver with default values */
+    app_driver_light_set_defaults(light_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();

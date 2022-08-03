@@ -20,7 +20,7 @@
 static const char *TAG = "led_driver_ws2812";
 static bool current_power = false;
 static uint8_t current_brightness = 0;
-static uint32_t current_temp = 6600;
+static uint32_t current_temp = 0;
 static HS_color_t current_HS = {0, 0};
 static RGB_color_t mRGB;
 
@@ -112,29 +112,4 @@ esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temper
     temp_to_hs(current_temp, &current_HS);
     hsv_to_rgb(current_HS, brightness, &mRGB);
     return led_driver_set_RGB(handle);
-}
-
-bool led_driver_get_power(led_driver_handle_t handle)
-{
-    return current_power;
-}
-
-uint8_t led_driver_get_brightness(led_driver_handle_t handle)
-{
-    return current_brightness;
-}
-
-uint16_t led_driver_get_hue(led_driver_handle_t handle)
-{
-    return current_HS.hue;
-}
-
-uint8_t led_driver_get_saturation(led_driver_handle_t handle)
-{
-    return current_HS.saturation;
-}
-
-uint32_t led_driver_get_temperature(led_driver_handle_t handle)
-{
-    return current_temp;
 }

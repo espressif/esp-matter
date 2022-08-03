@@ -136,33 +136,6 @@ esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id,
     return ESP_OK;
 }
 
-esp_err_t app_driver_attribute_set_defaults()
-{
-    /* Get the default value (current value) from esp_matter and update the app_driver */
-    esp_err_t err = ESP_OK;
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        uint16_t endpoint_id = endpoint::get_id(endpoint);
-        cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
-            uint32_t cluster_id = cluster::get_id(cluster);
-            attribute_t *attribute = attribute::get_first(cluster);
-            while (attribute) {
-                uint32_t attribute_id = attribute::get_id(attribute);
-                esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-                err |= attribute::get_val(attribute, &val);
-                void *priv_data = endpoint::get_priv_data(endpoint_id);
-                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val, priv_data);
-                attribute = attribute::get_next(attribute);
-            }
-            cluster = cluster::get_next(cluster);
-        }
-        endpoint = endpoint::get_next(endpoint);
-    }
-    return err;
-}
-
 void *app_driver_switch_init()
 {
     /* Initialize button */

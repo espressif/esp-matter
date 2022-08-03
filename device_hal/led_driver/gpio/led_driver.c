@@ -105,28 +105,3 @@ esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temper
 {
     return ESP_ERR_NOT_SUPPORTED;
 }
-
-bool led_driver_get_power(led_driver_handle_t handle)
-{
-    return current_power;
-}
-
-uint8_t led_driver_get_brightness(led_driver_handle_t handle)
-{
-    return current_brightness;
-}
-
-uint16_t led_driver_get_hue(led_driver_handle_t handle)
-{
-    return 0;
-}
-
-uint8_t led_driver_get_saturation(led_driver_handle_t handle)
-{
-    return 0;
-}
-
-uint32_t led_driver_get_temperature(led_driver_handle_t handle)
-{
-    return 0;
-}
