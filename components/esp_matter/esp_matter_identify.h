@@ -17,19 +17,19 @@
 #include <esp_err.h>
 
 namespace esp_matter {
-namespace identify {
+namespace identification {
 
-/** Identify callback type */
+/** identification callback type */
 typedef enum callback_type {
-    /** Callback to start identify */
+    /** Callback to start identification */
     START,
-    /** Callback to stop identify */
+    /** Callback to stop identification */
     STOP,
-    /** Callback to run a specific identify effect */
+    /** Callback to run a specific identification effect */
     EFFECT,
 } callback_type_t;
 
-/** Callback for identify
+/** Callback for identification
  *
  * @param[in] type callback type.
  * @param[in] endpoint_id Endpoint ID to identify.
@@ -41,19 +41,19 @@ typedef enum callback_type {
  */
 typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id, void *priv_data);
 
-/** Set identify callback
+/** Set identification callback
  *
- * Set the common identify callback. Whenever an identify request is received by the device, the callback
+ * Set the common identification callback. Whenever an identify request is received by the device, the callback
  * will be called with the appropriate `callback_type_t`.
  *
- * @param[in] callback identify update callback.
+ * @param[in] callback identification update callback.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t set_callback(callback_t callback);
 
-/** Initialise identify
+/** Initialise identification
  *
  * This initialises the identify object on the given endpoint. This happen internally whenever the identify cluster is
  * created on an endpoint. The type in this case is taken from the identify_type attribute.
@@ -66,5 +66,5 @@ esp_err_t set_callback(callback_t callback);
  */
 esp_err_t init(uint16_t endpoint_id, uint8_t identify_type);
 
-} /* identify */
+} /* identification */
 } /* esp_matter */

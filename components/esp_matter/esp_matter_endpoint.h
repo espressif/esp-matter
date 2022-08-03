@@ -239,7 +239,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 namespace node {
 /** Standard node create
  *
- * This creates the node, sets the attribute and the identify callbacks and also adds the root node device type, which
+ * This creates the node, sets the attribute and the identification callbacks and also adds the root node device type, which
  * is by default added to endpoint 0 (since this is the first endpoint which is created).
  */
 
@@ -247,7 +247,8 @@ typedef struct config {
     endpoint::root_node::config_t root_node;
 } config_t;
 
-node_t *create(config_t *config, attribute::callback_t attribute_callback, identify::callback_t identify_callback);
+node_t *create(config_t *config, attribute::callback_t attribute_callback,
+               identification::callback_t identify_callback);
 
 } /* node */
 } /* esp_matter */

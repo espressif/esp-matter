@@ -21,21 +21,21 @@
 static const char *TAG = "esp_matter_identify";
 
 namespace esp_matter {
-namespace identify {
+namespace identification {
 
-static callback_t identify_callback = NULL;
+static callback_t identification_callback = NULL;
 
 esp_err_t set_callback(callback_t callback)
 {
-    identify_callback = callback;
+    identification_callback = callback;
     return ESP_OK;
 }
 
 static esp_err_t execute_callback(callback_type_t type, uint16_t endpoint_id, uint8_t effect_id)
 {
-    if (identify_callback) {
+    if (identification_callback) {
         void *priv_data = endpoint::get_priv_data(endpoint_id);
-        return identify_callback(type, endpoint_id, effect_id, priv_data);
+        return identification_callback(type, endpoint_id, effect_id, priv_data);
     }
     return ESP_OK;
 }
@@ -68,5 +68,5 @@ esp_err_t init(uint16_t endpoint_id, uint8_t identify_type)
     return ESP_OK;
 }
 
-} /* identify */
+} /* identification */
 } /* esp_matter */

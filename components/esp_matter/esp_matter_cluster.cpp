@@ -732,7 +732,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Extra initialization */
     uint16_t endpoint_id = endpoint::get_id(endpoint);
-    esp_matter::identify::init(endpoint_id, config->identify_type);
+    identification::init(endpoint_id, config->identify_type);
 
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
