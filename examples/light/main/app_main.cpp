@@ -25,13 +25,12 @@ uint16_t light_endpoint_id = 0;
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
+using namespace chip::app::Clusters;
 
-static void on_identify_trigger_effect(Identify *identify)
+static void on_identify_trigger_effect(::Identify *identify)
 {
     ESP_LOGI(TAG, "currenr identify trigger effect id: %d", identify->mCurrentEffectIdentifier);
 }
-
-using namespace chip::app::Clusters;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
