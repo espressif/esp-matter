@@ -22,7 +22,7 @@ using namespace esp_matter;
 
 static const char *TAG = "app_driver";
 extern uint16_t light_endpoint_id;
-extern void *light_handle;
+extern app_driver_handle_t light_handle;
 
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
@@ -68,12 +68,12 @@ static void app_driver_button_toggle_cb(void *arg)
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
-esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                      esp_matter_attr_val_t *val, void *priv_data)
+esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     esp_err_t err = ESP_OK;
     if (endpoint_id == light_endpoint_id) {
-        led_driver_handle_t handle = (led_driver_handle_t)priv_data;
+        led_driver_handle_t handle = (led_driver_handle_t)driver_handle;
         if (cluster_id == OnOff::Id) {
             if (attribute_id == OnOff::Attributes::OnOff::Id) {
                 err = app_driver_light_set_power(handle, val);
@@ -150,19 +150,19 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     return err;
 }
 
-void *app_driver_light_init()
+app_driver_handle_t app_driver_light_init()
 {
     /* Initialize led */
     led_driver_config_t config = led_driver_get_config();
     led_driver_handle_t handle = led_driver_init(&config);
-    return (void *)handle;
+    return (app_driver_handle_t)handle;
 }
 
-void *app_driver_button_init()
+app_driver_handle_t app_driver_button_init()
 {
     /* Initialize button */
     button_config_t config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
-    return (void *)handle;
+    return (app_driver_handle_t)handle;
 }

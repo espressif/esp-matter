@@ -60,7 +60,8 @@ static esp_err_t app_attribute_update_cb(attribute::callback_type_t type, uint16
 
     if (type == PRE_UPDATE) {
         /* Driver update */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val, priv_data);
+        app_driver_handle_t driver_handle = (app_driver_handle_t)priv_data;
+        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
     }
 
     return err;
@@ -74,8 +75,8 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Initialize driver */
-    void *light_handle = app_driver_light_init();
-    void *button_handle = app_driver_button_init();
+    app_driver_handle_t light_handle = app_driver_light_init();
+    app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
     /* Create a Matter node */

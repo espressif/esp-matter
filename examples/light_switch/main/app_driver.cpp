@@ -129,14 +129,14 @@ static void app_driver_button_toggle_cb(void *arg)
     lock::chip_stack_unlock();
 }
 
-esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                      esp_matter_attr_val_t *val, void *priv_data)
+esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     /* Nothing to do here */
     return ESP_OK;
 }
 
-void *app_driver_switch_init()
+app_driver_handle_t app_driver_switch_init()
 {
     /* Initialize button */
     button_config_t config = button_driver_get_config();
@@ -147,5 +147,5 @@ void *app_driver_switch_init()
     app_driver_register_commands();
     client::set_command_callback(app_driver_client_command_callback, NULL);
 
-    return (void *)handle;
+    return (app_driver_handle_t)handle;
 }
