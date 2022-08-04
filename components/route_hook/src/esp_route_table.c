@@ -77,7 +77,9 @@ esp_route_entry_t *esp_route_table_add_route_entry(const esp_route_entry_t *rout
     }
     entry->preference = route_entry->preference;
     entry->lifetime_seconds = route_entry->lifetime_seconds;
-    sys_timeout(entry->lifetime_seconds * 1000, route_timeout_handler, entry);
+    if (entry->lifetime_seconds != UINT32_MAX) {
+        sys_timeout(entry->lifetime_seconds * 1000, route_timeout_handler, entry);
+    }
     return entry;
 }
 
