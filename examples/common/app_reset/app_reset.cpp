@@ -34,10 +34,15 @@ static void button_factory_reset_released_cb(void *arg)
     }
 }
 
-esp_err_t app_reset_button_register(button_handle_t handle)
+esp_err_t app_reset_button_register(void *handle)
 {
+    if (!handle) {
+        ESP_LOGE(TAG, "Handle cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    button_handle_t button_handle = (button_handle_t)handle;
     esp_err_t err = ESP_OK;
-    err |= iot_button_register_cb(handle, BUTTON_LONG_PRESS_HOLD, button_factory_reset_pressed_cb);
-    err |= iot_button_register_cb(handle, BUTTON_PRESS_UP, button_factory_reset_released_cb);
+    err |= iot_button_register_cb(button_handle, BUTTON_LONG_PRESS_HOLD, button_factory_reset_pressed_cb);
+    err |= iot_button_register_cb(button_handle, BUTTON_PRESS_UP, button_factory_reset_released_cb);
     return err;
 }

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <device.h>
+#include <esp_err.h>
 
 /** Register callbacks for Factory reset
  *
@@ -19,4 +19,4 @@
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_reset_button_register(button_handle_t handle);
+esp_err_t app_reset_button_register(void *handle);

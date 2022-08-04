@@ -730,6 +730,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         create_default_binding_cluster(endpoint);
     }
 
+    /* Extra initialization */
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
+    identification::init(endpoint_id, config->identify_type);
+
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);

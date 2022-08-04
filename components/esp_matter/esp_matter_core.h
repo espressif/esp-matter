@@ -130,11 +130,13 @@ namespace endpoint {
  *
  * @param[in] node Node handle.
  * @param[in] flags Bitmap of `endpoint_flags_t`.
+ * @param[in] priv_data (Optional) Private data associated with the endpoint. This will be passed to the
+ * attribute_update and identify callbacks. It should stay allocated throughout the lifetime of the device.
  *
  * @return Endpoint handle on success.
  * @return NULL in case of failure.
  */
-endpoint_t *create(node_t *node, uint8_t flags);
+endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
 
 /** Destroy endpoint
  *
@@ -216,6 +218,17 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
  * @return 0xFFFF'FFFF in case of failure or if the device type ID was not set.
  */
 uint32_t get_device_type_id(endpoint_t *endpoint);
+
+/** Get private data
+ *
+ * Get the private data passed while creating the endpoint.
+ *
+ * @param[in] endpoint_id Endpoint ID of the endpoint.
+ *
+ * @return Private data on success.
+ * @return NULL in case of failure.
+ */
+void *get_priv_data(uint16_t endpoint_id);
 
 /** Enable endpoint
  *

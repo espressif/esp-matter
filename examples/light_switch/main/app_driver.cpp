@@ -129,51 +129,23 @@ static void app_driver_button_toggle_cb(void *arg)
     lock::chip_stack_unlock();
 }
 
-esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                      esp_matter_attr_val_t *val)
+esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
     /* Nothing to do here */
     return ESP_OK;
 }
 
-static esp_err_t app_driver_attribute_set_defaults()
+app_driver_handle_t app_driver_switch_init()
 {
-    /* Get the default value (current value) from esp_matter and update the app_driver */
-    esp_err_t err = ESP_OK;
-    node_t *node = node::get();
-    endpoint_t *endpoint = endpoint::get_first(node);
-    while (endpoint) {
-        uint16_t endpoint_id = endpoint::get_id(endpoint);
-        cluster_t *cluster = cluster::get_first(endpoint);
-        while (cluster) {
-            uint32_t cluster_id = cluster::get_id(cluster);
-            attribute_t *attribute = attribute::get_first(cluster);
-            while (attribute) {
-                uint32_t attribute_id = attribute::get_id(attribute);
-                esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-                err |= attribute::get_val(attribute, &val);
-                err |= app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, &val);
-                attribute = attribute::get_next(attribute);
-            }
-            cluster = cluster::get_next(cluster);
-        }
-        endpoint = endpoint::get_next(endpoint);
-    }
-    return err;
-}
-
-esp_err_t app_driver_init()
-{
-    ESP_LOGI(TAG, "Initialising driver");
-
     /* Initialize button */
-    button_config_t button_config = button_driver_get_config();
-    button_handle_t handle = iot_button_create(&button_config);
+    button_config_t config = button_driver_get_config();
+    button_handle_t handle = iot_button_create(&config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
-    app_reset_button_register(handle);
 
-    app_driver_attribute_set_defaults();
+    /* Other initializations */
     app_driver_register_commands();
     client::set_command_callback(app_driver_client_command_callback, NULL);
-    return ESP_OK;
+
+    return (app_driver_handle_t)handle;
 }

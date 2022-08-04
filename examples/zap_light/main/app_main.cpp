@@ -16,12 +16,14 @@
 
 #include <app_priv.h>
 #include <app_qrcode.h>
+#include <app_reset.h>
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
+app_driver_handle_t light_handle = NULL;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -49,7 +51,8 @@ static esp_err_t app_attribute_update_cb(callback_type_t type, uint16_t endpoint
 
     if (type == PRE_UPDATE) {
         /* Driver update */
-        err = app_driver_attribute_update(endpoint_id, cluster_id, attribute_id, val);
+        app_driver_handle_t driver_handle = light_handle;
+        err = app_driver_attribute_update(driver_handle, endpoint_id, cluster_id, attribute_id, val);
     }
 
     return err;
@@ -62,12 +65,14 @@ extern "C" void app_main()
     /* Initialize the ESP NVS layer */
     nvs_flash_init();
 
-    /* Initialize matter callback */
-    attribute::set_callback(app_attribute_update_cb, NULL);
-    light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
-
     /* Initialize driver */
-    app_driver_init();
+    light_handle = app_driver_light_init();
+    app_driver_handle_t button_handle = app_driver_button_init();
+    app_reset_button_register(button_handle);
+
+    /* Initialize matter callback */
+    attribute::set_callback(app_attribute_update_cb);
+    light_endpoint_id = 1; /* This is from zap-generated/endpoint_config.h */
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
@@ -76,7 +81,8 @@ extern "C" void app_main()
     }
     app_qrcode_print();
 
-    app_driver_attribute_set_defaults();
+    /* Starting driver with default values */
+    app_driver_light_set_defaults(light_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();

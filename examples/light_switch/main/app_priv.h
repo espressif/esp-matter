@@ -11,14 +11,16 @@
 #include <esp_err.h>
 #include <esp_matter.h>
 
-/** Initialize the board and the drivers
+typedef void *app_driver_handle_t;
+
+/** Initialize the switch driver
  *
- * This initializes the selected board, which then initializes the respective drivers associated with it.
+ * This initializes the switch driver associated with the selected board.
  *
- * @return ESP_OK on success.
- * @return error in case of failure.
+ * @return Handle on success.
+ * @return NULL in case of failure.
  */
-esp_err_t app_driver_init(void);
+app_driver_handle_t app_driver_switch_init();
 
 /** Driver Update
  *
@@ -33,5 +35,5 @@ esp_err_t app_driver_init(void);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t app_driver_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                      esp_matter_attr_val_t *val);
+esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
+                                      uint32_t attribute_id, esp_matter_attr_val_t *val);

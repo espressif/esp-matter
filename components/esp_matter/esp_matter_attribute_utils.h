@@ -200,7 +200,7 @@ typedef enum callback_type {
  * @param[in] cluster_id Cluster ID of the attribute.
  * @param[in] attribute_id Attribute ID of the attribute.
  * @param[in] val Pointer to `esp_matter_attr_val_t`. Use appropriate elements as per the value type.
- * @param[in] priv_data Pointer to the private data passed while setting the callback.
+ * @param[in] priv_data Pointer to the private data passed while creating the endpoint.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
@@ -214,13 +214,11 @@ typedef esp_err_t (*callback_t)(callback_type_t type, uint16_t endpoint_id, uint
  * will be called with the appropriate `callback_type_t`.
  *
  * @param[in] callback attribute update callback.
- * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
- * should stay allocated throughout the lifetime of the device.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_callback(callback_t callback, void *priv_data);
+esp_err_t set_callback(callback_t callback);
 
 /** Attribute update
  *
