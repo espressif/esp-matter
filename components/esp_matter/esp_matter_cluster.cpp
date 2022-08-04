@@ -125,7 +125,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
         global::attribute::create_cluster_revision(cluster, 0);
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_acl(cluster, NULL, 0, 0);
-        attribute::create_extension(cluster, NULL, 0, 0);
         attribute::create_subjects_per_access_control_entry(cluster, 0);
         attribute::create_access_control_entries_per_fabric(cluster, 0);
         attribute::create_targets_per_access_control_entry(cluster, 0);

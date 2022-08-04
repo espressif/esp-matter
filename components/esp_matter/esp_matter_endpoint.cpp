@@ -213,8 +213,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
     return endpoint;
@@ -239,8 +237,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
 
@@ -266,8 +262,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     binding::create(endpoint, &(config->binding), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    scenes::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
@@ -296,8 +290,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
-    level_control::create(endpoint, &(config->level_control), CLUSTER_FLAG_SERVER,
-                          level_control::feature::on_off::get_id() | level_control::feature::lighting::get_id());
 
     return endpoint;
 }
@@ -372,8 +364,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
-    scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
+    time_synchronization::create(endpoint, &(config->time_synchronization), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
 
     return endpoint;
 }
