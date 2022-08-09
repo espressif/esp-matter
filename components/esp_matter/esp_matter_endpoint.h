@@ -136,7 +136,6 @@ typedef struct config {
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
     cluster::on_off::config_t on_off;
-    cluster::level_control::config_t level_control;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -173,6 +172,7 @@ typedef struct config {
     cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
     cluster::thermostat::config_t thermostat;
+    cluster::time_synchronization::config_t time_synchronization;
 } config_t;
 
 uint32_t get_device_type_id();
