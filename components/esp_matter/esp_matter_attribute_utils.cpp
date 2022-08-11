@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include <app/util/attribute-storage.h>
+#include <app/reporting/reporting.h>
 #include <protocols/interaction_model/Constants.h>
 
 using chip::AttributeId;
@@ -921,6 +922,21 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         }
     }
     free(value);
+    if (lock_status == lock::SUCCESS) {
+        lock::chip_stack_unlock();
+    }
+    return ESP_OK;
+}
+
+esp_err_t notify_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id)
+{
+    /* Take lock if not already taken */
+    lock::status_t lock_status = lock::chip_stack_lock(portMAX_DELAY);
+    if (lock_status == lock::FAILED) {
+        ESP_LOGE(TAG, "Could not get task context");
+        return ESP_FAIL;
+    }
+    MatterReportingAttributeChangeCallback(endpoint_id, cluster_id, attribute_id);
     if (lock_status == lock::SUCCESS) {
         lock::chip_stack_unlock();
     }

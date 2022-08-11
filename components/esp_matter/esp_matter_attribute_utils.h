@@ -236,6 +236,21 @@ esp_err_t set_callback(callback_t callback);
  */
 esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val);
 
+/** Notify attribute update
+ *
+ * This API notifies the that the attribute value has been changed.
+ * When the subscriber checks for a new value, the application will read the value from the database and
+ * then it will report the value to the subscriber.
+ *
+ * @param[in] endpoint_id Endpoint ID of the attribute.
+ * @param[in] cluster_id Cluster ID of the attribute.
+ * @param[in] attribute_id Attribute ID of the attribute.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t notify_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id);
+
 /** Attribute value print
  *
  * This API prints the attribute value according to the type.
