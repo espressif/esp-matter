@@ -1,0 +1,16 @@
+menu "ESP Matter Controller"
+
+    config ESP_MATTER_CONTROLLER_ENABLE
+        bool "Enable matter controller"
+        default n
+        help
+            Enable the controller.
+
+    config ESP_MATTER_CONTROLLER_MAX_ACTIVE_DEVICES
+        int "Max active device"
+        depends on ESP_MATTER_CONTROLLER_ENABLE
+        default 5
+        help
+            Maximum number of active device the controller supports.
+
+endmenu
