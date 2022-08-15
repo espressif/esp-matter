@@ -15,10 +15,12 @@
 #pragma once
 
 #include <esp_err.h>
+#include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define CONSOLE_MAX_COMMAND_SETS CONFIG_ESP_MATTER_CONSOLE_MAX_COMMANDS
+
+namespace esp_matter {
+namespace console {
 
 /** Callback for console commands
  *
@@ -27,7 +29,7 @@ extern "C" {
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-typedef esp_err_t (*esp_matter_console_handler_t)(int argc, char **argv);
+typedef esp_err_t (*command_handler_t)(int argc, char **argv);
 
 /** ESP Matter Console Command */
 typedef struct {
@@ -36,8 +38,64 @@ typedef struct {
     /** Command Description/Help */
     const char *description;
     /** Command Handler */
-    esp_matter_console_handler_t handler;
-} esp_matter_console_command_t;
+    command_handler_t handler;
+} command_t;
+
+/** Command iterator callback for the console commands
+ *
+ * @param command               The console command being iterated.
+ * @param arg                   A context variable passed to the iterator function.
+ *
+ * @return                      ESP_OK to continue iteration; anything else to break iteration.
+ */
+typedef esp_err_t command_iterator_t(const command_t *command, void *arg);
+
+class engine
+{
+protected:
+    const command_t *_command_set[CONSOLE_MAX_COMMAND_SETS];
+    unsigned _command_set_size[CONSOLE_MAX_COMMAND_SETS];
+    unsigned _command_set_count;
+public:
+    engine(): _command_set_count(0) {}
+
+    /** Execution callback for a console command.
+     *
+     * @param[in] on_command An iterator callback to be called for each command.
+     * @param[in] arg        A context variable to be passed to each command iterated.
+     */
+    void for_each_command(command_iterator_t *on_command, void *arg);
+
+    /** Dispatch and execute the command for the given argument list.
+     *
+     * @param[in] argc Number of arguments in argv.
+     * @param[in] argv Array of arguments in the tokenized command line to execute.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure.
+     */
+    esp_err_t exec_command(int argc, char *argv[]);
+
+    /** Registers a command set, or array of commands with the console.
+     *
+     * @param command_set[in] An array of commands to add to the console.
+     * @param count[in]       The number of commands in the command set array.
+     *
+     * @return ESP_OK on success
+     * @return error in case of failure.
+     */
+    esp_err_t register_commands(const command_t *command_set, unsigned count);
+};
+
+/** Print the description of a command
+ *
+ * @param command[in] The command which's description will be printed.
+ * @param arg[in] A context variable passed to the iterator function.
+ *
+ * @return ESP_OK on success
+ * @return error in case of failure.
+ */
+esp_err_t print_description(const command_t *command, void *arg);
 
 /** Initialize Console
  *
@@ -46,19 +104,20 @@ typedef struct {
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_console_init(void);
+esp_err_t init(void);
 
-/** Add Console Command
+/** Add Console Command Set
  *
  * Add a new console command.
  * This can be done before calling `esp_matter_console_init()` but the commands will not work until initialized.
  *
- * @param[in] command Pointer to command struct
+ * @param[in] command_set Command struct set array pointer
+ * @param[in] count Command struct set array size
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command);
+esp_err_t add_commands(const command_t *command_set, unsigned count);
 
 /** Add Diagnostics Commands
  *
@@ -67,8 +126,7 @@ esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t esp_matter_console_diagnostics_register_commands();
+esp_err_t diagnostics_register_commands();
 
-#ifdef __cplusplus
-}
-#endif
+} // namespace console
+} // namespace esp_matter

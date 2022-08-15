@@ -19,80 +19,100 @@
 
 #include <esp_matter_console.h>
 #include <lib/shell/Engine.h>
+#include <src/platform/ESP32/ESP32Utils.h>
 
-#define MAX_CONSOLE_COMMANDS CONFIG_ESP_MATTER_CONSOLE_MAX_COMMANDS
+namespace esp_matter {
+namespace console {
 
 static const char *TAG = "esp_matter_console";
-static esp_matter_console_command_t commands[MAX_CONSOLE_COMMANDS];
-static int total_added_commands = 0;
+static engine base_engine;
 
-esp_err_t esp_matter_console_add_command(esp_matter_console_command_t *command)
+void engine::for_each_command(command_iterator_t *on_command, void *arg)
 {
-    if (total_added_commands + 1 > MAX_CONSOLE_COMMANDS) {
-        ESP_LOGE(TAG, "Could not add command. Increase the max limit to add more.");
+    for (unsigned i = 0; i < _command_set_count; ++i) {
+        for (unsigned j = 0; j < _command_set_size[i]; ++j) {
+            if (on_command(&_command_set[i][j], arg) != ESP_OK) {
+                return;
+            }
+        }
+    }
+}
+
+esp_err_t engine::exec_command(int argc, char *argv[])
+{
+    esp_err_t err = ESP_ERR_INVALID_ARG;
+    if (argc <= 0) {
+        return err;
+    }
+    // find the command from the command set
+    for (unsigned i = 0; i < _command_set_count; ++i) {
+        for (unsigned j = 0; j < _command_set_size[i]; ++j) {
+            if (strcmp(argv[0], _command_set[i][j].name) == 0 && _command_set[i][j].handler) {
+                err = _command_set[i][j].handler(argc - 1, &argv[1]);
+                break;
+            }
+        }
+    }
+    return err;
+}
+
+esp_err_t engine::register_commands(const command_t *command_set, unsigned count)
+{
+    if (_command_set_count >= CONSOLE_MAX_COMMAND_SETS) {
+        ESP_LOGE(TAG, "Max number of command sets reached");
         return ESP_FAIL;
     }
-    /* Since the strings in esp_matter_console_command_t are constants, this will work */
-    commands[total_added_commands] = *command;
-    total_added_commands++;
+
+    _command_set[_command_set_count] = command_set;
+    _command_set_size[_command_set_count] = count;
+    ++_command_set_count;
     return ESP_OK;
 }
 
-static void esp_matter_console_print_help()
+esp_err_t add_commands(const command_t *command_set, unsigned count)
 {
-    ESP_LOGI(TAG, "Usage: matter esp <sub_command>");
-    ESP_LOGI(TAG, "Sub commands:");
-    for (int i = 0; i < total_added_commands; i++) {
-        ESP_LOGI(TAG, "\t%s: %s", commands[i].name, commands[i].description);
-    }
+    return base_engine.register_commands(command_set, count);
 }
 
-static esp_err_t esp_matter_console_help_handler(int argc, char **argv)
+esp_err_t print_description(const command_t *command, void *arg)
 {
-    esp_matter_console_print_help();
+    ESP_LOGI(TAG, "\t%s: %s", command->name, command->description);
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_console_register_default_commands()
+
+static esp_err_t help_handler(int argc, char **argv)
 {
-    esp_matter_console_command_t command = {
+    base_engine.for_each_command(print_description, NULL);
+    return ESP_OK;
+}
+
+static esp_err_t register_default_commands()
+{
+    static const command_t command= {
         .name = "help",
         .description = "Print help",
-        .handler = esp_matter_console_help_handler,
+        .handler = help_handler,
     };
-    return esp_matter_console_add_command(&command);
+    return add_commands(&command, 1);
 }
 
-static CHIP_ERROR esp_matter_console_common_handler(int argc, char **argv)
+static CHIP_ERROR common_handler(int argc, char **argv)
 {
     /* This common handler is added to avoid adding `CHIP_ERROR` and its component requirements in other esp-matter
      * components */
     if (argc <= 0) {
-        esp_matter_console_print_help();
+        help_handler(argc, argv);
         return CHIP_NO_ERROR;
     }
-    for (int i = 0; i < total_added_commands; i++) {
-        if (strncmp(argv[0], commands[i].name, strlen(commands[i].name) + 1) == 0) {
-            if (commands[i].handler == NULL) {
-                ESP_LOGW(TAG, "No handler set for the command: %s", argv[0]);
-                return CHIP_NO_ERROR;
-            }
-            if (commands[i].handler(argc - 1, &argv[1]) == ESP_OK) { /* Removing the first argument from argv */
-                return CHIP_NO_ERROR;
-            }
-            /* The command handler returned error */
-            return CHIP_ERROR_INVALID_ARGUMENT;
-        }
-    }
-    ESP_LOGE(TAG, "Could not find the command: %s. Try the help command for more details: matter esp help", argv[0]);
-    return CHIP_ERROR_INVALID_ARGUMENT;
+    return chip::DeviceLayer::Internal::ESP32Utils::MapError(base_engine.exec_command(argc, argv));
 }
 
-static esp_err_t esp_matter_console_register_common_shell_handler()
+static esp_err_t register_common_shell_handler()
 {
-    static chip::Shell::shell_command_t cmds[] = {
+    static const chip::Shell::shell_command_t cmds[] = {
         {
-            .cmd_func = esp_matter_console_common_handler,
+            .cmd_func = common_handler,
             .cmd_name = "esp",
             .cmd_help = "Usage: matter esp <sub_command>",
         },
@@ -107,14 +127,14 @@ static void ChipShellTask(void *args)
     chip::Shell::Engine::Root().RunMainLoop();
 }
 
-esp_err_t esp_matter_console_init()
+esp_err_t init()
 {
     esp_err_t err = ESP_OK;
-    err = esp_matter_console_register_default_commands();
+    err = register_default_commands();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't register default console commands");
     }
-    err = esp_matter_console_register_common_shell_handler();
+    err = register_common_shell_handler();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't register common handler");
         return err;
@@ -126,3 +146,6 @@ esp_err_t esp_matter_console_init()
     }
     return err;
 }
+
+} // namespace console
+} // namespace esp_matter

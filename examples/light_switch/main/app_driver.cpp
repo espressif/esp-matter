@@ -28,6 +28,7 @@ using namespace esp_matter::cluster;
 static const char *TAG = "app_driver";
 extern uint16_t switch_endpoint_id;
 
+#if CONFIG_ENABLE_CHIP_SHELL
 static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
 {
     if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
@@ -87,25 +88,26 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
 static void app_driver_register_commands()
 {
     /* Add console command for bound devices */
-    esp_matter_console_command_t bound_command = {
+    static const esp_matter::console::command_t bound_command = {
         .name = "bound",
         .description = "This can be used to simulate on-device control for bound devices."
                        "Usage: matter esp bound <bound_command>. "
                        "Bound commands: help, invoke",
         .handler = app_driver_bound_console_handler,
     };
-    esp_matter_console_add_command(&bound_command);
+    esp_matter::console::add_commands(&bound_command, 1);
 
     /* Add console command for client to control non-bound devices */
-    esp_matter_console_command_t client_command = {
+    static const esp_matter::console::command_t client_command = {
         .name = "client",
         .description = "This can be used to simulate on-device control for client devices."
                        "Usage: matter esp client <client_command>. "
                        "Client commands: help, invoke",
         .handler = app_driver_client_console_handler,
     };
-    esp_matter_console_add_command(&client_command);
+    esp_matter::console::add_commands(&client_command, 1);
 }
+#endif // CONFIG_ENABLE_CHIP_SHELL
 
 void app_driver_client_command_callback(client::peer_device_t *peer_device, uint16_t remote_endpoint_id,
                                         client::command_handle_t *cmd_handle, void *priv_data)
@@ -163,8 +165,10 @@ app_driver_handle_t app_driver_switch_init()
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
 
     /* Other initializations */
+#if CONFIG_ENABLE_CHIP_SHELL
     app_driver_register_commands();
     client::set_command_callback(app_driver_client_command_callback, app_driver_client_group_command_callback, NULL);
+#endif // CONFIG_ENABLE_CHIP_SHELL
 
     return (app_driver_handle_t)handle;
 }
