@@ -31,6 +31,7 @@
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
 #include <esp_matter_openthread.h>
 #endif
+#include <esp_matter_ota.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -734,10 +735,17 @@ static esp_err_t chip_init(event_callback_t callback)
 
 esp_err_t start(event_callback_t callback)
 {
+    esp_err_t ota_err = esp_matter_ota_requestor_init();
+
     esp_err_t err = chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
     }
+
+    if ((ota_err == ESP_OK) && (err == ESP_OK)) {
+        esp_matter_ota_requestor_start();
+    }
+
     return err;
 }
 

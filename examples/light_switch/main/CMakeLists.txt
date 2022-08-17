@@ -1,4 +1,4 @@
-set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode app_reset esp_matter_ota)
+set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode app_reset)
 
 idf_component_register(SRC_DIRS          "."
                       PRIV_INCLUDE_DIRS  "."

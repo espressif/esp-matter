@@ -65,8 +65,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, CLUSTER_FLAG_SERVER);
     basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
-    ota_provider::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
-    ota_requestor::create(endpoint, &(config->ota_requestor), CLUSTER_FLAG_SERVER);
     general_commissioning::create(endpoint, &(config->general_commissioning), CLUSTER_FLAG_SERVER);
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
     general_diagnostics::create(endpoint, &(config->general_diagnostics), CLUSTER_FLAG_SERVER);

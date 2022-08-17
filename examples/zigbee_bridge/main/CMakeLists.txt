@@ -1,4 +1,5 @@
-set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode esp_matter_ota app_bridge esp-zigbee-lib)
+set(PRIV_REQUIRES_LIST device esp_matter esp_matter_console route_hook app_qrcode app_bridge
+                       esp-zboss-lib)
 
 idf_component_register(SRC_DIRS          "."
                       PRIV_INCLUDE_DIRS  "."
