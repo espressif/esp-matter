@@ -119,6 +119,17 @@ esp_matter_attr_val_t esp_matter_uint16(uint16_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_int32(int16_t val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_INT32,
+        .val = {
+            .i32 = val,
+        },
+    };
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_uint32(uint32_t val)
 {
     esp_matter_attr_val_t attr_val = {

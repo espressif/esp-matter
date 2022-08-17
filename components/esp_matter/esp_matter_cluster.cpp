@@ -89,11 +89,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_cluster_revision(cluster, 0);
-        global::attribute::create_feature_map(cluster, 0);
         attribute::create_device_list(cluster, NULL, 0, 0);
         attribute::create_server_list(cluster, NULL, 0, 0);
         attribute::create_client_list(cluster, NULL, 0, 0);
         attribute::create_parts_list(cluster, NULL, 0, 0);
+
+        /* Attributes updated later */
+        global::attribute::create_feature_map(cluster, 0);
     }
 
     return cluster;
@@ -123,11 +125,13 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_cluster_revision(cluster, 0);
-        global::attribute::create_feature_map(cluster, 0);
         attribute::create_acl(cluster, NULL, 0, 0);
         attribute::create_subjects_per_access_control_entry(cluster, 0);
         attribute::create_access_control_entries_per_fabric(cluster, 0);
         attribute::create_targets_per_access_control_entry(cluster, 0);
+
+        /* Attributes updated later */
+        global::attribute::create_feature_map(cluster, 0);
     }
 
     return cluster;
@@ -680,7 +684,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_mesh_local_prefix(cluster, NULL, 0);
         attribute::create_neighbor_table(cluster, NULL, 0, 0);
         attribute::create_route_table(cluster, NULL, 0, 0);
-        attribute::create_extended_partition_id(cluster, 0);
+        attribute::create_partition_id(cluster, 0);
         attribute::create_weighting(cluster, 0);
         attribute::create_data_version(cluster, 0);
         attribute::create_stable_data_version(cluster, 0);
@@ -704,6 +708,115 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* diagnostics_network_thread */
+
+namespace time_synchronization {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, TimeSynchronization::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterTimeSynchronizationPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* time_synchronization */
+
+namespace bridged_device_basic {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasic::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        // There is not PluginServer(Client)InitCallback for this cluster
+        add_function_list(cluster, function_list, function_flags);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_reachable(cluster, config->reachable);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* bridged_device_basic */
+
+namespace fixed_label {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, FixedLabel::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterFixedLabelPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_label_list(cluster, NULL, 0, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    return cluster;
+}
+} /* fixed_label */
 
 namespace identify {
 const function_generic_t function_list[] = {
@@ -1077,10 +1190,8 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_fan_mode(cluster, config->fan_mode);
             attribute::create_fan_mode_sequence(cluster, config->fan_mode_sequence);
-            /* Not implemented
             attribute::create_percent_setting(cluster, config->percent_setting);
             attribute::create_percent_current(cluster, config->percent_current);
-            */
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }
@@ -1121,8 +1232,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_local_temperature(cluster, config->local_temperature);
-            attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
-            attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
             attribute::create_control_sequence_of_operation(cluster, config->control_sequence_of_operation, 0x0, 0x5);
             attribute::create_system_mode(cluster, config->system_mode, 0x0, 0x7);
         } else {
@@ -1171,7 +1280,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             attribute::create_lock_state(cluster, config->lock_state);
             attribute::create_lock_type(cluster, config->lock_type);
             attribute::create_actuator_enabled(cluster, config->actuator_enabled);
-            attribute::create_auto_relock_time(cluster, config->auto_relock_time);
             attribute::create_operating_mode(cluster, config->operating_mode, 0x0, 0x4);
             attribute::create_supported_operating_modes(cluster, config->supported_operating_modes);
         } else {
@@ -1186,116 +1294,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     return cluster;
 }
 } /* door_lock */
-
-namespace time_synchronization {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
-
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{
-    cluster_t *cluster = cluster::create(endpoint, TimeSynchronization::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        set_plugin_server_init_callback(cluster, MatterTimeSynchronizationPluginServerInitCallback);
-        add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterTimeSynchronizationPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        /* Attributes not managed internally */
-        if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-        } else {
-            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-        }
-    }
-
-    return cluster;
-}
-} /* time_synchronization */
-
-namespace bridged_device_basic {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
-
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{
-    cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasic::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        // There is not PluginServer(Client)InitCallback for this cluster
-        add_function_list(cluster, function_list, function_flags);
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-
-        /* Attributes not managed internally */
-        if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-            attribute::create_bridged_device_basic_node_label(cluster, config->node_label, sizeof(config->node_label));
-            attribute::create_reachable(cluster, config->reachable);
-        } else {
-            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-        }
-    }
-
-    return cluster;
-}
-} /* bridged_device_basic */
-
-namespace fixed_label {
-const function_generic_t *function_list = NULL;
-const int function_flags = CLUSTER_FLAG_NONE;
-
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
-{
-    cluster_t *cluster = cluster::create(endpoint, FixedLabel::Id, flags);
-    if (!cluster) {
-        ESP_LOGE(TAG, "Could not create cluster");
-        return NULL;
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        set_plugin_server_init_callback(cluster, MatterFixedLabelPluginServerInitCallback);
-        add_function_list(cluster, function_list, function_flags);
-    }
-    if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterFixedLabelPluginClientInitCallback);
-        create_default_binding_cluster(endpoint);
-    }
-
-    if (flags & CLUSTER_FLAG_SERVER) {
-        /* Attributes managed internally */
-        global::attribute::create_feature_map(cluster, 0);
-        attribute::create_label_list(cluster, NULL, 0, 0);
-
-        /* Attributes not managed internally */
-        if (config) {
-            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
-        } else {
-            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
-        }
-    }
-
-    return cluster;
-}
-} /* fixed_label */
 
 namespace switch_cluster {
 const function_generic_t *function_list = NULL;
@@ -1327,7 +1325,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_number_of_positions(cluster, config->number_of_positions);
             attribute::create_current_position(cluster, config->current_position);
-            attribute::create_multi_press_max(cluster, config->multi_press_max);
         } else {
             ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
         }

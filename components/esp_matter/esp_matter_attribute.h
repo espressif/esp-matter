@@ -66,6 +66,10 @@ attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uin
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+
+/** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
+  * If the attributes are added in some other cluster, then the value is not maintained internally. 
+  **/
 attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length);
@@ -111,7 +115,7 @@ attribute_t *create_connect_max_time_seconds(cluster_t *cluster, uint8_t value);
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value);
 attribute_t *create_last_networking_status(cluster_t *cluster, uint8_t value);
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length);
-attribute_t *create_last_connect_error_value(cluster_t *cluster, uint32_t value);
+attribute_t *create_last_connect_error_value(cluster_t *cluster, int32_t value);
 } /* attribute */
 } /* network_commissioning */
 
@@ -158,6 +162,10 @@ attribute_t *create_security_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value);
 attribute_t *create_channel_number(cluster_t *cluster, uint16_t value);
 attribute_t *create_rssi(cluster_t *cluster, int8_t value);
+
+/** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
+  * If the attributes are added in some other cluster, then the value is not maintained internally. 
+  **/
 attribute_t *create_beacon_lost_count(cluster_t *cluster, uint32_t value);
 attribute_t *create_beacon_rx_count(cluster_t *cluster, uint32_t value);
 attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, uint32_t value);
@@ -179,7 +187,7 @@ attribute_t *create_extended_pan_id(cluster_t *cluster, uint64_t value);
 attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_extended_partition_id(cluster_t *cluster, uint32_t value);
+attribute_t *create_partition_id(cluster_t *cluster, uint32_t value);
 attribute_t *create_weighting(cluster_t *cluster, uint8_t value);
 attribute_t *create_data_version(cluster_t *cluster, uint8_t value);
 attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value);
@@ -190,6 +198,19 @@ attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */
 } /* diagnostics_network_thread */
+
+namespace bridged_device_basic {
+namespace attribute {
+attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_reachable(cluster_t *cluster, bool value);
+} /* attribute */
+} /* bridged_device_basic */
+
+namespace fixed_label {
+namespace attribute {
+attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* fixed_label */
 
 namespace identify {
 namespace attribute {
@@ -276,12 +297,14 @@ namespace fan_control {
 namespace attribute {
 attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value);
+attribute_t *create_percent_setting(cluster_t *cluster, uint8_t value);
+attribute_t *create_percent_current(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* fan_control */
 
 namespace thermostat {
 namespace attribute {
-attribute_t *create_local_temperature(cluster_t *cluster, uint16_t value);
+attribute_t *create_local_temperature(cluster_t *cluster, int16_t value);
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, uint16_t value);
 attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, uint16_t value);
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
@@ -299,19 +322,6 @@ attribute_t *create_operating_mode(cluster_t *cluster, uint8_t value, uint8_t mi
 attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* door_lock */
-
-namespace bridged_device_basic {
-namespace attribute {
-attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length);
-attribute_t *create_reachable(cluster_t *cluster, bool value);
-} /* attribute */
-} /* bridged_device_basic */
-
-namespace fixed_label {
-namespace attribute {
-attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-} /* attribute */
-} /* fixed_label */
 
 namespace switch_cluster {
 namespace attribute {

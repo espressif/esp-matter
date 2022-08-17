@@ -361,9 +361,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
-    groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     cluster::thermostat::create(endpoint, &(config->thermostat), CLUSTER_FLAG_SERVER);
-    time_synchronization::create(endpoint, &(config->time_synchronization), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
 
     return endpoint;
 }
@@ -395,7 +393,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     bridged_device_basic::create(endpoint, &(config->bridged_device_basic), CLUSTER_FLAG_SERVER);
-    fixed_label::create(endpoint, &(config->fixed_label), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -420,7 +417,6 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     cluster::door_lock::create(endpoint, &(config->door_lock), CLUSTER_FLAG_SERVER);
-    time_synchronization::create(endpoint, &(config->time_synchronization), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
@@ -441,8 +437,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
-    groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
     return endpoint;
@@ -464,7 +459,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
 
     return endpoint;
@@ -486,7 +481,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     }
     set_device_type_id(endpoint, get_device_type_id());
 
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
     return endpoint;
