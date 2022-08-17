@@ -651,15 +651,6 @@ static void esp_matter_chip_init_task(intptr_t context)
     // initParams.appDelegate = &sCallbacks;
     chip::Server::GetInstance().Init(initParams);
 
-/* TODO: Remove the examples DAC provider once we have a concrete
- * way to generate attestation credentials.
- */
-#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
-#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
-#endif
-
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
@@ -693,10 +684,6 @@ static void esp_matter_chip_init_task(intptr_t context)
 
 static esp_err_t chip_init(event_callback_t callback)
 {
-#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetCommissionableDataProvider(&factory_data_provider);
-#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
         return ESP_ERR_NO_MEM;
@@ -724,6 +711,21 @@ static esp_err_t chip_init(event_callback_t callback)
         return ESP_FAIL;
     }
 #endif
+
+/* TODO: Remove the examples DAC provider once we have a concrete
+ * way to generate attestation credentials.
+ */
+
+#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
+    SetCommissionableDataProvider(&factory_data_provider);
+#if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+    SetDeviceInstanceInfoProvider(&factory_data_provider);
+#endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
+#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
