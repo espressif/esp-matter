@@ -71,9 +71,9 @@ esp_err_t app_qrcode_get_payload(char **qrcode_text, char **short_manual_code_te
 
     /* Set details */
     payload.version = 0;
-    payload.discriminator = discriminator;
+    payload.discriminator.SetLongValue(discriminator);
     payload.setUpPINCode = setup_pin_code;
-    payload.rendezvousInformation = RendezvousInformationFlags(chip::RendezvousInformationFlag::kBLE);
+    payload.rendezvousInformation.SetValue(RendezvousInformationFlags(chip::RendezvousInformationFlag::kBLE));
     payload.vendorID = vendor_id;
     payload.productID = product_id;
 

@@ -686,7 +686,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_stable_data_version(cluster, 0);
         attribute::create_leader_router_id(cluster, 0);
         attribute::create_security_policy(cluster, NULL, 0, 0);
-        attribute::create_channel_mask(cluster, NULL, 0);
+        attribute::create_channel_page0_mask(cluster, NULL, 0);
         attribute::create_operational_dataset_components(cluster, NULL, 0, 0);
         attribute::create_active_network_faults(cluster, NULL, 0, 0);
 
