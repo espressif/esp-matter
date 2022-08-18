@@ -699,6 +699,18 @@ attribute_t *create_reachable(cluster_t *cluster, bool value)
 } /* attribute */
 } /* bridged_device_basic */
 
+namespace user_label {
+namespace attribute {
+
+attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, UserLabel::Attributes::LabelList::Id, ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* user_label */
+
 namespace fixed_label {
 namespace attribute {
 
