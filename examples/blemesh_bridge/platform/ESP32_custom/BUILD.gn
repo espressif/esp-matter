@@ -19,6 +19,13 @@ import("${chip_root}/src/platform/device.gni")
 
 chip_enable_wifi = true
 
+declare_args() {
+  # By default use default/example implementation of CommissionableDataProvider,
+  # DeviceAttestationCredentialsProvider and DeviceInstanceInforProvider
+  chip_use_factory_data_provider = false
+  chip_use_device_info_provider = false
+}
+
 config("ESP32_custom_include") {
   include_dirs = [ "../../" ]
 }
@@ -26,7 +33,7 @@ config("ESP32_custom_include") {
 buildconfig_header("custom_buildconfig") {
   header = "CHIPDeviceBuildConfig.h"
   header_dir = "platform"
-  
+
   defines = [
     "CHIP_DEVICE_CONFIG_ENABLE_WPA=true",
     "CHIP_ENABLE_OPENTHREAD=false",
@@ -47,7 +54,7 @@ buildconfig_header("custom_buildconfig") {
     "INET_CONFIG_INCLUDE=<platform/ESP32_custom/InetPlatformConfig.h>",
     "SYSTEM_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/SystemPlatformConfig.h>",
   ]
- 
+
   if (chip_enable_ota_requestor) {
     defines += [ "CHIP_DEVICE_CONFIG_ENABLE_OTA_REQUESTOR=1" ]
   }
@@ -59,7 +66,7 @@ group("platform_buildconfig") {
   ]
 
   public_configs = [
-    ":ESP32_custom_include", 
+    ":ESP32_custom_include",
   ]
 }
 
@@ -73,16 +80,12 @@ static_library("ESP32_custom") {
     "ConfigurationManagerImpl.h",
     "ConnectivityManagerImpl.cpp",
     "ConnectivityManagerImpl.h",
-    "DeviceInfoProviderImpl.cpp",
-    "DeviceInfoProviderImpl.h",
     "DeviceNetworkProvisioningDelegateImpl.cpp",
     "DeviceNetworkProvisioningDelegateImpl.h",
     "DiagnosticDataProviderImpl.cpp",
     "DiagnosticDataProviderImpl.h",
     "ESP32Config.cpp",
     "ESP32Config.h",
-    "ESP32FactoryDataProvider.cpp",
-    "ESP32FactoryDataProvider.h",
     "ESP32Utils.cpp",
     "ESP32Utils.h",
     "KeyValueStoreManagerImpl.cpp",
@@ -111,7 +114,7 @@ static_library("ESP32_custom") {
   ]
 
   public_configs = [
-    ":ESP32_custom_include", 
+    ":ESP32_custom_include",
   ]
 
   if (chip_enable_ota_requestor) {
@@ -133,5 +136,19 @@ static_library("ESP32_custom") {
         "DnssdImpl.h",
       ]
     }
+  }
+
+  if (chip_use_factory_data_provider) {
+    sources += [
+      "ESP32FactoryDataProvider.cpp",
+      "ESP32FactoryDataProvider.h",
+    ]
+  }
+
+  if (chip_use_device_info_provider) {
+    sources += [
+      "ESP32DeviceInfoProvider.cpp",
+      "ESP32DeviceInfoProvider.h",
+    ]
   }
 }

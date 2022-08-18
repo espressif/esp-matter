@@ -655,9 +655,9 @@ attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
-attribute_t *create_channel_mask(cluster_t *cluster, uint8_t *value, uint16_t length)
+attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ChannelMask::Id,
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ChannelPage0Mask::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
 }
 

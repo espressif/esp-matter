@@ -185,7 +185,7 @@ attribute_t *create_data_version(cluster_t *cluster, uint8_t value);
 attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value);
 attribute_t *create_leader_router_id(cluster_t *cluster, uint8_t value);
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_channel_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
+attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 } /* attribute */

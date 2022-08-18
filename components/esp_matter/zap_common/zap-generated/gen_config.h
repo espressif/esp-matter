@@ -185,6 +185,7 @@
 #define EMBER_AF_TARGET_NAVIGATOR_CLUSTER_SERVER_ENDPOINT_COUNT (16)        // used in target navigator
 #define EMBER_AF_WAKE_ON_LAN_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in wake on lan
 #define EMBER_AF_WINDOW_COVERING_CLUSTER_SERVER_ENDPOINT_COUNT (16) // used in window covering
+#define EMBER_AF_DOOR_LOCK_CLUSTER_SERVER_ENDPOINT_COUNT (16)       // used in door lock
 
 #define MATTER_SCENES_TABLE_SIZE 3                                  // used in scenes       // TODO: check this again
 
