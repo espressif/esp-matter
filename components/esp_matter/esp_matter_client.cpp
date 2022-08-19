@@ -168,7 +168,7 @@ esp_err_t send_move(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
 {
     LevelControl::Commands::Move::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.Value(rate);
+    command_data.rate.SetNonNull(rate);
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
@@ -182,7 +182,7 @@ esp_err_t send_move_to_level(peer_device_t *remote_device, uint16_t remote_endpo
 {
     LevelControl::Commands::MoveToLevel::Type command_data;
     command_data.level = level;
-    command_data.transitionTime.Value(transition_time);
+    command_data.transitionTime.SetNonNull(transition_time);
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
@@ -196,7 +196,7 @@ esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, uint16_t 
 {
     LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
     command_data.level = level;
-    command_data.transitionTime.Value(transition_time);
+    command_data.transitionTime.SetNonNull(transition_time);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -208,7 +208,7 @@ esp_err_t send_move_with_on_off(peer_device_t *remote_device, uint16_t remote_en
 {
     LevelControl::Commands::MoveWithOnOff::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
-    command_data.rate.Value(rate);
+    command_data.rate.SetNonNull(rate);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -221,7 +221,7 @@ esp_err_t send_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     LevelControl::Commands::Step::Type command_data;
     command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
-    command_data.transitionTime.Value(transition_time);
+    command_data.transitionTime.SetNonNull(transition_time);
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
@@ -236,7 +236,7 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, uint16_t remote_en
     LevelControl::Commands::StepWithOnOff::Type command_data;
     command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
-    command_data.transitionTime.Value(transition_time);
+    command_data.transitionTime.SetNonNull(transition_time);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
