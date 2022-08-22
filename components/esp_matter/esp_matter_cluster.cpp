@@ -1333,6 +1333,55 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* door_lock */
 
+namespace window_covering {
+const function_generic_t function_list[] = {
+    (function_generic_t)MatterWindowCoveringClusterServerAttributeChangedCallback,
+};
+const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, WindowCovering::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterWindowCoveringPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterWindowCoveringPluginClientInitCallback);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        /* Attributes not managed internally */
+        if (config) {
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_type(cluster, config->type);
+            attribute::create_config_status(cluster, config->config_status);
+            attribute::create_operational_status(cluster, config->config_status);
+            attribute::create_end_product_type(cluster, config->end_product_type);
+            attribute::create_mode(cluster, config->mode);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Commands */
+    command::create_up_or_open(cluster);
+    command::create_down_or_close(cluster);
+    command::create_stop_motion(cluster);
+
+    return cluster;
+}
+} /* window_covering */
+
 namespace switch_cluster {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;

@@ -323,6 +323,109 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* color_control */
 
+namespace window_covering {
+namespace feature {
+namespace lift {
+
+uint32_t get_id()
+{
+    return (uint32_t)WindowCovering::Feature::kLift;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* lift */
+
+namespace tilt {
+
+uint32_t get_id()
+{
+    return (uint32_t)WindowCovering::Feature::kTilt;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* tilt */
+
+namespace position_aware_lift {
+
+uint32_t get_id()
+{
+    return (uint32_t)WindowCovering::Feature::kPositionAwareLift;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+} /* position_aware_lift */
+
+namespace absolute_position {
+
+uint32_t get_id()
+{
+    return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* absolute_position */
+
+namespace position_aware_tilt {
+
+uint32_t get_id()
+{
+    return (uint32_t)WindowCovering::Feature::kPositionAwareTilt;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* position_aware_tilt */
+} /* feature */
+} /* window_covering */
+
 namespace diagnostics_network_wifi {
 namespace feature {
 

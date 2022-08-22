@@ -222,5 +222,17 @@ command_t *create_unlock_door(cluster_t *cluster);
 } /* command */
 } /* door_lock */
 
+namespace window_covering {
+namespace command {
+command_t *create_up_or_open(cluster_t *cluster);
+command_t *create_down_or_close(cluster_t *cluster);
+command_t *create_stop_motion(cluster_t *cluster);
+command_t *create_go_to_lift_value(cluster_t *cluster);
+command_t *create_go_to_lift_percentage(cluster_t *cluster);
+command_t *create_go_to_tilt_value(cluster_t *cluster);
+command_t *create_go_to_tilt_percentage(cluster_t *cluster);
+} /* command */
+} /* window_covering */
+
 } /* cluster */
 } /* esp_matter */
