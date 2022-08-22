@@ -77,7 +77,7 @@ extern "C" void app_main()
     app_driver_handle_t switch_handle = app_driver_switch_init();
     app_reset_button_register(switch_handle);
 
-    /* Create a Matter node */
+    /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
 
