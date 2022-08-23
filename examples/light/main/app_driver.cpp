@@ -67,6 +67,7 @@ static void app_driver_button_toggle_cb(void *arg)
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &val);
     val.val.b = !val.val.b;
+    printf("Toggle button pressed, set the on_off attribute value to %d\n", val.val.b);
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 

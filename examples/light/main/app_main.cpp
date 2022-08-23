@@ -50,6 +50,7 @@ static esp_err_t app_identification_cb(identification::callback_type_t type, uin
                                        void *priv_data)
 {
     ESP_LOGI(TAG, "Identification callback: type: %d, effect: %d", type, effect_id);
+    printf("Identify effect: %d\n", effect_id);
     return ESP_OK;
 }
 
@@ -83,13 +84,13 @@ extern "C" void app_main()
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
 
-    color_temperature_light::config_t light_config;
+    extended_color_light::config_t light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
     light_config.on_off.lighting.start_up_on_off = DEFAULT_POWER;
     light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
     light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
     light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
-    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    endpoint_t *endpoint = extended_color_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
@@ -98,13 +99,6 @@ extern "C" void app_main()
 
     light_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
-
-    /* Add additional features to the node */
-    cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
-    cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
-    hue_saturation_config.current_hue = DEFAULT_HUE;
-    hue_saturation_config.current_saturation = DEFAULT_SATURATION;
-    cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
