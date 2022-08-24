@@ -26,7 +26,7 @@ variables:
     # idf_v5_0 is used for zigbee_bridge example and examples of ESP32-H2
     - git clone --recursive --shallow-submodules --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
     - cd esp-idf
-    - git checkout 047903c612e2c7212693c0861966bf7c83430ebf
+    - git checkout ccdeb43cc7274a49e8dfa331de95ab06dea25183
     - git submodule update --init --recursive --depth 1
     - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
     - ./install.sh
