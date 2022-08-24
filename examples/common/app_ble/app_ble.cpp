@@ -13,7 +13,9 @@
 #include <esp_log.h>
 
 #include <esp_bt.h>
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
 #include <esp_nimble_hci.h>
+#endif
 #include <host/ble_hs.h>
 #include <nimble/nimble_port.h>
 
@@ -33,7 +35,10 @@ esp_err_t app_ble_disable()
         return ESP_FAIL;
     }
     nimble_port_deinit();
-    esp_err_t err = esp_nimble_hci_and_controller_deinit();
+    esp_err_t err = ESP_OK;
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
+    err = esp_nimble_hci_and_controller_deinit();
+#endif
     err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "BLE deinit failed");
