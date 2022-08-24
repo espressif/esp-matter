@@ -8,22 +8,26 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "esp_err.h"
 #include <stdint.h>
-#include <zigbee_bridge.h>
 
 /*Zigbee Configuration*/
-#define IEEE_CHANNEL_MASK (1l << 22) /**< Zigbee default channel */
-#define ERASE_PERSISTENT_CONFIG ZB_TRUE /**< Full device erase for all network devices before running example. */
-#define MAX_CHILDREN 10 /**< The maximum amount of connected devices */
+#define MAX_CHILDREN 10 /* < The maximum amount of connected devices */
+#define INSTALLCODE_POLICY_ENABLE false /* enable the install code policy for security */
 
-#define MATCH_DESC_REQ_ROLE ZB_NWK_BROADCAST_RX_ON_WHEN_IDLE
-#define MATCH_BRIDGED_DEVICE_START_DELAY (2 * ZB_TIME_ONE_SECOND)
-#define MATCH_BRIDGED_DEVICE_TIMEOUT (5 * ZB_TIME_ONE_SECOND)
+#define ESP_ZB_ZC_CONFIG()                                      \
+    {                                                           \
+        .esp_zb_role = ESP_ZB_DEVICE_TYPE_COORDINATOR,          \
+        .install_code_policy = INSTALLCODE_POLICY_ENABLE,       \
+        .nwk_cfg = {                                            \
+            .zczr_cfg =                                         \
+                {                                               \
+                    .max_children = MAX_CHILDREN,               \
+                },                                              \
+        },                                                      \
+    }
 
-#define ZB_ESP_DEFAULT_RADIO_CONFIG()                      \
+#define ESP_ZB_DEFAULT_RADIO_CONFIG()                      \
     {                                                      \
         .radio_mode = RADIO_MODE_UART_RCP,                 \
         .radio_uart_config = {                             \
@@ -43,12 +47,9 @@ extern "C" {
         },                                                 \
     }
 
-#define ZB_ESP_DEFAULT_HOST_CONFIG()                       \
+#define ESP_ZB_DEFAULT_HOST_CONFIG()                       \
     {                                                      \
         .host_connection_mode = HOST_CONNECTION_MODE_NONE, \
     }
 
 void launch_app_zboss(void);
-#ifdef __cplusplus
-}
-#endif
