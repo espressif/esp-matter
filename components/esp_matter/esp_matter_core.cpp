@@ -19,6 +19,7 @@
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
+#include <app/clusters/ota-requestor/OTATestEventTriggerDelegate.h>
 #include <app/server/Dnssd.h>
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
@@ -641,12 +642,17 @@ esp_err_t chip_stack_unlock()
 }
 } /* lock */
 
+static uint8_t sTestEventTriggerEnableKey[16] = { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+                                                  0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
+
 static void esp_matter_chip_init_task(intptr_t context)
 {
     xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
 
     static chip::CommonCaseDeviceServerInitParams initParams;
+    static chip::OTATestEventTriggerDelegate testEventTriggerDelegate{ chip::ByteSpan(sTestEventTriggerEnableKey) };
     initParams.InitializeStaticResourcesBeforeServerInit();
+    initParams.testEventTriggerDelegate = &testEventTriggerDelegate;
     /** TODO: Add these callbacks and pass them on to the application */
     // initParams.appDelegate = &sCallbacks;
     chip::Server::GetInstance().Init(initParams);
