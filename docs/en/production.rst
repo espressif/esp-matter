@@ -59,7 +59,7 @@ device.
 4.1.5 Manufacturing Partition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ESP Matter SDK uses a separate manufacturing partition to store all the information
+Espressif's SDK for Matter uses a separate manufacturing partition to store all the information
 mentioned above. Because the DACs are unique to every device, the manufacturing partition
 will also be unique per device. Thus by moving all the typical per device unique fields into
 the manufacturing partition, the rest of the components like the bootloader, firmware image
@@ -80,7 +80,7 @@ Matter devices must support OTA firmware updates, either by using Matter-based O
 or vendor specific means.
 
 In case of Matter OTA, there's an *OTA provider* that
-assists an *OTA requestor* to get upgraded. ESP Matter examples support Matter OTA
+assists an *OTA requestor* to get upgraded. The SDK examples support Matter OTA
 requestor role out of the box. The OTA provider could be a manufacturer specific
 phone app or any Matter node that has internet connectivity.
 
@@ -106,7 +106,7 @@ on a per-device basis for mass manufacturing purposes.
 
 When using the utility, by default, the above details will be included in the generated manufacturing partition image. The utility also has a provision to include additional details in the same image by using CSV files.
 
-Details about using the ESP Matter mass manufacturing utility can be found here:
+Details about using the mass manufacturing utility can be found here:
 :project_file:`mfg_tool<tools/mfg_tool/README.md>`.
 
 4.3.2 Pre-Provisioned Modules

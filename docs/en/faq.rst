@@ -60,7 +60,7 @@ My device is crashing:
 
 -  Given the tight footprint requirements of the device, please make
    sure any issues in your code have been ruled out. If you believe the
-   issue is with the ESP Matter SDK itself, please recreate the issue on
+   issue is with the Espressif SDK itself, please recreate the issue on
    the default example application (without any changes) and go through
    the following steps:
 -  Make sure you are on the correct esp-idf branch. Run ``git submodule

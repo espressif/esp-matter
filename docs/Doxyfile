@@ -13,7 +13,7 @@
 # http://doxygen.nl/manual/config.html
 
 
-PROJECT_NAME = "ESP Matter Programming Guide"
+PROJECT_NAME = "Programming Guide"
 
 ## The 'INPUT' statement below is used as input by script 'gen-df-input.py'
 ## to automatically generate API reference list files header_file.inc

@@ -1,8 +1,8 @@
-2. Developing with ESP Matter
-=============================
+2. Developing with the SDK
+==========================
 
 Please refer the :project_file:`Release Notes <RELEASE_NOTES.txt>` to know more about
-ESP Matter releases
+the releases
 
 2.1 Development Setup
 ---------------------
@@ -168,19 +168,24 @@ A host-based chip-tool can be used as a commissioner to commission and control a
 2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
 
-Use ``chip-tool`` to commission the device:
+Use ``chip-tool`` in interactive mode to commission the device:
+
+::
+
+   chip-tool interactive start
+
 
 .. only:: esp32 or esp32c3
 
    ::
 
-      chip-tool pairing ble-wifi 0x7283 <ssid> <passphrase> 20202021 3840
+      pairing ble-wifi 0x7283 <ssid> <passphrase> 20202021 3840
 
 .. only:: esp32h2
 
    ::
 
-      chip-tool pairing ble-thread 0x7283 hex:<operationalDataset> 20202021 3840
+      pairing ble-thread 0x7283 hex:<operationalDataset> 20202021 3840
 
 In the above commands:
 
@@ -207,27 +212,29 @@ Use the cluster commands to control the attributes.
 
 ::
 
-   chip-tool onoff toggle 0x7283 0x1
+   onoff toggle 0x7283 0x1
 
 ::
 
-   chip-tool onoff on 0x7283 0x1
+   onoff on 0x7283 0x1
 
 ::
 
-   chip-tool levelcontrol move-to-level 10 0 0 0 0x7283 0x1
+   levelcontrol move-to-level 10 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool levelcontrol move-to-level 100 0 0 0 0x7283 0x1
+   levelcontrol move-to-level 100 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool colorcontrol move-to-saturation 200 0 0 0 0x7283 0x1
+   colorcontrol move-to-saturation 200 0 0 0 0x7283 0x1
 
 ::
 
-   chip-tool colorcontrol move-to-hue 150 0 0 0 0 0x7283 0x1
+   colorcontrol move-to-hue 150 0 0 0 0 0x7283 0x1
+
+chip-tool when used in interactive mode uses CASE resumption as against establishing CASE for cluster control commands. This results into shorter execution times, thereby improving the overall experience.
 
 For more details on chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
 
@@ -272,7 +279,7 @@ The console on the device can be used to run commands for testing. It is configu
 
       matter onboardingcodes
 
-Additional ESP Matter specific commands:
+Additional Matter specific commands:
 
 -  Get attribute: (The IDs are in hex):
 
@@ -459,16 +466,16 @@ creating in the *app_main.cpp* of the example. Examples:
 
    ::
    
-      fan::config_t light_config;
-      endpoint_t *endpoint = fan::create(node, &light_config, ENDPOINT_FLAG_NONE);
+      fan::config_t fan_config;
+      endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE);
 
 
 -  door_lock:
 
    ::
 
-      door_lock::config_t light_config;
-      endpoint_t *endpoint = door_lock::create(node, &light_config, ENDPOINT_FLAG_NONE);
+      door_lock::config_t door_lock_config;
+      endpoint_t *endpoint = door_lock::create(node, &door_lock_config, ENDPOINT_FLAG_NONE);
 
 
 2.4.2.2 Clusters
@@ -581,7 +588,7 @@ Non-Standard/Custom attributes can also be created on any cluster:
 
 2.4.4 Advanced Setup
 ~~~~~~~~~~~~~~~~~~~~
-This section explains adding external platforms for Matter. This step is **optional** for most devices. ESP Matter provides support for overriding the default platform layer, so the BLE and Wi-Fi implementations can be customized. Here are the required steps for adding an external platform layer.
+This section explains adding external platforms for Matter. This step is **optional** for most devices. Espressif's SDK for Matter provides support for overriding the default platform layer, so the BLE and Wi-Fi implementations can be customized. Here are the required steps for adding an external platform layer.
 
 2.4.4.1 Creating the external platform directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
