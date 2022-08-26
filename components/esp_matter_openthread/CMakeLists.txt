@@ -4,4 +4,4 @@ endif()
 
 idf_component_register(SRCS ${srcs}
                        INCLUDE_DIRS .
-                       PRIV_REQUIRES openthread)
+                       PRIV_REQUIRES openthread esp_netif driver)

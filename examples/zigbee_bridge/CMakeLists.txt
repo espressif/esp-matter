@@ -7,12 +7,11 @@ if(NOT DEFINED ENV{ESP_MATTER_PATH})
 endif(NOT DEFINED ENV{ESP_MATTER_PATH})
 
 if(NOT DEFINED ENV{ESP_MATTER_DEVICE_PATH})
-    if("${IDF_TARGET}" STREQUAL "esp32" OR "${IDF_TARGET}" STREQUAL "")
-        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32_devkit_c)
-    elseif("${IDF_TARGET}" STREQUAL "esp32c3")
-        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32c3_devkit_m)
-    elseif("${IDF_TARGET}" STREQUAL "esp32s3")
-        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/esp32s3_devkit_c)
+    if("${IDF_TARGET}" STREQUAL "" OR "${IDF_TARGET}" STREQUAL "esp32" OR "${IDF_TARGET}" STREQUAL "esp32c3" OR "${IDF_TARGET}" STREQUAL "esp32s3")
+        # use hollow device type because the iot button has a require of 'esp_adc_cal'
+        # which is renamed to 'esp_adc' in IDF v5.0
+        # TODO: set the ESP_MATTER_DEVICE_PATH to a certain target.
+        set(ENV{ESP_MATTER_DEVICE_PATH} $ENV{ESP_MATTER_PATH}/device_hal/device/hollow)
     else()
         message(FATAL_ERROR "Unsupported IDF_TARGET")
     endif()
@@ -28,7 +27,6 @@ include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
 set(EXTRA_COMPONENT_DIRS
     "../common"
-    "${IDF_PATH}/examples/common_components/qrcode"
     "${MATTER_SDK_PATH}/config/esp32/components"
     "${ESP_MATTER_PATH}/components"
     "${ESP_MATTER_PATH}/device_hal/device"
@@ -40,4 +38,4 @@ idf_build_set_property(CXX_COMPILE_OPTIONS "-std=gnu++14;-Os;-DLWIP_IPV6_SCOPES=
 idf_build_set_property(C_COMPILE_OPTIONS "-Os;-DLWIP_IPV6_SCOPES=0" APPEND)
 # For RISCV chips, project_include.cmake sets -Wno-format, but does not clear various
 # flags that depend on -Wformat
-idf_build_set_property(COMPILE_OPTIONS "-Wno-format-nonliteral;-Wno-format-security" APPEND)
+idf_build_set_property(COMPILE_OPTIONS "-Wno-format-nonliteral;-Wno-format-security;-Wformat=0;-Wno-error=cpp" APPEND)

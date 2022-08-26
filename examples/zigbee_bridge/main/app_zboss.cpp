@@ -6,15 +6,15 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include "zigbee_bridge.h"
 #include <app_zboss.h>
 #include <esp_err.h>
 #include <esp_log.h>
+#include <esp_zigbee_api_core.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <zboss_api.h>
+#include <zigbee_bridge.h>
 
-#if (!defined ZB_MACSPLIT_HOST)
+#if (!defined(ZB_MACSPLIT_HOST) && defined(ZB_MACSPLIT_DEVICE))
 #error "Zigbee host option should be enabled to use this example"
 #endif
 
@@ -22,9 +22,7 @@ static const char *TAG = "esp_zboss";
 
 static void bdb_start_top_level_commissioning_cb(zb_uint8_t mode_mask)
 {
-    if (!bdb_start_top_level_commissioning(mode_mask)) {
-        ESP_LOGE(TAG, "In BDB commissioning, an error occurred (for example: the device has already been running)");
-    }
+    ESP_ERROR_CHECK(esp_zb_bdb_start_top_level_commissioning(mode_mask));
 }
 
 /**
@@ -40,21 +38,35 @@ void zboss_signal_handler(zb_bufid_t bufid)
     zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, &p_sg_p);
     zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
     zb_zdo_signal_device_annce_params_t *device_annce_params = NULL;
+    zb_zdo_signal_macsplit_dev_boot_params_t *rcp_version = NULL;
+    zb_uint32_t gateway_version;
 
     switch (sig) {
     case ZB_ZDO_SIGNAL_SKIP_STARTUP:
         ESP_LOGI(TAG, "Zigbee stack initialized");
-        bdb_start_top_level_commissioning(ZB_BDB_INITIALIZATION);
+        esp_zb_bdb_start_top_level_commissioning(ZB_BDB_INITIALIZATION);
         break;
 
     case ZB_MACSPLIT_DEVICE_BOOT:
         ESP_LOGI(TAG, "Zigbee rcp device booted");
+        gateway_version = esp_zb_macsplit_get_version();
+        rcp_version = ZB_ZDO_SIGNAL_GET_PARAMS(p_sg_p, zb_zdo_signal_macsplit_dev_boot_params_t);
+        ESP_LOGI(TAG, "Zigbee rcp device version: %d.%d.%d", (rcp_version->dev_version >> 24 & 0x000000FF),
+                 (rcp_version->dev_version >> 16 & 0x000000FF), (rcp_version->dev_version & 0x000000FF));
+        ESP_LOGI(TAG, "Zigbee gateway version: %d.%d.%d", (gateway_version >> 24 & 0x000000FF),
+                 (gateway_version >> 16 & 0x000000FF), (gateway_version & 0x000000FF));
+        if (gateway_version != rcp_version->dev_version) {
+            ESP_LOGE(TAG,
+                     "rcp has different Zigbee stack version with Zigbee gateway! Please check the rcp software or "
+                     "other issues");
+        }
         break;
 
     case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
+    case ZB_BDB_SIGNAL_DEVICE_REBOOT:
         if (status == RET_OK) {
             ESP_LOGI(TAG, "Start network formation");
-            bdb_start_top_level_commissioning(ZB_BDB_NETWORK_FORMATION);
+            esp_zb_bdb_start_top_level_commissioning(ZB_BDB_NETWORK_FORMATION);
         } else {
             ESP_LOGE(TAG, "Failed to initialize Zigbee stack (status: %d)", status);
         }
@@ -68,7 +80,7 @@ void zboss_signal_handler(zb_bufid_t bufid)
             ESP_LOGI(TAG, "ieee extended address: %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x, PAN ID: 0x%04hx)",
                      ieee_address[7], ieee_address[6], ieee_address[5], ieee_address[4], ieee_address[3],
                      ieee_address[2], ieee_address[1], ieee_address[0], ZB_PIBCACHE_PAN_ID());
-            bdb_start_top_level_commissioning(ZB_BDB_NETWORK_STEERING);
+            esp_zb_bdb_start_top_level_commissioning(ZB_BDB_NETWORK_STEERING);
         } else {
             ESP_LOGI(TAG, "Restart network formation (status: %d)", status);
             ZB_SCHEDULE_APP_ALARM((zb_callback_t)bdb_start_top_level_commissioning_cb, ZB_BDB_NETWORK_FORMATION,
@@ -85,18 +97,10 @@ void zboss_signal_handler(zb_bufid_t bufid)
     case ZB_ZDO_SIGNAL_DEVICE_ANNCE:
         device_annce_params = ZB_ZDO_SIGNAL_GET_PARAMS(p_sg_p, zb_zdo_signal_device_annce_params_t);
         ESP_LOGI(TAG, "New device commissioned or rejoined (short: 0x%04hx)", device_annce_params->device_short_addr);
-        status =
-            ZB_SCHEDULE_APP_ALARM(zigbee_bridge_match_bridged_onoff_light, bufid, MATCH_BRIDGED_DEVICE_START_DELAY);
-        if (status != RET_OK) {
-            ESP_LOGD(TAG, "Could not start schedule alarm for matching bridged device");
-        }
-        status =
-            ZB_SCHEDULE_APP_ALARM(zigbee_bridge_match_bridged_onoff_light_timeout, bufid, MATCH_BRIDGED_DEVICE_TIMEOUT);
-        if (status != RET_OK) {
-            ESP_LOGD(TAG, "Could not start schedule alarm for matching bridged device timeout");
-        }
-        // this buf will be free in zboss_match_bridged_device_callback/zboss_match_bridged_device_timeout later
-        bufid = 0;
+        esp_zb_zdo_match_desc_req_param_t cmd_req;
+        cmd_req.dst_nwk_addr = device_annce_params->device_short_addr;
+        cmd_req.addr_of_interest = device_annce_params->device_short_addr;
+        esp_zb_zdo_find_on_off_light(&cmd_req, zigbee_bridge_find_bridged_on_off_light_cb);
         break;
 
     default:
@@ -109,27 +113,23 @@ void zboss_signal_handler(zb_bufid_t bufid)
     }
 }
 
-void zboss_task()
+static void zboss_task(void *pvParameters)
 {
-    ZB_INIT("zigbee bridge");
-    zb_set_network_coordinator_role(IEEE_CHANNEL_MASK);
-    zb_set_nvram_erase_at_start(ERASE_PERSISTENT_CONFIG);
-    zb_set_max_children(MAX_CHILDREN);
+    /* initialize Zigbee stack with Zigbee coordinator config */
+    esp_zb_cfg_t zb_nwk_cfg = ESP_ZB_ZC_CONFIG();
+    esp_zb_init(&zb_nwk_cfg);
     /* initiate Zigbee Stack start without zb_send_no_autostart_signal auto-start */
-    ESP_ERROR_CHECK(zboss_start_no_autostart());
-    while (1) {
-        zboss_main_loop_iteration();
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
+    ESP_ERROR_CHECK(esp_zb_start(false));
+    esp_zb_main_loop_iteration();
 }
 
 void launch_app_zboss(void)
 {
-    zb_esp_platform_config_t config = {
-        .radio_config = ZB_ESP_DEFAULT_RADIO_CONFIG(),
-        .host_config = ZB_ESP_DEFAULT_HOST_CONFIG(),
+    esp_zb_platform_config_t config = {
+        .radio_config = ESP_ZB_DEFAULT_RADIO_CONFIG(),
+        .host_config = ESP_ZB_DEFAULT_HOST_CONFIG(),
     };
     /* load Zigbee gateway platform config to initialization */
-    ESP_ERROR_CHECK(zb_esp_platform_config(&config));
+    ESP_ERROR_CHECK(esp_zb_platform_config(&config));
     xTaskCreate(zboss_task, "zboss_main", 10240, xTaskGetCurrentTaskHandle(), 5, NULL);
 }
