@@ -1,7 +1,6 @@
 # Light Switch
 
-This example creates an On/Off Light Switch device using the ESP Matter
-data model.
+This example creates an On/Off Light Switch device using the data model.
 
 It creates the On/Off client and other devices can be bound to the
 switch and then controlled from the switch.
@@ -31,13 +30,13 @@ For the commands below:
 Update the light's acl attribute to add the entry of remote device
 (switch) in the access control list:
 ```
-chip-tool accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 29315 ], "targets": null}]' 0x5164 0x0
+accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 29315 ], "targets": null}]' 0x5164 0x0
 ```
 
 Update the switch's binding attribute to add the entry of remote device
 (light) in the binding table:
 ```
-    chip-tool binding write binding '[{"fabricIndex": 1, "node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
+    binding write binding '[{"fabricIndex": 1, "node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
 ```
 
 ### 2.2 Device console
@@ -98,7 +97,7 @@ Applications that do not require BLE post commissioning, can disable it using ap
 My light is not getting bound to my switch:
 
 -   Make sure the light's acl is updated. You can read it again to make
-    sure it is correct: `chip-tool accesscontrol read acl 0x5164 0x0`.
+    sure it is correct: `accesscontrol read acl 0x5164 0x0`.
 -   If you are still facing issues, reproduce the issue on the default
     example for the device and then raise an [issue](https://github.com/espressif/esp-matter/issues).
     Make sure to share these:

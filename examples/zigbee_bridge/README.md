@@ -41,7 +41,7 @@ You can read the parts list from the Bridge to get the number of the
 bridged devices.
 
 ```
-chip-tool descriptor read parts-list 0x7283 0x0
+descriptor read parts-list 0x7283 0x0
 ```
 
 If there is no other Zigbee device on the Zigbee Network, you will get
@@ -68,7 +68,7 @@ endpoint will be added on the Bridge device. You can read the parts list
 again to get the dynamic endpoint ID.
 
 ```
-chip-tool descriptor read parts-list 0x7283 0x0
+descriptor read parts-list 0x7283 0x0
 ```
 
 The data will now contain the information of the connected Zigbee
@@ -84,7 +84,7 @@ It means that the Zigbee Bulb is added as Endpoint 1 on the Bridge
 device. You can read the cluster servers list on the dynamic endpoint.
 
 ```
-chip-tool descriptor read server-list 0x7283 0x1
+descriptor read server-list 0x7283 0x1
 ```
 
 This will give the list of supported server clusters. Example:
@@ -102,7 +102,7 @@ OnDescriptorServerListListAttributeResponse: 4 entries
 Now you can control the Zigbee bulb using the chip tool.
 
 ```
-chip-tool onoff toggle 0x7283 0x1
+onoff toggle 0x7283 0x1
 ```
 
 ## 3. Device Performance
