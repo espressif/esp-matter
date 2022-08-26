@@ -168,6 +168,25 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 namespace color_control {
 namespace feature {
+
+esp_err_t update_color_capabilities(cluster_t *cluster, uint32_t mask)
+{
+    esp_err_t err = ESP_OK;
+    attribute_t * color_capabilities_attr = esp_matter::attribute::get(cluster, ColorControl::Attributes::ColorCapabilities::Id);
+    esp_matter_attr_val_t val;
+    err = esp_matter::attribute::get_val(color_capabilities_attr, &val);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get the color_capabilities");
+        return err;
+    }
+    val.val.u16 |= mask;
+    esp_matter::attribute::set_val(color_capabilities_attr, &val);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set the color_capabilities");
+    }
+    return err;
+}
+
 namespace hue_saturation {
 
 uint32_t get_id()
@@ -182,6 +201,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capabilities(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_current_hue(cluster, config->current_hue);
@@ -216,6 +236,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capabilities(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds);
@@ -249,6 +270,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capabilities(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_current_x(cluster, config->current_x);
@@ -279,6 +301,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capabilities(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
@@ -306,6 +329,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capabilities(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_color_loop_active(cluster, config->color_loop_active);
