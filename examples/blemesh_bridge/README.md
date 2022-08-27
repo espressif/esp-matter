@@ -16,7 +16,7 @@ You can read the parts list from the Bridge to get the number of the
 bridged devices.
 
 ```
-chip-tool descriptor read parts-list 0x7283 0x0
+descriptor read parts-list 0x7283 0x0
 ```
 
 If there is no other BLE Mesh device on the BLE Mesh Network, you will get
@@ -43,7 +43,7 @@ endpoint will be added on the Bridge device. You can read the parts list
 again to get the dynamic endpoint ID.
 
 ```
-chip-tool descriptor read parts-list 0x7283 0
+descriptor read parts-list 0x7283 0
 ```
 
 The data will now contain the information of the connected BLE Mesh
@@ -59,7 +59,7 @@ It means that the BLE Mesh Node is added as Endpoint 1 on the Bridge
 device. You can read the cluster servers list on the dynamic endpoint.
 
 ```
-chip-tool descriptor read server-list 0x7283 1
+descriptor read server-list 0x7283 1
 ```
 
 This will give the list of supported server clusters. Example:
@@ -77,7 +77,7 @@ OnDescriptorServerListListAttributeResponse: 4 entries
 Now you can control the BLE Mesh Node on chip tool.
 
 ```
-./out/chip-tool onoff toggle 0x7283 1
+onoff toggle 0x7283 1
 ```
 
 ## 3. Device Performance
