@@ -25,6 +25,23 @@ namespace cluster {
  * If a custom command needs to be created, the low level esp_matter::command::create() API can be used.
  */
 
+namespace actions {
+namespace command {
+command_t *create_instant_action(cluster_t *cluster);
+command_t *create_instant_action_with_transition(cluster_t *cluster);
+command_t *create_start_action(cluster_t *cluster);
+command_t *create_start_action_with_duration(cluster_t *cluster);
+command_t *create_stop_action(cluster_t *cluster);
+command_t *create_pause_action(cluster_t *cluster);
+command_t *create_pause_action_with_duration(cluster_t *cluster);
+command_t *create_resume_action(cluster_t *cluster);
+command_t *create_enable_action(cluster_t *cluster);
+command_t *create_enable_action_with_duration(cluster_t *cluster);
+command_t *create_disable_action(cluster_t *cluster);
+command_t *create_disable_action_with_duration(cluster_t *cluster);
+} /* command */
+} /* actions */
+
 namespace diagnostics_network_thread {
 namespace command {
 command_t *create_reset_counts(cluster_t *cluster);

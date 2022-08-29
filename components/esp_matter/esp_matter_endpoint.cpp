@@ -18,7 +18,7 @@
 
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
-#define ESP_MATTER_BRIDGE_DEVICE_TYPE_ID 0x000E
+#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
 
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
@@ -368,12 +368,26 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 }
 } /* thermostat */
 
-namespace bridge {
+namespace aggregator {
 uint32_t get_device_type_id()
 {
-    return ESP_MATTER_BRIDGE_DEVICE_TYPE_ID;
+    return ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID;
 }
-} /* bridge */
+
+endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    add_device_type_id(endpoint, get_device_type_id());
+
+    descriptor::create(endpoint,CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* aggregator */
 
 namespace bridged_node {
 uint32_t get_device_type_id()

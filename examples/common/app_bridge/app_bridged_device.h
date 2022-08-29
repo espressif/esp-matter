@@ -59,7 +59,7 @@ app_bridged_device_address_t app_bridge_zigbee_address(uint8_t zigbee_endpointid
 app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr);
 
 /** Bridged Device APIs */
-app_bridged_device_t *app_bridge_create_bridged_device(node_t *node,
+app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                         app_bridged_device_type_t bridged_device_type, app_bridged_device_address_t bridged_device_address);
 
 app_bridged_device_t *app_bridge_get_device_by_matter_endpointid(uint16_t matter_endpointid);

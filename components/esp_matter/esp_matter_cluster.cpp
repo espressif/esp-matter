@@ -102,6 +102,39 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 }
 } /* descriptor */
 
+namespace actions {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, Descriptor::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, NULL);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, NULL);
+        create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_cluster_revision(cluster, 1);
+        global::attribute::create_feature_map(cluster, 0);
+        attribute::create_action_list(cluster, NULL, 0, 0);
+        attribute::create_endpoint_lists(cluster, NULL, 0, 0);
+    }
+
+    return cluster;
+}
+} /* actions */
+
 namespace access_control {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;

@@ -23,10 +23,35 @@ static const char *TAG = "esp_matter_bridge";
 using namespace esp_matter;
 using namespace esp_matter::endpoint;
 
-esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node)
+esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node, uint16_t parent_endpoint_id)
 {
+    endpoint_t *parent_endpoint = endpoint::get(node, parent_endpoint_id);
+    if (!node || !parent_endpoint) {
+        ESP_LOGE(TAG, "Cannot create a bridged device for a NULL node or an invalid parent endpoint");
+        return NULL;
+    }
+    uint8_t device_type_count = 0;
+    bool parent_endpoint_valid = false;
+    uint32_t *device_type_ids_ptr = get_device_type_ids(parent_endpoint, &device_type_count);
+    if (device_type_ids_ptr != NULL) {
+        for (uint8_t i = 0; i <= device_type_count; ++i) {
+            if (device_type_ids_ptr[i] == esp_matter::endpoint::aggregator::get_device_type_id()) {
+                parent_endpoint_valid = true;
+                break;
+            }
+        }
+        if (!parent_endpoint_valid) {
+            ESP_LOGE(TAG, "The device types of the parent endpoint must include aggregator");
+            return NULL;
+        }
+    } else {
+        ESP_LOGE(TAG, "Failed to get the device types of the parent endpoint");
+        return NULL;
+    }
+
     esp_matter_bridge_device_t *dev = (esp_matter_bridge_device_t *)calloc(1, sizeof(esp_matter_bridge_device_t));
     dev->node = node;
+    dev->parent_endpoint_id = parent_endpoint_id;
     bridged_node::config_t bridged_node_config;
     dev->endpoint = bridged_node::create(node, &bridged_node_config, ENDPOINT_FLAG_DESTROYABLE | ENDPOINT_FLAG_BRIDGE,
                                          NULL);
@@ -35,7 +60,6 @@ esp_matter_bridge_device_t *esp_matter_bridge_create_device(node_t *node)
         free(dev);
         return NULL;
     }
-    dev->endpoint_id = endpoint::get_id(dev->endpoint);
     return dev;
 }
 

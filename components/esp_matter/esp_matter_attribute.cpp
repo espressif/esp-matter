@@ -70,6 +70,30 @@ attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t leng
 } /* attribute */
 } /* descriptor */
 
+namespace actions {
+namespace attribute {
+
+attribute_t *create_action_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Actions::Attributes::ActionList::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, Actions::Attributes::EndpointLists::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_array(value, length, count));
+}
+
+attribute_t *create_setup_url(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, Actions::Attributes::SetupURL::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_char_str(value, length));
+}
+
+} /* attribute */
+} /* actions */
+
 namespace access_control {
 namespace attribute {
 

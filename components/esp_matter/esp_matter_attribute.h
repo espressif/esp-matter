@@ -42,6 +42,14 @@ attribute_t *create_parts_list(cluster_t *cluster, uint8_t *value, uint16_t leng
 } /* attribute */
 } /* descriptor */
 
+namespace actions {
+namespace attribute {
+attribute_t *create_action_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_endpoint_lists(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+attribute_t *create_setup_url(cluster_t *cluster, char *value, uint16_t length);
+} /* attribute */
+} /* actions */
+
 namespace access_control {
 namespace attribute {
 attribute_t *create_acl(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);

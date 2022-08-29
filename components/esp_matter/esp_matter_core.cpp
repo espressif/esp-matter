@@ -376,7 +376,7 @@ static esp_err_t disable(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-esp_err_t enable(endpoint_t *endpoint)
+esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -567,7 +567,7 @@ esp_err_t enable(endpoint_t *endpoint)
     /* Add Endpoint */
     endpoint_index = endpoint::get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, data_versions,
-                                       device_types);
+                                       device_types, parent_endpoint_id);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: 0x%x", current_endpoint->endpoint_id, status);
         err = ESP_FAIL;
@@ -633,7 +633,8 @@ static esp_err_t enable_all()
 
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
-        enable(endpoint);
+        /* The normal endpoints do not have parent endpoint */
+        enable(endpoint, chip::kInvalidEndpointId);
         endpoint = get_next(endpoint);
     }
     return ESP_OK;

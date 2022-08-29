@@ -239,11 +239,12 @@ void *get_priv_data(uint16_t endpoint_id);
  * called after all the clusters, attributes and commands have been added to the created endpoint.
  *
  * @param[in] endpoint Endpoint handle.
+ * @param[in] parent_endpoint_id Parent Endpoint Id for the endpoint to be enabled, applicable only for bridges.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t enable(endpoint_t *endpoint);
+esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id);
 
 } /* endpoint */
 
