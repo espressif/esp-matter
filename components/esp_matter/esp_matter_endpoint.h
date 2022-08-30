@@ -33,7 +33,6 @@ namespace endpoint {
 namespace root_node {
 typedef struct config {
     cluster::basic::config_t basic;
-    cluster::ota_requestor::config_t ota_requestor;
     cluster::general_commissioning::config_t general_commissioning;
     cluster::network_commissioning::config_t network_commissioning;
     cluster::general_diagnostics::config_t general_diagnostics;

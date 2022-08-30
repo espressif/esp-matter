@@ -103,8 +103,4 @@ extern "C" void app_main()
     esp_matter_console_diagnostics_register_commands();
     esp_matter_console_init();
 #endif
-
-#if CONFIG_ENABLE_OTA_REQUESTOR
-    esp_matter_ota_requestor_init();
-#endif
 }

@@ -17,9 +17,12 @@
 #include "esp_err.h"
 #include "sdkconfig.h"
 
-#if CONFIG_ENABLE_OTA_REQUESTOR
-/** Initialize the matter OTA Requestor
+/** Initialize the Matter OTA Requestor
  *
  */
-void esp_matter_ota_requestor_init(void);
-#endif
+esp_err_t esp_matter_ota_requestor_init(void);
+
+/**Start the Matter OTA Requestor
+ * 
+ */
+void esp_matter_ota_requestor_start(void);
