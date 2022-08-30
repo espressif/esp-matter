@@ -32,6 +32,7 @@ application.
 
 #include <app-common/zap-generated/att-storage.h>
 #include <app/server/Dnssd.h>
+#include <platform/CHIPDeviceEvent.h>
 #include <platform/CHIPDeviceLayer.h>
 
 namespace esp_matter {
@@ -104,8 +105,6 @@ typedef enum command_flags {
 
 } /* esp_matter */
 
-#include <platform/CHIPDeviceEvent.h>
-
 namespace chip {
 namespace DeviceLayer {
 namespace DeviceEventType {
@@ -115,9 +114,13 @@ namespace DeviceEventType {
  */
 enum
 {
+    /** Signals that Commissioning session has started */
     kCommissioningSessionStarted  = kRange_PublicPlatformSpecific + 0x1000,
+    /** Signals that Commissioning session has stopped */
     kCommissioningSessionStopped,
+    /** Signals that Commissioning window is now opend */
     kCommissioningWindowOpened,
+    /** Signals that Commissioning window is now closed  */
     kCommissioningWindowClosed,
 };
 
