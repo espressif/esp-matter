@@ -103,3 +103,24 @@ typedef enum command_flags {
 } command_flags_t;
 
 } /* esp_matter */
+
+#include <platform/CHIPDeviceEvent.h>
+
+namespace chip {
+namespace DeviceLayer {
+namespace DeviceEventType {
+
+/**
+ * Enumerates platform-specific event types that are visible to the application.
+ */
+enum
+{
+    kCommissioningSessionStarted  = kRange_PublicPlatformSpecific + 0x1000,
+    kCommissioningSessionStopped,
+    kCommissioningWindowOpened,
+    kCommissioningWindowClosed,
+};
+
+} // DeviceEventType
+} // DeviceLayer
+} // chip

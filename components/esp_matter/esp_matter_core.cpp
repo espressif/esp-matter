@@ -62,6 +62,45 @@ namespace {
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
+class AppDelegateImpl : public AppDelegate
+{
+public:
+    void OnCommissioningSessionStarted()
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted);
+    }
+
+    void OnCommissioningSessionStopped()
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped);
+    }
+
+    void OnCommissioningWindowOpened()
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened);
+    }
+
+    void OnCommissioningWindowClosed()
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed);
+    }
+
+private:
+    void PostEvent(uint16_t eventType)
+    {
+        chip::DeviceLayer::ChipDeviceEvent event;
+        event.Type = eventType;
+        CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
+        if (error != CHIP_NO_ERROR)
+        {
+            ESP_LOGE(TAG, "Failed to post event from AppDelegate, err:%" CHIP_ERROR_FORMAT, error.Format());
+        }
+    }
+};
+
+AppDelegateImpl s_app_delegate;
+
 }  // namespace
 
 typedef struct _attribute {
@@ -648,8 +687,7 @@ static void esp_matter_chip_init_task(intptr_t context)
 
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
-    /** TODO: Add these callbacks and pass them on to the application */
-    // initParams.appDelegate = &sCallbacks;
+    initParams.appDelegate = &s_app_delegate;
     chip::Server::GetInstance().Init(initParams);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
