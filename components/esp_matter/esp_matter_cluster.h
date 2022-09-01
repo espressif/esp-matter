@@ -175,6 +175,15 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* bridged_device_basic */
 
+namespace user_label {
+typedef struct config {
+    uint16_t cluster_revision;
+    config() : cluster_revision(1) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* user_label */
+
 namespace fixed_label {
 typedef struct config {
     uint16_t cluster_revision;
