@@ -93,15 +93,18 @@ esp_err_t led_driver_set_brightness(led_driver_handle_t handle, uint8_t brightne
 
 esp_err_t led_driver_set_hue(led_driver_handle_t handle, uint16_t hue)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    ESP_LOGI(TAG, "Hue set to %d", hue);
+    return ESP_OK;
 }
 
 esp_err_t led_driver_set_saturation(led_driver_handle_t handle, uint8_t saturation)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    ESP_LOGI(TAG, "Saturation set to %d", saturation);
+    return ESP_OK;
 }
 
 esp_err_t led_driver_set_temperature(led_driver_handle_t handle, uint32_t temperature)
 {
-    return ESP_ERR_NOT_SUPPORTED;
+    ESP_LOGI(TAG, "Color Temperature set to %d", temperature);
+    return ESP_OK;
 }
