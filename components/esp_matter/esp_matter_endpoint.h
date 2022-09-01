@@ -168,10 +168,8 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 namespace thermostat {
 typedef struct config {
     cluster::identify::config_t identify;
-    cluster::groups::config_t groups;
     cluster::scenes::config_t scenes;
     cluster::thermostat::config_t thermostat;
-    cluster::time_synchronization::config_t time_synchronization;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -185,7 +183,6 @@ uint32_t get_device_type_id();
 namespace bridged_node {
 typedef struct config {
     cluster::bridged_device_basic::config_t bridged_device_basic;
-    cluster::fixed_label::config_t fixed_label;
 } config_t;
 
 uint32_t get_device_type_id();
@@ -196,7 +193,6 @@ namespace door_lock {
 typedef struct config {
     cluster::identify::config_t identify;
     cluster::door_lock::config_t door_lock;
-    cluster::time_synchronization::config_t time_synchronization;
 } config_t;
 
 uint32_t get_device_type_id();

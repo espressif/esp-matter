@@ -112,7 +112,7 @@ typedef struct config {
     uint16_t color_temp_physical_max_mireds;
     uint16_t couple_color_temp_to_level_min_mireds;
     uint16_t startup_color_temperature_mireds;
-    config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(1),
+    config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(0),
                color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(0),
                startup_color_temperature_mireds(0x00fa) {}
 } config_t;
@@ -155,8 +155,8 @@ typedef struct config {
     uint16_t color_loop_time;
     uint16_t color_loop_start_enhanced_hue;
     uint16_t color_loop_stored_enhanced_hue;
-    config() : color_loop_active(0), color_loop_direction(0), color_loop_time(0),
-               color_loop_start_enhanced_hue(0), color_loop_stored_enhanced_hue(0) {}
+    config() : color_loop_active(0), color_loop_direction(0), color_loop_time(0x19),
+               color_loop_start_enhanced_hue(0x2300), color_loop_stored_enhanced_hue(0) {}
 } config_t;
 
 uint32_t get_id();
