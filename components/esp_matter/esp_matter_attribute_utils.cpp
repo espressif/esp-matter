@@ -119,7 +119,7 @@ esp_matter_attr_val_t esp_matter_uint16(uint16_t val)
     return attr_val;
 }
 
-esp_matter_attr_val_t esp_matter_int32(int16_t val)
+esp_matter_attr_val_t esp_matter_int32(int32_t val)
 {
     esp_matter_attr_val_t attr_val = {
         .type = ESP_MATTER_VAL_TYPE_INT32,
@@ -136,6 +136,17 @@ esp_matter_attr_val_t esp_matter_uint32(uint32_t val)
         .type = ESP_MATTER_VAL_TYPE_UINT32,
         .val = {
             .u32 = val,
+        },
+    };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_int64(int64_t val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_INT64,
+        .val = {
+            .i64 = val,
         },
     };
     return attr_val;
@@ -286,9 +297,15 @@ static esp_err_t console_handler(int argc, char **argv)
         } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
             uint16_t value = atoi(argv[4]);
             val = esp_matter_uint16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT32) {
+            int32_t value = atoi(argv[4]);
+            val = esp_matter_int32(value);
         } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
             uint32_t value = atoi(argv[4]);
             val = esp_matter_uint32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT64) {
+            int64_t value = atoi(argv[4]);
+            val = esp_matter_int64(value);
         } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
             uint64_t value = atoi(argv[4]);
             val = esp_matter_uint64(value);
@@ -348,10 +365,18 @@ static esp_err_t console_handler(int argc, char **argv)
             uint16_t value = 0;
             get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
             val = esp_matter_uint16(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT32) {
+            int32_t value = 0;
+            get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_int32(value);
         } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
             uint32_t value = 0;
             get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
             val = esp_matter_uint32(value);
+        } else if (type == ESP_MATTER_VAL_TYPE_INT64) {
+            int64_t value = 0;
+            get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
+            val = esp_matter_int64(value);
         } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
             uint64_t value = 0;
             get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
@@ -483,8 +508,16 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
         return ESP_MATTER_VAL_TYPE_UINT16;
         break;
 
+    case ZCL_INT32S_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_INT32;
+        break;
+
     case ZCL_INT32U_ATTRIBUTE_TYPE:
         return ESP_MATTER_VAL_TYPE_UINT32;
+        break;
+
+    case ZCL_INT64S_ATTRIBUTE_TYPE:
+        return ESP_MATTER_VAL_TYPE_INT64;
         break;
 
     case ZCL_INT64U_ATTRIBUTE_TYPE:
@@ -644,6 +677,18 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         break;
 
+    case ESP_MATTER_VAL_TYPE_INT32:
+        if (attribute_type) {
+            *attribute_type = ZCL_INT32S_ATTRIBUTE_TYPE;
+        }
+        if (attribute_size) {
+            *attribute_size = sizeof(int32_t);
+        }
+        if (value) {
+            memcpy(value, (uint8_t *)&val->val.i32, *attribute_size);
+        }
+        break;
+
     case ESP_MATTER_VAL_TYPE_UINT32:
         if (attribute_type) {
             *attribute_type = ZCL_INT32U_ATTRIBUTE_TYPE;
@@ -653,6 +698,18 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         }
         if (value) {
             memcpy(value, (uint8_t *)&val->val.u32, *attribute_size);
+        }
+        break;
+
+    case ESP_MATTER_VAL_TYPE_INT64:
+        if (attribute_type) {
+            *attribute_type = ZCL_INT64S_ATTRIBUTE_TYPE;
+        }
+        if (attribute_size) {
+            *attribute_size = sizeof(int64_t);
+        }
+        if (value) {
+            memcpy(value, (uint8_t *)&val->val.i64, *attribute_size);
         }
         break;
 
@@ -790,10 +847,24 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
         break;
     }
 
+    case ZCL_INT32S_ATTRIBUTE_TYPE: {
+        int32_t attribute_value = 0;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(int32_t));
+        *val = esp_matter_int32(attribute_value);
+        break;
+    }
+
     case ZCL_INT32U_ATTRIBUTE_TYPE: {
         uint32_t attribute_value = 0;
         memcpy((uint8_t *)&attribute_value, value, sizeof(uint32_t));
         *val = esp_matter_uint32(attribute_value);
+        break;
+    }
+
+    case ZCL_INT64S_ATTRIBUTE_TYPE: {
+        int64_t attribute_value = 0;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(int64_t));
+        *val = esp_matter_int64(attribute_value);
         break;
     }
 
@@ -854,9 +925,15 @@ void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u16);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT32) {
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
+                 cluster_id, attribute_id, val->val.i32);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u32);
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT64) {
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
+                 cluster_id, attribute_id, val->val.i64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u64);
