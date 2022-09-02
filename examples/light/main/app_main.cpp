@@ -30,15 +30,35 @@ using namespace chip::app::Clusters;
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     switch (event->Type) {
-    case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kInterfaceIpAddressChanged:
+    case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
 #if !CHIP_DEVICE_CONFIG_ENABLE_THREAD
         chip::app::DnssdServer::Instance().StartServer();
         esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
 #endif
         break;
 
-    case chip::DeviceLayer::DeviceEventType::PublicEventTypes::kCommissioningComplete:
+    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
+        ESP_LOGI(TAG, "Commissioning failed, fail safe timer expired");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted:
+        ESP_LOGI(TAG, "Commissioning session started");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped:
+        ESP_LOGI(TAG, "Commissioning session stopped");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
+        ESP_LOGI(TAG, "Commissioning window opened");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
+        ESP_LOGI(TAG, "Commissioning window closed");
         break;
 
     default:
