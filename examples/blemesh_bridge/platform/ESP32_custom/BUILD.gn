@@ -24,6 +24,7 @@ declare_args() {
   # DeviceAttestationCredentialsProvider and DeviceInstanceInforProvider
   chip_use_factory_data_provider = false
   chip_use_device_info_provider = false
+  chip_config_software_version_number = 0
 }
 
 config("ESP32_custom_include") {
@@ -53,6 +54,7 @@ buildconfig_header("custom_buildconfig") {
     "CHIP_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/CHIPPlatformConfig.h>",
     "INET_CONFIG_INCLUDE=<platform/ESP32_custom/InetPlatformConfig.h>",
     "SYSTEM_PLATFORM_CONFIG_INCLUDE=<platform/ESP32_custom/SystemPlatformConfig.h>",
+    "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
   ]
 
   if (chip_enable_ota_requestor) {

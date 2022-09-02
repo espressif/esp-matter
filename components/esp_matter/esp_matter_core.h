@@ -196,9 +196,9 @@ endpoint_t *get_next(endpoint_t *endpoint);
  */
 uint16_t get_id(endpoint_t *endpoint);
 
-/** Set device type ID
+/** Add device type ID
  *
- * Set the device type ID for the endpoint.
+ * Add the device type ID for the endpoint.
  *
  * @param[in] endpoint Endpoint handle.
  * @param[in] device_type_id Device type ID.
@@ -206,18 +206,19 @@ uint16_t get_id(endpoint_t *endpoint);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
+esp_err_t add_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
 
-/** Get device type ID
+/** Get device type ID array
  *
- * Get the device type ID for the endpoint.
+ * Get the device type ID array for the endpoint.
  *
  * @param[in] endpoint Endpoint handle.
+ * @param[out] device_type_count_ptr the pointer of device type ID array length.
  *
- * @return device type ID on success.
- * @return 0xFFFF'FFFF in case of failure or if the device type ID was not set.
+ * @return device type ID array on success.
+ * @return NULL when the endpoint or the device_type_count_ptr is NULL.
  */
-uint32_t get_device_type_id(endpoint_t *endpoint);
+uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
 
 /** Get private data
  *

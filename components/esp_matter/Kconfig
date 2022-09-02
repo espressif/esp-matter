@@ -1,0 +1,15 @@
+menu "ESP Matter"
+
+    config ESP_MATTER_MAX_DEVICE_TYPE_COUNT
+        int "Maximum device types per endpoint"
+        default 16
+        help
+            The maximum device type count supported per endpoint.
+
+    config ESP_MATTER_NVS_PART_NAME
+        string "ESP Matter NVS partition name"
+        default "nvs"
+        help
+            The NVS Partition name for ESP Matter to store the NONVOLATILE attribues
+
+endmenu
