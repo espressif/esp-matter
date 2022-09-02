@@ -51,8 +51,8 @@ using chip::DeviceLayer::GetDiagnosticDataProvider;
 using chip::DeviceLayer::ThreadStackMgr;
 #endif
 
-#define ESP_MATTER_NVS_PART_NAME "nvs"
-#define ESP_MATTER_MAX_DEVICE_TYPE_COUNT 16
+#define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
+#define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 
 static const char *TAG = "esp_matter_core";
 
