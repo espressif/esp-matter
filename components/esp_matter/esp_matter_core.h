@@ -691,6 +691,22 @@ uint16_t get_flags(command_t *command);
 /* Client APIs */
 namespace client {
 
+/** Command handle as the input when calling `connect()` or `cluster_update()`
+ *
+ */
+
+typedef struct command_handle {
+    uint16_t endpoint_id;
+    uint32_t cluster_id;
+    uint32_t command_id;
+    void *command_data { NULL };
+    bool is_group;
+    command_handle() : endpoint_id(chip::kInvalidEndpointId), cluster_id(chip::kInvalidClusterId),
+                  command_id(chip::kInvalidCommandId), command_data(NULL), is_group(false) {}
+    command_handle(struct command_handle* cmd) : endpoint_id(cmd->endpoint_id), cluster_id(cmd->cluster_id),
+                  command_id(cmd->command_id), command_data(cmd->command_data), is_group(cmd->is_group) {}
+} command_handle_t;
+
 /** Peer device handle */
 typedef chip::DeviceProxy peer_device_t;
 
@@ -701,10 +717,24 @@ typedef chip::DeviceProxy peer_device_t;
  *
  * @param[in] peer_device Peer device handle. This can be passed to the send_command APIs.
  * @param[in] remote_endpoint_id Endpoint ID of the other device. This can be passed to the send_command APIs.
+ * @param[in] cmd_handle Command handle used by `connect()` or `cluster_update()`.
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*command_callback_t)(peer_device_t *peer_device, uint16_t remote_endpoint_id, void *priv_data);
+typedef void (*command_callback_t)(peer_device_t *peer_device, uint16_t remote_endpoint_id, command_handle_t *cmd_handle,
+                                   void *priv_data);
+
+/** Group command send callback
+ *
+ * This callback will be called when `cluster_update()` is called and the group command is triggered for binding cluster.
+ *
+ * @param[in] fabric_index The index of the fabric that the group command is sent to.
+ * @param[in] group_id The group_id that the group command is sent to.
+ * @param[in] cmd_handle  Command handle used by `cluster_update()`.
+ * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
+ * should stay allocated throughout the lifetime of the device.
+ */
+typedef void (*group_command_callback_t)(uint8_t fabric_index, uint16_t group_id, command_handle_t *cmd_handle, void *priv_data);
 
 /** Initialize binding
  *
@@ -726,39 +756,41 @@ void binding_manager_init();
  *
  * @param[in] fabric_index Fabric index.
  * @param[in] node_id Node ID of the other device.
- * @param[in] remote_endpoint_id Endpoint ID of the other device.
+ * @param[in] cmd_handle Command to be sent to the remote device.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoint_id);
+esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_handle);
 
 /** Set command send callback
  *
- * Set the common command send callback. This callback will be called when `connect()` or `cluster_update()` is called
- * and the connection completes.
+ * Set the common command send callback and the group command send callback. The common callback will be called
+ * when `connect()` or `cluster_update()` is called and the connection completes. The group callback will be called
+ * when `cluster_update()` is called and the group command is triggered.
  *
  * @param[in] callback command send callback.
+ * @param[in] g_callback group command send callback
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_command_callback(command_callback_t callback, void *priv_data);
+esp_err_t set_command_callback(command_callback_t callback, group_command_callback_t g_callback, void *priv_data);
 
 /** Cluster update
  *
  * For an already binded device, this API can be used to get the command send callback, and the send_command APIs can
  * then be called from the callback.
  *
- * @param[in] endpoint_id Local endpoint ID of the command.
- * @param[in] cluster_id Cluster ID of the command.
+ * @param[in] local_endpoint_id The ID of the local endpoint with a binding cluster.
+ * @param[in] cmd_handle Command information to notify the bound cluster changed.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t cluster_update(uint16_t endpoint_id, uint32_t cluster_id);
+esp_err_t cluster_update(uint16_t local_endpoint_id, command_handle_t *cmd_handle);
 
 } /* client */
 } /* esp_matter */

@@ -109,6 +109,10 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter node creation failed");
     }
 
+    /* Add group cluster to the switch endpoint */
+    cluster::groups::config_t groups_config;
+    cluster::groups::create(endpoint, &groups_config, CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
+
     switch_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Switch created with endpoint_id %d", switch_endpoint_id);
 
