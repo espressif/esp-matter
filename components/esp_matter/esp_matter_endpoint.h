@@ -129,6 +129,16 @@ uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* color_dimmer_switch */
 
+namespace generic_switch {
+typedef struct config {
+    cluster::identify::config_t identify;
+    cluster::switch_cluster::config_t switch_cluster;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+} /* generic_switch */
+
 namespace on_off_plugin_unit {
 typedef struct config {
     cluster::identify::config_t identify;
