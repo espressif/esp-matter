@@ -13,7 +13,6 @@
 #include <esp_matter.h>
 #include <esp_matter_console.h>
 #include <esp_matter_ota.h>
-#include <esp_route_hook.h>
 
 #include <app_bridged_device.h>
 #include <app_qrcode.h>
@@ -29,10 +28,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     switch (event->Type) {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
-#if !CHIP_DEVICE_CONFIG_ENABLE_THREAD
-        chip::app::DnssdServer::Instance().StartServer();
-        esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
-#endif
+        ESP_LOGI(TAG, "Interface IP Address Changed");
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
