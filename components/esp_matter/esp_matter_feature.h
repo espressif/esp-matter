@@ -166,6 +166,45 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* color_control */
 
+namespace window_covering {
+namespace feature {
+namespace lift {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* lift */
+
+namespace tilt {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* tilt */
+
+namespace position_aware_lift {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* position_aware_lift */
+
+namespace absolute_position {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* absolute_position */
+
+namespace position_aware_tilt {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* position_aware_tilt */
+} /* feature */
+} /* window_covering */
+
 namespace diagnostics_network_wifi {
 namespace feature {
 

@@ -312,6 +312,37 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* door_lock */
 
+namespace window_covering {
+typedef struct config {
+    uint16_t cluster_revision;
+    uint8_t type;
+    uint16_t physical_closed_limit_lift;
+    uint16_t physical_closed_limit_tilt;
+    uint8_t current_position_lift;
+    uint8_t current_position_tilt;
+    uint16_t number_of_actuations_lift;
+    uint16_t number_of_actuations_tilt;
+    uint8_t config_status;
+    uint8_t current_position_lift_percentage;
+    uint8_t current_position_tilt_percentage;
+    uint8_t operational_status;
+    uint16_t target_position_lift_percent_100ths; 
+    uint16_t target_position_tilt_percent_100ths; 
+    uint8_t end_product_type;
+    uint16_t current_position_lift_percent_100ths;
+    uint16_t current_position_tilt_percent_100ths;
+    uint16_t installed_open_limit_lift;
+    uint16_t installed_closed_limit_lift;
+    uint16_t installed_open_limit_tilt;
+    uint16_t installed_closed_limit_tilt;
+    uint16_t mode;
+    uint16_t safety_status;
+    config() : cluster_revision(6), type(0), operational_status(0), end_product_type(0), mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* window_covering */
+
 namespace switch_cluster {
 typedef struct config {
     uint16_t cluster_revision;

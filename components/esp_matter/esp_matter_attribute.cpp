@@ -1289,6 +1289,144 @@ attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* door_lock */
 
+namespace window_covering {
+namespace attribute {
+
+attribute_t *create_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Type::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_physical_closed_limit_lift(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::PhysicalClosedLimitLift::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_physical_closed_limit_tilt(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::PhysicalClosedLimitTilt::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_current_position_lift(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionLift::Id, ATTRIBUTE_FLAG_NULLABLE |
+		                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+}
+
+attribute_t *create_current_position_tilt(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTilt::Id, ATTRIBUTE_FLAG_NULLABLE |
+		                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_actuations_lift(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::NumberOfActuationsLift::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_number_of_actuations_tilt(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::NumberOfActuationsTilt::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_config_status(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::ConfigStatus::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_current_position_lift_percentage(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionLiftPercentage::Id, ATTRIBUTE_FLAG_NONVOLATILE |
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint8(value));
+}
+
+attribute_t *create_current_position_tilt_percentage(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTiltPercentage::Id, ATTRIBUTE_FLAG_NONVOLATILE |
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint8(value));
+}
+
+attribute_t *create_operational_status(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::OperationalStatus::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_bitmap8(value));
+}
+
+attribute_t *create_target_position_lift_percent_100ths(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::TargetPositionLiftPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_target_position_tilt_percent_100ths(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::TargetPositionTiltPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_end_product_type(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::EndProductType::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_current_position_lift_percent_100ths(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionLiftPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE |
+		                         ATTRIBUTE_MASK_NONVOLATILE, esp_matter_uint16(value));
+}
+
+attribute_t *create_current_position_tilt_percent_100ths(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::CurrentPositionTiltPercent100ths::Id, ATTRIBUTE_FLAG_NULLABLE |
+		                         ATTRIBUTE_MASK_NONVOLATILE, esp_matter_uint16(value));
+}
+
+attribute_t *create_installed_open_limit_lift(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledOpenLimitLift::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_installed_closed_limit_lift(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledClosedLimitLift::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_installed_open_limit_tilt(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledOpenLimitTilt::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_installed_closed_limit_tilt(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::InstalledClosedLimitTilt::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_mode(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Mode::Id, ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_uint16(value));
+}
+
+attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::SafetyStatus::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint16(value));
+}
+
+} /* attribute */
+} /* window_covering */
+
 namespace switch_cluster {
 namespace attribute {
 

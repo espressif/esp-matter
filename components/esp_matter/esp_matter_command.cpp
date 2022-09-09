@@ -1025,6 +1025,83 @@ static esp_err_t esp_matter_command_callback_test_event_trigger(const ConcreteCo
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_up_or_open(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::UpOrOpen::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterUpOrOpenCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_down_or_close(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::DownOrClose::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterDownOrCloseCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_stop_motion(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::StopMotion::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterStopMotionCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_go_to_lift_value(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::GoToLiftValue::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterGoToLiftValueCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_go_to_lift_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::GoToLiftPercentage::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterGoToLiftPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_go_to_tilt_value(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::GoToTiltValue::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterGoToTiltValueCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_go_to_tilt_percentage(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
+                                                       void *opaque_ptr)
+{
+    chip::app::Clusters::WindowCovering::Commands::GoToTiltPercentage::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfWindowCoveringClusterGoToTiltPercentageCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
 
@@ -1774,6 +1851,54 @@ command_t *create_unlock_door(cluster_t *cluster)
 
 } /* command */
 } /* door_lock */
+
+namespace window_covering {
+namespace command {
+
+command_t *create_up_or_open(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::UpOrOpen::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_up_or_open);
+}
+
+command_t *create_down_or_close(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::DownOrClose::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_down_or_close);
+}
+
+command_t *create_stop_motion(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::StopMotion::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_stop_motion);
+}
+
+command_t *create_go_to_lift_value(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToLiftValue::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_go_to_lift_value);
+}
+
+command_t *create_go_to_lift_percentage(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToLiftPercentage::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_go_to_lift_percentage);
+}
+
+command_t *create_go_to_tilt_value(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToTiltValue::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_go_to_tilt_value);
+}
+
+command_t *create_go_to_tilt_percentage(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, WindowCovering::Commands::GoToTiltPercentage::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_go_to_tilt_percentage);
+}
+
+} /* command */
+} /* window_covering */
 
 } /* cluster */
 } /* esp_matter */

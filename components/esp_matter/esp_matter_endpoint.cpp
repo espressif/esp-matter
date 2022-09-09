@@ -40,6 +40,7 @@
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
+#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
 
 static const char *TAG = "esp_matter_endpoint";
 
@@ -421,6 +422,30 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     return endpoint;
 }
 } /* door_lock */
+
+namespace window_covering_device {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+
+    add_device_type_id(endpoint, get_device_type_id());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    window_covering::create(endpoint, &(config->window_covering), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* window_covering */
 
 namespace temperature_sensor {
 uint32_t get_device_type_id()

@@ -199,6 +199,18 @@ uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* door_lock */
 
+namespace window_covering_device {
+typedef struct config {
+    cluster::identify::config_t identify;
+    cluster::groups::config_t groups;
+    cluster::scenes::config_t scenes;
+    cluster::window_covering::config_t window_covering;
+} config_t;
+
+uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+} /* window_covering */
+
 namespace temperature_sensor {
 typedef struct config {
     cluster::identify::config_t identify;
