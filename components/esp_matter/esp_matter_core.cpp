@@ -32,6 +32,7 @@
 #include <esp_matter_openthread.h>
 #endif
 #include <esp_matter_ota.h>
+#include <esp_route_hook.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -714,6 +715,45 @@ static void esp_matter_chip_init_task(intptr_t context)
     xTaskNotifyGive(task_to_notify);
 }
 
+static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg)
+{
+    // TODO: Use RemoveEventHandler() instead of the static is_ota_requestor_start
+    static bool is_ota_requestor_start = false;
+    switch (event->Type)
+    {
+    case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
+#if !CHIP_DEVICE_CONFIG_ENABLE_THREAD
+        if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned ||
+                event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV4_Assigned) {
+            chip::app::DnssdServer::Instance().StartServer();
+            esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
+        }
+#endif
+        if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned) {
+            // When the OTA image is applied, the device will reboot and send the NotifyUpdateApplied to the Provider
+            // in esp_matter_ota_requestor_start(), so the device should be connected to the Wi-Fi network when calling
+            // esp_matter_ota_requestor_start(). IPv4 might be disabled on the Provider so we should call this function
+            // when the IPv6 address is assigned.
+            if (!is_ota_requestor_start) {
+                esp_matter_ota_requestor_start();
+                is_ota_requestor_start = true;
+            }
+        }
+        break;
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+    case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
+        if (!is_ota_requestor_start &&
+                event->ThreadConnectivityChange.Result == chip::DeviceLayer::ConnectivityChange::kConnectivity_Established) {
+            esp_matter_ota_requestor_start();
+            is_ota_requestor_start = true;
+        }
+#endif
+        break;
+    default:
+        break;
+    }
+}
+
 static esp_err_t chip_init(event_callback_t callback)
 {
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
@@ -731,6 +771,7 @@ static esp_err_t chip_init(event_callback_t callback)
         ESP_LOGE(TAG, "Failed to launch Matter main task");
         return ESP_FAIL;
     }
+    PlatformMgr().AddEventHandler(device_callback_internal, static_cast<intptr_t>(NULL));
     PlatformMgr().AddEventHandler(callback, static_cast<intptr_t>(NULL));
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
@@ -766,15 +807,11 @@ static esp_err_t chip_init(event_callback_t callback)
 
 esp_err_t start(event_callback_t callback)
 {
-    esp_err_t ota_err = esp_matter_ota_requestor_init();
+    esp_matter_ota_requestor_init();
 
     esp_err_t err = chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
-    }
-
-    if ((ota_err == ESP_OK) && (err == ESP_OK)) {
-        esp_matter_ota_requestor_start();
     }
 
     return err;
