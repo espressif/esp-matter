@@ -61,6 +61,8 @@ typedef enum {
     ESP_MATTER_VAL_TYPE_INT32,
     /** 32 bit unsigned integer */
     ESP_MATTER_VAL_TYPE_UINT32,
+    /** 64 bit signed integer */
+    ESP_MATTER_VAL_TYPE_INT64,
     /** 64 bit unsigned integer */
     ESP_MATTER_VAL_TYPE_UINT64,
     /** 8 bit enum */
@@ -90,9 +92,11 @@ typedef union {
     /** 16 bit unsigned integer */
     uint16_t u16;
     /** 32 bit signed integer */
-    int16_t i32;
+    int32_t i32;
     /** 32 bit unsigned integer */
     uint32_t u32;
+    /** 64 bit signed integer */
+    int64_t i64;
     /** 64 bit unsigned integer */
     uint64_t u64;
     /** Array */
@@ -153,10 +157,13 @@ esp_matter_attr_val_t esp_matter_int16(int16_t val);
 esp_matter_attr_val_t esp_matter_uint16(uint16_t val);
 
 /** 32 bit signed integer */
-esp_matter_attr_val_t esp_matter_int32(int16_t val);
+esp_matter_attr_val_t esp_matter_int32(int32_t val);
 
 /** 32 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint32(uint32_t val);
+
+/** 64 bit signed integer */
+esp_matter_attr_val_t esp_matter_int64(int64_t val);
 
 /** 64 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint64(uint64_t val);
