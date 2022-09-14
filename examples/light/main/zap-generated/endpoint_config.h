@@ -21,6 +21,7 @@
 #pragma once
 
 #include <lib/core/CHIPConfig.h>
+#include <sdkconfig.h>
 
 #define GENERATED_ATTRIBUTES                                                   \
   {}
@@ -46,7 +47,7 @@ static_assert(ATTRIBUTE_LARGEST <= CHIP_CONFIG_MAX_ATTRIBUTE_STORE_ELEMENT_SIZE,
 #ifdef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #undef CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT
 #endif
-#define CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT (16)
+#define CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT
 
 // Array of endpoints that are supported, the data inside
 // the array is the endpoint number.
