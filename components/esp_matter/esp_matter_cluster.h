@@ -44,6 +44,10 @@ namespace descriptor {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* descriptor */
 
+namespace actions {
+cluster_t *create(endpoint_t *endpoint, uint8_t flags);
+} /* actions */
+
 namespace access_control {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* access_control */

@@ -23,6 +23,8 @@ static const char *TAG = "blemesh_bridge";
 using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
+extern uint16_t aggregator_endpoint_id;
+
 
 /** Mesh Spec 4.2.1: "The Composition Data state contains information about a node, 
  * the elements it includes, and the supported models. Composition Data Page 0 is mandatory." 
@@ -50,7 +52,7 @@ static esp_err_t blemesh_bridge_init_bridged_onoff_light(esp_matter_bridge_devic
     on_off::config_t config;
     on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     endpoint::add_device_type_id(dev->endpoint, endpoint::on_off_light::get_device_type_id());
-    if (endpoint::enable(dev->endpoint) != ESP_OK) {
+    if (endpoint::enable(dev->endpoint, dev->parent_endpoint_id) != ESP_OK) {
         ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
         endpoint::destroy(dev->node, dev->endpoint);
         return ESP_FAIL;
@@ -69,7 +71,9 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
             ESP_LOGI(TAG, "Bridged node for 0x%04x bridged device on endpoint %d has been created", blemesh_addr,
                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
         } else {
-            app_bridged_device_t *bridged_device = app_bridge_create_bridged_device(node, ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH, app_bridge_blemesh_address(blemesh_addr));
+            app_bridged_device_t *bridged_device =
+                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
+                                                 app_bridge_blemesh_address(blemesh_addr));
             ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (on_off light)");
             ESP_RETURN_ON_ERROR(blemesh_bridge_init_bridged_onoff_light(bridged_device->dev), TAG, "Failed to initialize the bridged node");
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x bridged device on endpoint %d", blemesh_addr,

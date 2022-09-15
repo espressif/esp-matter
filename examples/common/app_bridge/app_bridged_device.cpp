@@ -45,7 +45,7 @@ app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr)
 }
 
 /** Bridged Device APIs */
-app_bridged_device_t *app_bridge_create_bridged_device(node_t *node,
+app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
                         app_bridged_device_type_t bridged_device_type, app_bridged_device_address_t bridged_device_address)
 {
     if (g_current_bridged_device_count >= MAX_BRIDGED_DEVICE_COUNT) {
@@ -53,7 +53,7 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node,
         return NULL;
     }
     app_bridged_device_t *new_dev = (app_bridged_device_t *)calloc(1, sizeof(app_bridged_device_t));
-    new_dev->dev = esp_matter_bridge_create_device(node);
+    new_dev->dev = esp_matter_bridge_create_device(node, parent_endpoint_id);
     if (!(new_dev->dev)) {
         ESP_LOGE(TAG, "Failed to create the basic bridged device");
         free(new_dev);
@@ -71,7 +71,7 @@ app_bridged_device_t *app_bridge_get_device_by_matter_endpointid(uint16_t matter
 {
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
-        if (current_dev->dev && (current_dev->dev->endpoint_id == matter_endpointid)) {
+        if (current_dev->dev && (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev;
         }
         current_dev = current_dev->next;
@@ -131,7 +131,7 @@ uint16_t app_bridge_get_matter_endpointid_by_zigbee_shortaddr(uint16_t zigbee_sh
     while (current_dev) {
         if (current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE && current_dev->dev
              && current_dev->dev_addr.zigbee_shortaddr == zigbee_shortaddr) {
-            return current_dev->dev->endpoint_id;
+            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
     }
@@ -143,7 +143,7 @@ uint16_t app_bridge_get_zigbee_shortaddr_by_matter_endpointid(uint16_t matter_en
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE) && current_dev->dev
-                && (current_dev->dev->endpoint_id == matter_endpointid)) {
+                && (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.zigbee_shortaddr;
         }
         current_dev = current_dev->next;
@@ -171,7 +171,7 @@ uint16_t app_bridge_get_matter_endpointid_by_blemesh_addr(uint16_t blemesh_addr)
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev
              && (current_dev->dev_addr.blemesh_addr == blemesh_addr)) {
-            return current_dev->dev->endpoint_id;
+            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
         }
         current_dev = current_dev->next;
     }
@@ -183,7 +183,7 @@ uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpoi
     app_bridged_device_t *current_dev = g_bridged_device_list;
     while (current_dev) {
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev
-                && (current_dev->dev->endpoint_id == matter_endpointid)) {
+                && (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.blemesh_addr;
         }
         current_dev = current_dev->next;

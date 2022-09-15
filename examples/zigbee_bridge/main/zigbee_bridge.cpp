@@ -20,6 +20,8 @@ using namespace chip::app::Clusters;
 using namespace esp_matter;
 using namespace esp_matter::cluster;
 
+extern uint16_t aggregator_endpoint_id;
+
 static esp_err_t zigbee_bridge_init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
 {
     if (!dev) {
@@ -30,7 +32,7 @@ static esp_err_t zigbee_bridge_init_bridged_onoff_light(esp_matter_bridge_device
     on_off::config_t config;
     on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
     endpoint::add_device_type_id(dev->endpoint, endpoint::on_off_light::get_device_type_id());
-    if (endpoint::enable(dev->endpoint) != ESP_OK) {
+    if (endpoint::enable(dev->endpoint, dev->parent_endpoint_id) != ESP_OK) {
         ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
         endpoint::destroy(dev->node, dev->endpoint);
         return ESP_FAIL;
@@ -50,8 +52,9 @@ void zigbee_bridge_find_bridged_on_off_light_cb(zb_uint8_t zdo_status, zb_uint16
             ESP_LOGI(TAG, "Bridged node for 0x%04x zigbee device on endpoint %d has been created", addr,
                      app_bridge_get_matter_endpointid_by_zigbee_shortaddr(addr));
         } else {
-            app_bridged_device_t *bridged_device = app_bridge_create_bridged_device(
-                node, ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE, app_bridge_zigbee_address(endpoint, addr));
+            app_bridged_device_t *bridged_device =
+                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE,
+                                                 app_bridge_zigbee_address(endpoint, addr));
             if (!bridged_device) {
                 ESP_LOGE(TAG, "Failed to create zigbee bridged device (on_off light)");
                 return;
@@ -78,7 +81,7 @@ esp_err_t zigbee_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_
                 esp_zb_zcl_on_off_cmd_t cmd_req;
                 cmd_req.zcl_basic_cmd.dst_addr_u.addr_short = zigbee_device->dev_addr.zigbee_shortaddr;
                 cmd_req.zcl_basic_cmd.dst_endpoint = zigbee_device->dev_addr.zigbee_endpointid;
-                cmd_req.zcl_basic_cmd.src_endpoint = zigbee_device->dev->endpoint_id;
+                cmd_req.zcl_basic_cmd.src_endpoint = esp_matter::endpoint::get_id(zigbee_device->dev->endpoint);
                 cmd_req.address_mode = ESP_ZB_APS_ADDR_MODE_16_ENDP_PRESENT;
                 cmd_req.on_off_cmd_id = val->val.b ? ZB_ZCL_CMD_ON_OFF_ON_ID : ZB_ZCL_CMD_ON_OFF_OFF_ID;
                 esp_zb_zcl_on_off_cmd_req(&cmd_req);

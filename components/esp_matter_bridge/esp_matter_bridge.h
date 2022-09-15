@@ -18,15 +18,15 @@
 #include <esp_err.h>
 #include <esp_matter_core.h>
 
-#define MAX_BRIDGED_DEVICE_COUNT CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT - 1
+#define MAX_BRIDGED_DEVICE_COUNT CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT
 // There is an endpoint reserved as root endpoint
 
 typedef struct esp_matter_bridge_device {
     esp_matter::node_t *node;
     esp_matter::endpoint_t *endpoint;
-    uint16_t endpoint_id;
+    uint16_t parent_endpoint_id;
 } esp_matter_bridge_device_t;
 
-esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter::node_t *node);
+esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id);
 
 esp_err_t esp_matter_bridge_remove_device(esp_matter_bridge_device_t *bridged_device);

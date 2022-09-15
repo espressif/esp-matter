@@ -171,6 +171,23 @@ esp_err_t send_turbine_operation()
 } /* event */
 } /* pump_configuration_and_control */
 
+namespace actions {
+namespace event {
+esp_err_t send_state_changed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state)
+{
+    /* Not implemented */
+    return ESP_OK;
+}
+
+esp_err_t send_action_failed(EndpointId endpoint, uint16_t action_id, uint32_t invoke_id, uint8_t action_state,
+                             uint8_t error)
+{
+    /* Not implemented */
+    return ESP_OK;
+}
+} /* event */
+} /* actions */
+
 namespace switch_cluster {
 namespace event {
 

@@ -176,8 +176,9 @@ uint32_t get_device_type_id();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* thermostat */
 
-namespace bridge {
+namespace aggregator {
 uint32_t get_device_type_id();
+endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
 } /* bridge */
 
 namespace bridged_node {

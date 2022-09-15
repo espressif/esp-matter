@@ -1102,8 +1102,217 @@ static esp_err_t esp_matter_command_callback_go_to_tilt_percentage(const Concret
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_instance_action(const ConcreteCommandPath &command_path,
+                                                             TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_instance_action_with_transition(const ConcreteCommandPath &command_path,
+                                                                             TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_start_action(const ConcreteCommandPath &command_path,
+                                                          TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_start_action_with_duration(const ConcreteCommandPath &command_path,
+                                                                        TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_stop_action(const ConcreteCommandPath &command_path,
+                                                         TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_pause_action(const ConcreteCommandPath &command_path,
+                                                          TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_pause_action_with_duration(const ConcreteCommandPath &command_path,
+                                                                        TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_resume_action(const ConcreteCommandPath &command_path,
+                                                           TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enable_action(const ConcreteCommandPath &command_path,
+                                                           TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_enable_action_with_duration(const ConcreteCommandPath &command_path,
+                                                                         TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_disable_action(const ConcreteCommandPath &command_path,
+                                                            TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_disable_action_with_duration(const ConcreteCommandPath &command_path,
+                                                                          TLVReader &tlv_data, void *opaque_ptr)
+{
+    // No actions are implemented, just return status NotFound.
+    // TODO: Add action callbacks for actions cluster.
+    CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+    command_handler->AddStatus(command_path, chip::Protocols::InteractionModel::Status::NotFound);
+
+    return ESP_OK;
+}
+
 namespace esp_matter {
 namespace cluster {
+
+namespace actions {
+namespace command {
+command_t *create_instant_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::InstantAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_instance_action);
+}
+
+command_t *create_instant_action_with_transition(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::InstantActionWithTransition::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_instance_action_with_transition);
+}
+
+command_t *create_start_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::StartAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_start_action);
+}
+
+command_t *create_start_action_with_duration(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::StartActionWithDuration::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_start_action_with_duration);
+}
+
+command_t *create_stop_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::StopAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_stop_action);
+}
+
+command_t *create_pause_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::PauseAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_pause_action);
+}
+
+command_t *create_pause_action_with_duration(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::PauseActionWithDuration::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_pause_action_with_duration);
+}
+
+command_t *create_resume_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::ResumeAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_resume_action);
+}
+
+command_t *create_enable_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::EnableAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_enable_action);
+}
+
+command_t *create_enable_action_with_duration(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::EnableActionWithDuration::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_enable_action_with_duration);
+}
+
+command_t *create_disable_action(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::DisableAction::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_disable_action);
+}
+
+command_t *create_disable_action_with_duration(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Actions::Commands::DisableActionWithDuration::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_disable_action_with_duration);
+}
+
+} /* command */
+} /* actions */
 
 namespace diagnostics_network_thread {
 namespace command {
