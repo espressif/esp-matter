@@ -193,6 +193,73 @@ In the above commands:
 -  ``20202021`` is the ``setup_passcode``
 -  ``3840`` is the ``discriminator``
 
+
+Above method commissions the device using setup passcode and discriminator. Device can also be commissioned using manual pairing code or QR code.
+
+To Commission the device using manual pairing code 34970112332
+
+.. only:: esp32 or esp32c3
+
+    ::
+
+        pairing code-wifi 0x7283 <ssid> <passphrase> 34970112332
+
+.. only:: esp32h2
+
+    ::
+        pairing code-thread 0x7283 hex:<operationalDataset> 34970112332
+
+Above default manual pairing code contains following values:
+
+::
+
+    Version:             0
+    Custom flow:         0      (STANDARD)
+    Discriminator:       3840
+    Passcode:            20202021
+
+To commission the device using QR code MT:Y.K9042C00KA0648G00
+
+.. only:: esp32 or esp32c3
+
+    ::
+
+        pairing code-wifi 0x7283 <ssid> <passphrase> MT:Y.K9042C00KA0648G00
+
+.. only:: esp32h2
+
+    ::
+
+        pairing code-thread 0x7283 hex:<operationalDataset> MT:Y.K9042C00KA0648G00
+
+Above QR Code contains the below default values:
+::
+
+    Version:             0
+    Vendor ID:           65521
+    ProductID:           32768
+    Custom flow:         0        (STANDARD)
+    Discovery Bitmask:   0x02     (BLE)
+    Long discriminator:  3840     (0xf00)
+    Passcode:            20202021
+
+Alternatively, you can scan the below QR code image using Matter commissioners.
+
+.. figure:: ../_static/matter_qrcode_20202021_3840.png
+    :align: center
+    :alt: Default QR Code
+    :figclass: align-center
+
+If QR code is not visible, paste the below link into the browser and scan the QR code.
+::
+
+    https://project-chip.github.io/connectedhomeip/qrcode.html?data=MT:Y.K9042C00KA0648G00
+
+If you want to use different values for commissioning the device, please use the
+`mfg-tool <https://github.com/espressif/esp-matter/tree/main/tools/mfg_tool#readme>`__
+to generate the factory partition which has to be flashed on the device.
+It also generates the new pairing code and QR code image using which you can commission the device.
+
 2.2.1.2 Post Commissioning Setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

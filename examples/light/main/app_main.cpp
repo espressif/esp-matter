@@ -15,7 +15,6 @@
 #include <esp_matter_ota.h>
 
 #include <app_priv.h>
-#include <app_qrcode.h>
 #include <app_reset.h>
 
 static const char *TAG = "app_main";
@@ -127,7 +126,6 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
-    app_qrcode_print();
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);
