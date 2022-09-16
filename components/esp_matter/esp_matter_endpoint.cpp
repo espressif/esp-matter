@@ -29,6 +29,7 @@
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
 #define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
 #define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
+#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID 0x000F
 
 #define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
@@ -264,6 +265,29 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     on_off::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     level_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
     color_control::create(endpoint, NULL, CLUSTER_FLAG_CLIENT, ESP_MATTER_NONE_FEATURE_ID);
+
+    return endpoint;
+}
+} /* color_dimmer_switch */
+
+namespace generic_switch {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Could not create endpoint");
+        return NULL;
+    }
+    add_device_type_id(endpoint, get_device_type_id());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    switch_cluster::create(endpoint, &(config->switch_cluster), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }
