@@ -929,7 +929,7 @@ attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperature::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint16(value));
 }
 

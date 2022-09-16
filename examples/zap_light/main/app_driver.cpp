@@ -87,7 +87,7 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
                 err = app_driver_light_set_hue(handle, val);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
                 err = app_driver_light_set_saturation(handle, val);
-            } else if (attribute_id == ColorControl::Attributes::ColorTemperature::Id) {
+            } else if (attribute_id == ColorControl::Attributes::ColorTemperatureMireds::Id) {
                 err = app_driver_light_set_temperature(handle, val);
             }
         }
@@ -132,7 +132,7 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
         err |= app_driver_light_set_saturation(handle, &val);
     } else if (value == EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE) {
         /* Setting temperature */
-        attribute_id = ColorControl::Attributes::ColorTemperature::Id;
+        attribute_id = ColorControl::Attributes::ColorTemperatureMireds::Id;
         attribute::get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value_u16, sizeof(uint16_t));
         val = esp_matter_uint16(value_u16);
         err |= app_driver_light_set_temperature(handle, &val);
