@@ -417,6 +417,7 @@
     49, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     49, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     49, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
+    51, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     62, /* Cluster: Operational Credentials, Command: AttestationRequest, Privilege: administer */ \
     62, /* Cluster: Operational Credentials, Command: CertificateChainRequest, Privilege: administer */ \
     62, /* Cluster: Operational Credentials, Command: CSRRequest, Privilege: administer */ \
@@ -467,6 +468,7 @@
     4, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     6, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     8, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
+    0, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     0, /* Cluster: Operational Credentials, Command: AttestationRequest, Privilege: administer */ \
     2, /* Cluster: Operational Credentials, Command: CertificateChainRequest, Privilege: administer */ \
     4, /* Cluster: Operational Credentials, Command: CSRRequest, Privilege: administer */ \
@@ -517,6 +519,7 @@
     kMatterAccessPrivilegeAdminister, /* Cluster: Network Commissioning, Command: RemoveNetwork, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Network Commissioning, Command: ConnectNetwork, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Network Commissioning, Command: ReorderNetwork, Privilege: administer */ \
+    kMatterAccessPrivilegeManage, /* Cluster: General Diagnostics, Command: TestEventTrigger, Privilege: manage */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Operational Credentials, Command: AttestationRequest, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Operational Credentials, Command: CertificateChainRequest, Privilege: administer */ \
     kMatterAccessPrivilegeAdminister, /* Cluster: Operational Credentials, Command: CSRRequest, Privilege: administer */ \
