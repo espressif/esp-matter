@@ -15,7 +15,6 @@
 #include <esp_matter_ota.h>
 
 #include <app_bridged_device.h>
-#include <app_qrcode.h>
 #include <app_zboss.h>
 #include <zigbee_bridge.h>
 
@@ -101,8 +100,6 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
-
-    app_qrcode_print();
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter_console_diagnostics_register_commands();
