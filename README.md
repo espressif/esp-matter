@@ -30,3 +30,10 @@ Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/
 
 ## Matter Specifications
 Download the Matter 1.0 specifications from [CSA's official site](https://csa-iot.org/developer-resource/specifications-download-request/)
+
+---
+
+<a href="https://espressif.github.io/esp-launchpad/?flashConfigURL=https://espressif.github.io/esp-matter/launchpad.toml">
+    <img alt="Try it with ESP Launchpad" src="https://espressif.github.io/esp-launchpad/assets/try_with_launchpad.png" width="250" height="70">
+</a>
+                                
