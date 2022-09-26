@@ -141,6 +141,7 @@ typedef struct _endpoint {
     uint16_t endpoint_id;
     uint8_t device_type_count;
     uint32_t device_type_ids[ESP_MATTER_MAX_DEVICE_TYPE_COUNT];
+    uint8_t device_type_versions[ESP_MATTER_MAX_DEVICE_TYPE_COUNT];
     uint16_t flags;
     _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
@@ -395,7 +396,6 @@ esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
     current_endpoint->endpoint_type = endpoint_type;
 
     /* Device types */
-    int default_device_version = 1;
     EmberAfDeviceType *device_types_ptr = (EmberAfDeviceType *)calloc(current_endpoint->device_type_count, sizeof(EmberAfDeviceType));
     if (!device_types_ptr) {
         ESP_LOGE(TAG, "Couldn't allocate device_types");
@@ -406,7 +406,7 @@ esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
     }
     for (size_t i = 0; i < current_endpoint->device_type_count; ++i) {
         device_types_ptr[i].deviceId = current_endpoint->device_type_ids[i];
-        device_types_ptr[i].deviceVersion = default_device_version;
+        device_types_ptr[i].deviceVersion = current_endpoint->device_type_versions[i];
     }
     chip::Span<EmberAfDeviceType> device_types(device_types_ptr, current_endpoint->device_type_count);
     current_endpoint->device_types_ptr = device_types_ptr;
@@ -1670,7 +1670,7 @@ uint16_t get_id(endpoint_t *endpoint)
     return current_endpoint->endpoint_id;
 }
 
-esp_err_t add_device_type_id(endpoint_t *endpoint, uint32_t device_type_id)
+esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -1682,6 +1682,7 @@ esp_err_t add_device_type_id(endpoint_t *endpoint, uint32_t device_type_id)
         return ESP_FAIL;
     }
     current_endpoint->device_type_ids[current_endpoint->device_type_count] = device_type_id;
+    current_endpoint->device_type_versions[current_endpoint->device_type_count] = device_type_version;
     current_endpoint->device_type_count++;
     return ESP_OK;
 }
@@ -1699,6 +1700,21 @@ uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_p
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     *device_type_count_ptr = current_endpoint->device_type_count;
     return current_endpoint->device_type_ids;
+}
+
+uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    if (!device_type_count_ptr) {
+        ESP_LOGE(TAG, "device type count pointer cannot be NULL");
+        return NULL;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    *device_type_count_ptr = current_endpoint->device_type_count;
+    return current_endpoint->device_type_versions;
 }
 
 void *get_priv_data(uint16_t endpoint_id)

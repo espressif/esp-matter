@@ -18,30 +18,50 @@
 
 /* Replace these with IDs from submodule whenever they are implemented */
 #define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
+#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
+#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
+#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID 0x010C
+#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
+#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
+#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
+#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID 0x000F
+#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
+#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
+#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID 0x0107
+#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID 0x0015
+#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_VERSION 1
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
+#define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
 #define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
+#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
+#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 2
 
 static const char *TAG = "esp_matter_endpoint";
 
@@ -55,6 +75,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -62,7 +87,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, CLUSTER_FLAG_SERVER);
@@ -91,6 +116,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -98,7 +128,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -116,6 +146,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -123,7 +158,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -143,6 +178,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -150,7 +190,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -172,6 +212,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -179,7 +224,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -201,6 +246,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -208,7 +258,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -225,6 +275,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -232,7 +287,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -250,6 +305,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -257,7 +317,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -276,6 +336,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -283,7 +348,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -299,6 +364,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -306,7 +376,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -324,6 +394,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -331,7 +406,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -351,6 +426,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_FAN_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_FAN_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -358,7 +438,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -375,6 +455,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -382,7 +467,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -398,6 +483,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -405,7 +495,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint,CLUSTER_FLAG_SERVER);
 
@@ -419,6 +509,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     // bridged node endpoints are always deletable
@@ -428,7 +523,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         return NULL;
     }
 
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     bridged_device_basic::create(endpoint, &(config->bridged_device_basic), CLUSTER_FLAG_SERVER);
@@ -443,6 +538,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -451,7 +551,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         return NULL;
     }
 
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -467,6 +567,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -475,7 +580,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_da
         return NULL;
     }
 
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -491,6 +596,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -498,7 +608,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
@@ -513,6 +623,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -520,7 +635,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
@@ -535,6 +650,11 @@ uint32_t get_device_type_id()
     return ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID;
 }
 
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_VERSION;
+}
+
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
@@ -542,7 +662,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    add_device_type_id(endpoint, get_device_type_id());
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
