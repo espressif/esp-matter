@@ -60,7 +60,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 1);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, CLUSTER_FLAG_SERVER);
@@ -96,7 +96,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -121,7 +121,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -148,7 +148,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -177,7 +177,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -206,7 +206,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -230,7 +230,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -255,7 +255,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
@@ -281,7 +281,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -306,7 +306,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -333,7 +333,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 1);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -357,7 +357,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -391,7 +391,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         return NULL;
     }
 
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 1);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     bridged_device_basic::create(endpoint, &(config->bridged_device_basic), CLUSTER_FLAG_SERVER);
@@ -415,7 +415,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         return NULL;
     }
 
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
@@ -439,7 +439,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     groups::create(endpoint, NULL, CLUSTER_FLAG_CLIENT);
@@ -462,7 +462,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 2);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
@@ -484,7 +484,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
         ESP_LOGE(TAG, "Could not create endpoint");
         return NULL;
     }
-    set_device_type_id(endpoint, get_device_type_id());
+    set_device_type_id(endpoint, get_device_type_id(), 1);
 
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER | CLUSTER_FLAG_CLIENT);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);

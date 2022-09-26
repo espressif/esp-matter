@@ -206,7 +206,7 @@ uint16_t get_id(endpoint_t *endpoint);
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
+esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version);
 
 /** Get device type ID
  *

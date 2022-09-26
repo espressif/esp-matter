@@ -100,6 +100,7 @@ typedef struct _cluster {
 typedef struct _endpoint {
     uint16_t endpoint_id;
     uint32_t device_type_id;
+    uint8_t device_type_version;
     uint16_t flags;
     _cluster_t *cluster_list;
     EmberAfEndpointType *endpoint_type;
@@ -369,7 +370,7 @@ esp_err_t enable(endpoint_t *endpoint)
         return ESP_ERR_NO_MEM;
     }
     device_types_ptr[0].deviceId = current_endpoint->device_type_id;
-    device_types_ptr[0].deviceVersion = default_device_version;
+    device_types_ptr[0].deviceVersion = current_endpoint->device_type_version;
     if (current_endpoint->flags & ENDPOINT_FLAG_BRIDGE) {
         device_types_ptr[1].deviceId = current_endpoint->endpoint_id == 0 ?
                                        endpoint::bridge::get_device_type_id() :
@@ -1491,6 +1492,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     /* Set */
     endpoint->endpoint_id = current_node->current_endpoint_id++;
     endpoint->device_type_id = 0xFFFF'FFFF;
+    endpoint->device_type_version = 0;
     endpoint->flags = flags;
     endpoint->priv_data = priv_data;
 
@@ -1607,7 +1609,7 @@ uint16_t get_id(endpoint_t *endpoint)
     return current_endpoint->endpoint_id;
 }
 
-esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id)
+esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -1615,6 +1617,7 @@ esp_err_t set_device_type_id(endpoint_t *endpoint, uint32_t device_type_id)
     }
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     current_endpoint->device_type_id = device_type_id;
+    current_endpoint->device_type_version = device_type_version;
     return ESP_OK;
 }
 
