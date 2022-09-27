@@ -39,14 +39,41 @@ Update the switch's binding attribute to add the entry of remote device
     binding write binding '[{"fabricIndex": 1, "node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
 ```
 
-### 2.2 Device console
+### 2.2 Bind a group to switch
+
+Using the chip-tool, commission 3 (or more) devices, 1 switch and 2 (or more) lights.
+If you are having trouble, try commissioning them one at a time (by powering off the other device) as
+the default discriminator and passcode are same for both of them.
+Then use the below commands to add the devices to the group and bind the group to the switch.
+
+For the commands below:
+-   Node Id of switch used during commissioning is 0x7283 (29315 in decimal)
+-   Node Id of light1 used during commissioning is 0x5164 (20836 in decimal)
+-   Node Id of light2 used during commissioning is 0x5163 (20835 in decimal)
+-   Group Id for the devices is 257 which is assigned by chip-tool when using the testing-group command
+-   Binding cluster is currently present on endpoint 1 on the switch
+
+Send the testing-group command to the switch and lights.
+This command will write the acl attributes of the nodes and add the endpoint 1 of the nodes to the group 257.
+```
+    tests TestGroupDemoConfig --nodeId 29315
+    tests TestGroupDemoConfig --nodeId 20836
+    tests TestGroupDemoConfig --nodeId 20835
+```
+
+Update the switch's binding attribute to add the entry of group in the binding table:
+```
+    binding write binding '[{"fabricIndex": 1, "group": 257}]' 0x7283 0x1
+```
+
+### 2.3 Device console
 
 Switch specific console commands:
 
 -   Send command to all the bound devices on the specified cluster:
     (The IDs are in hex):
     ```
-    matter esp bound invoke <endpoint_id> <cluster_id> <command_id>
+    matter esp bound invoke <local_endpoint_id> <cluster_id> <command_id>
     ```
 
     -   Example: Off:
@@ -62,6 +89,27 @@ Switch specific console commands:
     -   Example: Toggle:
         ```
         matter esp bound invoke 0x1 0x6 0x2
+        ```
+
+-   Send command to all the bound groups on the specified cluster:
+    (The IDs are in hex):
+    ```
+    matter esp bound invoke-group <local_endpoint_id> <cluster_id> <command_id>
+    ```
+
+    -   Example: Off:
+        ```
+        matter esp bound invoke-group 0x1 0x6 0x0
+        ```
+
+    -   Example: On:
+        ```
+        matter esp bound invoke-group 0x1 0x6 0x1
+        ```
+
+    -   Example: Toggle:
+        ```
+        matter esp bound invoke-group 0x1 0x6 0x2
         ```
 
 ## 3. Device Performance

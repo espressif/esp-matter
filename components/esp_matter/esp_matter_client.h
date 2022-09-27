@@ -31,6 +31,9 @@ namespace command {
 esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id);
 esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id);
 esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id);
+esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id);
+esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id);
 } /* command */
 } /* on_off */
 

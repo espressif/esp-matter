@@ -37,38 +37,56 @@ namespace esp_matter {
 namespace client {
 
 static command_callback_t client_command_callback = NULL;
-static void *client_command_callback_priv_data = NULL;
+static group_command_callback_t client_group_command_callback = NULL;
+static void *command_callback_priv_data;
 static bool initialize_binding_manager = false;
 
-esp_err_t set_command_callback(command_callback_t callback, void *priv_data)
+esp_err_t set_command_callback(command_callback_t callback, group_command_callback_t g_callback, void *priv_data)
 {
     client_command_callback = callback;
-    client_command_callback_priv_data = priv_data;
+    client_group_command_callback = g_callback;
+    command_callback_priv_data = priv_data;
     return ESP_OK;
 }
 
-/** TODO: Change g_remote_endpoint_id to something better. */
-uint16_t g_remote_endpoint_id = kInvalidEndpointId;
 void esp_matter_connection_success_callback(void *context, ExchangeManager & exchangeMgr, SessionHandle & sessionHandle)
 {
+    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
+    if (!cmd_handle) {
+        ESP_LOGE(TAG, "Failed to call connect_success_callback since the command handle is NULL");
+        return;
+    }
     ESP_LOGI(TAG, "New connection success");
+    // Only unicast binding needs to establish the connection
     if (client_command_callback) {
         OperationalDeviceProxy device(&exchangeMgr, sessionHandle);
-        client_command_callback(&device, g_remote_endpoint_id, client_command_callback_priv_data);
+        client_command_callback(&device, cmd_handle->endpoint_id, cmd_handle, command_callback_priv_data);
     }
+    chip::Platform::Delete(cmd_handle);
 }
 
 void esp_matter_connection_failure_callback(void *context, const ScopedNodeId & peerId, CHIP_ERROR error)
 {
+    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     ESP_LOGI(TAG, "New connection failure");
+    if (cmd_handle) {
+        chip::Platform::Delete(cmd_handle);
+    }
 }
 
-esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoint_id)
+esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_handle)
 {
     static Callback<chip::OnDeviceConnected> success_callback(esp_matter_connection_success_callback, NULL);
     static Callback<chip::OnDeviceConnectionFailure> failure_callback(esp_matter_connection_failure_callback, NULL);
+
+    command_handle_t *context = chip::Platform::New<command_handle_t>(cmd_handle);
+    if (!context) {
+        ESP_LOGE(TAG, "failed to alloc memory for the command handle");
+        return ESP_ERR_NO_MEM;
+    }
+    success_callback.mContext = static_cast<void *>(context);
+    failure_callback.mContext = static_cast<void *>(context);
     Server * server = &(chip::Server::GetInstance());
-    g_remote_endpoint_id = remote_endpoint_id;
     server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback,
                                                             &failure_callback);
     return ESP_OK;
@@ -77,14 +95,44 @@ esp_err_t connect(uint8_t fabric_index, uint64_t node_id, uint16_t remote_endpoi
 static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding, OperationalDeviceProxy *peer_device,
                                                        void *context)
 {
-    if (client_command_callback) {
-        client_command_callback(peer_device, binding.remote, client_command_callback_priv_data);
+    command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
+    if (!cmd_handle) {
+        ESP_LOGE(TAG, "Failed to call the binding callback since command handle is NULL");
+        return;
+    }
+    if (binding.type == EMBER_UNICAST_BINDING && !cmd_handle->is_group && peer_device) {
+        if (client_command_callback) {
+            client_command_callback(peer_device, binding.remote, cmd_handle, command_callback_priv_data);
+        }
+    } else if (binding.type == EMBER_MULTICAST_BINDING && cmd_handle->is_group && !peer_device) {
+        if (client_group_command_callback) {
+            client_group_command_callback(binding.fabricIndex, binding.groupId, cmd_handle, command_callback_priv_data);
+        }
     }
 }
 
-esp_err_t cluster_update(uint16_t endpoint_id, uint32_t cluster_id)
+static void esp_matter_binding_context_release(void *context)
 {
-    chip::BindingManager::GetInstance().NotifyBoundClusterChanged(endpoint_id, cluster_id, NULL);
+    if (context) {
+        chip::Platform::Delete(static_cast<command_handle_t *>(context));
+    }
+}
+
+esp_err_t cluster_update(uint16_t local_endpoint_id, command_handle_t *cmd_handle)
+{
+    command_handle_t *context = chip::Platform::New<command_handle_t>(cmd_handle);
+    if (!context) {
+        ESP_LOGE(TAG, "failed to alloc memory for the command handle");
+        return ESP_ERR_NO_MEM;
+    }
+    if (CHIP_NO_ERROR !=
+        chip::BindingManager::GetInstance().NotifyBoundClusterChanged(local_endpoint_id, cmd_handle->cluster_id,
+                                                                      static_cast<void *>(context))) {
+        chip::Platform::Delete(context);
+        ESP_LOGE(TAG, "failed to notify the bound cluster changed");
+        return ESP_FAIL;
+    }
+
     return ESP_OK;
 }
 
@@ -99,6 +147,7 @@ static void __binding_manager_init(intptr_t arg)
 
     chip::BindingManager::GetInstance().Init(binding_init_params);
     chip::BindingManager::GetInstance().RegisterBoundDeviceChangedHandler(esp_matter_command_client_binding_callback);
+    chip::BindingManager::GetInstance().RegisterBoundDeviceContextReleaseHandler(esp_matter_binding_context_release);
 }
 
 void binding_manager_init()
@@ -139,6 +188,15 @@ esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
     return ESP_OK;
 }
 
+esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id)
+{
+    OnOff::Commands::On::Type command_data;
+    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
 esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     OnOff::Commands::Off::Type command_data;
@@ -148,12 +206,30 @@ esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
     return ESP_OK;
 }
 
+esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id)
+{
+    OnOff::Commands::Off::Type command_data;
+    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
 esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     OnOff::Commands::Toggle::Type command_data;
 
     chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id)
+{
+    OnOff::Commands::Toggle::Type command_data;
+    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
