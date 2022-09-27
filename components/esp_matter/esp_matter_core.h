@@ -196,21 +196,22 @@ endpoint_t *get_next(endpoint_t *endpoint);
  */
 uint16_t get_id(endpoint_t *endpoint);
 
-/** Add device type ID
+/** Add device type ID and verision
  *
- * Add the device type ID for the endpoint.
+ * Add the device type ID and version for the endpoint.
  *
  * @param[in] endpoint Endpoint handle.
  * @param[in] device_type_id Device type ID.
+ * @parma[in] device_type_version Device type version.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t add_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
+esp_err_t add_device_type(endpoint_t *endpoint, uint32_t device_type_id, uint8_t device_type_version);
 
 /** Get device type ID array
  *
- * Get the device type ID array for the endpoint.
+ * Get the device type ID array for the endpoint. This array is aligned with the device type version array.
  *
  * @param[in] endpoint Endpoint handle.
  * @param[out] device_type_count_ptr the pointer of device type ID array length.
@@ -219,6 +220,18 @@ esp_err_t add_device_type_id(endpoint_t *endpoint, uint32_t device_type_id);
  * @return NULL when the endpoint or the device_type_count_ptr is NULL.
  */
 uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
+
+/** Get device type version array
+ *
+ * Get the device type version array for the endpoint. This array is aligned with the device type ID array.
+ *
+ * @param[in] endpoint Endpoint handle.
+ * @param[out] device_type_count_ptr the pointer of device type version array length.
+ *
+ * @return device type version array on success.
+ * @return NULL when the endpoint or the device_type_count_ptr is NULL.
+ */
+uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
 
 /** Get private data
  *

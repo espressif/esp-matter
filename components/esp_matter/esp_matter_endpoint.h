@@ -43,6 +43,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* root_node */
 
@@ -55,6 +56,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* on_off_light */
 
@@ -68,6 +70,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* dimmable_light */
 
@@ -82,6 +85,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* color_temperature_light */
 
@@ -96,6 +100,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* extended_color_light */
 
@@ -106,6 +111,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* on_off_switch */
 
@@ -116,6 +122,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* dimmer_switch */
 
@@ -126,6 +133,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* color_dimmer_switch */
 
@@ -136,6 +144,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* generic_switch */
 
@@ -148,6 +157,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* on_off_plugin_unit */
 
@@ -161,6 +171,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* dimmable_plugin_unit */
 
@@ -172,6 +183,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* fan */
 
@@ -183,11 +195,13 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* thermostat */
 
 namespace aggregator {
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
 } /* bridge */
 
@@ -197,6 +211,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* bridged_node */
 
@@ -207,6 +222,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* door_lock */
 
@@ -219,6 +235,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* window_covering */
 
@@ -229,6 +246,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* temperature_sensor */
 
@@ -239,6 +257,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* occupancy_sensor */
 
@@ -249,6 +268,7 @@ typedef struct config {
 } config_t;
 
 uint32_t get_device_type_id();
+uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 } /* contact_sensor */
 
