@@ -57,30 +57,57 @@ static constexpr chip::CommandId Id = 0x00000000;
 
 namespace rainmaker {
 
-static esp_err_t console_handler(int argc, char **argv)
+#if CONFIG_ENABLE_CHIP_SHELL
+static esp_matter::console::engine rainmaker_console;
+
+static esp_err_t console_add_user_handler(int argc, char **argv)
 {
-    if (argc == 3 && strncmp(argv[0], "add-user", sizeof("add-user")) == 0) {
-        printf("%s: Starting user-node mapping\n", TAG);
-        if (esp_rmaker_start_user_node_mapping(argv[1], argv[2]) != ESP_OK) {
-            return ESP_FAIL;
-        }
-    } else {
+    if (argc != 2) {
         printf("%s: Invalid Usage.\n", TAG);
         return ESP_ERR_INVALID_ARG;
+    }
+    printf("%s: Starting user-node mapping\n", TAG);
+    if (esp_rmaker_start_user_node_mapping(argv[0], argv[1]) != ESP_OK) {
+        return ESP_FAIL;
     }
     return ESP_OK;
 }
 
+static esp_err_t console_dispatch(int argc, char **argv)
+{
+    if (argc <= 0) {
+        rainmaker_console.for_each_command(esp_matter::console::print_description, NULL);
+        return ESP_OK;
+    }
+    return rainmaker_console.exec_command(argc, argv);
+}
+
 static void register_commands()
 {
-    esp_matter_console_command_t command = {
+    static bool init_done = false;
+    if (init_done) {
+        return;
+    }
+    static const esp_matter::console::command_t command = {
         .name = "rainmaker",
-        .description = "Initiate ESP RainMaker User-Node mapping from the node. "
-                       "Usage: matter esp rainmaker add-user <user_id> <secret_key>",
-        .handler = console_handler,
+        .description = "This can be used to run ESP RainMaker commands. ",
+        .handler = console_dispatch,
     };
-    esp_matter_console_add_command(&command);
+
+    static const esp_matter::console::command_t rainmaker_commands[] = {
+        {
+            .name = "add-user",
+            .description = "Initiate ESP RainMaker User-Node mapping from the node. "
+                           "Usage: matter esp rainmaker add-user <user_id> <secret_key>",
+            .handler = console_add_user_handler,
+        },
+    };
+    rainmaker_console.register_commands(rainmaker_commands,
+                                        sizeof(rainmaker_commands) / sizeof(esp_matter::console::command_t));
+    esp_matter::console::add_commands(&command, 1);
+    init_done = true;
 }
+#endif
 
 static esp_err_t status_attribute_update(bool status)
 {
@@ -215,7 +242,9 @@ static esp_err_t custom_cluster_create()
 esp_err_t init()
 {
     /* Add custom rainmaker cluster */
+#if CONFIG_ENABLE_CHIP_SHELL
     register_commands();
+#endif
     return custom_cluster_create();
 }
 
