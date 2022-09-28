@@ -45,7 +45,7 @@ namespace attribute {
 
 attribute_t *create_device_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceList::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, Descriptor::Attributes::DeviceTypeList::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -1000,7 +1000,7 @@ attribute_t *create_color_capabilities(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperature::Id,
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::ColorTemperatureMireds::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
 }
 
