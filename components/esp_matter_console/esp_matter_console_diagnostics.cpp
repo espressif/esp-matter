@@ -18,7 +18,11 @@
 #include <esp_timer.h>
 #include <string.h>
 
+namespace esp_matter {
+namespace console {
+
 static const char *TAG = "esp_matter_console_diagnostics";
+static engine diagnostics_console;
 
 static esp_err_t mem_dump_console_handler(int argc, char *argv[])
 {
@@ -39,26 +43,38 @@ static esp_err_t up_time_console_handler(int argc, char *argv[])
     return ESP_OK;
 }
 
-static esp_err_t esp_matter_console_diagnostics_handler(int argc, char **argv)
+static esp_err_t diagnostics_dispatch(int argc, char **argv)
 {
-    if (argc == 1 && strncmp(argv[0], "mem-dump", sizeof("mem-dump")) == 0) {
-        return mem_dump_console_handler(argc, argv);
-    } else if (argc == 1 && strncmp(argv[0], "up-time", sizeof("up-time")) == 0) {
-        return up_time_console_handler(argc, argv);
-    } else {
-        ESP_LOGE(TAG, "Incorrect arguments");
-        return ESP_FAIL;
+    if (argc <= 0) {
+        diagnostics_console.for_each_command(print_description, NULL);
+        return ESP_OK;
     }
-    return ESP_OK;
+    return diagnostics_console.exec_command(argc, argv);
 }
 
-esp_err_t esp_matter_console_diagnostics_register_commands()
+esp_err_t diagnostics_register_commands()
 {
-    esp_matter_console_command_t command = {
+    static const command_t command = {
         .name = "diagnostics",
-        .description = "Diagnostic commands. Usage matter esp diagnostics <diagnostic_command>. Diagnostics commands: "
-                       "mem-dump, up-time",
-        .handler = esp_matter_console_diagnostics_handler,
+        .description = "Diagnostic commands. Usage matter esp diagnostics <diagnostic_command>.",
+        .handler = diagnostics_dispatch,
     };
-    return esp_matter_console_add_command(&command);
+
+    static const command_t diagnostics_commands[] = {
+        {
+            .name = "mem-dump",
+            .description = "help for memory analysis",
+            .handler = mem_dump_console_handler,
+        },
+        {
+            .name = "up-time",
+            .description = "print the uptime of the device",
+            .handler = up_time_console_handler,
+        },
+    };
+    diagnostics_console.register_commands(diagnostics_commands, sizeof(diagnostics_commands)/sizeof(command_t));
+
+    return add_commands(&command, 1);
 }
+} // namespace console
+} // namespace esp_matter

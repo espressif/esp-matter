@@ -99,7 +99,7 @@ extern "C" void app_main()
     app_driver_light_set_defaults(light_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
-    esp_matter_console_diagnostics_register_commands();
-    esp_matter_console_init();
+    esp_matter::console::diagnostics_register_commands();
+    esp_matter::console::init();
 #endif
 }
