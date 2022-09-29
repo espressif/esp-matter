@@ -1,0 +1,61 @@
+# Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Docker Image CI
+
+on:
+  push:
+    # Runs when chip-builds file changes
+    branches: [ "main" ]
+    paths:
+      - "tools/docker/chip-builds"
+
+  # Can be run manually
+  workflow_dispatch:
+
+env:
+  # Platforms to build the image for
+  BUILD_PLATFORMS: linux/amd64,linux/arm64
+  DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ github.repository }}
+  TAG_NAME: chip
+
+jobs:
+  build:
+    # Disable the job in forks
+    if: ${{ github.repository_owner == 'espressif' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # The following steps are the standard boilerplate from
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up QEMU for multiarch builds
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: tools/docker
+          file: tools/docker/chip-builds
+          push: true
+          tags: ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_NAME }}
+          platforms: ${{ env.BUILD_PLATFORMS }}
