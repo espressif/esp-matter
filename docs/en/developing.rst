@@ -50,8 +50,10 @@ so if you want to do a shallow clone use the following command:
 
 ::
 
-   git clone --depth 1 --shallow-submodules --recursive https://github.com/espressif/esp-matter.git
+   git clone --depth 1 https://github.com/espressif/esp-matter.git
    cd esp-matter
+   git submodule update --init --depth 1
+   ./connectedhomeip/connectedhomeip/scripts/checkout_submodules.py --platform esp32 --shallow
    ./install.sh
    cd ..
 
