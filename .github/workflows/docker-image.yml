@@ -27,7 +27,7 @@ on:
 env:
   # Platforms to build the image for
   BUILD_PLATFORMS: linux/amd64,linux/arm64
-  DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ github.repository }}
+  DOCKERHUB_REPO: ${{ github.repository }}
   TAG_NAME: chip
 
 jobs:
