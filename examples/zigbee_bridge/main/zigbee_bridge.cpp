@@ -22,24 +22,6 @@ using namespace esp_matter::cluster;
 
 extern uint16_t aggregator_endpoint_id;
 
-static esp_err_t zigbee_bridge_init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
-{
-    if (!dev) {
-        ESP_LOGE(TAG, "Invalid bridge device to be initialized");
-        return ESP_ERR_INVALID_ARG;
-    }
-
-    on_off::config_t config;
-    on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
-    endpoint::add_device_type(dev->endpoint, endpoint::on_off_light::get_device_type_id(),
-                              endpoint::on_off_light::get_device_type_version());
-    if (endpoint::enable(dev->endpoint, dev->parent_endpoint_id) != ESP_OK) {
-        ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
-        endpoint::destroy(dev->node, dev->endpoint);
-        return ESP_FAIL;
-    }
-    return ESP_OK;
-}
 void zigbee_bridge_find_bridged_on_off_light_cb(zb_uint8_t zdo_status, zb_uint16_t addr, zb_uint8_t endpoint)
 {
     ESP_LOGI(TAG, "on_off_light found: address:0x%x, endpoint:%d, response_status:%d", addr, endpoint, zdo_status);
@@ -54,14 +36,11 @@ void zigbee_bridge_find_bridged_on_off_light_cb(zb_uint8_t zdo_status, zb_uint16
                      app_bridge_get_matter_endpointid_by_zigbee_shortaddr(addr));
         } else {
             app_bridged_device_t *bridged_device =
-                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE,
+                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
+                                                 ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE,
                                                  app_bridge_zigbee_address(endpoint, addr));
             if (!bridged_device) {
                 ESP_LOGE(TAG, "Failed to create zigbee bridged device (on_off light)");
-                return;
-            }
-            if (zigbee_bridge_init_bridged_onoff_light(bridged_device->dev) != ESP_OK) {
-                ESP_LOGE(TAG, "Failed to initialize the bridged node");
                 return;
             }
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x zigbee device on endpoint %d", addr,
