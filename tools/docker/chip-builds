@@ -1,0 +1,20 @@
+ARG VERSION=latest
+FROM connectedhomeip/chip-build-esp32:${VERSION} as build
+
+WORKDIR /opt/espressif/connectedhomeip
+ENV CHIP_PATH=/opt/espressif/connectedhomeip
+
+RUN set -x \
+    && git init \
+    && git remote add origin https://github.com/project-chip/connectedhomeip.git \
+    && git fetch origin --depth 1 4f7669b052b16bd054227376e1bbadac85419793 \
+    && git checkout FETCH_HEAD \
+    && : # last line
+
+RUN set -x \
+    && scripts/checkout_submodules.py --platform esp32 --shallow \
+    && : # last line
+
+RUN set -x \
+    && scripts/build/gn_bootstrap.sh \
+    && : # last line
