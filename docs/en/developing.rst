@@ -159,8 +159,9 @@ Choose IDF target.
 2.2 Commissioning and Control
 -----------------------------
 
--  For a Wi-Fi device, a Wi-Fi AP which supports IPv6 is required.
--  For a Thread device, a Thread Border Router is required.
+There are a few implementations of Matter commissioner present in the `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/src/controller#implementations>`__ repository.
+
+CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
 
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
