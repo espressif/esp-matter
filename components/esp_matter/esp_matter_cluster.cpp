@@ -249,7 +249,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        
+
         /* Attributes not managed internally */
         if (config) {
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
@@ -391,9 +391,9 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         attribute::create_scan_max_time_seconds(cluster, 0);
         attribute::create_connect_max_time_seconds(cluster, 0);
         attribute::create_interface_enabled(cluster, 0);
-        attribute::create_last_networking_status(cluster, 0);
+        attribute::create_last_networking_status(cluster, nullable<uint8_t>());
         attribute::create_last_network_id(cluster, NULL, 0);
-        attribute::create_last_connect_error_value(cluster, 0);
+        attribute::create_last_connect_error_value(cluster, nullable<int32_t>());
         global::attribute::create_feature_map(cluster, 0);
 
         /* Attributes not managed internally */
@@ -631,10 +631,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
         attribute::create_bssid(cluster, NULL, 0);
-        attribute::create_security_type(cluster, 0);
-        attribute::create_wifi_version(cluster, 0);
-        attribute::create_channel_number(cluster, 0);
-        attribute::create_rssi(cluster, 0);
+        attribute::create_security_type(cluster, nullable<uint8_t>());
+        attribute::create_wifi_version(cluster, nullable<uint8_t>());
+        attribute::create_channel_number(cluster, nullable<uint16_t>());
+        attribute::create_rssi(cluster, nullable<int8_t>());
 
         /* Attributes not managed internally */
         if (config) {
@@ -672,19 +672,19 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     if (flags & CLUSTER_FLAG_SERVER) {
         /* Attributes managed internally */
         global::attribute::create_feature_map(cluster, 0);
-        attribute::create_channel(cluster, 0);
-        attribute::create_routing_role(cluster, 0);
+        attribute::create_channel(cluster, nullable<uint16_t>(0));
+        attribute::create_routing_role(cluster, nullable<uint8_t>(0));
         attribute::create_network_name(cluster, NULL, 0);
-        attribute::create_pan_id(cluster, 0);
-        attribute::create_extended_pan_id(cluster, 0);
+        attribute::create_pan_id(cluster, nullable<uint16_t>(0));
+        attribute::create_extended_pan_id(cluster, nullable<uint64_t>(0));
         attribute::create_mesh_local_prefix(cluster, NULL, 0);
         attribute::create_neighbor_table(cluster, NULL, 0, 0);
         attribute::create_route_table(cluster, NULL, 0, 0);
-        attribute::create_extended_partition_id(cluster, 0);
-        attribute::create_weighting(cluster, 0);
-        attribute::create_data_version(cluster, 0);
-        attribute::create_stable_data_version(cluster, 0);
-        attribute::create_leader_router_id(cluster, 0);
+        attribute::create_extended_partition_id(cluster, nullable<uint32_t>(0));
+        attribute::create_weighting(cluster, nullable<uint8_t>(0));
+        attribute::create_data_version(cluster, nullable<uint8_t>(0));
+        attribute::create_stable_data_version(cluster, nullable<uint8_t>(0));
+        attribute::create_leader_router_id(cluster, nullable<uint8_t>(0));
         attribute::create_security_policy(cluster, NULL, 0, 0);
         attribute::create_channel_page0_mask(cluster, NULL, 0);
         attribute::create_operational_dataset_components(cluster, NULL, 0, 0);
@@ -1017,10 +1017,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 
         /* Attributes managed internally */
         attribute::create_remaining_time(cluster, 0);
-        for (uint8_t idx = 1; idx <= config->number_of_primaries; ++idx) {
+        for (uint8_t idx = 1; idx <= config->number_of_primaries.value_or(0); ++idx) {
             attribute::create_primary_n_x(cluster, 0, idx);
             attribute::create_primary_n_y(cluster, 0, idx);
-            attribute::create_primary_n_intensity(cluster, 0, idx);
+            attribute::create_primary_n_intensity(cluster, nullable<uint8_t>(), idx);
         }
     }
 

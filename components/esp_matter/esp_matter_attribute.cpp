@@ -237,7 +237,8 @@ namespace attribute {
 
 attribute_t *create_binding(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, Binding::Attributes::Binding::Id, ATTRIBUTE_FLAG_WRITABLE,
+    return esp_matter::attribute::create(cluster, Binding::Attributes::Binding::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_array(value, length, count));
 }
 
@@ -250,7 +251,8 @@ namespace attribute {
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
     return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOtaProviders::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_array(value, length, count));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
 }
 
 attribute_t *create_update_possible(cluster_t *cluster, bool value)
@@ -265,10 +267,10 @@ attribute_t *create_update_state(cluster_t *cluster, uint8_t value)
                                          ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
 }
 
-attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value)
+attribute_t *create_update_state_progress(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::UpdateStateProgress::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 } /* attribute */
@@ -343,10 +345,10 @@ attribute_t *create_interface_enabled(cluster_t *cluster, bool value)
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_bool(value));
 }
 
-attribute_t *create_last_networking_status(cluster_t *cluster, uint8_t value)
+attribute_t *create_last_networking_status(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastNetworkingStatus::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length)
@@ -355,10 +357,10 @@ attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t
                                          ATTRIBUTE_FLAG_NONE, esp_matter_octet_str(value, length));
 }
 
-attribute_t *create_last_connect_error_value(cluster_t *cluster, uint32_t value)
+attribute_t *create_last_connect_error_value(cluster_t *cluster, nullable<int32_t> value)
 {
     return esp_matter::attribute::create(cluster, NetworkCommissioning::Attributes::LastConnectErrorValue::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int32(value));
 }
 
 } /* attribute */
@@ -493,76 +495,76 @@ attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length)
                                          esp_matter_octet_str(value, length));
 }
 
-attribute_t *create_security_type(cluster_t *cluster, uint8_t value)
+attribute_t *create_security_type(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::SecurityType::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_enum8(value));
 }
 
-attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value)
+attribute_t *create_wifi_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::WiFiVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_channel_number(cluster_t *cluster, uint16_t value)
+attribute_t *create_channel_number(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::ChannelNumber::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_rssi(cluster_t *cluster, int8_t value)
+attribute_t *create_rssi(cluster_t *cluster, nullable<int8_t> value)
 {
-    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_int8(value));
+    return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::Rssi::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_int8(value));
 }
 
-attribute_t *create_beacon_lost_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_beacon_lost_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconLostCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_beacon_rx_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_beacon_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::BeaconRxCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastRxCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketMulticastTxCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastRxCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE,  esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, uint32_t value)
+attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::PacketUnicastTxCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_current_max_rate(cluster_t *cluster, uint64_t value)
+attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::CurrentMaxRate::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
-attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
+attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, WiFiNetworkDiagnostics::Attributes::OverrunCount::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
 } /* attribute */
@@ -571,16 +573,16 @@ attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value)
 namespace diagnostics_network_thread {
 namespace attribute {
 
-attribute_t *create_channel(cluster_t *cluster, uint16_t value)
+attribute_t *create_channel(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Channel::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_routing_role(cluster_t *cluster, uint8_t value)
+attribute_t *create_routing_role(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RoutingRole::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length)
@@ -589,16 +591,16 @@ attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t lengt
                                          ATTRIBUTE_FLAG_NONE, esp_matter_char_str(value, length));
 }
 
-attribute_t *create_pan_id(cluster_t *cluster, uint16_t value)
+attribute_t *create_pan_id(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PanId::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_extended_pan_id(cluster_t *cluster, uint64_t value)
+attribute_t *create_extended_pan_id(cluster_t *cluster, nullable<uint64_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::ExtendedPanId::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint64(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint64(value));
 }
 
 attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length)
@@ -619,34 +621,34 @@ attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t len
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
-attribute_t *create_extended_partition_id(cluster_t *cluster, uint32_t value)
+attribute_t *create_partition_id(cluster_t *cluster, nullable<uint32_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::PartitionId::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint32(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
 }
 
-attribute_t *create_weighting(cluster_t *cluster, uint8_t value)
+attribute_t *create_weighting(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::Weighting::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_data_version(cluster_t *cluster, uint8_t value)
+attribute_t *create_data_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::DataVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value)
+attribute_t *create_stable_data_version(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::StableDataVersion::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_leader_router_id(cluster_t *cluster, uint8_t value)
+attribute_t *create_leader_router_id(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::LeaderRouterId::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
@@ -676,6 +678,51 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 
 } /* attribute */
 } /* diagnostics_network_thread */
+
+namespace bridged_device_basic {
+namespace attribute {
+
+attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::NodeLabel::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_reachable(cluster_t *cluster, bool value)
+{
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_bool(value));
+}
+
+} /* attribute */
+} /* bridged_device_basic */
+
+namespace user_label {
+namespace attribute {
+
+attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, UserLabel::Attributes::LabelList::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* user_label */
+
+namespace fixed_label {
+namespace attribute {
+
+attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, FixedLabel::Attributes::LabelList::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* fixed_label */
+
 
 namespace identify {
 namespace attribute {
@@ -764,23 +811,25 @@ attribute_t *create_global_scene_control(cluster_t *cluster, bool value)
                                          esp_matter_bool(value));
 }
 
-attribute_t *create_on_time(cluster_t *cluster, uint16_t value)
+attribute_t *create_on_time(cluster_t *cluster, nullable<uint16_t> value)
 {
-    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnTime::Id, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OnTime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value)
+attribute_t *create_off_wait_time(cluster_t *cluster, nullable<uint16_t> value)
 {
-    return esp_matter::attribute::create(cluster, OnOff::Attributes::OffWaitTime::Id, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, OnOff::Attributes::OffWaitTime::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value)
+attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, OnOff::Attributes::StartUpOnOff::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE,
-                                         esp_matter_enum8(value));
+                                         esp_matter_nullable_enum8(value));
 }
 
 } /* attribute */
@@ -789,16 +838,18 @@ attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value)
 namespace level_control {
 namespace attribute {
 
-attribute_t *create_current_level(cluster_t *cluster, uint8_t value)
+attribute_t *create_current_level(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, LevelControl::Attributes::CurrentLevel::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::CurrentLevel::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_on_level(cluster_t *cluster, uint8_t value)
+attribute_t *create_on_level(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnLevel::Id, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnLevel::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
@@ -855,28 +906,32 @@ attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value)
                                          ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
 }
 
-attribute_t *create_on_transition_time(cluster_t* cluster, uint16_t value)
+attribute_t *create_on_transition_time(cluster_t* cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::OnTransitionTime::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_off_transition_time(cluster_t* cluster, uint16_t value)
+attribute_t *create_off_transition_time(cluster_t* cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::OffTransitionTime::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_default_move_rate(cluster_t* cluster, uint8_t value)
+attribute_t *create_default_move_rate(cluster_t* cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::DefaultMoveRate::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_start_up_current_level(cluster_t *cluster, uint8_t value)
+attribute_t *create_start_up_current_level(cluster_t *cluster, nullable<uint8_t> value)
 {
     return esp_matter::attribute::create(cluster, LevelControl::Attributes::StartUpCurrentLevel::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint8(value));
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_nullable_uint8(value));
 }
 
 } /* attribute */
@@ -951,10 +1006,11 @@ attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, ui
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
-attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value)
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value)
 {
     return esp_matter::attribute::create(cluster, ColorControl::Attributes::StartUpColorTemperatureMireds::Id,
-                                         ATTRIBUTE_FLAG_WRITABLE, esp_matter_uint16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_nullable_uint16(value));
 }
 
 attribute_t *create_current_x(cluster_t *cluster, uint16_t value)
@@ -1005,10 +1061,10 @@ attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t 
                                          ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
 }
 
-attribute_t *create_number_of_primaries(cluster_t *cluster, uint8_t value)
+attribute_t *create_number_of_primaries(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, ColorControl::Attributes::NumberOfPrimaries::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint8(value));
+    return esp_matter::attribute::create(cluster, ColorControl::Attributes::NumberOfPrimaries::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index)
@@ -1077,32 +1133,32 @@ attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t ind
     return NULL;
 }
 
-attribute_t *create_primary_n_intensity(cluster_t * cluster, uint8_t value, uint8_t index)
+attribute_t *create_primary_n_intensity(cluster_t * cluster, nullable<uint8_t> value, uint8_t index)
 {
     switch (index) {
     case 1:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary1Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary1Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     case 2:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary2Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary2Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     case 3:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary3Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary3Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     case 4:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary4Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary4Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     case 5:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary5Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary5Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     case 6:
-        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary6Intensity::Id, ATTRIBUTE_FLAG_NONE,
-                                             esp_matter_uint8(value));
+        return esp_matter::attribute::create(cluster, ColorControl::Attributes::Primary6Intensity::Id,
+                                             ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
         break;
     default:
         break;
@@ -1124,8 +1180,21 @@ attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value)
 
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, FanControl::Attributes::FanModeSequence::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::FanModeSequence::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+
+attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentSetting::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_percent_current(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentSetting::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
 }
 
 } /* attribute */
@@ -1134,10 +1203,10 @@ attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value)
 namespace thermostat {
 namespace attribute {
 
-attribute_t *create_local_temperature(cluster_t *cluster, uint16_t value)
+attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value)
 {
-    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::LocalTemperature::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_int16(value));
 }
 
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, uint16_t value)
@@ -1183,10 +1252,10 @@ attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, 
 namespace door_lock {
 namespace attribute {
 
-attribute_t *create_lock_state(cluster_t *cluster, uint8_t value)
+attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value)
 {
-    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LockState::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, DoorLock::Attributes::LockState::Id, ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_uint8(value));
 }
 
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value)
@@ -1228,36 +1297,6 @@ attribute_t *create_supported_operating_modes(cluster_t *cluster, uint16_t value
 } /* attribute */
 } /* door_lock */
 
-namespace bridged_device_basic {
-namespace attribute {
-
-attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length)
-{
-    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::NodeLabel::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_char_str(value, length));
-}
-
-attribute_t *create_reachable(cluster_t *cluster, bool value)
-{
-    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
-                                         esp_matter_bool(value));
-}
-
-} /* attribute */
-} /* bridged_device_basic */
-
-namespace fixed_label {
-namespace attribute {
-
-attribute_t *create_label_list(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
-{
-    return esp_matter::attribute::create(cluster, FixedLabel::Attributes::LabelList::Id, ATTRIBUTE_FLAG_WRITABLE,
-                                         esp_matter_array(value, length, count));
-}
-
-} /* attribute */
-} /* fixed_label */
-
 namespace switch_cluster {
 namespace attribute {
 
@@ -1285,22 +1324,22 @@ attribute_t *create_multi_press_max(cluster_t *cluster, uint8_t value)
 namespace temperature_measurement {
 namespace attribute {
 
-attribute_t *create_temperature_measured_value(cluster_t *cluster, int16_t value)
+attribute_t *create_temperature_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MeasuredValue::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_temperature_min_measured_value(cluster_t *cluster, int16_t value)
+attribute_t *create_temperature_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MinMeasuredValue::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
-attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t value)
+attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
 {
     return esp_matter::attribute::create(cluster, TemperatureMeasurement::Attributes::MaxMeasuredValue::Id,
-                                         ATTRIBUTE_FLAG_NONE, esp_matter_int16(value));
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
 }
 
 } /* attribute */

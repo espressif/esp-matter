@@ -66,6 +66,10 @@ attribute_t *create_hardware_version_string(cluster_t *cluster, char *value, uin
 attribute_t *create_software_version(cluster_t *cluster, uint32_t value);
 attribute_t *create_software_version_string(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_capability_minima(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+
+/** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
+  * If the attributes are added in some other cluster, then the value is not maintained internally.
+  **/
 attribute_t *create_manufacturing_date(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_part_number(cluster_t *cluster, char *value, uint16_t length);
 attribute_t *create_product_url(cluster_t *cluster, char *value, uint16_t length);
@@ -88,7 +92,7 @@ namespace attribute {
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_update_possible(cluster_t *cluster, bool value);
 attribute_t *create_update_state(cluster_t *cluster, uint8_t value);
-attribute_t *create_update_state_progress(cluster_t *cluster, uint8_t value);
+attribute_t *create_update_state_progress(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* ota_requestor */
 
@@ -109,9 +113,9 @@ attribute_t *create_networks(cluster_t *cluster, uint8_t *value, uint16_t length
 attribute_t *create_scan_max_time_seconds(cluster_t *cluster, uint8_t value);
 attribute_t *create_connect_max_time_seconds(cluster_t *cluster, uint8_t value);
 attribute_t *create_interface_enabled(cluster_t *cluster, bool value);
-attribute_t *create_last_networking_status(cluster_t *cluster, uint8_t value);
+attribute_t *create_last_networking_status(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_last_network_id(cluster_t *cluster, uint8_t *value, uint16_t length);
-attribute_t *create_last_connect_error_value(cluster_t *cluster, uint32_t value);
+attribute_t *create_last_connect_error_value(cluster_t *cluster, nullable<int32_t> value);
 } /* attribute */
 } /* network_commissioning */
 
@@ -154,36 +158,40 @@ attribute_t *create_max_group_keys_per_fabric(cluster_t *cluster, uint16_t value
 namespace diagnostics_network_wifi {
 namespace attribute {
 attribute_t *create_bssid(cluster_t *cluster, uint8_t *value, uint16_t length);
-attribute_t *create_security_type(cluster_t *cluster, uint8_t value);
-attribute_t *create_wifi_version(cluster_t *cluster, uint8_t value);
-attribute_t *create_channel_number(cluster_t *cluster, uint16_t value);
-attribute_t *create_rssi(cluster_t *cluster, int8_t value);
-attribute_t *create_beacon_lost_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_beacon_rx_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, uint32_t value);
-attribute_t *create_current_max_rate(cluster_t *cluster, uint64_t value);
-attribute_t *create_overrun_count(cluster_t *cluster, uint64_t value);
+attribute_t *create_security_type(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_wifi_version(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_channel_number(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_rssi(cluster_t *cluster, nullable<int8_t> value);
+
+/** These attributes are optional for the cluster, but when added to this cluster, the value is maintained internally.
+  * If the attributes are added in some other cluster, then the value is not maintained internally.
+  **/
+attribute_t *create_beacon_lost_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_beacon_rx_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_packet_multicast_rx_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_packet_multicast_tx_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_packet_unicast_rx_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_packet_unicast_tx_count(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_current_max_rate(cluster_t *cluster, nullable<uint64_t> value);
+attribute_t *create_overrun_count(cluster_t *cluster, nullable<uint64_t> value);
 } /* attribute */
 } /* diagnostics_network_wifi */
 
 namespace diagnostics_network_thread {
 namespace attribute {
-attribute_t *create_channel(cluster_t *cluster, uint16_t value);
-attribute_t *create_routing_role(cluster_t *cluster, uint8_t value);
+attribute_t *create_channel(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_routing_role(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_network_name(cluster_t *cluster, char *value, uint16_t length);
-attribute_t *create_pan_id(cluster_t *cluster, uint16_t value);
-attribute_t *create_extended_pan_id(cluster_t *cluster, uint64_t value);
+attribute_t *create_pan_id(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_extended_pan_id(cluster_t *cluster, nullable<uint64_t> value);
 attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
-attribute_t *create_extended_partition_id(cluster_t *cluster, uint32_t value);
-attribute_t *create_weighting(cluster_t *cluster, uint8_t value);
-attribute_t *create_data_version(cluster_t *cluster, uint8_t value);
-attribute_t *create_stable_data_version(cluster_t *cluster, uint8_t value);
-attribute_t *create_leader_router_id(cluster_t *cluster, uint8_t value);
+attribute_t *create_extended_partition_id(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_weighting(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_data_version(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_stable_data_version(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_leader_router_id(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_security_policy(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
 attribute_t *create_channel_page0_mask(cluster_t *cluster, uint8_t *value, uint16_t length);
 attribute_t *create_operational_dataset_components(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
@@ -218,16 +226,16 @@ namespace on_off {
 namespace attribute {
 attribute_t *create_on_off(cluster_t *cluster, bool value);
 attribute_t *create_global_scene_control(cluster_t *cluster, bool value);
-attribute_t *create_on_time(cluster_t *cluster, uint16_t value);
-attribute_t *create_off_wait_time(cluster_t *cluster, uint16_t value);
-attribute_t *create_start_up_on_off(cluster_t *cluster, uint8_t value);
+attribute_t *create_on_time(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_off_wait_time(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_start_up_on_off(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* on_off */
 
 namespace level_control {
 namespace attribute {
-attribute_t *create_current_level(cluster_t *cluster, uint8_t value);
-attribute_t *create_on_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_current_level(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_on_level(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_options(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
 attribute_t *create_remaining_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_min_level(cluster_t *cluster, uint8_t value);
@@ -236,10 +244,10 @@ attribute_t *create_current_frequency(cluster_t *cluster, uint16_t value);
 attribute_t *create_min_frequency(cluster_t *cluster, uint16_t value);
 attribute_t *create_max_frequency(cluster_t *cluster, uint16_t value);
 attribute_t *create_on_off_transition_time(cluster_t *cluster, uint16_t value);
-attribute_t *create_on_transition_time(cluster_t* cluster, uint16_t value);
-attribute_t *create_off_transition_time(cluster_t* cluster, uint16_t value);
-attribute_t *create_default_move_rate(cluster_t* cluster, uint8_t value);
-attribute_t *create_start_up_current_level(cluster_t *cluster, uint8_t value);
+attribute_t *create_on_transition_time(cluster_t* cluster, nullable<uint16_t> value);
+attribute_t *create_off_transition_time(cluster_t* cluster, nullable<uint16_t> value);
+attribute_t *create_default_move_rate(cluster_t* cluster, nullable<uint8_t> value);
+attribute_t *create_start_up_current_level(cluster_t *cluster, nullable<uint8_t> value);
 } /* attribute */
 } /* level_control */
 
@@ -256,7 +264,7 @@ attribute_t *create_color_temperature_mireds(cluster_t *cluster, uint16_t value)
 attribute_t *create_color_temp_physical_min_mireds(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_temp_physical_max_mireds(cluster_t *cluster, uint16_t value);
 attribute_t *create_couple_color_temp_to_level_min_mireds(cluster_t *cluster, uint16_t value);
-attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, uint16_t value);
+attribute_t *create_startup_color_temperature_mireds(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_current_x(cluster_t *cluster, uint16_t value);
 attribute_t *create_current_y(cluster_t *cluster, uint16_t value);
 attribute_t *create_enhanced_current_hue(cluster_t *cluster, uint16_t value);
@@ -265,10 +273,10 @@ attribute_t *create_color_loop_direction(cluster_t *cluster, uint8_t value);
 attribute_t *create_color_loop_time(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_start_enhanced_hue(cluster_t *cluster, uint16_t value);
 attribute_t *create_color_loop_stored_enhanced_hue(cluster_t *cluster, uint16_t value);
-attribute_t *create_number_of_primaries(cluster_t *cluster, uint8_t value);
+attribute_t *create_number_of_primaries(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_primary_n_x(cluster_t * cluster, uint16_t value, uint8_t index);
 attribute_t *create_primary_n_y(cluster_t * cluster, uint16_t value, uint8_t index);
-attribute_t *create_primary_n_intensity(cluster_t * cluster, uint8_t value, uint8_t index);
+attribute_t *create_primary_n_intensity(cluster_t * cluster, nullable<uint8_t> value, uint8_t index);
 } /* attribute */
 } /* color_control */
 
@@ -276,12 +284,14 @@ namespace fan_control {
 namespace attribute {
 attribute_t *create_fan_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_fan_mode_sequence(cluster_t *cluster, uint8_t value);
+attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_percent_current(cluster_t *cluster, uint8_t value);
 } /* attribute */
 } /* fan_control */
 
 namespace thermostat {
 namespace attribute {
-attribute_t *create_local_temperature(cluster_t *cluster, uint16_t value);
+attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> value);
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, uint16_t value);
 attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, uint16_t value);
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max);
@@ -291,7 +301,7 @@ attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, 
 
 namespace door_lock {
 namespace attribute {
-attribute_t *create_lock_state(cluster_t *cluster, uint8_t value);
+attribute_t *create_lock_state(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_lock_type(cluster_t *cluster, uint8_t value);
 attribute_t *create_actuator_enabled(cluster_t *cluster, bool value);
 attribute_t *create_auto_relock_time(cluster_t *cluster, uint32_t value);
@@ -323,9 +333,9 @@ attribute_t *create_multi_press_max(cluster_t *cluster, uint8_t value);
 
 namespace temperature_measurement {
 namespace attribute {
-attribute_t *create_temperature_measured_value(cluster_t *cluster, int16_t value);
-attribute_t *create_temperature_min_measured_value(cluster_t *cluster, int16_t value);
-attribute_t *create_temperature_max_measured_value(cluster_t *cluster, int16_t value);
+attribute_t *create_temperature_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_temperature_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_temperature_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
 } /* attribute */
 } /* temperature_measurement */
 
