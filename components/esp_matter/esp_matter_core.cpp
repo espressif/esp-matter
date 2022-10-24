@@ -16,6 +16,12 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 #include <nvs.h>
+#include <esp_bt.h>
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
+#include <esp_nimble_hci.h>
+#endif
+#include <host/ble_hs.h>
+#include <nimble/nimble_port.h>
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -741,6 +747,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
             }
         }
         break;
+
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
         if (!is_ota_requestor_start &&
@@ -748,8 +755,37 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
             esp_matter_ota_requestor_start();
             is_ota_requestor_start = true;
         }
-#endif
         break;
+#endif
+
+#if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
+    case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
+    {
+        if (!ble_hs_is_enabled()) {
+            ESP_LOGI(TAG, "BLE already deinited");
+            return;
+        }
+
+        if (nimble_port_stop() != 0) {
+            ESP_LOGE(TAG, "nimble_port_stop() failed");
+            return;
+        }
+
+        nimble_port_deinit();
+        esp_err_t err = ESP_OK;
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
+        err = esp_nimble_hci_and_controller_deinit();
+#endif
+        err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "BLE deinit failed");
+            return;
+        }
+        ESP_LOGI(TAG, "BLE deinit successful and memory reclaimed");
+        break;
+    }
+#endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
+
     default:
         break;
     }
