@@ -3,39 +3,73 @@ stages:
     - docs
 
 variables:
+    ESP_MATTER_PATH: "$CI_PROJECT_DIR"
     IDF_PATH: "$CI_PROJECT_DIR/esp-idf"
+    IDF_GITHUB_ASSETS: "dl.espressif.com/github_assets"
     GIT_STRATEGY: fetch
     GIT_SUBMODULE_STRATEGY: none
+    IDF_SKIP_CHECK_SUBMODULES: 1
+    # This folder was on the runner host
+    MATTER_CACHE_DIR: /cache/matter_build
+
+.add_gitlab_ssh_key: &add_gitlab_ssh_key |
+  mkdir -p ~/.ssh
+  chmod 700 ~/.ssh
+  echo -n $GITLAB_KEY >> ~/.ssh/id_rsa_base64
+  base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
+  chmod 600 ~/.ssh/id_rsa
+  echo -e "Host gitlab.espressif.cn\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+.get_build_caches: &get_build_caches
+  - |
+    if [ -d ${MATTER_CACHE_DIR}/ ]; then
+      echo "get matter_build cache ..."
+      mkdir -p .git/modules/
+      mkdir -p ~/.cache/pip/
+      mkdir -p ~/.cipd-cache-dir/
+      mkdir -p ~/.espressif/dist/
+      time rsync -a ${MATTER_CACHE_DIR}/git_modules/ .git/modules/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/cache_pip/ ~/.cache/pip/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/cipd_cache_dir/ ~/.cipd-cache-dir/ || true
+      time rsync -a ${MATTER_CACHE_DIR}/espressif_dist/ ~/.espressif/dist/ || true
+    fi
+
+.update_build_caches: &update_build_caches
+  - |
+    if [ -d ${MATTER_CACHE_DIR}/ ]; then
+      echo "update matter_build cache ..."
+      time rsync -a .git/modules/ ${MATTER_CACHE_DIR}/git_modules/ || true
+      time rsync -a ~/.cache/pip/ ${MATTER_CACHE_DIR}/cache_pip/ || true
+      time rsync -a ~/.cipd-cache-dir/ ${MATTER_CACHE_DIR}/cipd_cache_dir/ || true
+      time rsync -a ~/.espressif/dist/ ${MATTER_CACHE_DIR}/espressif_dist/ || true
+    fi
 
 .chip_submodule_update: &chip_submodule_update
-    - git submodule sync --recursive
-    - git submodule update --init --recursive --depth 1
+  - sed -i "s%https://github.com/espressif%${GITLAB_SSH_SERVER}/espressif%" .gitmodules
+  - git submodule sync --recursive
+  - git submodule update -f --init --recursive --depth 1
 
 .setup_idf: &setup_idf
-    # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
-    # using release/v4.4 branch of espressif/esp-idf github repo
-    - git clone --recursive --single-branch -b v4.4.1 --shallow-submodules --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
-    - cd esp-idf
-    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
-    - ./install.sh
-    - . ./export.sh
-
-.setup_idf_v5_0: &setup_idf_v5_0
-    # - cd $REPOS_PATH      # IDF_PATH is set to something else already?
-    # using commit 047903c612 of espressif/esp-idf github repo
-    # idf_v5_0 is used for zigbee_bridge example and examples of ESP32-H2
-    - git clone --recursive --shallow-submodules --reference-if-able /local_references/github/ https://github.com/espressif/esp-idf.git
-    - cd esp-idf
-    - git checkout ccdeb43cc7274a49e8dfa331de95ab06dea25183
-    - git submodule update --init --recursive --depth 1
-    - export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
-    - ./install.sh
-    - . ./export.sh
+  # TODO: IDF_VERSION maybe a commit id, use `git fetch` rather than `git clone -b`
+  # - git clone -b ${IDF_VERSION} ${IDF_GIT_REPO_URL} --depth=1
+  - mkdir -p esp-idf
+  - cd esp-idf
+  - git init
+  - git remote add origin ${IDF_GIT_REPO_URL}
+  - git fetch origin ${IDF_VERSION}:refs/head --depth=1 -f
+  - git checkout ${IDF_VERSION}
+  - ./install.sh
+  - . ./export.sh
+  # fetch submodules
+  - export PYTHONPATH=${IDF_PATH}/tools/ci/python_packages/:${PYTHONPATH}
+  - pip install python-gitlab
+  - python tools/ci/ci_fetch_submodule.py
 
 .setup_matter: &setup_matter
-    - cd $ESP_MATTER_PATH
-    - ./install.sh
-    - . ./export.sh
+  - cd ${CI_PROJECT_DIR}
+  # Setting up Python environment still spend a pretty long time (15mins -> 5mins).
+  - ./install.sh
+  - . ./export.sh
 
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
@@ -81,8 +115,6 @@ variables:
     - cp sdkconfig.defaults.backup sdkconfig.defaults
 
 .build_examples_idf_v5_0: &build_examples_idf_v5_0
-# pyparsing in python_env created by matter is version 2.4.0 IDF v5.0 requires 3.0.8
-    - pip install pyparsing==3.0.8
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
     - idf.py build
@@ -96,60 +128,56 @@ variables:
     - idf.py set-target esp32
     - idf.py build
 
-build_esp_matter_examples:
-    stage: build
-    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
-    tags:
-      - matter_build
+.build_examples_template:
+  stage: build
+  image: gitlab.espressif.cn:5050/app-frameworks/esp-matter/build-env:latest
+  tags:
+    - build
+    # runner: `sudo mkdir -p /cache/matter_build/`
+    # gitlab-runner config: `volumes = ["/cache:/cache:rw"]`
+    - matter_cache
+  before_script:
+    - *add_gitlab_ssh_key
+    - *get_build_caches
+    - *chip_submodule_update
+    - *setup_matter
+    - *setup_idf
+    - cd ${ESP_MATTER_PATH}
+    - mkdir -p ${REPOS_PATH}
+    # update caches only when setup succeed
+    - *update_build_caches
+  variables:
+    IDF_VERSION: "v4.4.1"
+    REPOS_PATH: "$CI_PROJECT_DIR/repos"
+    IDF_CCACHE_ENABLE: 1
 
+build_esp_matter_examples:
+    extends:
+        - .build_examples_template
     script:
-        - export ESP_MATTER_PATH=$PWD
-        - mkdir repos
-        - export REPOS_PATH=$PWD/repos
-        - export IDF_CCACHE_ENABLE=1
-        - *chip_submodule_update
-        - *setup_idf
-        - *setup_matter
         - *build_examples
         - *build_external_platform_example
 
 build_esp_matter_examples_idf_v5_0:
-    stage: build
-    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
-    tags:
-      - matter_build
-
+    extends:
+        - .build_examples_template
+    variables:
+        IDF_VERSION: "ccdeb43cc7274a49e8dfa331de95ab06dea25183"
     script:
-        - export ESP_MATTER_PATH=$PWD
-        - mkdir repos
-        - export REPOS_PATH=$PWD/repos
-        - export IDF_CCACHE_ENABLE=1
-        - *chip_submodule_update
-        - *setup_idf_v5_0
-        - *setup_matter
         - *build_examples_idf_v5_0
 
 build_upstream_examples:
-    stage: build
-    image: $CI_DOCKER_REGISTRY/esp32-ci-env:matter
-    tags:
-      - matter_build
+    extends:
+        - .build_examples_template
     when: manual
     script:
-        - export ESP_MATTER_PATH=$PWD
-        - mkdir repos
-        - export REPOS_PATH=$PWD/repos
-        - export IDF_CCACHE_ENABLE=1
-        - *chip_submodule_update
-        - *setup_idf
-        - *setup_matter
         - *build_matter_examples
 
 build_docs:
     stage: build
     image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
     tags:
-        - matter_build
+        - build
     artifacts:
         when: always
         paths:
