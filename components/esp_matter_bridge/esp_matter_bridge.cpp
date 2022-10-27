@@ -242,6 +242,12 @@ device_t *create_device(node_t *node, uint16_t parent_endpoint_id, uint32_t devi
         remove_device(dev);
         return NULL;
     }
+    endpoint_t *parent_endpoint = endpoint::get(node, parent_endpoint_id);
+    if (set_parent_endpoint(dev->endpoint, parent_endpoint) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set parent endpoint for the bridged device");
+        remove_device(dev);
+        return NULL;
+    }
 
     // Store the persistent information
     dev->persistent_info.device_endpoint_id = esp_matter::endpoint::get_id(dev->endpoint);
@@ -296,6 +302,12 @@ device_t *resume_device(node_t *node, uint16_t device_endpoint_id)
     }
     if (set_device_type(dev, persistent_info.device_type_id) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add the device type for the bridged device");
+        remove_device(dev);
+        return NULL;
+    }
+    endpoint_t *parent_endpoint = endpoint::get(node, persistent_info.parent_endpoint_id);
+    if (set_parent_endpoint(dev->endpoint, parent_endpoint) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set parent endpoint for the bridged device");
         remove_device(dev);
         return NULL;
     }
