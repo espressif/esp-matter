@@ -17,11 +17,13 @@
 #include <esp_matter_core.h>
 #include <nvs.h>
 #include <esp_bt.h>
+#if CONFIG_BT_NIMBLE_ENABLED
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
 #include <esp_nimble_hci.h>
 #endif
 #include <host/ble_hs.h>
 #include <nimble/nimble_port.h>
+#endif /* CONFIG_BT_NIMBLE_ENABLED */
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -761,6 +763,8 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     {
+        esp_err_t err = ESP_OK;
+#if CONFIG_BT_NIMBLE_ENABLED
         if (!ble_hs_is_enabled()) {
             ESP_LOGI(TAG, "BLE already deinited");
             return;
@@ -772,10 +776,10 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         }
 
         nimble_port_deinit();
-        esp_err_t err = ESP_OK;
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
         err = esp_nimble_hci_and_controller_deinit();
 #endif
+#endif /* CONFIG_BT_NIMBLE_ENABLED */
         err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "BLE deinit failed");
