@@ -41,7 +41,7 @@ The Prerequisites for ESP-IDF and Matter:
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout ccdeb43cc7; git submodule update --init --recursive;
+      cd esp-idf; git checkout 20949d444f; git submodule update --init --recursive;
       ./install.sh
       cd ..
 

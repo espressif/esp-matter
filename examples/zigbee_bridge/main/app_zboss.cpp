@@ -39,7 +39,6 @@ void zboss_signal_handler(zb_bufid_t bufid)
     zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
     zb_zdo_signal_device_annce_params_t *device_annce_params = NULL;
     zb_zdo_signal_macsplit_dev_boot_params_t *rcp_version = NULL;
-    zb_uint32_t gateway_version;
 
     switch (sig) {
     case ZB_ZDO_SIGNAL_SKIP_STARTUP:
@@ -49,17 +48,9 @@ void zboss_signal_handler(zb_bufid_t bufid)
 
     case ZB_MACSPLIT_DEVICE_BOOT:
         ESP_LOGI(TAG, "Zigbee rcp device booted");
-        gateway_version = esp_zb_macsplit_get_version();
         rcp_version = ZB_ZDO_SIGNAL_GET_PARAMS(p_sg_p, zb_zdo_signal_macsplit_dev_boot_params_t);
         ESP_LOGI(TAG, "Zigbee rcp device version: %d.%d.%d", (rcp_version->dev_version >> 24 & 0x000000FF),
                  (rcp_version->dev_version >> 16 & 0x000000FF), (rcp_version->dev_version & 0x000000FF));
-        ESP_LOGI(TAG, "Zigbee gateway version: %d.%d.%d", (gateway_version >> 24 & 0x000000FF),
-                 (gateway_version >> 16 & 0x000000FF), (gateway_version & 0x000000FF));
-        if (gateway_version != rcp_version->dev_version) {
-            ESP_LOGE(TAG,
-                     "rcp has different Zigbee stack version with Zigbee gateway! Please check the rcp software or "
-                     "other issues");
-        }
         break;
 
     case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
