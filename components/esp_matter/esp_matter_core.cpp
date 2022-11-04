@@ -780,7 +780,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         err = esp_nimble_hci_and_controller_deinit();
 #endif
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
-        err |= esp_bt_mem_release(ESP_BT_MODE_BLE);
+        err |= esp_bt_mem_release(ESP_BT_MODE_BTDM);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "BLE deinit failed");
             return;
@@ -805,6 +805,21 @@ static esp_err_t chip_init(event_callback_t callback)
         ESP_LOGE(TAG, "Failed to initialize CHIP stack");
         return ESP_FAIL;
     }
+
+/* TODO: Remove the examples DAC provider once we have a concrete
+ * way to generate attestation credentials.
+ */
+
+#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
+    SetCommissionableDataProvider(&factory_data_provider);
+#if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+    SetDeviceInstanceInfoProvider(&factory_data_provider);
+#endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
+#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
     ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
     if (PlatformMgr().StartEventLoopTask() != CHIP_NO_ERROR) {
@@ -825,20 +840,6 @@ static esp_err_t chip_init(event_callback_t callback)
         return ESP_FAIL;
     }
 #endif
-
-/* TODO: Remove the examples DAC provider once we have a concrete
- * way to generate attestation credentials.
- */
-
-#if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
-    SetCommissionableDataProvider(&factory_data_provider);
-#if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
-    SetDeviceInstanceInfoProvider(&factory_data_provider);
-#endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
-#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
-#endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 
     PlatformMgr().ScheduleWork(esp_matter_chip_init_task, reinterpret_cast<intptr_t>(xTaskGetCurrentTaskHandle()));
     // Wait for the matter stack to be initialized
