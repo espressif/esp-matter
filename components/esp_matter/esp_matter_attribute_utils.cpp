@@ -64,6 +64,19 @@ esp_matter_attr_val_t esp_matter_int(int val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_int(nullable<int> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<int>::SetNull(attr_val.val.i);
+    } else {
+        attr_val.val.i = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_float(float val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -72,6 +85,19 @@ esp_matter_attr_val_t esp_matter_float(float val)
             .f = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_float(nullable<float> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<float>::SetNull(attr_val.val.f);
+    } else {
+        attr_val.val.i = val.value();
+    }
     return attr_val;
 }
 
@@ -86,6 +112,19 @@ esp_matter_attr_val_t esp_matter_int8(int8_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_int8(nullable<int8_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_INT8,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<int8_t>::SetNull(attr_val.val.i8);
+    } else {
+        attr_val.val.i8 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_uint8(uint8_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -94,6 +133,19 @@ esp_matter_attr_val_t esp_matter_uint8(uint8_t val)
             .u8 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_uint8(nullable<uint8_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_UINT8,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint8_t>::SetNull(attr_val.val.u8);
+    } else {
+        attr_val.val.u8 = val.value();
+    }
     return attr_val;
 }
 
@@ -108,6 +160,19 @@ esp_matter_attr_val_t esp_matter_int16(int16_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_int16(nullable<int16_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_INT16,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<int16_t>::SetNull(attr_val.val.i16);
+    } else {
+        attr_val.val.i16 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_uint16(uint16_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -116,6 +181,19 @@ esp_matter_attr_val_t esp_matter_uint16(uint16_t val)
             .u16 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_uint16(nullable<uint16_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_UINT16,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint16_t>::SetNull(attr_val.val.u16);
+    } else {
+        attr_val.val.u16 = val.value();
+    }
     return attr_val;
 }
 
@@ -130,6 +208,19 @@ esp_matter_attr_val_t esp_matter_int32(int32_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_int32(nullable<int32_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_INT32,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<int32_t>::SetNull(attr_val.val.i32);
+    } else {
+        attr_val.val.i32 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_uint32(uint32_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -138,6 +229,19 @@ esp_matter_attr_val_t esp_matter_uint32(uint32_t val)
             .u32 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_uint32(nullable<uint32_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_UINT32,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint32_t>::SetNull(attr_val.val.u32);
+    } else {
+        attr_val.val.u32 = val.value();
+    }
     return attr_val;
 }
 
@@ -152,6 +256,19 @@ esp_matter_attr_val_t esp_matter_int64(int64_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_int64(nullable<int64_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_INT64,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<int64_t>::SetNull(attr_val.val.i64);
+    } else {
+        attr_val.val.i64 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_uint64(uint64_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -160,6 +277,19 @@ esp_matter_attr_val_t esp_matter_uint64(uint64_t val)
             .u64 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_uint64(nullable<uint64_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_UINT64,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint64_t>::SetNull(attr_val.val.u64);
+    } else {
+        attr_val.val.u64 = val.value();
+    }
     return attr_val;
 }
 
@@ -174,6 +304,19 @@ esp_matter_attr_val_t esp_matter_enum8(uint8_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_enum8(nullable<uint8_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint8_t>::SetNull(attr_val.val.u8);
+    } else {
+        attr_val.val.u8 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -182,6 +325,19 @@ esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val)
             .u8 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_bitmap8(nullable<uint8_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint8_t>::SetNull(attr_val.val.u8);
+    } else {
+        attr_val.val.u8 = val.value();
+    }
     return attr_val;
 }
 
@@ -196,6 +352,19 @@ esp_matter_attr_val_t esp_matter_bitmap16(uint16_t val)
     return attr_val;
 }
 
+esp_matter_attr_val_t esp_matter_nullable_bitmap16(nullable<uint16_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint16_t>::SetNull(attr_val.val.u16);
+    } else {
+        attr_val.val.u16 = val.value();
+    }
+    return attr_val;
+}
+
 esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val)
 {
     esp_matter_attr_val_t attr_val = {
@@ -204,6 +373,19 @@ esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val)
             .u32 = val,
         },
     };
+    return attr_val;
+}
+
+esp_matter_attr_val_t esp_matter_nullable_bitmap32(nullable<uint32_t> val)
+{
+    esp_matter_attr_val_t attr_val = {
+        .type = ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32,
+    };
+    if (val.is_null()) {
+        chip::app::NumericAttributeTraits<uint32_t>::SetNull(attr_val.val.u32);
+    } else {
+        attr_val.val.u32 = val.value();
+    }
     return attr_val;
 }
 
@@ -268,6 +450,11 @@ static esp_matter::console::engine attribute_console;
 
 static esp_err_t console_set_handler(int argc, char **argv)
 {
+    if (argc < 4) {
+        ESP_LOGE(TAG, "The arguments for this command is invalid");
+        return ESP_ERR_INVALID_ARG;
+    }
+
     uint16_t endpoint_id = strtol((const char *)&argv[0][2], NULL, 16);
     uint32_t cluster_id = strtol((const char *)&argv[1][2], NULL, 16);
     uint32_t attribute_id = strtol((const char *)&argv[2][2], NULL, 16);
@@ -287,44 +474,152 @@ static esp_err_t console_set_handler(int argc, char **argv)
         bool value = atoi(argv[3]);
         val = esp_matter_bool(value);
     } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
-        int8_t value = atoi(argv[3]);
-        val = esp_matter_int8(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_int8(nullable<int8_t>());
+            } else {
+                int8_t value = atoi(argv[3]);
+                val = esp_matter_nullable_int8(value);
+            }
+        } else {
+            int8_t value = atoi(argv[3]);
+            val = esp_matter_int8(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
-        uint8_t value = atoi(argv[3]);
-        val = esp_matter_uint8(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_uint8(nullable<uint8_t>());
+            } else {
+                uint8_t value = atoi(argv[3]);
+                val = esp_matter_nullable_uint8(value);
+            }
+        } else {
+            uint8_t value = atoi(argv[3]);
+            val = esp_matter_uint8(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
-        int16_t value = atoi(argv[3]);
-        val = esp_matter_int16(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_int16(nullable<int16_t>());
+            } else {
+                int16_t value = atoi(argv[3]);
+                val = esp_matter_nullable_int16(value);
+            }
+        } else {
+            int16_t value = atoi(argv[3]);
+            val = esp_matter_int16(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
-        uint16_t value = atoi(argv[3]);
-        val = esp_matter_uint16(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_uint16(nullable<uint16_t>());
+            } else {
+                uint16_t value = atoi(argv[3]);
+                val = esp_matter_nullable_uint16(value);
+            }
+        } else {
+            uint16_t value = atoi(argv[3]);
+            val = esp_matter_uint16(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT32) {
-        int32_t value = atoi(argv[3]);
-        val = esp_matter_int32(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_int32(nullable<int32_t>());
+            } else {
+                int32_t value = atoi(argv[3]);
+                val = esp_matter_nullable_int32(value);
+            }
+        } else {
+            int32_t value = atoi(argv[3]);
+            val = esp_matter_int32(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
-        uint32_t value = atoi(argv[3]);
-        val = esp_matter_uint32(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_uint32(nullable<uint32_t>());
+            } else {
+                uint32_t value = atoi(argv[3]);
+                val = esp_matter_nullable_uint32(value);
+            }
+        } else {
+            uint32_t value = atoi(argv[3]);
+            val = esp_matter_uint32(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT64) {
-        int64_t value = atoi(argv[3]);
-        val = esp_matter_int64(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_int64(nullable<int64_t>());
+            } else {
+                int64_t value = atoi(argv[3]);
+                val = esp_matter_nullable_int64(value);
+            }
+        } else {
+            int64_t value = atoi(argv[3]);
+            val = esp_matter_int64(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
-        uint64_t value = atoi(argv[3]);
-        val = esp_matter_uint64(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_uint64(nullable<uint64_t>());
+            } else {
+                uint64_t value = atoi(argv[3]);
+                val = esp_matter_nullable_uint64(value);
+            }
+        } else {
+            uint64_t value = atoi(argv[3]);
+            val = esp_matter_uint64(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
         char *value = argv[3];
         val = esp_matter_char_str(value, strlen(value));
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
-        uint8_t value = atoi(argv[3]);
-        val = esp_matter_bitmap8(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_bitmap8(nullable<uint8_t>());
+            } else {
+                uint8_t value = atoi(argv[3]);
+                val = esp_matter_nullable_bitmap8(value);
+            }
+        } else {
+            uint8_t value = atoi(argv[3]);
+            val = esp_matter_bitmap8(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP16) {
-        uint16_t value = atoi(argv[3]);
-        val = esp_matter_bitmap16(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_bitmap16(nullable<uint16_t>());
+            } else {
+                uint16_t value = atoi(argv[3]);
+                val = esp_matter_nullable_bitmap16(value);
+            }
+        } else {
+            uint16_t value = atoi(argv[3]);
+            val = esp_matter_bitmap16(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-        uint32_t value = atoi(argv[3]);
-        val = esp_matter_bitmap32(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_bitmap32(nullable<uint32_t>());
+            } else {
+                uint32_t value = atoi(argv[3]);
+                val = esp_matter_nullable_bitmap32(value);
+            }
+        } else {
+            uint32_t value = atoi(argv[3]);
+            val = esp_matter_bitmap32(value);
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_ENUM8) {
-        uint8_t value = atoi(argv[3]);
-        val = esp_matter_enum8(value);
+        if (matter_attribute->IsNullable()) {
+            if (strncmp(argv[3], "null", sizeof("null")) == 0) {
+                val = esp_matter_nullable_enum8(nullable<uint8_t>());
+            } else {
+                uint8_t value = atoi(argv[3]);
+                val = esp_matter_nullable_enum8(value);
+            }
+        } else {
+            uint8_t value = atoi(argv[3]);
+            val = esp_matter_enum8(value);
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -334,6 +629,10 @@ static esp_err_t console_set_handler(int argc, char **argv)
 
 static esp_err_t console_get_handler(int argc, char **argv)
 {
+    if (argc < 3) {
+        ESP_LOGE(TAG, "The arguments for this command is invalid");
+        return ESP_ERR_INVALID_ARG;
+    }
     uint16_t endpoint_id = strtol((const char *)&argv[0][2], NULL, 16);
     uint32_t cluster_id = strtol((const char *)&argv[1][2], NULL, 16);
     uint32_t attribute_id = strtol((const char *)&argv[2][2], NULL, 16);
@@ -350,41 +649,123 @@ static esp_err_t console_get_handler(int argc, char **argv)
     esp_matter_val_type_t type = get_val_type_from_attribute_type(matter_attribute->attributeType);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     if (type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
-        bool value = false;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_bool(value);
+        using Traits = chip::app::NumericAttributeTraits<bool>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        val = esp_matter_bool(Traits::StorageToWorking(value));
     } else if (type == ESP_MATTER_VAL_TYPE_INT8) {
-        int8_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_int8(value);
+        using Traits = chip::app::NumericAttributeTraits<int8_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_int8(nullable<int8_t>());
+            } else {
+                val = esp_matter_nullable_int8(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_int8(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT8) {
-        uint8_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_uint8(value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_uint8(nullable<uint8_t>());
+            } else {
+                val = esp_matter_nullable_uint8(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_uint8(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT16) {
-        int16_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_int16(value);
+        using Traits = chip::app::NumericAttributeTraits<int16_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_int16(nullable<int16_t>());
+            } else {
+                val = esp_matter_nullable_int16(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_int16(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT16) {
-        uint16_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_uint16(value);
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_uint16(nullable<uint16_t>());
+            } else {
+                val = esp_matter_nullable_uint16(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_uint16(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT32) {
-        int32_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_int32(value);
+        using Traits = chip::app::NumericAttributeTraits<int32_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_int32(nullable<int32_t>());
+            } else {
+                val = esp_matter_nullable_int32(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_int32(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT32) {
-        uint32_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_uint32(value);
+        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_uint32(nullable<uint32_t>());
+            } else {
+                val = esp_matter_nullable_uint32(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_uint32(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_INT64) {
-        int64_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_int64(value);
+        using Traits = chip::app::NumericAttributeTraits<int64_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_int64(nullable<int64_t>());
+            } else {
+                val = esp_matter_nullable_int64(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_int64(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_UINT64) {
-        uint64_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_uint64(value);
+        using Traits = chip::app::NumericAttributeTraits<uint64_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_uint64(nullable<uint64_t>());
+            } else {
+                val = esp_matter_nullable_uint64(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_uint64(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
         /* Get raw value */
         char value[256] = {0}; /* It can go upto 256 since only 1 byte (first) is used for size */
@@ -396,21 +777,61 @@ static esp_err_t console_get_handler(int argc, char **argv)
         memcpy(&data_count, &value[0], data_size_len);
         val = esp_matter_char_str((char *)(value + data_size_len), data_count);
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP8) {
-        uint8_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_bitmap8(value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_bitmap8(nullable<uint8_t>());
+            } else {
+                val = esp_matter_nullable_bitmap8(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_bitmap8(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP16) {
-        uint16_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_bitmap16(value);
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_bitmap16(nullable<uint16_t>());
+            } else {
+                val = esp_matter_nullable_bitmap16(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_bitmap16(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_BITMAP32) {
-        uint32_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_bitmap32(value);
+        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_bitmap32(nullable<uint32_t>());
+            } else {
+                val = esp_matter_nullable_bitmap32(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_bitmap32(Traits::StorageToWorking(value));
+        }
     } else if (type == ESP_MATTER_VAL_TYPE_ENUM8) {
-        uint8_t value = 0;
-        get_val_raw(endpoint_id, cluster_id, attribute_id, (uint8_t *)&value, sizeof(value));
-        val = esp_matter_enum8(value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType value;
+        uint8_t *read_able = Traits::ToAttributeStoreRepresentation(value);
+        get_val_raw(endpoint_id, cluster_id, attribute_id, read_able, sizeof(value));
+        if (matter_attribute->IsNullable()) {
+            if (Traits::IsNullValue(value)) {
+                val = esp_matter_nullable_enum8(nullable<uint8_t>());
+            } else {
+                val = esp_matter_nullable_enum8(Traits::StorageToWorking(value));
+            }
+        } else {
+            val = esp_matter_enum8(Traits::StorageToWorking(value));
+        }
     } else {
         ESP_LOGE(TAG, "Type not handled: %d", type);
         return ESP_ERR_INVALID_ARG;
@@ -574,6 +995,50 @@ static esp_matter_val_type_t get_val_type_from_attribute_type(int attribute_type
     return ESP_MATTER_VAL_TYPE_INVALID;
 }
 
+bool val_is_null(esp_matter_attr_val_t *val)
+{
+    switch (val->type) {
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
+        return chip::app::NumericAttributeTraits<int>::IsNullValue(val->val.i);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
+        return chip::app::NumericAttributeTraits<uint8_t>::IsNullValue(val->val.u8);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
+        return chip::app::NumericAttributeTraits<uint16_t>::IsNullValue(val->val.u16);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
+        return chip::app::NumericAttributeTraits<uint32_t>::IsNullValue(val->val.u32);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
+        return chip::app::NumericAttributeTraits<uint64_t>::IsNullValue(val->val.u64);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
+        return chip::app::NumericAttributeTraits<int8_t>::IsNullValue(val->val.i8);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
+        return chip::app::NumericAttributeTraits<int16_t>::IsNullValue(val->val.i16);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
+        return chip::app::NumericAttributeTraits<int32_t>::IsNullValue(val->val.i32);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
+        return chip::app::NumericAttributeTraits<int64_t>::IsNullValue(val->val.i64);
+        break;
+    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
+        return chip::app::NumericAttributeTraits<float>::IsNullValue(val->val.f);
+        break;
+    default:
+        return false;
+        break;
+    }
+    return false;
+}
+
 esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeType *attribute_type,
                                  uint16_t *attribute_size, uint8_t *value)
 {
@@ -586,23 +1051,31 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(bool);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.b, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<bool>;
+            Traits::WorkingToStorage(val->val.b, *value);
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_INTEGER:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER:
         if (attribute_type) {
             *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
         }
         if (attribute_size) {
-            *attribute_size = sizeof(uint16_t);
+            *attribute_size = sizeof(int);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.i, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<int>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i)) {
+                Traits::SetNull(*(int *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i, *(int *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_FLOAT:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT:
         if (attribute_type) {
             *attribute_type = ZCL_SINGLE_ATTRIBUTE_TYPE;
         }
@@ -610,7 +1083,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(float);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.f, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<float>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.f)) {
+                Traits::SetNull(*(float *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.f, *(float *)value);
+            }
         }
         break;
 
@@ -657,6 +1135,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
         break;
 
     case ESP_MATTER_VAL_TYPE_INT8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT8:
         if (attribute_type) {
             *attribute_type = ZCL_INT8S_ATTRIBUTE_TYPE;
         }
@@ -664,11 +1143,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(int8_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.i8, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<int8_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i8)) {
+                Traits::SetNull(*(int8_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i8, *(int8_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_UINT8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT8:
         if (attribute_type) {
             *attribute_type = ZCL_INT8U_ATTRIBUTE_TYPE;
         }
@@ -676,11 +1161,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint8_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+                Traits::SetNull(*(uint8_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_INT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT16:
         if (attribute_type) {
             *attribute_type = ZCL_INT16S_ATTRIBUTE_TYPE;
         }
@@ -688,11 +1179,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(int16_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.i16, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<int16_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i16)) {
+                Traits::SetNull(*(int16_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i16, *(int16_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_UINT16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT16:
         if (attribute_type) {
             *attribute_type = ZCL_INT16U_ATTRIBUTE_TYPE;
         }
@@ -700,11 +1197,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint16_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u16, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u16)) {
+                Traits::SetNull(*(uint16_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u16, *(uint16_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_INT32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT32:
         if (attribute_type) {
             *attribute_type = ZCL_INT32S_ATTRIBUTE_TYPE;
         }
@@ -712,11 +1215,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(int32_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.i32, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<int32_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i32)) {
+                Traits::SetNull(*(int32_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i32, *(int32_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_UINT32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT32:
         if (attribute_type) {
             *attribute_type = ZCL_INT32U_ATTRIBUTE_TYPE;
         }
@@ -724,11 +1233,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint32_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u32, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u32)) {
+                Traits::SetNull(*(uint32_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u32, *(uint32_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_INT64:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_INT64:
         if (attribute_type) {
             *attribute_type = ZCL_INT64S_ATTRIBUTE_TYPE;
         }
@@ -736,11 +1251,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(int64_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.i64, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<int64_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.i64)) {
+                Traits::SetNull(*(int64_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i64, *(int64_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_UINT64:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_UINT64:
         if (attribute_type) {
             *attribute_type = ZCL_INT64U_ATTRIBUTE_TYPE;
         }
@@ -748,11 +1269,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint64_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u64, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint64_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u64)) {
+                Traits::SetNull(*(uint64_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i8, *(uint64_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_ENUM8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8:
         if (attribute_type) {
             *attribute_type = ZCL_ENUM8_ATTRIBUTE_TYPE;
         }
@@ -760,11 +1287,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint8_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+                Traits::SetNull(*(uint8_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_BITMAP8:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8:
         if (attribute_type) {
             *attribute_type = ZCL_BITMAP8_ATTRIBUTE_TYPE;
         }
@@ -772,11 +1305,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint8_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u8, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u8)) {
+                Traits::SetNull(*(uint8_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u8, *(uint8_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_BITMAP16:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16:
         if (attribute_type) {
             *attribute_type = ZCL_BITMAP16_ATTRIBUTE_TYPE;
         }
@@ -784,11 +1323,17 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint16_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u16, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u16)) {
+                Traits::SetNull(*(uint16_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.u16, *(uint16_t *)value);
+            }
         }
         break;
 
     case ESP_MATTER_VAL_TYPE_BITMAP32:
+    case ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32:
         if (attribute_type) {
             *attribute_type = ZCL_BITMAP32_ATTRIBUTE_TYPE;
         }
@@ -796,7 +1341,12 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             *attribute_size = sizeof(uint32_t);
         }
         if (value) {
-            memcpy(value, (uint8_t *)&val->val.u32, *attribute_size);
+            using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+            if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u32)) {
+                Traits::SetNull(*(uint32_t *)value);
+            } else {
+                Traits::WorkingToStorage(val->val.i8, *(uint32_t *)value);
+            }
         }
         break;
 
@@ -809,12 +1359,14 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
 }
 
 static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttributeType attribute_type,
-                                        uint16_t attribute_size, uint8_t *value)
+                                        uint16_t attribute_size, uint8_t *value,
+                                        const EmberAfAttributeMetadata * attribute_metadata)
 {
     switch (attribute_type) {
     case ZCL_BOOLEAN_ATTRIBUTE_TYPE: {
-        bool attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(bool));
+        using Traits = chip::app::NumericAttributeTraits<bool>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
         *val = esp_matter_bool(attribute_value);
         break;
     }
@@ -847,79 +1399,178 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
     }
 
     case ZCL_INT8S_ATTRIBUTE_TYPE: {
-        int8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int8_t));
-        *val = esp_matter_int8(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<int8_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_int8(nullable<int8_t>());
+            } else {
+                *val = esp_matter_nullable_int8(attribute_value);
+            }
+        } else {
+            *val = esp_matter_int8(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT8U_ATTRIBUTE_TYPE: {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_uint8(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_uint8(nullable<uint8_t>());
+            } else {
+                *val = esp_matter_nullable_uint8(attribute_value);
+            }
+        } else {
+            *val = esp_matter_uint8(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT16S_ATTRIBUTE_TYPE: {
-        int16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int16_t));
-        *val = esp_matter_int16(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<int16_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_int16(nullable<int16_t>());
+            } else {
+                *val = esp_matter_nullable_int16(attribute_value);
+            }
+        } else {
+            *val = esp_matter_int16(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT16U_ATTRIBUTE_TYPE: {
-        uint16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint16_t));
-        *val = esp_matter_uint16(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_uint16(nullable<uint16_t>());
+            } else {
+                *val = esp_matter_nullable_uint16(attribute_value);
+            }
+        } else {
+            *val = esp_matter_uint16(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT32S_ATTRIBUTE_TYPE: {
-        int32_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int32_t));
-        *val = esp_matter_int32(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<int32_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_int32(nullable<int32_t>());
+            } else {
+                *val = esp_matter_nullable_int32(attribute_value);
+            }
+        } else {
+            *val = esp_matter_int32(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT32U_ATTRIBUTE_TYPE: {
-        uint32_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint32_t));
-        *val = esp_matter_uint32(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint32_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_uint32(nullable<uint32_t>());
+            } else {
+                *val = esp_matter_nullable_uint32(attribute_value);
+            }
+        } else {
+            *val = esp_matter_uint32(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT64S_ATTRIBUTE_TYPE: {
-        int64_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(int64_t));
-        *val = esp_matter_int64(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<int64_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_int64(nullable<int64_t>());
+            } else {
+                *val = esp_matter_nullable_int64(attribute_value);
+            }
+        } else {
+            *val = esp_matter_int64(attribute_value);
+        }
         break;
     }
 
     case ZCL_INT64U_ATTRIBUTE_TYPE: {
-        uint64_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint64_t));
-        *val = esp_matter_uint64(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint64_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_uint64(nullable<uint64_t>());
+            } else {
+                *val = esp_matter_nullable_uint64(attribute_value);
+            }
+        } else {
+            *val = esp_matter_uint64(attribute_value);
+        }
         break;
     }
 
     case ZCL_ENUM8_ATTRIBUTE_TYPE: {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_enum8(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_enum8(nullable<uint8_t>());
+            } else {
+                *val = esp_matter_nullable_enum8(attribute_value);
+            }
+        } else {
+            *val = esp_matter_enum8(attribute_value);
+        }
         break;
     }
 
     case ZCL_BITMAP8_ATTRIBUTE_TYPE: {
-        uint8_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint8_t));
-        *val = esp_matter_bitmap8(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint8_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_bitmap8(nullable<uint8_t>());
+            } else {
+                *val = esp_matter_nullable_bitmap8(attribute_value);
+            }
+        } else {
+            *val = esp_matter_bitmap8(attribute_value);
+        }
         break;
     }
 
     case ZCL_BITMAP16_ATTRIBUTE_TYPE: {
-        uint16_t attribute_value = 0;
-        memcpy((uint8_t *)&attribute_value, value, sizeof(uint16_t));
-        *val = esp_matter_bitmap16(attribute_value);
+        using Traits = chip::app::NumericAttributeTraits<uint16_t>;
+        Traits::StorageType attribute_value;
+        memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
+        if (attribute_metadata->IsNullable()) {
+            if (Traits::IsNullValue(attribute_value)) {
+                *val = esp_matter_nullable_bitmap16(nullable<uint16_t>());
+            } else {
+                *val = esp_matter_nullable_bitmap16(attribute_value);
+            }
+        } else {
+            *val = esp_matter_bitmap16(attribute_value);
+        }
         break;
     }
 
@@ -933,35 +1584,44 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
 
 void val_print(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id, esp_matter_attr_val_t *val)
 {
+    if (val_is_null(val)) {
+        ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is null **********", endpoint_id,
+                 cluster_id, attribute_id);
+        return;
+    }
+
     if (val->type == ESP_MATTER_VAL_TYPE_BOOLEAN) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.b);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INTEGER || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_FLOAT || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %f **********", endpoint_id,
                  cluster_id, attribute_id, val->val.f);
     } else if (val->type == ESP_MATTER_VAL_TYPE_UINT8 || val->type == ESP_MATTER_VAL_TYPE_BITMAP8
-               || val->type == ESP_MATTER_VAL_TYPE_ENUM8) {
+               || val->type == ESP_MATTER_VAL_TYPE_ENUM8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT8
+               || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u8);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INT16) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_BITMAP16
+               || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT16 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u16);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INT32) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT32|| val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT32) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i32);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_BITMAP32
+               || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT32 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %d **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u32);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_INT64) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_INT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_INT64) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
                  cluster_id, attribute_id, val->val.i64);
-    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64) {
+    } else if (val->type == ESP_MATTER_VAL_TYPE_UINT64 || val->type == ESP_MATTER_VAL_TYPE_NULLABLE_UINT64) {
         ESP_LOGI(TAG, "********** Endpoint 0x%04X's Cluster 0x%04X's Attribute 0x%04X is %lld **********", endpoint_id,
                  cluster_id, attribute_id, val->val.u64);
     } else if (val->type == ESP_MATTER_VAL_TYPE_CHAR_STRING) {
@@ -1051,8 +1711,10 @@ Status MatterPreAttributeChangeCallback(const chip::app::ConcreteAttributePath &
     uint16_t endpoint_id = path.mEndpointId;
     uint32_t cluster_id = path.mClusterId;
     uint32_t attribute_id = path.mAttributeId;
+    const EmberAfAttributeMetadata *attribute_metadata = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
+                                                                                      attribute_id);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_attr_val_from_data(&val, type, size, value);
+    attribute::get_attr_val_from_data(&val, type, size, value, attribute_metadata);
 
     /* Print */
     attribute::val_print(endpoint_id, cluster_id, attribute_id, &val);
@@ -1071,8 +1733,10 @@ void MatterPostAttributeChangeCallback(const chip::app::ConcreteAttributePath &p
     uint16_t endpoint_id = path.mEndpointId;
     uint32_t cluster_id = path.mClusterId;
     uint32_t attribute_id = path.mAttributeId;
+    const EmberAfAttributeMetadata *attribute_metadata = emberAfLocateAttributeMetadata(endpoint_id, cluster_id,
+                                                                                      attribute_id);
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_attr_val_from_data(&val, type, size, value);
+    attribute::get_attr_val_from_data(&val, type, size, value, attribute_metadata);
 
     /* Callback to application */
     execute_callback(attribute::POST_UPDATE, endpoint_id, cluster_id, attribute_id, &val);
@@ -1138,7 +1802,7 @@ EmberAfStatus emberAfExternalAttributeWriteCallback(EndpointId endpoint_id, Clus
     /* This creates a new variable val, and stores the new attribute value in the new variable.
     The value in esp-matter data model is updated only when attribute::set_val() is called */
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
-    attribute::get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer);
+    attribute::get_attr_val_from_data(&val, matter_attribute->attributeType, matter_attribute->size, buffer, matter_attribute);
 
     int flags = attribute::get_flags(attribute);
     if (flags & ATTRIBUTE_FLAG_OVERRIDE) {

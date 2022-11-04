@@ -37,9 +37,9 @@ namespace lighting {
 
 typedef struct config {
     bool global_scene_control;
-    uint16_t on_time;
-    uint16_t off_wait_time;
-    uint8_t start_up_on_off;
+    nullable<uint16_t> on_time;
+    nullable<uint16_t> off_wait_time;
+    nullable<uint8_t> start_up_on_off;
     config() : global_scene_control(1), on_time(0), off_wait_time(0), start_up_on_off(0) {}
 } config_t;
 
@@ -65,7 +65,7 @@ typedef struct config {
     uint16_t remaining_time;
     uint8_t min_level;
     uint8_t max_level;
-    uint8_t start_up_current_level;
+    nullable<uint8_t> start_up_current_level;
     config() : remaining_time(0), min_level(1), max_level(254), start_up_current_level(0) {}
 } config_t;
 
@@ -111,7 +111,7 @@ typedef struct config {
     uint16_t color_temp_physical_min_mireds;
     uint16_t color_temp_physical_max_mireds;
     uint16_t couple_color_temp_to_level_min_mireds;
-    uint16_t startup_color_temperature_mireds;
+    nullable<uint16_t> startup_color_temperature_mireds;
     config() : color_temperature_mireds(0x00fa), color_temp_physical_min_mireds(0),
                color_temp_physical_max_mireds(0xfeff), couple_color_temp_to_level_min_mireds(0),
                startup_color_temperature_mireds(0x00fa) {}

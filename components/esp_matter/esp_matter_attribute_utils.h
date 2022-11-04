@@ -18,6 +18,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <app/data-model/Nullable.h>
+
 /** Remap attribute values
  *
  * This can be used to remap attribute values to different ranges.
@@ -33,46 +35,64 @@
  */
 #define REMAP_TO_RANGE_INVERSE(value, factor) (factor / value)
 
+/* Nullable base for nullable attribute */
+#define ESP_MATTER_VAL_NULLANLE_BASE 0x80
+
 /** ESP Matter Attribute Value type */
 typedef enum {
     /** Invalid */
     ESP_MATTER_VAL_TYPE_INVALID = 0,
     /** Boolean */
-    ESP_MATTER_VAL_TYPE_BOOLEAN,
+    ESP_MATTER_VAL_TYPE_BOOLEAN = 1,
     /** Integer. Mapped to a 32 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INTEGER,
+    ESP_MATTER_VAL_TYPE_INTEGER = 2,
     /** Floating point number */
-    ESP_MATTER_VAL_TYPE_FLOAT,
+    ESP_MATTER_VAL_TYPE_FLOAT = 3,
     /** Array Eg. [1,2,3] */
-    ESP_MATTER_VAL_TYPE_ARRAY,
+    ESP_MATTER_VAL_TYPE_ARRAY = 4,
     /** Char String Eg. "123" */
-    ESP_MATTER_VAL_TYPE_CHAR_STRING,
+    ESP_MATTER_VAL_TYPE_CHAR_STRING = 5,
     /** Octet String Eg. [0x01, 0x20] */
-    ESP_MATTER_VAL_TYPE_OCTET_STRING,
+    ESP_MATTER_VAL_TYPE_OCTET_STRING = 6,
     /** 8 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT8,
+    ESP_MATTER_VAL_TYPE_INT8 = 7,
     /** 8 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT8,
+    ESP_MATTER_VAL_TYPE_UINT8 = 8,
     /** 16 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT16,
+    ESP_MATTER_VAL_TYPE_INT16 = 9,
     /** 16 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT16,
+    ESP_MATTER_VAL_TYPE_UINT16 = 10,
     /** 32 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT32,
+    ESP_MATTER_VAL_TYPE_INT32 = 11,
     /** 32 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT32,
+    ESP_MATTER_VAL_TYPE_UINT32 = 12,
     /** 64 bit signed integer */
-    ESP_MATTER_VAL_TYPE_INT64,
+    ESP_MATTER_VAL_TYPE_INT64 = 13,
     /** 64 bit unsigned integer */
-    ESP_MATTER_VAL_TYPE_UINT64,
+    ESP_MATTER_VAL_TYPE_UINT64 = 14,
     /** 8 bit enum */
-    ESP_MATTER_VAL_TYPE_ENUM8,
+    ESP_MATTER_VAL_TYPE_ENUM8 = 15,
     /** 8 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP8,
+    ESP_MATTER_VAL_TYPE_BITMAP8 = 16,
     /** 16 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP16,
+    ESP_MATTER_VAL_TYPE_BITMAP16 = 17,
     /** 32 bit bitmap */
-    ESP_MATTER_VAL_TYPE_BITMAP32,
+    ESP_MATTER_VAL_TYPE_BITMAP32 = 18,
+    /** nullable types **/
+    ESP_MATTER_VAL_TYPE_NULLABLE_INTEGER = ESP_MATTER_VAL_TYPE_INTEGER + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_FLOAT = ESP_MATTER_VAL_TYPE_FLOAT + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_INT8 = ESP_MATTER_VAL_TYPE_INT8 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_UINT8 = ESP_MATTER_VAL_TYPE_UINT8 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_INT16 = ESP_MATTER_VAL_TYPE_INT16 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_UINT16 = ESP_MATTER_VAL_TYPE_UINT16 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_INT32 = ESP_MATTER_VAL_TYPE_INT32 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_UINT32 = ESP_MATTER_VAL_TYPE_UINT32 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_INT64 = ESP_MATTER_VAL_TYPE_INT64 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_UINT64 = ESP_MATTER_VAL_TYPE_UINT64 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_ENUM8 = ESP_MATTER_VAL_TYPE_ENUM8 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP8 = ESP_MATTER_VAL_TYPE_BITMAP8 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP16 = ESP_MATTER_VAL_TYPE_BITMAP16 + ESP_MATTER_VAL_NULLANLE_BASE,
+    ESP_MATTER_VAL_TYPE_NULLABLE_BITMAP32= ESP_MATTER_VAL_TYPE_BITMAP32 + ESP_MATTER_VAL_NULLANLE_BASE,
 } esp_matter_val_type_t;
 
 /** ESP Matter Value */
@@ -131,54 +151,110 @@ typedef struct esp_matter_attr_bounds {
     /** TODO: Step Value might be needed here later */
 } esp_matter_attr_bounds_t;
 
+template <typename T>
+class nullable {
+public:
+    nullable(T value)
+    {
+        assert(!chip::app::NumericAttributeTraits<T>::IsNullValue(value));
+        val = value;
+    }
+    nullable()
+    {
+        chip::app::NumericAttributeTraits<T>::SetNull(val);
+    }
+
+    T value()
+    {
+        assert(!is_null());
+        return val;
+    }
+
+    T value_or(T ret)
+    {
+        return is_null() ? ret : val;
+    }
+
+    bool is_null()
+    {
+        return chip::app::NumericAttributeTraits<T>::IsNullValue(val);
+    }
+
+    void operator=(T value)
+    {
+        assert(!chip::app::NumericAttributeTraits<T>::IsNullValue(value));
+        this->val = value;
+    }
+
+    void operator=(std::nullptr_t)
+    {
+        chip::app::NumericAttributeTraits<T>::SetNull(this->val);
+    }
+private:
+    T val;
+};
+
 /*** Attribute val APIs ***/
 /** Invalid */
 esp_matter_attr_val_t esp_matter_invalid(void *val);
-
 /** Boolean */
 esp_matter_attr_val_t esp_matter_bool(bool val);
 
 /** Integer */
 esp_matter_attr_val_t esp_matter_int(int val);
+esp_matter_attr_val_t esp_matter_nullable_int(nullable<int> val);
 
 /** Float */
 esp_matter_attr_val_t esp_matter_float(float val);
+esp_matter_attr_val_t esp_matter_nullable_float(nullable<float> val);
 
 /** 8 bit integer */
 esp_matter_attr_val_t esp_matter_int8(int8_t val);
+esp_matter_attr_val_t esp_matter_nullable_int8(nullable<int8_t> val);
 
 /** 8 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint8(uint8_t val);
+esp_matter_attr_val_t esp_matter_nullable_uint8(nullable<uint8_t> val);
 
 /** 16 bit signed integer */
 esp_matter_attr_val_t esp_matter_int16(int16_t val);
+esp_matter_attr_val_t esp_matter_nullable_int16(nullable<int16_t> val);
 
 /** 16 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint16(uint16_t val);
+esp_matter_attr_val_t esp_matter_nullable_uint16(nullable<uint16_t> val);
 
 /** 32 bit signed integer */
 esp_matter_attr_val_t esp_matter_int32(int32_t val);
+esp_matter_attr_val_t esp_matter_nullable_int32(nullable<int32_t> val);
 
 /** 32 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint32(uint32_t val);
+esp_matter_attr_val_t esp_matter_nullable_uint32(nullable<uint32_t> val);
 
 /** 64 bit signed integer */
 esp_matter_attr_val_t esp_matter_int64(int64_t val);
+esp_matter_attr_val_t esp_matter_nullable_int64(nullable<int64_t> val);
 
 /** 64 bit unsigned integer */
 esp_matter_attr_val_t esp_matter_uint64(uint64_t val);
+esp_matter_attr_val_t esp_matter_nullable_uint64(nullable<uint64_t> val);
 
 /** 8 bit enum */
 esp_matter_attr_val_t esp_matter_enum8(uint8_t val);
+esp_matter_attr_val_t esp_matter_nullable_enum8(nullable<uint8_t> val);
 
 /** 8 bit bitmap */
 esp_matter_attr_val_t esp_matter_bitmap8(uint8_t val);
+esp_matter_attr_val_t esp_matter_nullable_bitmap8(nullable<uint8_t> val);
 
 /** 16 bit bitmap */
 esp_matter_attr_val_t esp_matter_bitmap16(uint16_t val);
+esp_matter_attr_val_t esp_matter_nullable_bitmap16(nullable<uint16_t> val);
 
 /** 32 bit bitmap */
 esp_matter_attr_val_t esp_matter_bitmap32(uint32_t val);
+esp_matter_attr_val_t esp_matter_nullable_bitmap32(nullable<uint32_t> val);
 
 /** Character string */
 esp_matter_attr_val_t esp_matter_char_str(char *val, uint16_t data_size);
@@ -190,6 +266,7 @@ esp_matter_attr_val_t esp_matter_octet_str(uint8_t *val, uint16_t data_size);
 esp_matter_attr_val_t esp_matter_array(uint8_t *val, uint16_t data_size, uint16_t count);
 
 namespace esp_matter {
+
 namespace attribute {
 
 /** Attribute update callback type */

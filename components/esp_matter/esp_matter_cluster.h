@@ -85,7 +85,7 @@ typedef struct config {
     uint16_t cluster_revision;
     bool update_possible;
     uint8_t update_state;
-    uint8_t update_state_progress;
+    nullable<uint8_t> update_state_progress;
     config() : cluster_revision(1), update_possible(1), update_state(0), update_state_progress(0) {}
 } config_t;
 
@@ -247,11 +247,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_
 namespace level_control {
 typedef struct config {
     uint16_t cluster_revision;
-    uint8_t current_level;
-    uint8_t on_level;
+    nullable<uint8_t> current_level;
+    nullable<uint8_t> on_level;
     uint8_t options;
     feature::lighting::config_t lighting;
-    config() : cluster_revision(5), current_level(0xFF), on_level(0xFF), options(0) {}
+    config() : cluster_revision(5), current_level(0xFE), on_level(0xFE), options(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
@@ -264,7 +264,7 @@ typedef struct config {
     uint8_t color_control_options;
     uint8_t enhanced_color_mode;
     uint16_t color_capabilities;
-    uint8_t number_of_primaries;
+    nullable<uint8_t> number_of_primaries;
     feature::hue_saturation::config_t hue_saturation;
     feature::color_temperature::config_t color_temperature;
     feature::xy::config_t xy;
@@ -282,7 +282,7 @@ typedef struct config {
     uint16_t cluster_revision;
     uint8_t fan_mode;
     uint8_t fan_mode_sequence;
-    uint8_t percent_setting;
+    nullable<uint8_t> percent_setting;
     uint8_t percent_current;
     config() : cluster_revision(2), fan_mode(0), fan_mode_sequence(2), percent_setting(0), percent_current(0) {}
 } config_t;
@@ -293,10 +293,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace thermostat {
 typedef struct config {
     uint16_t cluster_revision;
-    int16_t local_temperature;
+    nullable<int16_t> local_temperature;
     uint8_t control_sequence_of_operation;
     uint8_t system_mode;
-    config() : cluster_revision(5), local_temperature(0xFFFF), control_sequence_of_operation(4), system_mode(1) {}
+    config() : cluster_revision(5), local_temperature(), control_sequence_of_operation(4), system_mode(1) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
@@ -305,7 +305,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace door_lock {
 typedef struct config {
     uint16_t cluster_revision;
-    uint8_t lock_state;
+    nullable<uint8_t> lock_state;
     uint8_t lock_type;
     bool actuator_enabled;
     uint8_t operating_mode;
@@ -322,19 +322,19 @@ typedef struct config {
     uint8_t type;
     uint16_t physical_closed_limit_lift;
     uint16_t physical_closed_limit_tilt;
-    uint8_t current_position_lift;
-    uint8_t current_position_tilt;
+    nullable<uint16_t> current_position_lift;
+    nullable<uint16_t> current_position_tilt;
     uint16_t number_of_actuations_lift;
     uint16_t number_of_actuations_tilt;
     uint8_t config_status;
-    uint8_t current_position_lift_percentage;
-    uint8_t current_position_tilt_percentage;
-    uint8_t operational_status;
-    uint16_t target_position_lift_percent_100ths; 
-    uint16_t target_position_tilt_percent_100ths; 
+    nullable<uint8_t> current_position_lift_percentage;
+    nullable<uint8_t> current_position_tilt_percentage;
+    nullable<uint8_t> operational_status;
+    nullable<uint16_t> target_position_lift_percent_100ths;
+    nullable<uint16_t> target_position_tilt_percent_100ths;
     uint8_t end_product_type;
-    uint16_t current_position_lift_percent_100ths;
-    uint16_t current_position_tilt_percent_100ths;
+    nullable<uint16_t> current_position_lift_percent_100ths;
+    nullable<uint16_t> current_position_tilt_percent_100ths;
     uint16_t installed_open_limit_lift;
     uint16_t installed_closed_limit_lift;
     uint16_t installed_open_limit_tilt;
@@ -361,10 +361,10 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 namespace temperature_measurement {
 typedef struct config {
     uint16_t cluster_revision;
-    int16_t measured_value;
-    int16_t min_measured_value;
-    int16_t max_measured_value;
-    config() : cluster_revision(4), measured_value(-32768), min_measured_value(-32768), max_measured_value(-32768) {}
+    nullable<int16_t> measured_value;
+    nullable<int16_t> min_measured_value;
+    nullable<int16_t> max_measured_value;
+    config() : cluster_revision(4), measured_value(), min_measured_value(), max_measured_value() {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
