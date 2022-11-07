@@ -162,7 +162,7 @@ build_esp_matter_examples_idf_v5_0:
     extends:
         - .build_examples_template
     variables:
-        IDF_VERSION: "ccdeb43cc7274a49e8dfa331de95ab06dea25183"
+        IDF_VERSION: "20949d444f466e1b1247b10e2b8d6a2fb8212815"
     script:
         - *build_examples_idf_v5_0
 
