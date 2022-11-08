@@ -17,9 +17,8 @@
 #include <app_priv.h>
 #include <app_reset.h>
 
-
 static const char *TAG = "app_main";
-uint16_t light_endpoint_id = 0;
+uint16_t fan_endpoint_id = 0;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -91,48 +90,60 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Initialize driver */
-    app_driver_handle_t light_handle = app_driver_light_init();
+    app_driver_handle_t fan_handle = app_driver_light_init();
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
+    
+    fan::config_t fan_config;
+    fan_config.fan_control.fan_mode = 3;
 
-    color_temperature_light::config_t light_config;
-    light_config.on_off.on_off = DEFAULT_POWER;
-    light_config.on_off.lighting.start_up_on_off = nullptr;
-    light_config.level_control.current_level = DEFAULT_BRIGHTNESS;    
+    endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE,fan_handle);
+	
+	
+	/*
+    fan_config.fan_control.fan_mode = DEFAULT_POWER; 
+    fan_config.fan_control.fan_mode_sequence = DEFAULT_POWER;
+    fan_config.fan_control.percent_setting = 1;
+    fan_config.fan_control.percent_current = 1;
+   // fan_config.identify.identify_time = 1;
+	*/
+
+  /*  light_config.on_off.lighting.start_up_on_off = nullptr;
+    light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
     light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
     light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
     light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
-    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+   // endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+   */
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
     }
-    
-    
 
-    light_endpoint_id = endpoint::get_id(endpoint);
-    ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
+    fan_endpoint_id = endpoint::get_id(endpoint);
+    ESP_LOGI(TAG, "Fan created with endpoint_id %d", fan_endpoint_id);
 
     /* Add additional features to the node */
-    cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
+    /*
+   cluster_t *cluster = cluster::get(endpoint, FanControl::Id);
     cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
     hue_saturation_config.current_hue = DEFAULT_HUE;
     hue_saturation_config.current_saturation = DEFAULT_SATURATION;
     cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
-
+	*/
     /* Matter start */
     err = esp_matter::start(app_event_cb);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
-    
+
     /* Starting driver with default values */
-    app_driver_light_set_defaults(light_endpoint_id);
+    app_driver_light_set_defaults(fan_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
