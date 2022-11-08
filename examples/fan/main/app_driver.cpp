@@ -25,13 +25,13 @@ extern uint16_t fan_endpoint_id;
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
-    return led_driver_set_power(handle, val->val.b);
+    return driver_set_power_gpio(handle, val->val.b); //led_driver_set_power(handle, val->val.b);
 }
 
 static esp_err_t app_driver_light_set_brightness(led_driver_handle_t handle, esp_matter_attr_val_t *val)
 {
-    int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
-    return led_driver_set_brightness(handle, value);
+   // int value = REMAP_TO_RANGE(val->val.u8, MATTER_BRIGHTNESS, STANDARD_BRIGHTNESS);
+    return led_driver_set_brightness(handle, 100);
 }
 
 static esp_err_t app_driver_light_set_hue(led_driver_handle_t handle, esp_matter_attr_val_t *val)
@@ -56,8 +56,8 @@ static void app_driver_button_toggle_cb(void *arg)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
     uint16_t endpoint_id = fan_endpoint_id;
-    uint32_t cluster_id = OnOff::Id;
-    uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
+    uint32_t cluster_id = FanControl::Id;
+    uint32_t attribute_id = FanControl::Attributes::FanMode::Id;
 
     node_t *node = node::get();
     endpoint_t *endpoint = endpoint::get(node, endpoint_id);
@@ -67,6 +67,9 @@ static void app_driver_button_toggle_cb(void *arg)
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
     attribute::get_val(attribute, &val);
     val.val.b = !val.val.b;
+       ESP_LOGI(TAG, "Value >>>>> %d", val.val.b);
+
+    
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
 
@@ -76,15 +79,15 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
     esp_err_t err = ESP_OK;
     if (endpoint_id == fan_endpoint_id) {
         led_driver_handle_t handle = (led_driver_handle_t)driver_handle;
-        if (cluster_id == OnOff::Id) {
-            if (attribute_id == OnOff::Attributes::OnOff::Id) {
+        if (cluster_id == FanControl::Id) {
+            if (attribute_id == FanControl::Attributes::FanMode::Id) {
                 err = app_driver_light_set_power(handle, val);
             }
-        } else if (cluster_id == LevelControl::Id) {
-            if (attribute_id == LevelControl::Attributes::CurrentLevel::Id) {
+        } else if (cluster_id == FanControl::Id) {
+            if (attribute_id == FanControl::Attributes::PercentSetting::Id) {
                 err = app_driver_light_set_brightness(handle, val);
             }
-        } else if (cluster_id == ColorControl::Id) {
+        } else if (cluster_id == FanControl::Id) {
             if (attribute_id == ColorControl::Attributes::CurrentHue::Id) {
                 err = app_driver_light_set_hue(handle, val);
             } else if (attribute_id == ColorControl::Attributes::CurrentSaturation::Id) {
@@ -109,13 +112,13 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     esp_matter_attr_val_t val = esp_matter_invalid(NULL);
 
     /* Setting brightness */
-    cluster = cluster::get(endpoint, LevelControl::Id);
-    attribute = attribute::get(cluster, LevelControl::Attributes::CurrentLevel::Id);
+    cluster = cluster::get(endpoint, FanControl::Id);
+    attribute = attribute::get(cluster, FanControl::Attributes::PercentSetting::Id);
     attribute::get_val(attribute, &val);
     err |= app_driver_light_set_brightness(handle, &val);
 
     /* Setting color */
-    cluster = cluster::get(endpoint, ColorControl::Id);
+    cluster = cluster::get(endpoint, FanControl::Id);
     attribute = attribute::get(cluster, ColorControl::Attributes::ColorMode::Id);
     attribute::get_val(attribute, &val);
     if (val.val.u8 == EMBER_ZCL_COLOR_MODE_CURRENT_HUE_AND_CURRENT_SATURATION) {
@@ -137,8 +140,8 @@ esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id)
     }
 
     /* Setting power */
-    cluster = cluster::get(endpoint, OnOff::Id);
-    attribute = attribute::get(cluster, OnOff::Attributes::OnOff::Id);
+    cluster = cluster::get(endpoint, FanControl::Id);
+    attribute = attribute::get(cluster, FanControl::Attributes::PercentSetting::Id);
     attribute::get_val(attribute, &val);
     err |= app_driver_light_set_power(handle, &val);
 

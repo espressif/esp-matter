@@ -16,16 +16,19 @@
 #include <hal/ledc_types.h>
 
 #include <led_driver.h>
+#include "gpio.h"
 
 static const char *TAG = "led_driver_gpio";
 static bool current_power = false;
 static uint8_t current_brightness = 0;
+static uint8_t gpio_pin;
 
 led_driver_handle_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
     esp_err_t err = ESP_OK;
-
+    gpio_pin = config->gpio;
+    
     ledc_timer_config_t ledc_timer = {
         .speed_mode = LEDC_LOW_SPEED_MODE, // timer mode
         .duty_resolution = LEDC_TIMER_8_BIT, // resolution of PWM duty
@@ -52,6 +55,13 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "ledc_channel_config failed");
     }
+    
+    
+    
+    ESP_LOGI(TAG, "Initializing GPIO Pin! %d",gpio_pin);
+    err = gpio_reset_pin(gpio_pin);
+    /* Set the GPIO as a push/pull output */
+    err = gpio_set_direction(gpio_pin, GPIO_MODE_OUTPUT);
 
     /* Using (channel + 1) as handle */
     return (led_driver_handle_t)(config->channel + 1);
@@ -61,6 +71,22 @@ esp_err_t led_driver_set_power(led_driver_handle_t handle, bool power)
 {
     current_power = power;
     return led_driver_set_brightness(handle, current_brightness);
+}
+
+esp_err_t driver_set_power_gpio(led_driver_handle_t handle, bool power)
+{
+    esp_err_t err = ESP_OK;
+    err = gpio_set_level(gpio_pin, power);
+    ESP_LOGI(TAG, "GPIO Pin Set to -> %d", power);
+
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "gpio_pin failed");
+        return err;
+    }
+	
+
+	 
+    return err;//led_driver_set_brightness(handle, current_brightness);
 }
 
 esp_err_t led_driver_set_brightness(led_driver_handle_t handle, uint8_t brightness)
