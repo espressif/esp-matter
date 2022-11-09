@@ -345,6 +345,9 @@ def write_per_device_unique_data(args):
             if (args.serial_num is None):
                 chip_factory_append('serial-num', 'data', 'string', binascii.b2a_hex(os.urandom(SERIAL_NUMBER_LEN)).decode('utf-8'))
 
+            if (args.enable_rotating_device_id is True) and (args.rd_id_uid is None):
+                chip_factory_update('rd-id-uid', binascii.b2a_hex(os.urandom(int(ROTATING_DEVICE_ID_UNIQUE_ID_LEN_BITS / 8))).decode('utf-8'))
+
             mcsv_row_data = chip_get_values_as_csv()
             append_chip_mcsv_row(mcsv_row_data, args)
 
@@ -487,6 +490,7 @@ def get_args():
     g_dev_inst_info.add_argument('--hw-ver-str', type=str, required=False, help='Hardware version string')
     g_dev_inst_info.add_argument('--mfg-date', type=str, required=False, help='Manufacturing date in format YYYY-MM-DD')
     g_dev_inst_info.add_argument('--serial-num', type=str, required=False, help='Serial number')
+    g_dev_inst_info.add_argument('--enable-rotating-device-id', action='store_true', help='Enable Rotating device id in the generated binaries')
     g_dev_inst_info.add_argument('--rd-id-uid', type=str, required=False,
                         help='128-bit unique identifier for generating rotating device identifier, provide 32-byte hex string, e.g. "1234567890abcdef1234567890abcdef"')
 
@@ -529,7 +533,7 @@ def add_optional_KVs(args):
         chip_factory_append('hw-ver-str', 'data', 'string', args.hw_ver_str)
     if args.mfg_date is not None:
         chip_factory_append('mfg-date', 'data', 'string', args.mfg_date)
-    if args.rd_id_uid is not None:
+    if args.enable_rotating_device_id:
         chip_factory_append('rd-id-uid', 'data', 'hex2bin', args.rd_id_uid)
 
     # Add the serial-num

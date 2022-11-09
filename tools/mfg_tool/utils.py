@@ -29,6 +29,7 @@ import cryptography.x509
 
 
 MAX_UNIQUE_ID_LEN = 32
+ROTATING_DEVICE_ID_UNIQUE_ID_LEN_BITS = 128
 SERIAL_NUMBER_LEN = 16
 
 
@@ -194,9 +195,10 @@ def validate_args(args):
             or args.passcode is not None
             or args.unique_id is not None
             or args.dac_key is not None
-            or args.serial_num is not None):
+            or args.serial_num is not None
+            or args.rd_id_uid is not None):
         if args.count > 1:
-            logging.error('Number of partitions should be 1 when unique_id or discriminator or passcode or DAC or serial number is present')
+            logging.error('Number of partitions should be 1 when unique_id or discriminator or passcode or DAC or serial number or rotating device id is present')
             sys.exit(1)
 
     logging.info('Number of manufacturing NVS images to generate: {}'.format(args.count))
