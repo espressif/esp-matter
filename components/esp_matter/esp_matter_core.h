@@ -138,6 +138,21 @@ namespace endpoint {
  */
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
 
+/** Resume endpoint
+ *
+ * This will resume an endpoint after reboot and add it to the node.
+ *
+ * @param[in] node Node handle.
+ * @param[in] flags Bitmap of `endpoint_flags_t`.
+ * @param[in] endpoint_id Endpoint ID of the endpoint resumed.
+ * @param[in] priv_data (Optional) Private data associated with the endpoint. This will be passed to the
+ * attribute_update and identify callbacks. It should stay allocated throughout the lifetime of the device.
+ *
+ * @return Endpoint handle on success.
+ * @return NULL in case of failure.
+ */
+endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv_data);
+
 /** Destroy endpoint
  *
  * This will destroy the endpoint which has been created and added to the node. It also destroys the associated

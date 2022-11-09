@@ -16,53 +16,6 @@
 #include <esp_matter.h>
 #include <esp_matter_endpoint.h>
 
-/* Replace these with IDs from submodule whenever they are implemented */
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
-#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 1
-#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
-#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION 1
-#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
-#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_VERSION 1
-
-#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
-#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
-#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID 0x010C
-#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
-#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_VERSION 2
-
-#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
-#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
-#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
-#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID 0x000F
-#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION 1
-
-#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
-#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
-#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
-
-#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
-#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID 0x0107
-#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID 0x0015
-#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_VERSION 1
-
-#define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
-#define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
-#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
-#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
-#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
-#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
-#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 2
-
 static const char *TAG = "esp_matter_endpoint";
 
 namespace esp_matter {
@@ -83,8 +36,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -124,8 +82,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -138,6 +101,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
     return endpoint;
 }
+
 } /* on_off_light */
 
 namespace dimmable_light {
@@ -154,8 +118,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -186,8 +155,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
-    if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+     if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -204,6 +178,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
     return endpoint;
 }
+
 } /* color_temperature_light */
 
 namespace extended_color_light {
@@ -220,8 +195,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -254,8 +234,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -283,8 +268,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -297,6 +287,7 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 
     return endpoint;
 }
+
 } /* dimmer_switch */
 
 namespace color_dimmer_switch {
@@ -313,8 +304,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -344,8 +340,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -372,8 +373,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -402,8 +408,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -434,8 +445,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -463,8 +479,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -491,8 +512,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint);
+}
+
+endpoint_t *add(endpoint_t *endpoint)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -518,8 +544,13 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
 {
     // bridged node endpoints are always deletable
     endpoint_t *endpoint = endpoint::create(node, flags | ENDPOINT_FLAG_DESTROYABLE, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
 
@@ -529,6 +560,12 @@ endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_dat
     bridged_device_basic::create(endpoint, &(config->bridged_device_basic), CLUSTER_FLAG_SERVER);
 
     return endpoint;
+}
+
+endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::resume(node, flags | ENDPOINT_FLAG_DESTROYABLE, endpoint_id, priv_data);
+    return add(endpoint, config);
 }
 } /* bridged_node */
 
@@ -546,8 +583,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
 
@@ -575,8 +617,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void * priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
 
@@ -604,8 +651,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -631,8 +683,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
@@ -658,8 +715,13 @@ uint8_t get_device_type_version()
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
 {
     endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
     if (!endpoint) {
-        ESP_LOGE(TAG, "Could not create endpoint");
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
         return NULL;
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());

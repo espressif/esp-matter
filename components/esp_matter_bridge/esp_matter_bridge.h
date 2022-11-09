@@ -18,15 +18,37 @@
 #include <esp_err.h>
 #include <esp_matter_core.h>
 
-#define MAX_BRIDGED_DEVICE_COUNT CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT
+#define MAX_BRIDGED_DEVICE_COUNT \
+    CHIP_DEVICE_CONFIG_DYNAMIC_ENDPOINT_COUNT - 1 - CONFIG_ESP_MATTER_AGGREGATOR_ENDPOINT_COUNT
 // There is an endpoint reserved as root endpoint
 
-typedef struct esp_matter_bridge_device {
+namespace esp_matter_bridge {
+
+typedef struct device_persistent_info {
+    uint16_t parent_endpoint_id;
+    uint16_t device_endpoint_id;
+    uint32_t device_type_id;
+} device_persistent_info_t;
+
+typedef struct device {
     esp_matter::node_t *node;
     esp_matter::endpoint_t *endpoint;
-    uint16_t parent_endpoint_id;
-} esp_matter_bridge_device_t;
+    device_persistent_info_t persistent_info;
+} device_t;
 
-esp_matter_bridge_device_t *esp_matter_bridge_create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id);
+esp_err_t get_bridged_endpoint_ids(uint16_t *matter_endpoint_id_array);
 
-esp_err_t esp_matter_bridge_remove_device(esp_matter_bridge_device_t *bridged_device);
+esp_err_t erase_bridged_device_info(uint16_t matter_endpoint_id);
+
+device_t *create_device(esp_matter::node_t *node, uint16_t parent_endpoint_id, uint32_t device_type_id);
+
+device_t *resume_device(esp_matter::node_t *node, uint16_t device_endpoint_id);
+
+esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id);
+
+esp_err_t remove_device(device_t *bridged_device);
+
+esp_err_t initialize(esp_matter::node_t *node);
+
+esp_err_t factory_reset();
+} // namespace esp_matter_bridge

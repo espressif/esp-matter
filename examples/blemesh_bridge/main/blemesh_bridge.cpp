@@ -43,24 +43,6 @@ static uint8_t expect_composition[] = {/* CID */0XE5, 0x02, /* PID */0x00, 0x00,
                                     /* NumS */0x02, /* NumV */0x00, /* Config Server Model */0x00, 0x00,
                                     /* Generic OnOff Server Model */0x00, 0x10};
 
-static esp_err_t blemesh_bridge_init_bridged_onoff_light(esp_matter_bridge_device_t *dev)
-{
-    if (!dev) {
-        ESP_LOGE(TAG, "Invalid bridge device to be initialized");
-        return ESP_ERR_INVALID_ARG;
-    }
-    on_off::config_t config;
-    on_off::create(dev->endpoint, &config, CLUSTER_MASK_SERVER, ESP_MATTER_NONE_FEATURE_ID);
-    endpoint::add_device_type(dev->endpoint, endpoint::on_off_light::get_device_type_id(),
-                              endpoint::on_off_light::get_device_type_version());
-    if (endpoint::enable(dev->endpoint, dev->parent_endpoint_id) != ESP_OK) {
-        ESP_LOGE(TAG, "ESP Matter enable dynamic endpoint failed");
-        endpoint::destroy(dev->node, dev->endpoint);
-        return ESP_FAIL;
-    }
-    return ESP_OK;
-}
-
 esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, uint16_t blemesh_addr)
 {
     /** Compare Composition Data Page 0 to find expected device */
@@ -73,10 +55,10 @@ esp_err_t blemesh_bridge_match_bridged_onoff_light(uint8_t *composition_data, ui
                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
         } else {
             app_bridged_device_t *bridged_device =
-                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
+                app_bridge_create_bridged_device(node, aggregator_endpoint_id, ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID,
+                                                 ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
                                                  app_bridge_blemesh_address(blemesh_addr));
             ESP_RETURN_ON_FALSE(bridged_device, ESP_FAIL, TAG, "Failed to create bridged device (on_off light)");
-            ESP_RETURN_ON_ERROR(blemesh_bridge_init_bridged_onoff_light(bridged_device->dev), TAG, "Failed to initialize the bridged node");
             ESP_LOGI(TAG, "Create/Update bridged node for 0x%04x bridged device on endpoint %d", blemesh_addr,
                     app_bridge_get_matter_endpointid_by_blemesh_addr(blemesh_addr));
         }

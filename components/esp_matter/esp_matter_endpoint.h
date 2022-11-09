@@ -18,6 +18,53 @@
 #include <esp_matter_core.h>
 #include <esp_matter_identify.h>
 
+/* Replace these with IDs from submodule whenever they are implemented */
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_ID 0x0016
+#define ESP_MATTER_ROOT_NODE_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_ID 0x000E
+#define ESP_MATTER_AGGREGATOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_ID 0x0013
+#define ESP_MATTER_BRIDGED_NODE_DEVICE_TYPE_VERSION 1
+
+#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_ID 0x0100
+#define ESP_MATTER_ON_OFF_LIGHT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_ID 0x0101
+#define ESP_MATTER_DIMMABLE_LIGHT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_ID 0x010C
+#define ESP_MATTER_COLOR_TEMPERATURE_LIGHT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_ID 0x010D
+#define ESP_MATTER_EXTENDED_COLOR_LIGHT_DEVICE_TYPE_VERSION 2
+
+#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_ID 0x0103
+#define ESP_MATTER_ON_OFF_SWITCH_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0104
+#define ESP_MATTER_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_ID 0x0105
+#define ESP_MATTER_COLOR_DIMMER_SWITCH_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_ID 0x000F
+#define ESP_MATTER_GENERIC_SWITCH_DEVICE_TYPE_VERSION 1
+
+#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010A
+#define ESP_MATTER_ON_OFF_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_ID 0x010B
+#define ESP_MATTER_DIMMABLE_PLUGIN_UNIT_DEVICE_TYPE_VERSION 2
+
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_ID 0x0302
+#define ESP_MATTER_TEMPERATURE_SENSOR_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_ID 0x0107
+#define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID 0x0015
+#define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_VERSION 1
+
+#define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
+#define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_ID 0x0301
+#define ESP_MATTER_THERMOSTAT_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_ID 0x000A
+#define ESP_MATTER_DOOR_LOCK_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_ID 0x0202
+#define ESP_MATTER_WINDOW_COVERING_DEVICE_TYPE_VERSION 2
+
 namespace esp_matter {
 
 /** Specific endpoint (device type) create APIs
@@ -45,6 +92,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* root_node */
 
 namespace on_off_light {
@@ -58,6 +106,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* on_off_light */
 
 namespace dimmable_light {
@@ -72,6 +121,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_light */
 
 namespace color_temperature_light {
@@ -87,6 +137,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* color_temperature_light */
 
 namespace extended_color_light {
@@ -102,6 +153,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* extended_color_light */
 
 namespace on_off_switch {
@@ -113,6 +165,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* on_off_switch */
 
 namespace dimmer_switch {
@@ -124,6 +177,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* dimmer_switch */
 
 namespace color_dimmer_switch {
@@ -135,6 +189,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* color_dimmer_switch */
 
 namespace generic_switch {
@@ -146,6 +201,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* generic_switch */
 
 namespace on_off_plugin_unit {
@@ -159,6 +215,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* on_off_plugin_unit */
 
 namespace dimmable_plugin_unit {
@@ -173,6 +230,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* dimmable_plugin_unit */
 
 namespace fan {
@@ -185,6 +243,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* fan */
 
 namespace thermostat {
@@ -197,13 +256,15 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* thermostat */
 
 namespace aggregator {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
-} /* bridge */
+endpoint_t *add(endpoint_t *endpoint);
+} /* aggregator */
 
 namespace bridged_node {
 typedef struct config {
@@ -213,6 +274,8 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+endpoint_t *resume(node_t *node, config_t *config, uint8_t flags, uint16_t endpoint_id, void *priv_data);
 } /* bridged_node */
 
 namespace door_lock {
@@ -224,6 +287,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* door_lock */
 
 namespace window_covering_device {
@@ -237,6 +301,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* window_covering */
 
 namespace temperature_sensor {
@@ -248,6 +313,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* temperature_sensor */
 
 namespace occupancy_sensor {
@@ -259,6 +325,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* occupancy_sensor */
 
 namespace contact_sensor {
@@ -270,6 +337,7 @@ typedef struct config {
 uint32_t get_device_type_id();
 uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* contact_sensor */
 
 } /* endpoint */
