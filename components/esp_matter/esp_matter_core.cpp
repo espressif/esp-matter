@@ -654,9 +654,11 @@ namespace lock {
 #define DEFAULT_TICKS (500 / portTICK_PERIOD_MS) /* 500 ms in ticks */
 status_t chip_stack_lock(uint32_t ticks_to_wait)
 {
+#if CHIP_STACK_LOCK_TRACKING_ENABLED
     if (PlatformMgr().IsChipStackLockedByCurrentThread()) {
         return ALREADY_TAKEN;
     }
+#endif
     if (ticks_to_wait == portMAX_DELAY) {
         /* Special handling for max delay */
         PlatformMgr().LockChipStack();
