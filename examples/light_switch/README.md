@@ -70,10 +70,72 @@ Update the switch's binding attribute to add the entry of group in the binding t
 
 Switch specific console commands:
 
+-   Send command to the specified device on the specified cluster:
+    (The IDs are in hex):
+    ```
+    matter esp client invoke <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id> <parameters>
+    ```
+
+    -   Example: Off:
+        ```
+        matter esp client invoke 0x1 0x1234 0x1 0x6 0x0
+        ```
+
+    -   Example: On:
+        ```
+        matter esp client invoke 0x1 0x1234 0x1 0x6 0x1
+        ```
+
+    -   Example: Toggle:
+        ```
+        matter esp client invoke 0x1 0x1234 0x1 0x6 0x2
+        ```
+
+    -   Example: Move To Level 0x50:
+        ```
+        matter esp client invoke 0x1 0x1234 0x1 0x8 0x0 0x50 0x0 0x0 0x0
+        ```
+
+    -   Example: Move To Hue 0x50:
+        ```
+        matter esp client invoke 0x1 0x1234 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        ```
+
+-   Send command to the specified group on the specified cluster:
+    (The IDs are in hex):
+    ```
+    matter esp client invoke-group <fabric_index> <group_id> <cluster_id> <command_id> <parameters>
+    ```
+
+    -   Example: Off:
+        ```
+        matter esp client invoke-group 0x1 0x101 0x6 0x0
+        ```
+
+    -   Example: On:
+        ```
+        matter esp client invoke-group 0x1 0x101 0x6 0x1
+        ```
+
+    -   Example: Toggle:
+        ```
+        matter esp client invoke-group 0x1 0x101 0x6 0x2
+
+        ```
+    -   Example: Move To Level 0x50:
+        ```
+        matter esp client invoke-group 0x1 0x101 0x8 0x0 0x50 0x0 0x0 0x0
+
+        ```
+    -   Example: Move To Hue 0x50:
+        ```
+        matter esp client invoke-group 0x1 0x101 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        ```
+
 -   Send command to all the bound devices on the specified cluster:
     (The IDs are in hex):
     ```
-    matter esp bound invoke <local_endpoint_id> <cluster_id> <command_id>
+    matter esp bound invoke <local_endpoint_id> <cluster_id> <command_id> <parameters>
     ```
 
     -   Example: Off:
@@ -91,10 +153,20 @@ Switch specific console commands:
         matter esp bound invoke 0x1 0x6 0x2
         ```
 
+    -   Example: Move To Level 0x50:
+        ```
+        matter esp bound invoke 0x1 0x8 0x0 0x50 0x0 0x0 0x0
+        ```
+
+    -   Example: Move To Hue 0x50:
+        ```
+        matter esp bound invoke 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        ```
+
 -   Send command to all the bound groups on the specified cluster:
     (The IDs are in hex):
     ```
-    matter esp bound invoke-group <local_endpoint_id> <cluster_id> <command_id>
+    matter esp bound invoke-group <local_endpoint_id> <cluster_id> <command_id> <parameters>
     ```
 
     -   Example: Off:
@@ -110,6 +182,16 @@ Switch specific console commands:
     -   Example: Toggle:
         ```
         matter esp bound invoke-group 0x1 0x6 0x2
+        ```
+
+    -   Example: Move To Level 0x50:
+        ```
+        matter esp bound invoke-group 0x1 0x8 0x0 0x50 0x0 0x0 0x0
+        ```
+
+    -   Example: Move To Hue 0x50:
+        ```
+        matter esp bound invoke-group 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
         ```
 
 ## 3. Device Performance

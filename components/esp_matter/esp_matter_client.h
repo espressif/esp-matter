@@ -54,6 +54,21 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, uint16_t remote_en
 esp_err_t send_stop(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t option_mask,
                     uint8_t option_override);
 esp_err_t send_stop_with_on_off(peer_device_t *remote_device, uint16_t remote_endpoint_id);
+esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
+                    uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint8_t level,
+                             uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_move_to_level_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t level,
+                                         uint16_t transition_time);
+esp_err_t group_send_move_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode,
+                                uint8_t rate);
+esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
+                    uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_step_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
+                                uint8_t step_size, uint16_t transition_time);
+esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask,
+                    uint8_t option_override);
+esp_err_t group_send_stop_with_on_off(uint8_t fabric_index, uint16_t group_id);
 } /* command */
 } /* level_control */
 
@@ -76,6 +91,23 @@ esp_err_t send_step_hue(peer_device_t *remote_device, uint16_t remote_endpoint_i
 esp_err_t send_step_saturation(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
                                uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
                                uint8_t option_override);
+esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate, uint8_t option_mask,
+                        uint8_t option_override);
+esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode,
+                               uint8_t rate, uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_t hue, uint8_t direction, uint16_t transition_time,
+                            uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_move_to_hue_and_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t hue,
+                                          uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
+                                          uint8_t option_override);
+esp_err_t group_send_move_to_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t saturation,
+                                  uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_step_hue(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
+                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override);
+esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
+                               uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
+                               uint8_t option_override);
+
 } /* command */
 } /* color_control */
 
