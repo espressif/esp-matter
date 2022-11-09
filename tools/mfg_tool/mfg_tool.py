@@ -337,10 +337,6 @@ def write_per_device_unique_data(args):
             chip_factory_update('pai-cert', os.path.abspath(PAI['cert_der']))
             chip_factory_update('cert-dclrn', os.path.abspath(args.cert_dclrn))
 
-            # If unique id is not passed, then generate one
-            if (args.unique_id is None):
-                chip_config_update('unique-id', binascii.b2a_hex(os.urandom(int(MAX_UNIQUE_ID_LEN / 2))).decode('utf-8'))
-
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
                 chip_factory_append('serial-num', 'data', 'string', binascii.b2a_hex(os.urandom(SERIAL_NUMBER_LEN)).decode('utf-8'))
@@ -506,7 +502,6 @@ def get_args():
     g_basic = parser.add_argument_group('Few more Basic clusters options')
     g_basic.add_argument('--product-label', type=str, required=False, help='Product label')
     g_basic.add_argument('--product-url', type=str, required=False, help='Product URL')
-    g_basic.add_argument('--unique-id', type=str, required=False, help='Unique identifier in Basic cluster')
 
     g_extra_info = parser.add_argument_group('Extra information options using csv files')
     g_extra_info.add_argument('--csv', type=str, help='CSV file containing the partition schema for extra options. \
@@ -568,8 +563,6 @@ def add_optional_KVs(args):
         chip_factory_append('product-label', 'data', 'string', args.product_label)
     if args.product_url is not None:
         chip_factory_append('product-url', 'data', 'string', args.product_url)
-    if args.unique_id is not None:
-        chip_config_update('unique-id', args.unique_id)
 
 
 def main():

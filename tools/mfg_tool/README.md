@@ -118,16 +118,16 @@ Below commands uses the test PAI signing certificate and key, test certificate d
     --dac-key DAC_key.pem --dac-cert DAC_cert.pem
 ```
 
-### Generate factory partitions using existing Passcode, Discriminator, and unique ID [Optional arguments : `--passcode`, `--discriminator`, and `--unique-id`]
+### Generate factory partitions using existing Passcode, Discriminator, and rotating device ID [Optional arguments : `--passcode`, `--discriminator`, and `--rd-id-uid`]
 ```
 ./mfg_tool.py -cn "My bulb" -v 0xFFF2 -p 0x8001 --pai \
     -k path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Key.pem \
     -c path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/attestation/Chip-Test-PAI-FFF2-8001-Cert.pem \
     -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der \
-    --passcode 20202021 --discriminator 3840 --unique-id d2f351f57bb9387445a5f92a601d1c14
+    --passcode 20202021 --discriminator 3840  --enable-rotating-device-id --rd-id-uid d2f351f57bb9387445a5f92a601d1c14
 ```
 
-* NOTE: Script generates only one factory partition if **DAC or Discriminator or Passcode or Unique-ID** is specified.
+* NOTE: Script generates only one factory partition if **DAC or Discriminator or Passcode or Rotating-Device-ID** is specified.
 
 ### Generate factory partitions with extra NVS key-values specified using csv and mcsv file [Optional arguments : `--csv` and `--mcsv`]
 ```
