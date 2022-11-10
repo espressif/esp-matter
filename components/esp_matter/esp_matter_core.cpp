@@ -63,8 +63,10 @@ using chip::DeviceLayer::ThreadStackMgr;
 
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
+#define ESP_MATTER_NVS_NODE_NAMESPACE "node"
 
 static const char *TAG = "esp_matter_core";
+static bool esp_matter_started = false;
 
 namespace esp_matter {
 
@@ -161,8 +163,53 @@ typedef struct _endpoint {
 
 typedef struct _node {
     _endpoint_t *endpoint_list;
-    uint16_t current_endpoint_id;
+    uint16_t min_unused_endpoint_id;
 } _node_t;
+
+namespace node {
+
+static _node_t *node = NULL;
+
+static esp_err_t store_min_unused_endpoint_id()
+{
+    if (!node || !esp_matter_started) {
+        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
+                                            NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
+        return err;
+    }
+    err = nvs_set_u16(handle, "min_uu_ep_id", node->min_unused_endpoint_id);
+    nvs_commit(handle);
+    nvs_close(handle);
+    return err;
+}
+
+static esp_err_t read_min_unused_endpoint_id()
+{
+    if (!node || !esp_matter_started) {
+        ESP_LOGE(TAG, "Node does not exist or esp_matter does not start");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
+                                            NVS_READONLY, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open the node nvs_namespace");
+        return err;
+    }
+    err = nvs_get_u16(handle, "min_uu_ep_id", &node->min_unused_endpoint_id);
+    nvs_close(handle);
+    return err;
+}
+
+} /* node */
 
 namespace cluster {
 static int get_count(_cluster_t *current)
@@ -654,9 +701,11 @@ namespace lock {
 #define DEFAULT_TICKS (500 / portTICK_PERIOD_MS) /* 500 ms in ticks */
 status_t chip_stack_lock(uint32_t ticks_to_wait)
 {
+#if CHIP_STACK_LOCK_TRACKING_ENABLED
     if (PlatformMgr().IsChipStackLockedByCurrentThread()) {
         return ALREADY_TAKEN;
     }
+#endif
     if (ticks_to_wait == portMAX_DELAY) {
         /* Special handling for max delay */
         PlatformMgr().LockChipStack();
@@ -849,13 +898,23 @@ static esp_err_t chip_init(event_callback_t callback)
 
 esp_err_t start(event_callback_t callback)
 {
+    if (esp_matter_started) {
+        ESP_LOGE(TAG, "esp_matter has started");
+        return ESP_ERR_INVALID_STATE;
+    }
     esp_matter_ota_requestor_init();
 
     esp_err_t err = chip_init(callback);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
+        return err;
     }
-
+    esp_matter_started = true;
+    err = node::read_min_unused_endpoint_id();
+    // If the min_unused_endpoint_id is not found, we will write the current min_unused_endpoint_id in nvs.
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        err = node::store_min_unused_endpoint_id();
+    }
     return err;
 }
 
@@ -865,6 +924,13 @@ esp_err_t factory_reset()
     node_t *node = node::get();
     if (node) {
         /* ESP Matter data model is used. Erase all the data that we have added in nvs. */
+        nvs_handle_t node_handle;
+        err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, ESP_MATTER_NVS_NODE_NAMESPACE,
+                                      NVS_READWRITE, &node_handle);
+        if (err == ESP_OK) {
+            nvs_erase_all(node_handle);
+        }
+
         endpoint_t *endpoint = endpoint::get_first(node);
         while (endpoint) {
             uint16_t endpoint_id = endpoint::get_id(endpoint);
@@ -905,9 +971,9 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     attribute_t *existing_attribute = get(cluster, attribute_id);
     if (existing_attribute) {
-        ESP_LOGE(TAG, "Attribute 0x%04x on cluster 0x%04x already exists. Not creating again.", attribute_id,
+        ESP_LOGW(TAG, "Attribute 0x%04x on cluster 0x%04x already exists. Not creating again.", attribute_id,
                  current_cluster->cluster_id);
-        return NULL;
+        return existing_attribute;
     }
 
     /* Allocate */
@@ -1261,9 +1327,9 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     _cluster_t *current_cluster = (_cluster_t *)cluster;
     command_t *existing_command = get(cluster, command_id, flags);
     if (existing_command) {
-        ESP_LOGE(TAG, "Command 0x%04x on cluster 0x%04x already exists. Not creating again.", command_id,
+        ESP_LOGW(TAG, "Command 0x%04x on cluster 0x%04x already exists. Not creating again.", command_id,
                  current_cluster->cluster_id);
-        return NULL;
+        return existing_command;
     }
 
     /* Allocate */
@@ -1395,16 +1461,16 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
         /* If a server already exists, do not create it again */
         _cluster_t *_existing_cluster = (_cluster_t *)existing_cluster;
         if ((_existing_cluster->flags & CLUSTER_FLAG_SERVER) && (flags & CLUSTER_FLAG_SERVER)) {
-            ESP_LOGE(TAG, "Server Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Server Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
-            return NULL;
+            return existing_cluster;
         }
 
         /* If a client already exists, do not create it again */
         if ((_existing_cluster->flags & CLUSTER_FLAG_CLIENT) && (flags & CLUSTER_FLAG_CLIENT)) {
-            ESP_LOGE(TAG, "Client Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
+            ESP_LOGW(TAG, "Client Cluster 0x%04x on endpoint 0x%04x already exists. Not creating again.", cluster_id,
                      current_endpoint->endpoint_id);
-            return NULL;
+            return existing_cluster;
         }
 
         /* The cluster already exists, but is of a different type. Just update the 'Set' part from below. */
@@ -1593,10 +1659,15 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     }
 
     /* Set */
-    endpoint->endpoint_id = current_node->current_endpoint_id++;
+    endpoint->endpoint_id = current_node->min_unused_endpoint_id++;
     endpoint->device_type_count = 0;
     endpoint->flags = flags;
     endpoint->priv_data = priv_data;
+
+    /* Store */
+    if (esp_matter_started) {
+        node::store_min_unused_endpoint_id();
+    }
 
     /* Add */
     _endpoint_t *previous_endpoint = NULL;
@@ -1605,6 +1676,54 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
         previous_endpoint = current_endpoint;
         current_endpoint = current_endpoint->next;
     }
+    if (previous_endpoint == NULL) {
+        current_node->endpoint_list = endpoint;
+    } else {
+        previous_endpoint->next = endpoint;
+    }
+
+    return (endpoint_t *)endpoint;
+}
+
+endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv_data)
+{
+    /* Find */
+    if (!node) {
+        ESP_LOGE(TAG, "Node cannot be NULL");
+        return NULL;
+    }
+    _node_t *current_node = (_node_t *)node;
+    _endpoint_t *previous_endpoint = NULL;
+    _endpoint_t *current_endpoint = current_node->endpoint_list;
+    while (current_endpoint) {
+        if (current_endpoint->endpoint_id == endpoint_id) {
+            ESP_LOGE(TAG, "Could not resume an endpoint that has been added to the node");
+            return NULL;
+        }
+        previous_endpoint = current_endpoint;
+        current_endpoint = current_endpoint->next;
+    }
+
+     /* Check */
+     if (endpoint_id >= current_node->min_unused_endpoint_id) {
+        ESP_LOGE(TAG, "The endpoint_id of the resumed endpoint should have been used");
+        return NULL;
+     }
+
+     /* Allocate */
+     _endpoint_t *endpoint = (_endpoint_t *)calloc(1, sizeof(_endpoint_t));
+     if (!endpoint) {
+         ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
+         return NULL;
+     }
+
+     /* Set */
+     endpoint->endpoint_id = endpoint_id;
+     endpoint->device_type_count = 0;
+     endpoint->flags = flags;
+     endpoint->priv_data = priv_data;
+
+     /* Add */
     if (previous_endpoint == NULL) {
         current_node->endpoint_list = endpoint;
     } else {
@@ -1777,8 +1896,6 @@ void *get_priv_data(uint16_t endpoint_id)
 } /* endpoint */
 
 namespace node {
-
-static _node_t *node = NULL;
 
 node_t *create_raw()
 {

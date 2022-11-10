@@ -101,6 +101,11 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
 
+    err = app_bridge_initialize(node);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to resume the bridged endpoints: %d", err);
+    }
+
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
     esp_matter::console::init();

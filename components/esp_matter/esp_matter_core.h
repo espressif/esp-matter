@@ -138,6 +138,21 @@ namespace endpoint {
  */
 endpoint_t *create(node_t *node, uint8_t flags, void *priv_data);
 
+/** Resume endpoint
+ *
+ * This will resume an endpoint after reboot and add it to the node.
+ *
+ * @param[in] node Node handle.
+ * @param[in] flags Bitmap of `endpoint_flags_t`.
+ * @param[in] endpoint_id Endpoint ID of the endpoint resumed.
+ * @param[in] priv_data (Optional) Private data associated with the endpoint. This will be passed to the
+ * attribute_update and identify callbacks. It should stay allocated throughout the lifetime of the device.
+ *
+ * @return Endpoint handle on success.
+ * @return NULL in case of failure.
+ */
+endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv_data);
+
 /** Destroy endpoint
  *
  * This will destroy the endpoint which has been created and added to the node. It also destroys the associated
@@ -710,15 +725,25 @@ namespace client {
  */
 
 typedef struct command_handle {
-    uint16_t endpoint_id;
+    union {
+        uint16_t endpoint_id;
+        uint16_t group_id;
+    };
     uint32_t cluster_id;
     uint32_t command_id;
     void *command_data { NULL };
     bool is_group;
     command_handle() : endpoint_id(chip::kInvalidEndpointId), cluster_id(chip::kInvalidClusterId),
                   command_id(chip::kInvalidCommandId), command_data(NULL), is_group(false) {}
-    command_handle(struct command_handle* cmd) : endpoint_id(cmd->endpoint_id), cluster_id(cmd->cluster_id),
-                  command_id(cmd->command_id), command_data(cmd->command_data), is_group(cmd->is_group) {}
+    command_handle(struct command_handle* cmd) : cluster_id(cmd->cluster_id), command_id(cmd->command_id),
+                   command_data(cmd->command_data), is_group(cmd->is_group)
+    {
+        if (cmd->is_group) {
+            this->group_id = cmd->group_id;
+        } else {
+            this->endpoint_id = cmd->endpoint_id;
+        }
+    }
 } command_handle_t;
 
 /** Peer device handle */
@@ -730,25 +755,22 @@ typedef chip::DeviceProxy peer_device_t;
  * send_command APIs can then be called from the callback.
  *
  * @param[in] peer_device Peer device handle. This can be passed to the send_command APIs.
- * @param[in] remote_endpoint_id Endpoint ID of the other device. This can be passed to the send_command APIs.
  * @param[in] cmd_handle Command handle used by `connect()` or `cluster_update()`.
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*command_callback_t)(peer_device_t *peer_device, uint16_t remote_endpoint_id, command_handle_t *cmd_handle,
-                                   void *priv_data);
+typedef void (*command_callback_t)(peer_device_t *peer_device, command_handle_t *cmd_handle, void *priv_data);
 
 /** Group command send callback
  *
  * This callback will be called when `cluster_update()` is called and the group command is triggered for binding cluster.
  *
  * @param[in] fabric_index The index of the fabric that the group command is sent to.
- * @param[in] group_id The group_id that the group command is sent to.
  * @param[in] cmd_handle  Command handle used by `cluster_update()`.
  * @param[in] priv_data (Optional) Private data associated with the callback. This will be passed to callback. It
  * should stay allocated throughout the lifetime of the device.
  */
-typedef void (*group_command_callback_t)(uint8_t fabric_index, uint16_t group_id, command_handle_t *cmd_handle, void *priv_data);
+typedef void (*group_command_callback_t)(uint8_t fabric_index, command_handle_t *cmd_handle, void *priv_data);
 
 /** Initialize binding
  *
@@ -776,6 +798,18 @@ void binding_manager_init();
  * @return error in case of failure.
  */
 esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_handle);
+
+/** group_command_send
+ *
+ * on the same fabric to send a group command.
+ *
+ * @param[in] fabric_index Fabric index.
+ * @param[in] cmd_handle Command to be sent to the group.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t group_command_send(uint8_t fabric_index, command_handle_t *cmd_handle);
 
 /** Set command send callback
  *
