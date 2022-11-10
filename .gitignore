@@ -10,3 +10,4 @@ __pycache__/
 out/
 _build/
 tools/chip-tool/
+device_hal/button_driver/button/.DS_Store
