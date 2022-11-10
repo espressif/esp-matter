@@ -27,7 +27,7 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
     esp_err_t err = ESP_OK;
-    gpio_pin = config->gpio;
+    
     
     ledc_timer_config_t ledc_timer = {
         .speed_mode = LEDC_LOW_SPEED_MODE, // timer mode
@@ -57,8 +57,8 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
     }
     
     
-    
-    ESP_LOGI(TAG, "Initializing GPIO Pin! %d",gpio_pin);
+    gpio_pin = config->gpio;
+    ESP_LOGI(TAG, "Initializing GPIO Pin > %d",gpio_pin);
     err = gpio_reset_pin(gpio_pin);
     /* Set the GPIO as a push/pull output */
     err = gpio_set_direction(gpio_pin, GPIO_MODE_OUTPUT);
@@ -76,8 +76,8 @@ esp_err_t led_driver_set_power(led_driver_handle_t handle, bool power)
 esp_err_t driver_set_power_gpio(led_driver_handle_t handle, bool power)
 {
     esp_err_t err = ESP_OK;
-    err = gpio_set_level(gpio_pin, power);
-    ESP_LOGI(TAG, "GPIO Pin Set to -> %d", power);
+    gpio_set_level(gpio_pin, power);
+    ESP_LOGI(TAG, "GPIO Pin State -> %d", power);
 
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "gpio_pin failed");

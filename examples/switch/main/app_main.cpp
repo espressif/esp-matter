@@ -18,7 +18,7 @@
 #include <app_reset.h>
 
 static const char *TAG = "app_main";
-uint16_t fan_endpoint_id = 0;
+uint16_t switch_endpoint_id = 0;
 
 using namespace esp_matter;
 using namespace esp_matter::attribute;
@@ -90,7 +90,7 @@ extern "C" void app_main()
     nvs_flash_init();
 
     /* Initialize driver */
-    app_driver_handle_t fan_handle = app_driver_light_init();
+    app_driver_handle_t switch_handle = app_driver_light_init();
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
@@ -98,18 +98,20 @@ extern "C" void app_main()
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
     
-    fan::config_t fan_config;
-    fan_config.fan_control.fan_mode = 1; 
-    endpoint_t *endpoint = fan::create(node, &fan_config, ENDPOINT_FLAG_NONE,fan_handle);
-	
+    on_off_plugin_unit::config_t on_off_plugin_unit_config;
+    on_off_plugin_unit_config.on_off.on_off = DEFAULT_POWER;
+    on_off_plugin_unit_config.on_off.lighting.start_up_on_off = nullptr;
+
+    endpoint_t *endpoint = on_off_plugin_unit::create(node, &on_off_plugin_unit_config, ENDPOINT_FLAG_NONE,switch_handle);
+
 
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
     }
 
-    fan_endpoint_id = endpoint::get_id(endpoint);
-    ESP_LOGI(TAG, "Fan created with endpoint_id %d", fan_endpoint_id);
+    switch_endpoint_id = endpoint::get_id(endpoint);
+    ESP_LOGI(TAG, "Switch created with endpoint_id %d", switch_endpoint_id);
 	
 	
 	 
@@ -128,7 +130,7 @@ extern "C" void app_main()
     }
 
     /* Starting driver with default values */
-    app_driver_light_set_defaults(fan_endpoint_id);
+    app_driver_light_set_defaults(switch_endpoint_id);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
