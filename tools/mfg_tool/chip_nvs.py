@@ -70,13 +70,6 @@ CHIP_NVS_MAP = {
             'encoding': 'binary',
             'value': None,
         },
-    },
-    'chip-config': {
-        'unique-id': {
-            'type': 'data',
-            'encoding': 'string',
-            'value': None,
-        }
     }
 }
 
