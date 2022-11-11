@@ -24,6 +24,9 @@ static uint32_t current_temp = 0;
 static HS_color_t current_HS = {0, 0};
 static RGB_color_t mRGB;
 
+/*set the number of pixels on the LED strip*/
+static uint32_t count_pixels = 150; 
+
 led_driver_handle_t led_driver_init(led_driver_config_t *config)
 {
     ESP_LOGI(TAG, "Initializing light driver");
@@ -41,7 +44,7 @@ led_driver_handle_t led_driver_init(led_driver_config_t *config)
         return NULL;
     }
 
-    led_strip_config_t strip_config = LED_STRIP_DEFAULT_CONFIG(1, (led_strip_dev_t)rmt_cfg.channel);
+    led_strip_config_t strip_config = LED_STRIP_DEFAULT_CONFIG(count_pixels, (led_strip_dev_t)rmt_cfg.channel);
     led_strip_t *strip = led_strip_new_rmt_ws2812(&strip_config);
     if (!strip) {
         ESP_LOGE(TAG, "W2812 driver install failed");
@@ -64,7 +67,12 @@ esp_err_t led_driver_set_RGB(led_driver_handle_t handle)
         err = ESP_FAIL;
     } else {
         led_strip_t *strip = (led_strip_t *)handle;
-        err = strip->set_pixel(strip, 0, mRGB.red, mRGB.green, mRGB.blue);
+        
+        /*set each pixel with a new value*/
+        for(int index_pixel = 0; index_pixel < count_pixels; index_pixel++){
+        err = strip->set_pixel(strip, index_pixel, mRGB.red, mRGB.green, mRGB.blue);
+        
+        }
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "strip_set_pixel failed");
             return err;
