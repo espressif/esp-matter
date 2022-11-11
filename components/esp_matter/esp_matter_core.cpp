@@ -366,6 +366,25 @@ static int get_next_index()
     return 0xFFFF;
 }
 
+static esp_err_t erase_persistent_data(endpoint_t *endpoint)
+{
+    uint16_t endpoint_id = endpoint::get_id(endpoint);
+    char nvs_namespace[16] = {0};
+    snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
+
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error opening partition: %s, %d", nvs_namespace, err);
+        return err;
+    }
+    err = nvs_erase_all(handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
+    }
+    return err;
+}
+
 static esp_err_t disable(endpoint_t *endpoint)
 {
     if (!endpoint) {
@@ -430,7 +449,9 @@ static esp_err_t disable(endpoint_t *endpoint)
     /* Free endpoint type */
     free(endpoint_type);
     current_endpoint->endpoint_type = NULL;
-    return ESP_OK;
+
+    /* Clear endpoint persistent data in nvs flash */
+    return erase_persistent_data(endpoint);
 }
 
 esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
@@ -933,19 +954,9 @@ esp_err_t factory_reset()
 
         endpoint_t *endpoint = endpoint::get_first(node);
         while (endpoint) {
-            uint16_t endpoint_id = endpoint::get_id(endpoint);
-            char nvs_namespace[16] = {0};
-            snprintf(nvs_namespace, 16, "endpoint_%X", endpoint_id); /* endpoint_id */
-
-            nvs_handle_t handle;
-            err = nvs_open_from_partition(ESP_MATTER_NVS_PART_NAME, nvs_namespace, NVS_READWRITE, &handle);
+            err = endpoint::erase_persistent_data(endpoint);
             if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Error opening partition: %s, %d", nvs_namespace, err);
-                continue;
-            }
-            err = nvs_erase_all(handle);
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "Error erasing partition: %s, %d", nvs_namespace, err);
+                ESP_LOGE(TAG, "Error erasing persistent data of endpoint %d", endpoint::get_id(endpoint));
                 continue;
             }
             endpoint = endpoint::get_next(endpoint);
