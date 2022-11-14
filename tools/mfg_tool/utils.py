@@ -151,12 +151,11 @@ def validate_attestation_info(args):
         elif args.pai:
             logging.info('Input Root certificate type PAI')
         else:
-            logging.error('Either PAA or PAI certificate is required')
-            sys.exit(1)
+            logging.info('Do not include the device attestation certificates and keys in partition binaries')
 
         # Check if Key and certificate are present
-        if args.key is None or args.cert is None:
-            logging.error('PAA key and certificate are required')
+        if (args.paa or args.pai) and (args.key is None or args.cert is None):
+            logging.error('CA key and certificate are required to generate DAC key and certificate')
             sys.exit(1)
 
 

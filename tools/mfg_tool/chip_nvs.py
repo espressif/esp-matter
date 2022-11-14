@@ -20,6 +20,9 @@ This file contains the CHIP specific key along with the data type and encoding f
 
 # This map contains mandatory CHIP specific key along with the data type and encoding format
 # Additionally to add more keys to chip-factory, use chip_factory_append() API
+
+import csv
+
 CHIP_NVS_MAP = {
     'chip-factory': {
         # Commissionable Data
@@ -45,26 +48,6 @@ CHIP_NVS_MAP = {
         },
 
         # Device Attestation Credentials
-        'dac-cert': {
-            'type': 'file',
-            'encoding': 'binary',
-            'value': None,
-        },
-        'dac-key': {
-            'type': 'file',
-            'encoding': 'binary',
-            'value': None,
-        },
-        'dac-pub-key': {
-            'type': 'file',
-            'encoding': 'binary',
-            'value': None,
-        },
-        'pai-cert': {
-            'type': 'file',
-            'encoding': 'binary',
-            'value': None,
-        },
         'cert-dclrn': {
             'type': 'file',
             'encoding': 'binary',
@@ -80,6 +63,13 @@ def get_dict(key, type, encoding, value):
             'type': type,
             'encoding': encoding,
             'value': value,
+        }
+    }
+
+
+def get_namespace_dict(namespace):
+    return {
+        namespace: {
         }
     }
 
@@ -101,8 +91,25 @@ def chip_factory_update(key, value):
     CHIP_NVS_MAP['chip-factory'][key]['value'] = value
 
 
-def chip_config_update(key, value):
-    CHIP_NVS_MAP['chip-config'][key]['value'] = value
+def chip_nvs_map_update(namespace, key, type, encoding, value):
+    CHIP_NVS_MAP[namespace].update(get_dict(key, type, encoding, value))
+
+def chip_nvs_map_append_config_csv(csv_path):
+    with open(csv_path, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        # Set current namespace to 'chip-factory' when the first line of the csv file is not 'XX,namespace,'
+        current_namespace = 'chip-factory'
+        for csv_data in csv_reader:
+            if 'namespace' in csv_data:
+                current_namespace = csv_data[0]
+                if (current_namespace not in list(CHIP_NVS_MAP.keys())):
+                    CHIP_NVS_MAP.update(get_namespace_dict(current_namespace))
+            else:
+                chip_nvs_map_update(current_namespace, csv_data[0], csv_data[1], csv_data[2], None)
+
+
+def chip_factory_get_val(key):
+    return CHIP_NVS_MAP['chip-factory'][key]['value']
 
 
 def chip_get_keys_as_csv():
