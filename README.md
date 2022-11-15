@@ -18,7 +18,7 @@ git clone --recursive https://github.com/espressif/esp-matter.git
 
 ## Supported ESP-IDF and connectedhomeip versions
 
-- This SDK currently works with [commit 4f7669b0](https://github.com/espressif/connectedhomeip/tree/4f7669b0) in v1.0 branch of connectedhomeip.
+- This SDK currently works with [commit 87bee4de](https://github.com/espressif/connectedhomeip/tree/87bee4de) in v1.0 branch of connectedhomeip.
 - For Wi-Fi devices (ESP32, ESP32-C3, ESP32-S3), ESP-IDF [v4.4.2 release](https://github.com/espressif/esp-idf/releases/tag/v4.4.2) is required.
 - For Thread devices (ESP32-H2) and Zigbee Bridge example, ESP-IDF release/v5.0 branch at [commit 20949d44](https://github.com/espressif/esp-idf/tree/20949d44) should be used.
 
@@ -26,3 +26,7 @@ git clone --recursive https://github.com/espressif/esp-matter.git
 ## Documentation
 
 Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/main/) for the latest version of the documentation.
+
+
+## Matter Specifications
+Download the Matter 1.0 specifications from [CSA's official site](https://csa-iot.org/developer-resource/specifications-download-request/)
