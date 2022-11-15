@@ -78,7 +78,7 @@ My device is crashing:
 
    -  The complete device logs taken over UART.
 
-   -  
+   -
 
       .. raw:: html
 
@@ -139,6 +139,47 @@ The LED on my devkit is not working:
    -  The complete device logs taken over UART.
    -  The esp-matter and esp-idf branch you are using.
    -  The devkit and its version that you are using.
+
+A1.7 Using Rotating Device Identifier
+-------------------------------------
+
+What is Rotating Device Identifier:
+
+-  The Rotating Device Identifier provides a non-trackable identifier which is unique per-device and
+   that can be used in one or more of the following ways:
+
+   -  Provided to the vendor's customer support for help in pairing or establishing Node provenance;
+   -  Used programmatically to obtain a Node's Passcode or other information in order to provide a
+      simplified setup flow. Note that the mechanism by which the Passcode may be obtained is
+      outside of this specification. If the Rotating Device Identifier is to be used for this purpose, the
+      system implementing this feature SHALL require proof of possession by the user at least once
+      before providing the Passcode. The mechanism for this proof of possession, and validation of it,
+      is outside of this specification.
+
+How to use Rotating Device Identifier
+
+-  Enable the Rotating Device Identifier support in menuconfig.
+-  Add the ``--enable-rotating-device-id`` and add the ``--rd-id-uid`` to specify the ``Rotating ID Unique ID``
+   when use the mfg_tool.py to generate partition.bin file.
+
+Difference between Rotating ID Unique ID and Unique ID
+
+-  The ``Rotating ID Unique ID`` is a parameter used to generate ``Rotating Device Identifier``, it is
+   a unique per-device identifier and shall consist of a randomly-generated 128-bit or longer octet string which
+   shall be programmed during factory provisioning or delivered to the device by the vendor using secure means
+   after a software update, it shall stay fixed during the lifetime of the device.
+
+-  The ``Unique ID`` is an attribute in ``Basic Information Cluster``, it shall indicate a unique
+   identifier for the device, which is constructed in a manufacturer specific manner. It may be
+   constructed using a permanent device identifier (such as device MAC address) as basis.
+   In order to prevent tracking:
+
+   -  it SHOULD NOT be identical to (or easily derived from) such permanent device identifier
+   -  it SHOULD be updated when the device is factory reset
+   -  it SHALL not be identical to the SerialNumber attribute
+   -  it SHALL not be printed on the product or delivered with the product
+
+   The value does not need to be human readable.
 
 **Also check the "Appendix FAQs" sections of the respective examples.**
 
