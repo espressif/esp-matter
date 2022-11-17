@@ -359,5 +359,50 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* thermostat */
 
+namespace switch_cluster {
+namespace feature {
+
+namespace latching_switch {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* latching_switch */
+
+namespace momentary_switch {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* momentary_switch */
+
+namespace momentary_switch_release {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* momentary_switch_release */
+
+namespace momentary_switch_long_press {
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster);
+
+} /* momentary_switch_long_press */
+
+namespace momentary_switch_multi_press {
+
+typedef struct config {
+    uint8_t multi_press_max;
+    config() : multi_press_max(2) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* momentary_switch_multi_pressy */
+} /* feature */
+} /* switch_cluster */
+
 } /* cluster */
 } /* esp_matter */
