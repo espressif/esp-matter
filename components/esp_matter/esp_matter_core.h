@@ -248,6 +248,19 @@ uint32_t *get_device_type_ids(endpoint_t *endpoint, uint8_t *device_type_count_p
  */
 uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_count_ptr);
 
+/** Set parent endpoint
+ *
+ * Set the parent endpoint. This is useful in correctly setting the parts_list attribute for the parent, when the
+ * parent is a composite endpoint.
+ *
+ * @param[in] endpoint Endpoint handle.
+ * @param[out] parent_endpoint Parent endpoint handle.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint);
+
 /** Get private data
  *
  * Get the private data passed while creating the endpoint.
@@ -267,12 +280,11 @@ void *get_priv_data(uint16_t endpoint_id);
  * called after all the clusters, attributes and commands have been added to the created endpoint.
  *
  * @param[in] endpoint Endpoint handle.
- * @param[in] parent_endpoint_id Parent Endpoint Id for the endpoint to be enabled, applicable only for bridges.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.
  */
-esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id);
+esp_err_t enable(endpoint_t *endpoint);
 
 } /* endpoint */
 

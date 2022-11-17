@@ -157,6 +157,7 @@ typedef struct _endpoint {
     EmberAfEndpointType *endpoint_type;
     DataVersion *data_versions_ptr;
     EmberAfDeviceType *device_types_ptr;
+    uint16_t parent_endpoint_id;
     void *priv_data;
     struct _endpoint *next;
 } _endpoint_t;
@@ -433,7 +434,7 @@ static esp_err_t disable(endpoint_t *endpoint)
     return ESP_OK;
 }
 
-esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
+esp_err_t enable(endpoint_t *endpoint)
 {
     if (!endpoint) {
         ESP_LOGE(TAG, "Endpoint cannot be NULL");
@@ -623,7 +624,7 @@ esp_err_t enable(endpoint_t *endpoint, uint16_t parent_endpoint_id)
     /* Add Endpoint */
     endpoint_index = endpoint::get_next_index();
     status = emberAfSetDynamicEndpoint(endpoint_index, current_endpoint->endpoint_id, endpoint_type, data_versions,
-                                       device_types, parent_endpoint_id);
+                                       device_types, current_endpoint->parent_endpoint_id);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error adding dynamic endpoint %d: 0x%x", current_endpoint->endpoint_id, status);
         err = ESP_FAIL;
@@ -689,8 +690,7 @@ static esp_err_t enable_all()
 
     endpoint_t *endpoint = get_first(node);
     while (endpoint) {
-        /* The normal endpoints do not have parent endpoint */
-        enable(endpoint, chip::kInvalidEndpointId);
+        enable(endpoint);
         endpoint = get_next(endpoint);
     }
     return ESP_OK;
@@ -1661,6 +1661,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     /* Set */
     endpoint->endpoint_id = current_node->min_unused_endpoint_id++;
     endpoint->device_type_count = 0;
+    endpoint->parent_endpoint_id = chip::kInvalidEndpointId;
     endpoint->flags = flags;
     endpoint->priv_data = priv_data;
 
@@ -1875,6 +1876,18 @@ uint8_t *get_device_type_versions(endpoint_t *endpoint, uint8_t *device_type_cou
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
     *device_type_count_ptr = current_endpoint->device_type_count;
     return current_endpoint->device_type_versions;
+}
+
+esp_err_t set_parent_endpoint(endpoint_t *endpoint, endpoint_t *parent_endpoint)
+{
+    if (!endpoint || !parent_endpoint) {
+        ESP_LOGE(TAG, "Endpoint or parent_endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
+    _endpoint_t *current_parent_endpoint = (_endpoint_t *)parent_endpoint;
+    current_endpoint->parent_endpoint_id = current_parent_endpoint->endpoint_id;
+    return ESP_OK;
 }
 
 void *get_priv_data(uint16_t endpoint_id)

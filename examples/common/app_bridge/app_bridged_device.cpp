@@ -144,7 +144,7 @@ app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t pa
     }
 
     // Enable the created endpoint
-    esp_matter::endpoint::enable(new_dev->dev->endpoint, new_dev->dev->persistent_info.parent_endpoint_id);
+    esp_matter::endpoint::enable(new_dev->dev->endpoint);
 
     return new_dev;
 }
@@ -188,7 +188,7 @@ esp_err_t app_bridge_initialize(node_t *node)
             g_current_bridged_device_count++;
 
             //Enable the resumed endpoint
-            esp_matter::endpoint::enable(new_dev->dev->endpoint, new_dev->dev->persistent_info.parent_endpoint_id);
+            esp_matter::endpoint::enable(new_dev->dev->endpoint);
         }
     }
     return ESP_OK;
