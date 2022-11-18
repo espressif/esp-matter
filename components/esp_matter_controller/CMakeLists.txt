@@ -7,4 +7,4 @@ endif()
 
 idf_component_register(SRC_DIRS ${src_dirs_list}
     INCLUDE_DIRS ${include_dirs_list}
-    REQUIRES chip esp_matter esp_matter_console)
+    REQUIRES chip esp_matter esp_matter_console json_parser)
