@@ -662,6 +662,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     temperature_measurement::create(endpoint, &(config->temperature_measurement), CLUSTER_FLAG_SERVER);
 
@@ -694,6 +695,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     occupancy_sensing::create(endpoint, &(config->occupancy_sensing), CLUSTER_FLAG_SERVER);
 
@@ -726,6 +728,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     }
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
     boolean_state::create(endpoint, &(config->boolean_state), CLUSTER_FLAG_SERVER);
 
