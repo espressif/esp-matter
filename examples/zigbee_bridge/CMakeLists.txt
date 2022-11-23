@@ -29,7 +29,7 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 include($ENV{ESP_MATTER_DEVICE_PATH}/esp_matter_device.cmake)
 
 set(EXTRA_COMPONENT_DIRS
-    "../common"
+    "${ESP_MATTER_PATH}/examples/common"
     "${MATTER_SDK_PATH}/config/esp32/components"
     "${ESP_MATTER_PATH}/components"
     "${ESP_MATTER_PATH}/device_hal/device"
