@@ -147,7 +147,7 @@ variables:
     # update caches only when setup succeed
     - *update_build_caches
   variables:
-    IDF_VERSION: "v4.4.1"
+    IDF_VERSION: "v4.4.2"
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 

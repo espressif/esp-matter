@@ -21,7 +21,7 @@ host. Linux and Mac OS-X are the supported development hosts in Matter, the reco
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 2.1.2 Getting the Repositories
@@ -32,7 +32,7 @@ The Prerequisites for ESP-IDF and Matter:
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v4.4.1; git submodule update --init --recursive;
+      cd esp-idf; git checkout v4.4.2; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
