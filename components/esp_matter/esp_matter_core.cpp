@@ -31,7 +31,6 @@
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
-#include <credentials/examples/DeviceAttestationCredsExample.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DiagnosticDataProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
@@ -41,6 +40,7 @@
 #endif
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
+#include <esp_matter_dac_provider.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -49,7 +49,6 @@ using chip::kInvalidCommandId;
 using chip::kInvalidClusterId;
 using chip::kInvalidEndpointId;
 using chip::Credentials::SetDeviceAttestationCredentialsProvider;
-using chip::Credentials::Examples::GetExampleDACProvider;
 using chip::DeviceLayer::ChipDeviceEvent;
 using chip::DeviceLayer::ConfigurationMgr;
 using chip::DeviceLayer::ConnectivityManager;
@@ -876,19 +875,14 @@ static esp_err_t chip_init(event_callback_t callback)
         return ESP_FAIL;
     }
 
-/* TODO: Remove the examples DAC provider once we have a concrete
- * way to generate attestation credentials.
- */
-
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(&factory_data_provider);
     SetCommissionableDataProvider(&factory_data_provider);
 #if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
     SetDeviceInstanceInfoProvider(&factory_data_provider);
 #endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
-#else // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-    SetDeviceAttestationCredentialsProvider(GetExampleDACProvider());
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
+    SetDeviceAttestationCredentialsProvider(get_dac_provider());
 
     ConnectivityMgr().SetBLEAdvertisingEnabled(true);
     // ConnectivityMgr().SetWiFiAPMode(ConnectivityManager::kWiFiAPMode_Enabled);
