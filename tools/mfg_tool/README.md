@@ -140,6 +140,13 @@ Below commands uses the test PAI signing certificate and key, test certificate d
 Above command will generate `n` number of partitions. Where `n` is the rows in the mcsv file.
 Output binary contains all the chip specific key/value and key/values specified using `--csv` and `--mcsv` option.
 
+### Generate factory partitions without device attestation certificates and keys
+```
+./mfg_tool.py -v 0xFFF2 -p 0x8001 \
+              -cd path/to/esp-matter/connectedhomeip/connectedhomeip/credentials/test/certification-declaration/Chip-Test-CD-FFF2-8001.der
+```
+
+* NOTE: These factory partitions are only for firmwares with other ways to get the certificates and sign message with the private key.
 
 ## Flashing the manufacturing binary
 Please note that `mfg_tool.py` only generates manufacturing binary images which need to be flashed onto device using `esptool.py`.
