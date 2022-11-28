@@ -563,7 +563,7 @@ void app_driver_client_group_command_callback(uint8_t fabric_index, client::comm
     }
 }
 
-static void app_driver_button_toggle_cb(void *arg)
+static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
     client::command_handle_t cmd_handle;
@@ -581,7 +581,7 @@ app_driver_handle_t app_driver_switch_init()
     /* Initialize button */
     button_config_t config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&config);
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
 
     /* Other initializations */
 #if CONFIG_ENABLE_CHIP_SHELL

@@ -54,7 +54,7 @@ static esp_err_t app_driver_light_set_temperature(led_driver_handle_t handle, es
     return led_driver_set_temperature(handle, value);
 }
 
-static void app_driver_button_toggle_cb(void *arg)
+static void app_driver_button_toggle_cb(void *arg, void *data)
 {
     ESP_LOGI(TAG, "Toggle button pressed");
     uint16_t endpoint_id = light_endpoint_id;
@@ -163,6 +163,6 @@ app_driver_handle_t app_driver_button_init()
     /* Initialize button */
     button_config_t config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&config);
-    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb);
+    iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
     return (app_driver_handle_t)handle;
 }

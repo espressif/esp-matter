@@ -28,7 +28,7 @@ esp_err_t iot_button_delete(button_handle_t btn_handle)
     return ESP_OK;
 }
 
-esp_err_t iot_button_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb)
+esp_err_t iot_button_register_cb(button_handle_t btn_handle, button_event_t event, button_cb_t cb, void *usr_data)
 {
     ESP_LOGI(TAG, "Button register callback");
     return ESP_OK;
