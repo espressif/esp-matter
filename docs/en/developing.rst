@@ -21,7 +21,7 @@ host. Linux and Mac OS-X are the supported development hosts in Matter, the reco
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 2.1.2 Getting the Repositories
@@ -32,7 +32,7 @@ The Prerequisites for ESP-IDF and Matter:
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v4.4.1; git submodule update --init --recursive;
+      cd esp-idf; git checkout v4.4.2; git submodule update --init --recursive;
       ./install.sh
       cd ..
 
@@ -717,3 +717,86 @@ As an example, you can build *light* example on ``ESP32_custom`` platform with f
    cd $ESP_MATTER_PATH/examples/light
    cp sdkconfig.defaults.ext_plat_ci sdkconfig.defaults
    idf.py build
+
+2.4.5 Controller Example
+~~~~~~~~~~~~~~~~~~~~~~~~
+This section introduces the Matter controller example. Now this example supports 4 features of the standard Matter controller, including onnetwork-pairing, unicast-cluster-commands(onoff, levelcontrol, colorcontrol), read-attributes-commands, and unicast-write-attributes-commands(onoff, levelcontrol, colorcontrol).
+
+2.4.5.1 Starting with device console
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+
+2.4.5.2 Pairing commands
+^^^^^^^^^^^^^^^^^^^^^^^^
+The *pairing* command is used for commissioning the end-devices. Here are three standard pairing methods:
+
+- Onnetwork pairing. Before you execute this commissioning method, you should connect both controller and end-device to the same network and ensure the commissioning window of the end-device is opened. You can use the command *matter wifi connect* to complete this process. Then we can start the pairing.
+
+   ::
+
+      matter esp controller pairing onnetwork <node_id> <setup_passcode>
+
+- Ble-wifi pairing. This commissioning method is still not supported on current controller example.
+
+- Ble-thread pairing. This commissioning method is still not supported on current controller example.
+
+2.4.5.3 Cluster commands
+^^^^^^^^^^^^^^^^^^^^^^^^
+The *invoke-cmd* command is used for sending cluster commands to the end-devices. Currently the controller only supports commands of on-off, level-control, and color-control clusters.
+
+- Send the cluster command:
+
+   ::
+
+      matter esp controller invoke-cmd <node_id> <endpoint_id> <cluster_id> <command_id> <command_data>
+
+2.4.5.4 Read attribute commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *read-attr* command is used for sending the commands of reading attributes on the end-device.
+
+- Send the read-attribute command:
+
+   ::
+
+      matter esp controller read-attr <node_id> <endpoint_id> <cluster_id> <attribute_id>
+
+2.4.5.4 Read event commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *read-event* command is used for sending the commands of reading events on the end-device.
+
+- Send the read-event command:
+
+  ::
+
+      matter esp controller read-event <node_id> <endpoint_id> <cluster_id> <event_id>
+
+2.4.5.5 Write attribute commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *write-attr* command is used for sending the commands of writing attributes on the end-device. Currently the controller only supports unicast-attributes-writing of on-off, level-control, and color-control clusters.
+
+- Send the write-attribute command:
+
+   ::
+
+      matter esp controller write-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <attribute_value>
+
+2.4.5.6 Subscribe attribute commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *subs-attr* command is used for sending the commands of subscribing attributes on the end-device.
+
+- Send the subscribe-attribute command:
+
+  ::
+
+     matter esp controller subs-attr <node_id> <endpoint_id> <cluster_id> <attribute_id> <min-interval> <max-interval>
+
+2.4.5.7 Subscribe event commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The *subs-event* command is used for sending the commands of subscribing events on the end-device.
+
+- Send the subscribe-event command:
+
+  ::
+
+     matter esp controller subs-event <node_id> <endpoint_id> <cluster_id> <event_id> <min-interval> <max-interval>
+
