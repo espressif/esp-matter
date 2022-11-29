@@ -33,6 +33,10 @@ void plugin_init_callback_common()
 {
     ESP_LOGI(TAG, "Cluster plugin init common callback");
     node_t *node = node::get();
+    if (!node) {
+        /* Skip plugin_init_callback_common when ESP Matter data model is not used */
+        return;
+    }
     endpoint_t *endpoint = endpoint::get_first(node);
     while (endpoint) {
         cluster_t *cluster = get_first(endpoint);

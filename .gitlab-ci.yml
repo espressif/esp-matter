@@ -101,6 +101,9 @@ variables:
     - idf.py build
     - idf.py set-target esp32c3
     - idf.py build
+    - cd $ESP_MATTER_PATH/examples/controller
+    - idf.py set-target esp32
+    - idf.py build
 
 .build_external_platform_example: &build_external_platform_example
     - rm -rf $ESP_MATTER_PATH/../platform
