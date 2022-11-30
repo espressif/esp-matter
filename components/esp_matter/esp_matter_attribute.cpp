@@ -1235,6 +1235,48 @@ attribute_t *create_local_temperature(cluster_t *cluster, nullable<int16_t> valu
                                          esp_matter_nullable_int16(value));
 }
 
+attribute_t *create_occupancy(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::Occupancy::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_enum8(value));
+}
+
+attribute_t *create_abs_min_heat_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::AbsMinHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_int16(value));
+}
+
+attribute_t *create_abs_max_heat_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::AbsMaxHeatSetpointLimit::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_int16(value));
+}
+
+attribute_t *create_abs_min_cool_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::AbsMinCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_int16(value));
+}
+
+attribute_t *create_abs_max_cool_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::AbsMaxCoolSetpointLimit::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_int16(value));
+}
+
+attribute_t *create_pi_cooling_demand(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::PICoolingDemand::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
+attribute_t *create_pi_heating_demand(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::PIHeatingDemand::Id, ATTRIBUTE_FLAG_NONE,
+                                         esp_matter_uint8(value));
+}
+
 attribute_t *create_occupied_cooling_setpoint(cluster_t *cluster, int16_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedCoolingSetpoint::Id,
@@ -1245,6 +1287,48 @@ attribute_t *create_occupied_heating_setpoint(cluster_t *cluster, int16_t value)
 {
     return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedHeatingSetpoint::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_unoccupied_cooling_setpoint(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::UnoccupiedCoolingSetpoint::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_unoccupied_heating_setpoint(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::UnoccupiedHeatingSetpoint::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_min_heat_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MinHeatSetpointLimit::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_max_heat_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MaxHeatSetpointLimit::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_min_cool_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MinCoolSetpointLimit::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_max_cool_setpoint_limit(cluster_t *cluster, int16_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MaxCoolSetpointLimit::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int16(value));
+}
+
+attribute_t *create_min_setpoint_dead_band(cluster_t *cluster, int8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::MinSetpointDeadBand::Id,
+                                         ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE, esp_matter_int8(value));
 }
 
 attribute_t *create_control_sequence_of_operation(cluster_t *cluster, uint8_t value, uint8_t min, uint8_t max)
@@ -1272,6 +1356,66 @@ attribute_t *create_system_mode(cluster_t *cluster, uint8_t value, uint8_t min, 
     }
     esp_matter::attribute::add_bounds(attribute, esp_matter_enum8(min), esp_matter_enum8(max));
     return attribute;
+}
+
+attribute_t *create_thermostat_running_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::ThermostatRunningMode::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_start_of_week(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::StartOfWeek::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_number_of_weekly_transitions(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::NumberOfWeeklyTransitions::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_uint8(value));
+}
+
+attribute_t *create_number_of_daily_transitions(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::NumberOfDailyTransitions::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_occupied_setback(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedSetback::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_occupied_setback_min(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedSetbackMin::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_occupied_setback_max(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::OccupiedSetbackMax::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_unoccupied_setback(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::UnoccupiedSetback::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_unoccupied_setback_min(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::UnoccupiedSetbackMin::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+}
+
+attribute_t *create_unoccupied_setback_max(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, Thermostat::Attributes::UnoccupiedSetbackMax::Id,
+                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
 }
 
 } /* attribute */

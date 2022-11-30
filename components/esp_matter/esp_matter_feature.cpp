@@ -562,5 +562,195 @@ esp_err_t add(cluster_t *cluster)
 } /* feature */
 } /* diagnostics_network_wifi */
 
+namespace thermostat {
+namespace feature {
+
+namespace heating {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x01;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_abs_min_heat_setpoint_limit(cluster, config->abs_min_heat_setpoint_limit);
+    attribute::create_abs_max_heat_setpoint_limit(cluster, config->abs_max_heat_setpoint_limit);
+    attribute::create_pi_heating_demand(cluster, config->pi_heating_demand);
+    attribute::create_occupied_heating_setpoint(cluster, config->occupied_heating_setpoint);
+    attribute::create_min_heat_setpoint_limit(cluster, config->min_heat_setpoint_limit);
+    attribute::create_max_heat_setpoint_limit(cluster, config->max_heat_setpoint_limit);
+
+    return ESP_OK;
+}
+
+} /* heating */
+
+namespace cooling {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x02;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_abs_min_cool_setpoint_limit(cluster, config->abs_min_cool_setpoint_limit);
+    attribute::create_abs_max_cool_setpoint_limit(cluster, config->abs_max_cool_setpoint_limit);
+    attribute::create_pi_cooling_demand(cluster, config->pi_cooling_demand);
+    attribute::create_occupied_cooling_setpoint(cluster, config->occupied_cooling_setpoint);
+    attribute::create_min_cool_setpoint_limit(cluster, config->min_cool_setpoint_limit);
+    attribute::create_max_cool_setpoint_limit(cluster, config->max_cool_setpoint_limit);
+
+    return ESP_OK;
+}
+} /* cooling */
+
+namespace occupancy {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x04;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_occupancy(cluster, config->occupancy);
+
+    uint32_t occ_and_cool_feature_map = get_id() | feature::cooling::get_id();
+    uint32_t occ_and_heat_feature_map = get_id() | feature::heating::get_id();
+    uint32_t occ_and_sb_feature_map = get_id() | feature::setback::get_id();
+
+    if((get_feature_map_value(cluster) & occ_and_cool_feature_map) == occ_and_cool_feature_map){
+        attribute::create_unoccupied_cooling_setpoint(cluster, config->unoccupied_cooling_setpoint);
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Cool feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+    if((get_feature_map_value(cluster) & occ_and_heat_feature_map) == occ_and_heat_feature_map){
+        attribute::create_unoccupied_heating_setpoint(cluster, config->unoccupied_heating_setpoint);
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Heat feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+    if((get_feature_map_value(cluster) & occ_and_sb_feature_map) == occ_and_sb_feature_map){
+        attribute::create_unoccupied_setback(cluster, config->unoccupied_setback);
+        attribute::create_unoccupied_setback_min(cluster, config->unoccupied_setback_min);
+        attribute::create_unoccupied_setback_max(cluster, config->unoccupied_setback_max);
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Setback feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    return ESP_OK;
+}
+} /* occupancy */
+
+namespace schedule_configuration {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x08;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_start_of_week(cluster, config->start_of_week);
+    attribute::create_number_of_weekly_transitions(cluster, config->number_of_weekly_transitions);
+    attribute::create_number_of_daily_transitions(cluster, config->number_of_daily_transitions);
+
+    command::create_set_weekly_schedule(cluster);
+    command::create_get_weekly_schedule(cluster);
+    command::create_clear_weekly_schedule(cluster);
+    command::create_get_weekly_schedule_response(cluster);
+
+    return ESP_OK;
+}
+} /* schedule_configuration */
+
+namespace setback {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x10;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_occupied_setback(cluster, config->occupied_setback);
+    attribute::create_occupied_setback_min(cluster, config->occupied_setback_min);
+    attribute::create_occupied_setback_max(cluster, config->occupied_setback_max);
+
+    return ESP_OK;
+}
+} /* setback */
+
+namespace auto_mode {
+
+uint32_t get_id()
+{
+    // The ThermostatFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return 0x20;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_min_setpoint_dead_band(cluster, config->min_setpoint_dead_band);
+    attribute::create_thermostat_running_mode(cluster, config->thermostat_running_mode);
+
+    return ESP_OK;
+}
+} /* auto_mode */
+
+} /* feature */
+} /* thermostat */
+
 } /* cluster */
 } /* esp_matter */

@@ -261,5 +261,103 @@ esp_err_t add(cluster_t *cluster);
 } /* feature */
 } /* diagnostics_network_wifi */
 
+namespace thermostat {
+namespace feature {
+
+namespace heating {
+
+typedef struct config {
+   int16_t abs_min_heat_setpoint_limit; 
+   int16_t abs_max_heat_setpoint_limit;
+   uint8_t pi_heating_demand; 
+   int16_t occupied_heating_setpoint; 
+   int16_t min_heat_setpoint_limit; 
+   int16_t max_heat_setpoint_limit;
+
+   config (): abs_min_heat_setpoint_limit(700), abs_max_heat_setpoint_limit(3000), pi_heating_demand(), occupied_heating_setpoint(2000), min_heat_setpoint_limit(700), max_heat_setpoint_limit(3000) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* heating */
+
+namespace cooling {
+
+typedef struct config {
+   int16_t abs_min_cool_setpoint_limit; 
+   int16_t abs_max_cool_setpoint_limit;
+   uint8_t pi_cooling_demand; 
+   int16_t occupied_cooling_setpoint; 
+   int16_t min_cool_setpoint_limit; 
+   int16_t max_cool_setpoint_limit;
+
+   config (): abs_min_cool_setpoint_limit(1600), abs_max_cool_setpoint_limit(3200), pi_cooling_demand(), occupied_cooling_setpoint(2600), min_cool_setpoint_limit(1600), max_cool_setpoint_limit(3200) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* cooling */
+
+namespace occupancy {
+
+typedef struct config {
+   uint8_t occupancy; 
+   int16_t unoccupied_cooling_setpoint;
+   int16_t unoccupied_heating_setpoint;
+   nullable<uint8_t> unoccupied_setback; 
+   nullable<uint8_t> unoccupied_setback_min; 
+   nullable<uint8_t> unoccupied_setback_max; 
+
+   config (): occupancy(1), unoccupied_cooling_setpoint(2600), unoccupied_heating_setpoint(2000), unoccupied_setback(), unoccupied_setback_min(), unoccupied_setback_max() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* occupancy */
+
+namespace schedule_configuration {
+
+typedef struct config {
+   uint8_t start_of_week; 
+   uint8_t number_of_weekly_transitions; 
+   uint8_t number_of_daily_transitions; 
+
+   config (): start_of_week(0), number_of_weekly_transitions(0), number_of_daily_transitions(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* schedule_configuration */
+
+namespace setback {
+
+typedef struct config {
+   nullable<uint8_t> occupied_setback; 
+   nullable<uint8_t> occupied_setback_min; 
+   nullable<uint8_t> occupied_setback_max; 
+
+   config (): occupied_setback(), occupied_setback_min(), occupied_setback_max() {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* setback */
+
+namespace auto_mode {
+
+typedef struct config {
+   int8_t min_setpoint_dead_band; 
+   uint8_t thermostat_running_mode; 
+
+   config (): min_setpoint_dead_band(25), thermostat_running_mode(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+} /* auto_mode */
+
+} /* feature */
+} /* thermostat */
+
 } /* cluster */
 } /* esp_matter */
