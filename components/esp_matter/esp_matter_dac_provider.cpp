@@ -16,6 +16,7 @@
 #include <crypto/CHIPCryptoPAL.h>
 #include <platform/ESP32/ESP32Config.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
+#include <esp_fault.h>
 #include <esp_log.h>
 #include <esp_secure_cert_read.h>
 
@@ -72,16 +73,17 @@ public:
         uint32_t dac_len = 0;
 
         esp_err_t err = esp_secure_cert_get_device_cert(&dac_cert, &dac_len);
-        if (err != ESP_OK)
+        if (err == ESP_OK && dac_cert != NULL && dac_len != 0)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_device_cert failed err:%d", err);
-            return CHIP_ERROR_INCORRECT_STATE;
+            ESP_FAULT_ASSERT(err == ESP_OK && dac_cert != NULL && dac_len != 0);
+            memcpy(outBuffer.data(), dac_cert, dac_len);
+            outBuffer.reduce_size(dac_len);
+            esp_secure_cert_free_device_cert(dac_cert);
+            return CHIP_NO_ERROR;
         }
 
-        memcpy(outBuffer.data(), dac_cert, dac_len);
-        outBuffer.reduce_size(dac_len);
-
-        return CHIP_NO_ERROR;
+        ESP_LOGE(TAG, "esp_secure_cert_get_device_cert failed err:%d", err);
+        return CHIP_ERROR_INCORRECT_STATE;
     }
 
     CHIP_ERROR GetProductAttestationIntermediateCert(MutableByteSpan & outBuffer) override
@@ -90,18 +92,17 @@ public:
         uint32_t pai_len = 0;
 
         esp_err_t err = esp_secure_cert_get_ca_cert(&pai_cert, &pai_len);
-        if (err != ESP_OK)
+        if (err == ESP_OK && pai_cert != NULL && pai_len != 0)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_ca_cert failed err:%d", err);
-            return CHIP_ERROR_INCORRECT_STATE;
+            ESP_FAULT_ASSERT(err == ESP_OK && pai_cert != NULL && pai_len != 0);
+            memcpy(outBuffer.data(), pai_cert, pai_len);
+            outBuffer.reduce_size(pai_len);
+            esp_secure_cert_free_ca_cert(pai_cert);
+            return CHIP_NO_ERROR;
         }
 
-        memcpy(outBuffer.data(), pai_cert, pai_len);
-        outBuffer.reduce_size(pai_len);
-
-        esp_secure_cert_free_priv_key(pai_cert);
-
-        return CHIP_NO_ERROR;
+        ESP_LOGE(TAG, "esp_secure_cert_get_ca_cert failed err:%d", err);
+        return CHIP_ERROR_INCORRECT_STATE;
     }
 
     CHIP_ERROR SignWithDeviceAttestationKey(const ByteSpan & messageToSign, MutableByteSpan & outSignBuffer) override
@@ -116,24 +117,32 @@ public:
         VerifyOrReturnError(outSignBuffer.size() >= signature.Capacity(), CHIP_ERROR_BUFFER_TOO_SMALL);
 
         esp_err_t err = esp_secure_cert_get_priv_key(&sc_keypair, &sc_keypair_len);
-        if (err != ESP_OK)
+        if (err == ESP_OK && sc_keypair != NULL && sc_keypair_len != 0)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_priv_key failed err:%d", err);
-            return CHIP_ERROR_INCORRECT_STATE;
+            ESP_FAULT_ASSERT(err == ESP_OK && sc_keypair != NULL && sc_keypair_len != 0);
+
+            CHIP_ERROR chipError = LoadKeypairFromRaw(ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPrivKeyOffset), kDACPrivateKeySize),
+                                                    ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPubKeyOffset), kDACPublicKeySize), keypair);
+            if (chipError != CHIP_NO_ERROR)
+            {
+                esp_secure_cert_free_priv_key(sc_keypair);
+                return chipError;
+            }
+
+            chipError = keypair.ECDSA_sign_msg(messageToSign.data(), messageToSign.size(), signature);
+            if (chipError != CHIP_NO_ERROR)
+            {
+                esp_secure_cert_free_priv_key(sc_keypair);
+                return chipError;
+            }
+
+            esp_secure_cert_free_priv_key(sc_keypair);
+            chipError = CopySpanToMutableSpan(ByteSpan{ signature.ConstBytes(), signature.Length() }, outSignBuffer);
+            return chipError;
         }
 
-        CHIP_ERROR chipError = LoadKeypairFromRaw(ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPrivKeyOffset), kDACPrivateKeySize),
-                                                ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPubKeyOffset), kDACPublicKeySize), keypair);
-        SuccessOrExit(chipError);
-
-        chipError = keypair.ECDSA_sign_msg(messageToSign.data(), messageToSign.size(), signature);
-        SuccessOrExit(chipError);
-
-        chipError = CopySpanToMutableSpan(ByteSpan{ signature.ConstBytes(), signature.Length() }, outSignBuffer);
-
-    exit:
-        esp_secure_cert_free_priv_key(sc_keypair);
-        return chipError;
+        ESP_LOGE(TAG, "esp_secure_cert_get_priv_key failed err:%d", err);
+        return CHIP_ERROR_INCORRECT_STATE;
     }
 };
 } // namespace DeviceLayer
