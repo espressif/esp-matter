@@ -74,7 +74,7 @@ public:
         esp_err_t err = esp_secure_cert_get_device_cert(&dac_cert, &dac_len);
         if (err != ESP_OK)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_device_cert failed err:%u", err);
+            ESP_LOGE(TAG, "esp_secure_cert_get_device_cert failed err:%d", err);
             return CHIP_ERROR_INCORRECT_STATE;
         }
 
@@ -92,7 +92,7 @@ public:
         esp_err_t err = esp_secure_cert_get_ca_cert(&pai_cert, &pai_len);
         if (err != ESP_OK)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_ca_cert failed err:%u", err);
+            ESP_LOGE(TAG, "esp_secure_cert_get_ca_cert failed err:%d", err);
             return CHIP_ERROR_INCORRECT_STATE;
         }
 
@@ -118,7 +118,7 @@ public:
         esp_err_t err = esp_secure_cert_get_priv_key(&sc_keypair, &sc_keypair_len);
         if (err != ESP_OK)
         {
-            ESP_LOGE(TAG, "esp_secure_cert_get_priv_key failed err:%u", err);
+            ESP_LOGE(TAG, "esp_secure_cert_get_priv_key failed err:%d", err);
             return CHIP_ERROR_INCORRECT_STATE;
         }
 
