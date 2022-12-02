@@ -153,12 +153,38 @@ typedef struct esp_matter_attr_bounds {
 
 template <typename T>
 class nullable {
+
+/** NOTE: GetNullValue is taken from src/app/util/attribute-storage-null-handling.h */
+private:
+    template <typename U = T, typename std::enable_if_t<std::is_floating_point<U>::value, int> = 0>
+    static constexpr T GetNullValue()
+    {
+        return std::numeric_limits<T>::quiet_NaN();
+    }
+
+    template <typename U = T, typename std::enable_if_t<std::is_integral<U>::value, int> = 0>
+    static constexpr T GetNullValue()
+    {
+        return std::is_signed<T>::value ? std::numeric_limits<T>::min() : std::numeric_limits<T>::max();
+    }
+
+    template <typename U = T, typename std::enable_if_t<std::is_enum<U>::value, int> = 0>
+    static constexpr T GetNullValue()
+    {
+        static_assert(!std::is_signed<std::underlying_type_t<T>>::value, "Enums must be unsigned");
+        return static_cast<T>(std::numeric_limits<std::underlying_type_t<T>>::max());
+    }
+
 public:
     nullable(T value)
     {
-        assert(!chip::app::NumericAttributeTraits<T>::IsNullValue(value));
-        val = value;
+        if (chip::app::NumericAttributeTraits<T>::IsNullValue(value)) {
+            chip::app::NumericAttributeTraits<T>::SetNull(val);
+        } else {
+            val = value;
+        }
     }
+
     nullable()
     {
         chip::app::NumericAttributeTraits<T>::SetNull(val);
@@ -166,8 +192,12 @@ public:
 
     T value()
     {
-        assert(!is_null());
-        return val;
+        if (is_null()) {
+            return GetNullValue();
+        } else {
+            return val;
+        }
+
     }
 
     T value_or(T ret)
@@ -182,8 +212,11 @@ public:
 
     void operator=(T value)
     {
-        assert(!chip::app::NumericAttributeTraits<T>::IsNullValue(value));
-        this->val = value;
+        if (chip::app::NumericAttributeTraits<T>::IsNullValue(value)) {
+            chip::app::NumericAttributeTraits<T>::SetNull(this->val);
+        } else {
+            this->val = value;
+        }
     }
 
     void operator=(std::nullptr_t)
