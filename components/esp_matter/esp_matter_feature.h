@@ -170,36 +170,72 @@ namespace window_covering {
 namespace feature {
 namespace lift {
 
+typedef struct config {
+    uint16_t number_of_actuations_lift;
+    config() : number_of_actuations_lift(0) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* lift */
 
 namespace tilt {
 
+typedef struct config {
+    uint16_t number_of_actuations_tilt;
+    config() : number_of_actuations_tilt(0) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* tilt */
 
 namespace position_aware_lift {
 
+typedef struct config {
+    uint16_t current_position_lift_percentage;
+    uint16_t target_position_lift_percent_100ths;
+    uint16_t current_position_lift_percent_100ths;
+    config() : current_position_lift_percentage(), target_position_lift_percent_100ths(), current_position_lift_percent_100ths() {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_lift */
 
 namespace absolute_position {
 
+typedef struct config {
+    uint16_t physical_closed_limit_lift;
+    uint16_t current_position_lift;
+    uint16_t installed_open_limit_lift;
+    uint16_t installed_closed_limit_lift;
+    uint16_t physical_closed_limit_tilt;
+    uint16_t current_position_tilt;
+    uint16_t installed_open_limit_tilt;
+    uint16_t installed_closed_limit_tilt;
+    config() : physical_closed_limit_lift(0), current_position_lift(0), installed_open_limit_lift(0), installed_closed_limit_lift(65534), physical_closed_limit_tilt(0), current_position_tilt(0), installed_open_limit_tilt(0), installed_closed_limit_tilt(65534) {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* absolute_position */
 
 namespace position_aware_tilt {
 
+typedef struct config {
+    uint16_t current_position_tilt_percentage;
+    uint16_t target_position_tilt_percent_100ths;
+    uint16_t current_position_tilt_percent_100ths;
+    config() : current_position_tilt_percentage(), target_position_tilt_percent_100ths(), current_position_tilt_percent_100ths() {}
+} config_t;
+
 uint32_t get_id();
-esp_err_t add(cluster_t *cluster);
+esp_err_t add(cluster_t *cluster, config_t *config);
 
 } /* position_aware_tilt */
 } /* feature */
