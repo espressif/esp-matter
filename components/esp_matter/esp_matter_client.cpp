@@ -170,6 +170,7 @@ void binding_manager_init()
 {
     if (initialize_binding_manager) {
         chip::DeviceLayer::PlatformMgr().ScheduleWork(__binding_manager_init);
+        initialize_binding_manager = false;
     }
 }
 
