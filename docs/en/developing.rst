@@ -66,6 +66,18 @@ To clone the esp-matter repository with all the submodules, use the following co
    ./install.sh
    cd ..
 
+Note: If it runs into some errors like:
+
+   ::
+
+      dial tcp 108.160.167.174:443: connect: connection refused
+
+   ::
+
+      ConnectionResetError: [Errno 104] Connection reset by peer
+
+It's probably caused by some network connectivity issue, a VPN is required for most of the cases.
+
 2.1.3 Configuring the Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -166,7 +178,11 @@ CHIP Tool is an example implementation of Matter commissioner and used for devel
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A host-based chip-tool can be used as a commissioner to commission and control a Matter device.
+A host-based chip-tool can be used as a commissioner to commission and control a Matter device. During the previous ``install.sh`` step, the ``chip-tool`` is generated under the folder:
+
+::
+
+   ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool/out
 
 2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
