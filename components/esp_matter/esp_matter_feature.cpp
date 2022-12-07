@@ -177,6 +177,31 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 namespace color_control {
 namespace feature {
+
+static esp_err_t update_color_capability(cluster_t *cluster, uint16_t value)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    /* Get the attribute */
+    attribute_t *attribute = esp_matter::attribute::get(cluster, ColorControl::Attributes::ColorCapabilities::Id);
+
+    /* Print error log if it does not exist */
+    if (!attribute) {
+        ESP_LOGE(TAG, "The color capability attribute is NULL");
+        return ESP_FAIL;
+    }
+
+    /* Update the value if the attribute already exists */
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    esp_matter::attribute::get_val(attribute, &val);
+    val.val.u16 |= value;
+    /* Here we can't call attribute::update() since the chip stack would not have started yet, since we are
+    still creating the data model. So, we are directly using attribute::set_val(). */
+    return esp_matter::attribute::set_val(attribute, &val);
+}
 namespace hue_saturation {
 
 uint32_t get_id()
@@ -191,6 +216,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_current_hue(cluster, config->current_hue);
@@ -225,6 +251,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_color_temperature_mireds(cluster, config->color_temperature_mireds);
@@ -258,6 +285,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_current_x(cluster, config->current_x);
@@ -288,6 +316,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_enhanced_current_hue(cluster, config->enhanced_current_hue);
@@ -315,6 +344,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    update_color_capability(cluster, get_id());
 
     /* Attributes not managed internally */
     attribute::create_color_loop_active(cluster, config->color_loop_active);
