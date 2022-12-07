@@ -12,4 +12,28 @@ menu "ESP Matter"
         help
             The NVS Partition name for ESP Matter to store the NONVOLATILE attribues
 
+    choice ESP_MATTER_DAC_PROVIDER
+        prompt "DAC Provider options"
+        default EXAMPLE_DAC_PROVIDER
+        help
+            This option determines which attestation credentials provider will be used.
+
+        config EXAMPLE_DAC_PROVIDER
+            bool "Attestation - Test"
+            help
+                An example DAC Provider which provides test attestation information
+
+        config FACTORY_PARTITION_DAC_PROVIDER
+            depends on ENABLE_ESP32_FACTORY_DATA_PROVIDER
+            bool "Attestation - Factory"
+            help
+                An implementation which reads attestation information from the factory partition
+
+        config SEC_CERT_DAC_PROVIDER
+            bool "Attestation - Secure Cert"
+            help
+                An implementation which reads attestation information from the esp_secure_cert partition
+
+    endchoice
+
 endmenu
