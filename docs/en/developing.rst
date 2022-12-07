@@ -836,3 +836,127 @@ The *subs-event* command is used for sending the commands of subscribing events 
 
      matter esp controller subs-event <node_id> <endpoint_id> <cluster_id> <event_id> <min-interval> <max-interval>
 
+
+2.5 Using esp_secure_cert partition
+-----------------------------------
+
+2.5.1 Configuration Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Build the firmware with below configuration options
+
+::
+
+    # Disable the DS Peripheral support
+    CONFIG_ESP_SECURE_CERT_DS_PERIPHERAL=n
+
+    # Use DAC Provider implementation which reads attestation data from secure cert partition
+    CONFIG_SEC_CERT_DAC_PROVIDER=y
+
+    # Enable some options which reads CD and other basic info from the factory partition
+    CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER=y
+    CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER=y
+
+
+2.5.2 Certification Declaration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you do not have an certification declaration file then you can generate the test CD with the help of below mentioned steps.
+We need to generate the new CD because it SHALL match the VID PID in DAC and the ones reported by basic cluster.
+
+- Build the host tools if not done already
+
+::
+
+    cd connectedhomeip/connectedhomeip
+    gn gen out/host
+    ninja -C build
+
+Generate the Test CD, please make sure to change the ``-V`` (vendor_id) and ``-p`` (product-id) options based on the ones that are being used.
+For more into about the arguments, please check `here <https://github.com/project-chip/connectedhomeip/tree/master/src/tools/chip-cert#gen-cd>`__.
+
+::
+
+    out/host/chip-cert gen-cd -f 1 -V 0xFFF1 -p 0x8001 -d 0x0016 \
+                              -c "CSA00000SWC00000-01" -l 0 -i 0 -n 1 -t 0 \
+                              -K credentials/test/certification-declaration/Chip-Test-CD-Signing-Key.pem \
+                              -C credentials/test/certification-declaration/Chip-Test-CD-Signing-Cert.pem \
+                              -O TEST_CD_FFF1_8001.der
+
+
+2.5.3 Factory Partition
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Factory partition contains basic information like VID, PID, etc, and CD.
+
+Export the dependent tools path
+
+::
+
+    cd esp-matter/tools/mfg_tool
+    export PATH=$PATH:$PWD/../../connectedhomeip/connectedhomeip/out/host
+
+
+Generate the factory partition, please use the APPROPRIATE values for ``-v`` (Vendor Id), ``-p`` (Product Id), and ``-cd`` (Certification Declaration).
+
+::
+
+    ./mfg_tool.py --passcode 89674523 \
+                  --discriminator 2245 \
+                  -cd TEST_CD_FFF1_8001.der \
+                  -v 0xFFF1 --vendor-name Espressif \
+                  -p 0x8001 --product-name Bulb \
+                  --hw-ver 1 --hw-ver-str DevKit
+
+
+Few important output lines are mentioned below. Please take a note of onboarding codes, these can be used for commissioning the device.
+
+::
+
+    [2022-12-02 11:18:12,059] [   INFO] - Generated QR code: MT:-24J06PF150QJ850Y10
+    [2022-12-02 11:18:12,059] [   INFO] - Generated manual code: 20489154736
+
+Factory partition binary will be generated at the below path. Please check for <uuid>.bin file in this directory.
+
+::
+
+    [2022-12-02 11:18:12,381] [   INFO] - Generated output files at: out/fff1_8001/e17c95e1-521e-4979-b90b-04da648e21bb
+
+
+2.5.4 Flashing firmware, secure cert and factory partition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Flashing secure cert partition. Please check partition table for ``esp_secure_cert`` partition address.
+NOTE: Flash only if not flashed on manufacturing line.
+
+::
+
+    esptool.py -p (PORT) write_flash 0xd000 secure_cert_partition.bin
+
+Flashing factory partition, Please check the ``CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL`` for factory partition label.
+Then check the partition table for address and flash at that address.
+
+::
+
+    esptool.py -p (PORT) write_flash 0x10000 path/to/partition/generated/using/mfg_tool/uuid.bin
+
+
+Flash application
+
+::
+
+    idf.py flash
+
+
+2.5.5 Test commissioning using chip-tool
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If using the DACs signed by custom PAA that is not present in connectedhomeip repository,
+then download the PAA certificate, please make sure it is in DER format.
+
+Run the following command from host to commission the device.
+
+::
+
+    ./chip-tool pairing ble-wifi 1234 my_SSID my_PASSPHRASE my_PASSCODE my_DISCRIMINATOR --paa-trust-store-path /path/to/PAA-Certificates/
+
