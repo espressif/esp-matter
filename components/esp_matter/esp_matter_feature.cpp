@@ -54,6 +54,15 @@ static esp_err_t update_feature_map(cluster_t *cluster, uint32_t value)
     return attribute::set_val(attribute, &val);
 }
 
+static uint32_t get_feature_map_value(cluster_t *cluster)
+{
+    attribute_t *attribute = attribute::get(cluster, Globals::Attributes::FeatureMap::Id);
+
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    attribute::get_val(attribute, &val);
+    return val.val.u32;
+}
+
 namespace on_off {
 namespace feature {
 namespace lighting {
@@ -332,13 +341,15 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kLift;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+
+    attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
 
     return ESP_OK;
 }
@@ -352,13 +363,15 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kTilt;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+
+    attribute::create_number_of_actuations_tilt(cluster, config->number_of_actuations_tilt);
 
     return ESP_OK;
 }
@@ -372,14 +385,25 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kPositionAwareLift;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    uint32_t pa_lt_and_lift_feature_map = get_id() | feature::lift::get_id();
+    if((get_feature_map_value(cluster) & pa_lt_and_lift_feature_map) == pa_lt_and_lift_feature_map)
+    {
+	attribute::create_current_position_lift_percentage(cluster, config->current_position_lift_percentage);
+	attribute::create_target_position_lift_percent_100ths(cluster, config->target_position_lift_percent_100ths);
+	attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
 
+	command::create_go_to_lift_percentage(cluster);
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Lift feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
     return ESP_OK;
 }
 } /* position_aware_lift */
@@ -391,14 +415,50 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kAbsolutePosition;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+    uint32_t abs_and_pa_lf_feature_map = get_id() | feature::position_aware_lift::get_id();
+    uint32_t abs_and_pa_tl_feature_map = get_id() | feature::position_aware_tilt::get_id();
+    uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
+    uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
+    if((get_feature_map_value(cluster) & abs_and_pa_lf_feature_map) == abs_and_pa_lf_feature_map)
+    {
+	attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
+	attribute::create_current_position_lift(cluster, config->current_position_lift);
+	attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
+	attribute::create_installed_closed_limit_lift(cluster, config->installed_open_limit_lift);
 
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Position_Aware_Lift feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    if((get_feature_map_value(cluster) & abs_and_pa_tl_feature_map) == abs_and_pa_tl_feature_map)
+    {
+	attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
+	attribute::create_current_position_tilt(cluster, config->current_position_tilt);
+	attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
+	attribute::create_installed_closed_limit_tilt(cluster, config->installed_open_limit_tilt);
+
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Position_Aware_Tilt feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map)
+    {
+	command::create_go_to_lift_value(cluster);
+    }
+
+    if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map)
+    {
+	command::create_go_to_tilt_value(cluster);
+    }
     return ESP_OK;
 }
 
@@ -411,7 +471,7 @@ uint32_t get_id()
     return (uint32_t)WindowCovering::Feature::kPositionAwareTilt;
 }
 
-esp_err_t add(cluster_t *cluster)
+esp_err_t add(cluster_t *cluster, config_t *config)
 {
     if (!cluster) {
         ESP_LOGE(TAG, "Cluster cannot be NULL");
@@ -419,6 +479,18 @@ esp_err_t add(cluster_t *cluster)
     }
     update_feature_map(cluster, get_id());
 
+    uint32_t pa_lt_and_tilt_feature_map = get_id() | feature::tilt::get_id();
+    if((get_feature_map_value(cluster) & pa_lt_and_tilt_feature_map) == pa_lt_and_tilt_feature_map)
+    {
+	attribute::create_current_position_tilt_percentage(cluster, config->current_position_tilt_percentage);
+	attribute::create_target_position_tilt_percent_100ths(cluster, config->target_position_tilt_percent_100ths);
+	attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
+
+	command::create_go_to_tilt_percentage(cluster);
+    }else{
+	ESP_LOGE(TAG, "Cluster shall support Tilt feature");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
     return ESP_OK;
 }
 
