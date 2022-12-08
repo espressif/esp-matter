@@ -935,7 +935,6 @@ esp_err_t group_send_step_color_temperature(uint8_t fabric_index, uint16_t group
     return ESP_OK;
 }
 
-
 } // namespace command
 } // namespace color_control
 
@@ -964,6 +963,78 @@ esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t 
 }
 } // namespace command
 } // namespace identify
+
+namespace group_key_management {
+namespace command {
+
+esp_err_t send_keyset_write(peer_device_t *remote_device, uint16_t remote_endpoint_id, group_keyset_struct group_keyset)
+{
+    GroupKeyManagement::Commands::KeySetWrite::Type command_data;
+    command_data.groupKeySet = group_keyset;
+
+    chip::Controller::GroupKeyManagementCluster cluster(*remote_device->GetExchangeManager(),
+                                                        remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_keyset_read(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t keyset_id,
+                           keyset_read_callback keyset_read_cb)
+{
+    GroupKeyManagement::Commands::KeySetRead::Type command_data;
+    command_data.groupKeySetID = keyset_id;
+
+    chip::Controller::GroupKeyManagementCluster cluster(*remote_device->GetExchangeManager(),
+                                                        remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, keyset_read_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace group_key_management
+
+namespace groups {
+namespace command {
+
+esp_err_t send_add_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id, char *group_name,
+                         add_group_callback add_group_cb)
+{
+    Groups::Commands::AddGroup::Type command_data;
+    command_data.groupId = group_id;
+    command_data.groupName = chip::CharSpan(group_name, strnlen(group_name, 16));
+
+    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, add_group_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_view_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                          view_group_callback view_group_cb)
+{
+    Groups::Commands::ViewGroup::Type command_data;
+    command_data.groupId = group_id;
+
+    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, view_group_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t send_remove_group(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t group_id,
+                            remove_group_callback remove_group_cb)
+{
+    Groups::Commands::RemoveGroup::Type command_data;
+    command_data.groupId = group_id;
+
+    chip::Controller::GroupsCluster cluster(*remote_device->GetExchangeManager(),
+                                            remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, remove_group_cb, send_command_failure_callback);
+    return ESP_OK;
+}
+
+} // namespace command
+} // namespace groups
 
 } // namespace cluster
 } // namespace esp_matter
