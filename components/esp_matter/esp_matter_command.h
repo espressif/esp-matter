@@ -229,6 +229,10 @@ command_t *create_color_loop_set(cluster_t *cluster);
 namespace thermostat {
 namespace command {
 command_t *create_setpoint_raise_lower(cluster_t *cluster);
+command_t *create_set_weekly_schedule(cluster_t *cluster);
+command_t *create_get_weekly_schedule(cluster_t *cluster);
+command_t *create_clear_weekly_schedule(cluster_t *cluster);
+command_t *create_get_weekly_schedule_response(cluster_t *cluster);
 } /* command */
 } /* thermostat */
 
