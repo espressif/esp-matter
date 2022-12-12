@@ -26,15 +26,15 @@
 using chip::BDXDownloader;
 using chip::DefaultOTARequestor;
 using chip::DefaultOTARequestorStorage;
-using chip::DeviceLayer::DefaultOTARequestorDriver;
 using chip::OTAImageProcessorImpl;
 using chip::Server;
+using chip::DeviceLayer::DefaultOTARequestorDriver;
 
 using namespace esp_matter;
 using namespace esp_matter::endpoint;
 using namespace esp_matter::cluster;
 
-#if CONFIG_ENABLE_OTA_REQUESTOR 
+#if CONFIG_ENABLE_OTA_REQUESTOR
 DefaultOTARequestor gRequestorCore;
 DefaultOTARequestorStorage gRequestorStorage;
 DefaultOTARequestorDriver gRequestorUser;
@@ -52,7 +52,7 @@ esp_err_t esp_matter_ota_requestor_init(void)
     if (!root_node || !root_node_endpoint) {
         return ESP_FAIL;
     }
-    
+
     cluster_t *cluster_p = ota_provider::create(root_node_endpoint, NULL, CLUSTER_FLAG_CLIENT);
     cluster_t *cluster_r = ota_requestor::create(root_node_endpoint, &config, CLUSTER_FLAG_SERVER);
 
@@ -68,7 +68,8 @@ esp_err_t esp_matter_ota_requestor_init(void)
 
 void esp_matter_ota_requestor_start(void)
 {
-#if CONFIG_ENABLE_OTA_REQUESTOR 
+#if CONFIG_ENABLE_OTA_REQUESTOR
+    VerifyOrReturn(chip::GetRequestorInstance() == nullptr);
     chip::SetRequestorInstance(&gRequestorCore);
     gRequestorStorage.Init(Server::GetInstance().GetPersistentStorage());
     gRequestorCore.Init(Server::GetInstance(), gRequestorStorage, gRequestorUser, gDownloader);
