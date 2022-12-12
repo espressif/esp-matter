@@ -992,6 +992,39 @@ static esp_err_t esp_matter_command_callback_setpoint_raise_lower(const Concrete
     return ESP_OK;
 }
 
+static esp_err_t esp_matter_command_callback_set_weekly_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::SetWeeklySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterSetWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_get_weekly_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::GetWeeklySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterGetWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
+static esp_err_t esp_matter_command_callback_clear_weekly_schedule(const ConcreteCommandPath &command_path,
+                                                                  TLVReader &tlv_data, void *opaque_ptr)
+{
+    chip::app::Clusters::Thermostat::Commands::ClearWeeklySchedule::DecodableType command_data;
+    CHIP_ERROR error = Decode(tlv_data, command_data);
+    if (error == CHIP_NO_ERROR) {
+        emberAfThermostatClusterClearWeeklyScheduleCallback((CommandHandler *)opaque_ptr, command_path, command_data);
+    }
+    return ESP_OK;
+}
+
 static esp_err_t esp_matter_command_callback_thread_reset_counts(const ConcreteCommandPath &command_path,
                                                                  TLVReader &tlv_data, void *opaque_ptr)
 {
@@ -2038,6 +2071,30 @@ command_t *create_setpoint_raise_lower(cluster_t *cluster)
 {
     return esp_matter::command::create(cluster, Thermostat::Commands::SetpointRaiseLower::Id, COMMAND_FLAG_ACCEPTED,
                                        esp_matter_command_callback_setpoint_raise_lower);
+}
+
+command_t *create_set_weekly_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::SetWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_set_weekly_schedule);
+}
+
+command_t *create_get_weekly_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::GetWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_get_weekly_schedule);
+}
+
+command_t *create_clear_weekly_schedule(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::ClearWeeklySchedule::Id, COMMAND_FLAG_ACCEPTED,
+                                       esp_matter_command_callback_clear_weekly_schedule);
+}
+
+command_t *create_get_weekly_schedule_response(cluster_t *cluster)
+{
+    return esp_matter::command::create(cluster, Thermostat::Commands::GetWeeklyScheduleResponse::Id, COMMAND_FLAG_ACCEPTED,
+                                       NULL);
 }
 
 } /* command */
