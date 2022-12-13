@@ -15,6 +15,7 @@
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_matter_commissioner.h>
 #include <esp_matter_controller_cluster_command.h>
+#include <esp_matter_controller_utils.h>
 
 using namespace chip::app::Clusters;
 static const char *TAG = "cluster_command";
@@ -58,10 +59,10 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::level_control::command::send_move(
             remote_device, remote_endpoint_id,
-            /* move_mode */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* rate*/ (uint8_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_override*/ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10));
+            /* move_mode */ string_to_uint8(command_data->command_data_str[0]),
+            /* rate*/ string_to_uint8(command_data->command_data_str[1]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[2]),
+            /* option_override*/ string_to_uint8(command_data->command_data_str[3]));
         break;
     case LevelControl::Commands::MoveToLevel::Id:
         if (command_data->command_data_count != 4) {
@@ -72,10 +73,10 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::level_control::command::send_move_to_level(
             remote_device, remote_endpoint_id,
-            /* level */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* transition_time */ (uint16_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10));
+            /* level */ string_to_uint8(command_data->command_data_str[0]),
+            /* transition_time */ string_to_uint16(command_data->command_data_str[1]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[2]),
+            /* option_override */string_to_uint8(command_data->command_data_str[3]) );
         break;
     case LevelControl::Commands::Step::Id:
         if (command_data->command_data_count != 5) {
@@ -86,11 +87,11 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::level_control::command::send_step(
             remote_device, remote_endpoint_id,
-            /* step_mode */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* step_size */ (uint8_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* transition_time */ (uint16_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[4], NULL, 10));
+            /* step_mode */ string_to_uint8(command_data->command_data_str[0]),
+            /* step_size */ string_to_uint8(command_data->command_data_str[1]),
+            /* transition_time */ string_to_uint16(command_data->command_data_str[2]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[3]),
+            /* option_override */ string_to_uint8(command_data->command_data_str[4]));
         break;
     case LevelControl::Commands::Stop::Id:
         if (command_data->command_data_count != 2) {
@@ -99,8 +100,8 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::level_control::command::send_stop(
             remote_device, remote_endpoint_id,
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[1], NULL, 10));
+            /* option_mask */ string_to_uint8(command_data->command_data_str[0]),
+            /* option_override */ string_to_uint8(command_data->command_data_str[1]));
         break;
     default:
         return ESP_ERR_NOT_SUPPORTED;
@@ -125,11 +126,11 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::color_control::command::send_move_to_hue(
             remote_device, remote_endpoint_id,
-            /* hue */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* direction */ (uint8_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* transition_time */ (uint16_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[4], NULL, 10));
+            /* hue */ string_to_uint8(command_data->command_data_str[0]),
+            /* direction */ string_to_uint8(command_data->command_data_str[1]),
+            /* transition_time */ string_to_uint16(command_data->command_data_str[2]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[3]),
+            /* option_override */ string_to_uint8(command_data->command_data_str[4]));
         break;
     case ColorControl::Commands::MoveToSaturation::Id:
         if (command_data->command_data_count != 4) {
@@ -140,10 +141,10 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::color_control::command::send_move_to_saturation(
             remote_device, remote_endpoint_id,
-            /* saturation */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* transition_time */ (uint16_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10));
+            /* saturation */ string_to_uint8(command_data->command_data_str[0]),
+            /* transition_time */ string_to_uint16(command_data->command_data_str[1]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[2]),
+            /* option_override */ string_to_uint8(command_data->command_data_str[3]));
         break;
     case ColorControl::Commands::MoveToHueAndSaturation::Id:
         if (command_data->command_data_count != 5) {
@@ -154,11 +155,11 @@ static esp_err_t send_command(command_data_t *command_data, peer_device_t *remot
         }
         return esp_matter::cluster::color_control::command::send_move_to_hue_and_saturation(
             remote_device, remote_endpoint_id,
-            /* hue */ (uint8_t)strtol(command_data->command_data_str[0], NULL, 10),
-            /* saturation */ (uint8_t)strtol(command_data->command_data_str[1], NULL, 10),
-            /* transition_time */ (uint16_t)strtol(command_data->command_data_str[2], NULL, 10),
-            /* option_mask */ (uint8_t)strtol(command_data->command_data_str[3], NULL, 10),
-            /* option_override */ (uint8_t)strtol(command_data->command_data_str[4], NULL, 10));
+            /* hue */ string_to_uint8(command_data->command_data_str[0]),
+            /* saturation */ string_to_uint8(command_data->command_data_str[1]),
+            /* transition_time */ string_to_uint16(command_data->command_data_str[2]),
+            /* option_mask */ string_to_uint8(command_data->command_data_str[3]),
+            /* option_override */ string_to_uint8(command_data->command_data_str[4]));
         break;
     default:
         return ESP_ERR_NOT_SUPPORTED;
@@ -217,8 +218,8 @@ esp_err_t send_invoke_cluster_command(uint64_t node_id, uint16_t endpoint_id, in
         ESP_LOGE(TAG, "Failed to alloc memory for command data");
         return ESP_ERR_NO_MEM;
     }
-    command_data->cluster_id = (uint32_t)strtol(cmd_data_argv[0], NULL, 10);
-    command_data->command_id = (uint32_t)strtol(cmd_data_argv[1], NULL, 10);
+    command_data->cluster_id = string_to_uint32(cmd_data_argv[0]);
+    command_data->command_id = string_to_uint32(cmd_data_argv[1]);
     command_data->command_data_count = cmd_data_argc - 2;
 
     for (size_t idx = 0; idx < command_data->command_data_count; idx++) {

@@ -131,13 +131,13 @@ void subscribe_command::OnEventData(const chip::app::EventHeader &event_header, 
 
 void subscribe_command::OnError(CHIP_ERROR error)
 {
-    ChipLogError(chipTool, "Subscribe Error: %s", chip::ErrorStr(error));
+    ESP_LOGE(TAG, "Subscribe Error: %s", chip::ErrorStr(error));
 }
 
 void subscribe_command::OnDeallocatePaths(chip::app::ReadPrepareParams &&aReadPrepareParams)
 {
-    // Intentionally eempty because the AttributePathParamsList or EventPathParamsList will be deleted with the
-    // read_command.
+    // Intentionally empty because the AttributePathParamsList or EventPathParamsList will be deleted with the
+    // subscribe_command.
 }
 
 void subscribe_command::OnSubscriptionEstablished(chip::SubscriptionId subscriptionId)

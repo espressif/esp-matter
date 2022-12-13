@@ -88,14 +88,14 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
     case OnOff::Attributes::OnTime::Id:
     case OnOff::Attributes::OffWaitTime::Id: {
         write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, OnOff::Id, attribute_id,
-                                                                    (uint16_t)strtol(attribute_val_str, NULL, 10));
+                                                                    string_to_uint16(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
     }
     case OnOff::Attributes::StartUpOnOff::Id: {
         write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, OnOff::Id, attribute_id,
-                                                                  (uint8_t)strtol(attribute_val_str, NULL, 10));
+                                                                  string_to_uint8(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
@@ -118,8 +118,8 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
     case LevelControl::Attributes::OnOffTransitionTime::Id:
     case LevelControl::Attributes::OnTransitionTime::Id:
     case LevelControl::Attributes::OffTransitionTime::Id: {
-        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(
-            node_id, endpoint_id, LevelControl::Id, attribute_id, (uint16_t)strtol(attribute_val_str, NULL, 10));
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, LevelControl::Id,
+                                                                    attribute_id, string_to_uint16(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
@@ -129,7 +129,7 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
     case LevelControl::Attributes::Options::Id:
     case LevelControl::Attributes::StartUpCurrentLevel::Id: {
         write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, LevelControl::Id, attribute_id,
-                                                                  (uint8_t)strtol(attribute_val_str, NULL, 10));
+                                                                  string_to_uint8(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
@@ -150,15 +150,15 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
     esp_err_t err = ESP_OK;
     switch (attribute_id) {
     case ColorControl::Attributes::StartUpColorTemperatureMireds::Id: {
-        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(
-            node_id, endpoint_id, ColorControl::Id, attribute_id, (uint16_t)strtol(attribute_val_str, NULL, 10));
+        write_command<uint16_t> *cmd = New<write_command<uint16_t>>(node_id, endpoint_id, ColorControl::Id,
+                                                                    attribute_id, string_to_uint16(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
     }
     case ColorControl::Attributes::Options::Id: {
         write_command<uint8_t> *cmd = New<write_command<uint8_t>>(node_id, endpoint_id, ColorControl::Id, attribute_id,
-                                                                  (uint8_t)strtol(attribute_val_str, NULL, 10));
+                                                                  string_to_uint8(attribute_val_str));
         ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         return cmd->send_command();
         break;
@@ -198,7 +198,7 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
 {
     jparse_ctx_t jctx;
     ESP_RETURN_ON_FALSE(json_parse_start(&jctx, json_str, strlen(json_str)) == 0, ESP_ERR_INVALID_ARG, TAG,
-                        "ACL json string is wrong");
+                        "Failed to parse the ACL json string on json_parse_start");
     size_t acl_index = 0;
     while (acl_index < k_max_acl_entries && json_arr_get_object(&jctx, acl_index) == 0) {
         int int_val;
@@ -208,21 +208,22 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
         }
         // Privilege
         ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "privilege", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
-                            "ACL json string is wrong on privilege");
+                            "Failed to get privilege from the ACL json string");
         acl->acl_array[acl_index].privilege = Privilege(int_val);
         // AuthMode
         ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "authMode", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
-                            "ACL json string is wrong on authMode");
+                            "Failed to get authMode from the ACL json string");
         acl->acl_array[acl_index].authMode = AuthMode(int_val);
         // Subjects
         int subjects_num = 0;
         if (json_obj_get_array(&jctx, "subjects", &subjects_num) == 0 && subjects_num > 0) {
             ESP_RETURN_ON_FALSE(subjects_num <= k_max_subjects_per_acl, ESP_ERR_INVALID_ARG, TAG,
-                                "ACL json string is wrong on subjects length");
+                                "Failed to get subjects from the ACL json string: Error on subjects_num");
             for (size_t subj_index = 0; subj_index < subjects_num; ++subj_index) {
                 int64_t subject_val;
                 ESP_RETURN_ON_FALSE(json_arr_get_int64(&jctx, subj_index, &subject_val) == 0, ESP_ERR_INVALID_ARG, TAG,
-                                    "ACL json string is wrong subject value");
+                                    "Failed to get subjects from the ACL json string: Error on subject-%u value",
+                                    subj_index);
                 acl->subjects_array[acl_index][subj_index] = subject_val;
             }
             acl->acl_array[acl_index].subjects.SetNonNull(acl->subjects_array[acl_index], subjects_num);
@@ -234,10 +235,10 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
         int targets_num = 0;
         if (json_obj_get_array(&jctx, "targets", &targets_num) == 0 && targets_num > 0) {
             ESP_RETURN_ON_FALSE(targets_num <= k_max_targets_per_acl, ESP_ERR_INVALID_ARG, TAG,
-                                "ACL json string is wrong on targets length");
+                                "Failed to get targets from the ACL json string: Error on targets length");
             for (size_t targ_index = 0; targ_index < targets_num; ++targ_index) {
                 ESP_RETURN_ON_FALSE(json_arr_get_object(&jctx, targ_index) == 0, ESP_ERR_INVALID_ARG, TAG,
-                                    "Failed to get target at index %d", targ_index);
+                                    "Failed to get targets from the ACL json string: Error on targets-%u value", targ_index);
                 int64_t cluster_val, device_type_val;
                 int endpoint_val;
                 bool exist_cluster, exist_endpoint, exist_device_type;
@@ -247,7 +248,7 @@ static esp_err_t parse_acl_json(char *json_str, acl_attr_t *acl, size_t *acl_siz
                 exist_device_type = json_obj_get_int64(&jctx, "deviceType", &device_type_val) == 0;
                 if ((!exist_cluster && !exist_endpoint && !exist_device_type) ||
                     (exist_endpoint && exist_device_type)) {
-                    ESP_LOGE(TAG, "ACL json string is wrong targets value, skip");
+                    ESP_LOGE(TAG, "Target-%u value is invalid, skip it", targ_index);
                     json_arr_leave_object(&jctx);
                     continue;
                 }
@@ -305,7 +306,7 @@ static esp_err_t parse_extension_json(char *json_str, extension_attr_t *extensio
 {
     jparse_ctx_t jctx;
     ESP_RETURN_ON_FALSE(json_parse_start(&jctx, json_str, strlen(json_str)) == 0, ESP_ERR_INVALID_ARG, TAG,
-                        "Extension json string is wrong");
+                        "Failed to parse the Extension json string on json_parse_start");
     size_t index = 0;
     while (index < k_max_extension_entries && json_arr_get_object(&jctx, index) == 0) {
         int fabric_index;
@@ -315,7 +316,7 @@ static esp_err_t parse_extension_json(char *json_str, extension_attr_t *extensio
 
         char data_oct_str[k_max_extension_data_len * 2 + 1] = {0};
         if (json_obj_get_string(&jctx, "data", data_oct_str, k_max_extension_data_len * 2 + 1) != 0) {
-            ESP_LOGE(TAG, "Failed to parse the data json octstring");
+            ESP_LOGE(TAG, "Failed to get data from the Extension json string");
             return ESP_ERR_INVALID_ARG;
         } else {
             size_t data_len = oct_str_to_byte_arr(data_oct_str, extension->data_array[index]);
@@ -339,7 +340,7 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
         acl_attr_t *attr_val = New<acl_attr_t>();
         ESP_RETURN_ON_FALSE(attr_val, ESP_ERR_NO_MEM, TAG, "Failed to alloc acl_attr_t");
         ESP_RETURN_ON_ERROR(parse_acl_json(attribute_val_str, attr_val, &acl_size), TAG,
-                            "Failed to parse the acl json string");
+                            "Failed to parse the ACL json string");
         List<acl_obj> access_control_list(attr_val->acl_array, acl_size);
         write_command<List<acl_obj>> *cmd = New<write_command<List<acl_obj>>>(node_id, endpoint_id, AccessControl::Id,
                                                                               attribute_id, access_control_list);
@@ -353,10 +354,11 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
         extension_attr_t *attr_val = New<extension_attr_t>();
         ESP_RETURN_ON_FALSE(attr_val, ESP_ERR_NO_MEM, TAG, "Failed to alloc extension_attr_t");
         ESP_RETURN_ON_ERROR(parse_extension_json(attribute_val_str, attr_val, &extension_size), TAG,
-                            "Failed to parse the acl json string");
+                            "Failed to parse the Extension json string");
         List<extension_obj> extension_list(attr_val->extension_array, extension_size);
         write_command<List<extension_obj>> *cmd = New<write_command<List<extension_obj>>>(
             node_id, endpoint_id, AccessControl::Id, attribute_id, extension_list);
+        ESP_RETURN_ON_FALSE(cmd, ESP_ERR_NO_MEM, TAG, "Failed to alloc memory for write_command");
         cmd->set_attribute_free_handler(extension_attr_free, attr_val);
         return cmd->send_command();
         break;
@@ -386,7 +388,7 @@ static esp_err_t parse_binding_json(char *json_str, binding_attr_t *binding, siz
 {
     jparse_ctx_t jctx;
     ESP_RETURN_ON_FALSE(json_parse_start(&jctx, json_str, strlen(json_str)) == 0, ESP_ERR_INVALID_ARG, TAG,
-                        "Binding Table json string is wrong");
+                        "Failed to parse the Binding json string on json_parse_start");
     size_t index = 0;
     while (index < CONFIG_MAX_BINDINGS && json_arr_get_object(&jctx, index) == 0) {
         int int_val;
@@ -402,11 +404,11 @@ static esp_err_t parse_binding_json(char *json_str, binding_attr_t *binding, siz
             binding->binding_array[index].group.ClearValue();
 
             ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "endpoint", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
-                                "Binding Table json string is wrong");
+                                "Failed to get endpoint from the Binding json string");
             binding->binding_array[index].endpoint.SetValue(int_val);
 
             ESP_RETURN_ON_FALSE(json_obj_get_int(&jctx, "cluster", &int_val) == 0, ESP_ERR_INVALID_ARG, TAG,
-                                "Binding Table json string is wrong");
+                                "Failed to get cluster from the Binding json string");
             binding->binding_array[index].cluster.SetValue(int_val);
         } else if (json_obj_get_int64(&jctx, "group", &int64_val) == 0) {
             // Group binding
@@ -415,7 +417,7 @@ static esp_err_t parse_binding_json(char *json_str, binding_attr_t *binding, siz
             binding->binding_array[index].endpoint.ClearValue();
             binding->binding_array[index].cluster.ClearValue();
         } else {
-            ESP_LOGE(TAG, "Binding Table json string is wrong");
+            ESP_LOGE(TAG, "The Binding json string is invalid");
             return ESP_ERR_INVALID_ARG;
         }
         json_arr_leave_object(&jctx);
@@ -434,7 +436,7 @@ static esp_err_t write_attribute(uint64_t node_id, uint16_t endpoint_id, uint32_
         binding_attr_t *attr_val = chip::Platform::New<binding_attr_t>();
         ESP_RETURN_ON_FALSE(attr_val, ESP_ERR_NO_MEM, TAG, "Failed to alloc binding_attr_t");
         ESP_RETURN_ON_ERROR(parse_binding_json(attribute_val_str, attr_val, &binding_size), TAG,
-                            "Failed to parse binding json string");
+                            "Failed to parse the Binding json string");
         List<binding_obj> binding_list(attr_val->binding_array, binding_size);
         write_command<List<binding_obj>> *cmd =
             New<write_command<List<binding_obj>>>(node_id, endpoint_id, Binding::Id, attribute_id, binding_list);

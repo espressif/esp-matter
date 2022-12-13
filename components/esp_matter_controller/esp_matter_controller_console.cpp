@@ -21,6 +21,7 @@
 #include <esp_matter_controller_pairing_command.h>
 #include <esp_matter_controller_read_command.h>
 #include <esp_matter_controller_subscribe_command.h>
+#include <esp_matter_controller_utils.h>
 #include <esp_matter_controller_write_command.h>
 #include <lib/core/CHIPCore.h>
 #include <lib/shell/Commands.h>
@@ -61,8 +62,8 @@ static esp_err_t controller_pairing_handler(int argc, char **argv)
             return ESP_ERR_INVALID_ARG;
         }
 
-        uint64_t nodeId = (uint64_t)strtoull(argv[1], NULL, 10);
-        uint32_t pincode = (uint32_t)strtoul(argv[2], NULL, 10);
+        uint64_t nodeId = string_to_uint64(argv[1]);
+        uint32_t pincode = string_to_uint32(argv[2]);
         return controller::pairing_on_network(nodeId, pincode);
     } else if (strncmp(argv[0], "ble-wifi", sizeof("ble-wifi")) == 0) {
         return ESP_ERR_NOT_SUPPORTED;
@@ -78,8 +79,8 @@ static esp_err_t controller_invoke_command_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
 
     return controller::send_invoke_cluster_command(node_id, endpoint_id, argc - 2, argv + 2);
 }
@@ -90,10 +91,10 @@ static esp_err_t controller_read_attr_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
-    uint32_t cluster_id = (uint32_t)strtoul(argv[2], NULL, 10);
-    uint32_t attribute_id = (uint32_t)strtoul(argv[3], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t attribute_id = string_to_uint32(argv[3]);
 
     return controller::send_read_attr_command(node_id, endpoint_id, cluster_id, attribute_id);
 }
@@ -104,10 +105,10 @@ static esp_err_t controller_write_attr_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
-    uint32_t cluster_id = (uint32_t)strtoul(argv[2], NULL, 10);
-    uint32_t attribute_id = (uint32_t)strtoul(argv[3], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t attribute_id = string_to_uint32(argv[3]);
     char *attribute_val_str = argv[4];
 
     return controller::send_write_attr_command(node_id, endpoint_id, cluster_id, attribute_id, attribute_val_str);
@@ -119,10 +120,10 @@ static esp_err_t controller_read_event_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
-    uint32_t cluster_id = (uint32_t)strtoul(argv[2], NULL, 10);
-    uint32_t event_id = (uint32_t)strtoul(argv[3], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t event_id = string_to_uint32(argv[3]);
 
     return controller::send_read_event_command(node_id, endpoint_id, cluster_id, event_id);
 }
@@ -133,12 +134,12 @@ static esp_err_t controller_subscribe_attr_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
-    uint32_t cluster_id = (uint32_t)strtoul(argv[2], NULL, 10);
-    uint32_t attribute_id = (uint32_t)strtoul(argv[3], NULL, 10);
-    uint16_t min_interval = (uint16_t)strtoul(argv[4], NULL, 10);
-    uint16_t max_interval = (uint16_t)strtoul(argv[5], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t attribute_id = string_to_uint32(argv[3]);
+    uint16_t min_interval = string_to_uint16(argv[4]);
+    uint16_t max_interval = string_to_uint16(argv[5]);
     return controller::send_subscribe_attr_command(node_id, endpoint_id, cluster_id, attribute_id, min_interval,
                                                    max_interval);
 }
@@ -149,12 +150,12 @@ static esp_err_t controller_subscribe_event_handler(int argc, char **argv)
         return ESP_ERR_INVALID_ARG;
     }
 
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint16_t endpoint_id = (uint16_t)strtoul(argv[1], NULL, 10);
-    uint32_t cluster_id = (uint32_t)strtoul(argv[2], NULL, 10);
-    uint32_t event_id = (uint32_t)strtoul(argv[3], NULL, 10);
-    uint16_t min_interval = (uint16_t)strtoul(argv[4], NULL, 10);
-    uint16_t max_interval = (uint16_t)strtoul(argv[5], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint16_t endpoint_id = string_to_uint16(argv[1]);
+    uint32_t cluster_id = string_to_uint32(argv[2]);
+    uint32_t event_id = string_to_uint32(argv[3]);
+    uint16_t min_interval = string_to_uint16(argv[4]);
+    uint16_t max_interval = string_to_uint16(argv[5]);
     return controller::send_subscribe_event_command(node_id, endpoint_id, cluster_id, event_id, min_interval,
                                                     max_interval);
 }
@@ -164,8 +165,8 @@ static esp_err_t controller_shutdown_subscription_handler(int argc, char **argv)
     if (argc != 2) {
         return ESP_ERR_INVALID_ARG;
     }
-    uint64_t node_id = (uint64_t)strtoull(argv[0], NULL, 10);
-    uint32_t subscription_id = (uint32_t) strtoul(argv[1], NULL, 10);
+    uint64_t node_id = string_to_uint64(argv[0]);
+    uint32_t subscription_id = string_to_uint32(argv[1]);
     return controller::send_shutdown_subscription(node_id, subscription_id);
 }
 

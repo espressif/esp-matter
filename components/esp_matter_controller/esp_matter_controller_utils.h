@@ -17,3 +17,11 @@
 #include <stdint.h>
 
 int oct_str_to_byte_arr(char *oct_str, uint8_t *byte_array);
+
+uint64_t string_to_uint64(char *str);
+
+uint32_t string_to_uint32(char *str);
+
+uint16_t string_to_uint16(char *str);
+
+uint8_t string_to_uint8(char *str);
