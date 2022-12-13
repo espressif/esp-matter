@@ -393,5 +393,26 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* boolean_state */
 
+namespace localization_configuration {
+typedef struct config {
+    uint16_t cluster_revision;
+    char active_locale[35];
+    config() : cluster_revision(4), active_locale{0} {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* localization_configuration_cluster */
+
+namespace time_format_localization {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint8_t> hour_format;
+    feature::calendar_format::config_t calendar_format;
+    config() : cluster_revision(4), hour_format(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
+} /* time_format_localization */
+
 } /* cluster */
 } /* esp_matter */
