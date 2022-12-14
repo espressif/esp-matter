@@ -341,7 +341,7 @@ typedef struct config {
     uint16_t installed_closed_limit_tilt;
     uint16_t mode;
     uint16_t safety_status;
-    config() : cluster_revision(6), type(0), operational_status(0), end_product_type(0), mode(0) {}
+    config() : cluster_revision(5), type(0), operational_status(0), end_product_type(0), mode(0) {}
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
