@@ -480,7 +480,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
         attribute::create_current_position_tilt(cluster, config->current_position_tilt);
         attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_lift);
+        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
     } else {
         ESP_LOGI(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
     }
