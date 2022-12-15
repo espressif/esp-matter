@@ -16,13 +16,33 @@ Git repositories, and instructions to build and flash.
 You should install drivers and support packages for your development
 host. Linux and Mac OS-X are the supported development hosts in Matter, the recommended host versions:
 
-- Ubuntu 20.04 LTS
+- Ubuntu 20.04 or 22.04 LTS
 - macOS 10.15 or later
+
+Additionally, we also support developing on Windows Host using WSL.
 
 The Prerequisites for ESP-IDF and Matter:
 
 - Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+
+
+
+2.1.1.1 Windows 10
+~~~~~~~~~~~~~~~~~~
+
+Development on Windows is supported using Windows Subsystem for Linux (WSL). Please follow the below instructions to set up host.
+
+- Install and enable `Windows Subsystem for Linux 2 (WSL2) <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`__.
+- Install Ubuntu 20.04 or 22.04 from the `Windows App Store <https://apps.microsoft.com/store/search/Ubuntu>`__.
+- Start Ubuntu (search into start menu) and run command ``uname -a``, it should report a kernel version of ``5.10.60.1`` or later.
+  If not please upgrade the WSL2. To upgrade the kernel, run ``wsl --upgrade`` from Windows Power Shell.
+- Windows does not support exposing COM ports to WSL distros. Install usbipd-win on `Windows <https://github.com/dorssel/usbipd-win>`__
+  and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
+- Here onwards process for setting esp-matter and building examples is same as other hosts.
+
+For using VSCode for developement, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
+
 
 2.1.2 Getting the Repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
