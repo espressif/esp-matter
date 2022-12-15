@@ -1414,7 +1414,8 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
         break;
     }
 
-    case ZCL_INT8U_ATTRIBUTE_TYPE: {
+    case ZCL_INT8U_ATTRIBUTE_TYPE:
+    case ZCL_PERCENT_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint8_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));
@@ -1446,7 +1447,8 @@ static esp_err_t get_attr_val_from_data(esp_matter_attr_val_t *val, EmberAfAttri
         break;
     }
 
-    case ZCL_INT16U_ATTRIBUTE_TYPE: {
+    case ZCL_INT16U_ATTRIBUTE_TYPE:
+    case ZCL_PERCENT100THS_ATTRIBUTE_TYPE: {
         using Traits = chip::app::NumericAttributeTraits<uint16_t>;
         Traits::StorageType attribute_value;
         memcpy((uint8_t *)&attribute_value, value, sizeof(Traits::StorageType));

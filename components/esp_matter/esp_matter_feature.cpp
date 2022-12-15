@@ -422,18 +422,19 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
-    uint32_t pa_lt_and_lift_feature_map = get_id() | feature::lift::get_id();
-    if((get_feature_map_value(cluster) & pa_lt_and_lift_feature_map) == pa_lt_and_lift_feature_map)
-    {
-	attribute::create_current_position_lift_percentage(cluster, config->current_position_lift_percentage);
-	attribute::create_target_position_lift_percent_100ths(cluster, config->target_position_lift_percent_100ths);
-	attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
 
-	command::create_go_to_lift_percentage(cluster);
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Lift feature");
-	return ESP_ERR_NOT_SUPPORTED;
+    uint32_t pa_lt_and_lift_feature_map = get_id() | feature::lift::get_id();
+    if((get_feature_map_value(cluster) & pa_lt_and_lift_feature_map) == pa_lt_and_lift_feature_map) {
+        attribute::create_current_position_lift_percentage(cluster, config->current_position_lift_percentage);
+        attribute::create_target_position_lift_percent_100ths(cluster, config->target_position_lift_percent_100ths);
+        attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
+
+        command::create_go_to_lift_percentage(cluster);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Lift feature");
+        return ESP_ERR_NOT_SUPPORTED;
     }
+
     return ESP_OK;
 }
 } /* position_aware_lift */
@@ -452,43 +453,39 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         return ESP_ERR_INVALID_ARG;
     }
     update_feature_map(cluster, get_id());
+
     uint32_t abs_and_pa_lf_feature_map = get_id() | feature::position_aware_lift::get_id();
     uint32_t abs_and_pa_tl_feature_map = get_id() | feature::position_aware_tilt::get_id();
     uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
     uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if((get_feature_map_value(cluster) & abs_and_pa_lf_feature_map) == abs_and_pa_lf_feature_map)
-    {
-	attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
-	attribute::create_current_position_lift(cluster, config->current_position_lift);
-	attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
-	attribute::create_installed_closed_limit_lift(cluster, config->installed_open_limit_lift);
-
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Position_Aware_Lift feature");
-	return ESP_ERR_NOT_SUPPORTED;
+    if((get_feature_map_value(cluster) & abs_and_pa_lf_feature_map) == abs_and_pa_lf_feature_map) {
+        attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
+        attribute::create_current_position_lift(cluster, config->current_position_lift);
+        attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
+        attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Position_Aware_Lift feature");
+        return ESP_ERR_NOT_SUPPORTED;
     }
 
-    if((get_feature_map_value(cluster) & abs_and_pa_tl_feature_map) == abs_and_pa_tl_feature_map)
-    {
-	attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
-	attribute::create_current_position_tilt(cluster, config->current_position_tilt);
-	attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-	attribute::create_installed_closed_limit_tilt(cluster, config->installed_open_limit_tilt);
-
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Position_Aware_Tilt feature");
-	return ESP_ERR_NOT_SUPPORTED;
+    if((get_feature_map_value(cluster) & abs_and_pa_tl_feature_map) == abs_and_pa_tl_feature_map) {
+        attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
+        attribute::create_current_position_tilt(cluster, config->current_position_tilt);
+        attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
+        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_lift);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Position_Aware_Tilt feature");
+        return ESP_ERR_NOT_SUPPORTED;
     }
 
-    if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map)
-    {
-	command::create_go_to_lift_value(cluster);
+    if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
+	    command::create_go_to_lift_value(cluster);
     }
 
-    if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map)
-    {
-	command::create_go_to_tilt_value(cluster);
+    if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
+    	command::create_go_to_tilt_value(cluster);
     }
+
     return ESP_OK;
 }
 
@@ -510,17 +507,17 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     update_feature_map(cluster, get_id());
 
     uint32_t pa_lt_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if((get_feature_map_value(cluster) & pa_lt_and_tilt_feature_map) == pa_lt_and_tilt_feature_map)
-    {
-	attribute::create_current_position_tilt_percentage(cluster, config->current_position_tilt_percentage);
-	attribute::create_target_position_tilt_percent_100ths(cluster, config->target_position_tilt_percent_100ths);
-	attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
+    if((get_feature_map_value(cluster) & pa_lt_and_tilt_feature_map) == pa_lt_and_tilt_feature_map) {
+        attribute::create_current_position_tilt_percentage(cluster, config->current_position_tilt_percentage);
+        attribute::create_target_position_tilt_percent_100ths(cluster, config->target_position_tilt_percent_100ths);
+        attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
 
-	command::create_go_to_tilt_percentage(cluster);
-    }else{
-	ESP_LOGE(TAG, "Cluster shall support Tilt feature");
-	return ESP_ERR_NOT_SUPPORTED;
+        command::create_go_to_tilt_percentage(cluster);
+    } else {
+        ESP_LOGE(TAG, "Cluster shall support Tilt feature");
+        return ESP_ERR_NOT_SUPPORTED;
     }
+
     return ESP_OK;
 }
 
