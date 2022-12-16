@@ -6,11 +6,18 @@ menu "ESP Matter Controller"
         help
             Enable the controller.
 
-    config ESP_MATTER_CONTROLLER_MAX_ACTIVE_DEVICES
-        int "Max active device"
+    config ESP_MATTER_COMMISSIONER_ENABLE
+        bool "Enable matter commissioner"
         depends on ESP_MATTER_CONTROLLER_ENABLE
+        default y
+        help
+            Enable the matter commissioner in the ESP Matter controller.
+
+    config ESP_MATTER_COMMISSIONER_MAX_ACTIVE_DEVICES
+        int "Max active device"
+        depends on ESP_MATTER_COMMISSIONER_ENABLE
         default 5
         help
-            Maximum number of active device the controller supports.
+            Maximum number of active device the commissioner supports.
 
 endmenu

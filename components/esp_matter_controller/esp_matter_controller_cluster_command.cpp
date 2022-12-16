@@ -13,7 +13,11 @@
 // limitations under the License.
 
 #include <controller/CommissioneeDeviceProxy.h>
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 #include <esp_matter_commissioner.h>
+#else
+#include <app/server/Server.h>
+#endif
 #include <esp_matter_controller_cluster_command.h>
 
 using namespace chip::app::Clusters;
@@ -201,11 +205,18 @@ void cluster_command::on_device_connection_failure_fcn(void *context, const Scop
 
 esp_err_t cluster_command::send_command()
 {
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
     if (CHIP_NO_ERROR ==
         commissioner::get_device_commissioner()->GetConnectedDevice(m_node_id, &on_device_connected_cb,
                                                                     &on_device_connection_failure_cb)) {
         return ESP_OK;
     }
+#else
+    chip::Server *server = &(chip::Server::GetInstance());
+    server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(m_node_id, /* fabric index */ 1),
+                                                            &on_device_connected_cb, &on_device_connection_failure_cb);
+    return ESP_OK;
+#endif
     chip::Platform::Delete(this);
     return ESP_FAIL;
 }

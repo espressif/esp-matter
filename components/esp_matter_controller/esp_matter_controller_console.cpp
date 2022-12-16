@@ -15,7 +15,6 @@
  *    limitations under the License.
  */
 
-#include <esp_matter_commissioner.h>
 #include <esp_matter_controller_cluster_command.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_controller_pairing_command.h>
@@ -186,6 +185,7 @@ esp_err_t controller_register_commands()
             .description = "print this page",
             .handler = controller_help_handler,
         },
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
         {
             .name = "pairing",
             .description = "Pairing a node. "
@@ -194,6 +194,7 @@ esp_err_t controller_register_commands()
                            "controller pairing ble-thread [nodeid] [pincode] [discriminator] [dataset]",
             .handler = controller_pairing_handler,
         },
+#endif
         {
             .name = "invoke-cmd",
             .description = "Send command to the nodes. "

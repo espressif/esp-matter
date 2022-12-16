@@ -36,5 +36,6 @@ CONFIG_ESP_MAIN_TASK_STACK_SIZE=10240
 # Increase udp endpoints num for commissioner
 CONFIG_NUM_UDP_ENDPOINTS=16
 
-# Enable Commissioner
+# Enable Controller and commissioner
 CONFIG_ESP_MATTER_CONTROLLER_ENABLE=y
+CONFIG_ESP_MATTER_COMMISSIONER_ENABLE=y
