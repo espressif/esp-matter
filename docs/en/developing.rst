@@ -202,7 +202,7 @@ A host-based chip-tool can be used as a commissioner to commission and control a
 
 ::
 
-   ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool/out
+   $ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host
 
 2.2.1.1 Commissioning
 ^^^^^^^^^^^^^^^^^^^^^
