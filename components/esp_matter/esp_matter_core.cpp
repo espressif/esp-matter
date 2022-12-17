@@ -788,15 +788,11 @@ static void esp_matter_chip_init_task(intptr_t context)
         sWiFiNetworkCommissioningInstance.Init();
     }
 #endif
-    /* Initialize binding manager */
-    client::binding_manager_init();
     xTaskNotifyGive(task_to_notify);
 }
 
 static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg)
 {
-    // TODO: Use RemoveEventHandler() instead of the static is_ota_requestor_start
-    static bool is_ota_requestor_start = false;
     switch (event->Type)
     {
     case chip::DeviceLayer::DeviceEventType::kInterfaceIpAddressChanged:
@@ -812,19 +808,18 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
             // in esp_matter_ota_requestor_start(), so the device should be connected to the Wi-Fi network when calling
             // esp_matter_ota_requestor_start(). IPv4 might be disabled on the Provider so we should call this function
             // when the IPv6 address is assigned.
-            if (!is_ota_requestor_start) {
-                esp_matter_ota_requestor_start();
-                is_ota_requestor_start = true;
-            }
+            esp_matter_ota_requestor_start();
+            /* Initialize binding manager */
+            client::binding_manager_init();
         }
         break;
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
-        if (!is_ota_requestor_start &&
-                event->ThreadConnectivityChange.Result == chip::DeviceLayer::ConnectivityChange::kConnectivity_Established) {
+        if (event->ThreadConnectivityChange.Result == chip::DeviceLayer::ConnectivityChange::kConnectivity_Established) {
             esp_matter_ota_requestor_start();
-            is_ota_requestor_start = true;
+            /* Initialize binding manager */
+            client::binding_manager_init();
         }
         break;
 #endif

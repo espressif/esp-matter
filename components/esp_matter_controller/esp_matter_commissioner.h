@@ -22,6 +22,7 @@
 #include <platform/PlatformManager.h>
 #include <transport/TransportMgr.h>
 
+#if CONFIG_ESP_MATTER_COMMISSIONER_ENABLE
 using chip::NodeId;
 using chip::Controller::AutoCommissioner;
 using chip::Controller::DeviceCommissioner;
@@ -39,3 +40,4 @@ CommissionerDiscoveryController *get_discovery_controller();
 AutoCommissioner *get_auto_commissioner();
 } // namespace commissioner
 } // namespace esp_matter
+#endif // CONFIG_ESP_MATTER_COMMISSIONER_ENABLE

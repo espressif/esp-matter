@@ -39,12 +39,19 @@ public:
         , m_attr_path(endpoint_id, cluster_id, attribute_id)
         , m_chunked_callback(this)
         , m_attr_val(attribute_val)
+        , m_attr_free(nullptr)
+        , m_attr_free_ctx(nullptr)
         , on_device_connected_cb(on_device_connected_fcn, this)
         , on_device_connection_failure_cb(on_device_connection_failure_fcn, this)
     {
     }
 
-    ~write_command() {}
+    ~write_command()
+    {
+        if (m_attr_free && m_attr_free_ctx) {
+            m_attr_free(m_attr_free_ctx);
+        }
+    }
 
     AttributePathParams &get_attribute_path() { return m_attr_path; }
 
@@ -53,6 +60,14 @@ public:
     ChunkedWriteCallback &get_chunked_write_callback() { return m_chunked_callback; }
 
     esp_err_t send_command();
+
+    using attribute_free_handler = void (*)(void *);
+    esp_err_t set_attribute_free_handler(attribute_free_handler attr_free_handler, void *ctx)
+    {
+        m_attr_free = attr_free_handler;
+        m_attr_free_ctx = ctx;
+        return ESP_OK;
+    }
 
     // WriteClient Callback Interface
     void OnResponse(const WriteClient *client, const ConcreteDataAttributePath &path, StatusIB status) override
@@ -80,6 +95,10 @@ private:
     AttributePathParams m_attr_path;
     ChunkedWriteCallback m_chunked_callback;
     T m_attr_val;
+    // We need to alloc memory for writing complex attributes asynchronously and free the memory when we delete the
+    // write_command.
+    attribute_free_handler m_attr_free;
+    void *m_attr_free_ctx;
 
     static void on_device_connected_fcn(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle);
     static void on_device_connection_failure_fcn(void *context, const ScopedNodeId &peerId, CHIP_ERROR error);
