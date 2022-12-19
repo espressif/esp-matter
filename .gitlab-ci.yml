@@ -178,9 +178,11 @@ build_upstream_examples:
 
 build_docs:
     stage: build
-    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.0:2-3
     tags:
         - build
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
     artifacts:
         when: always
         paths:
@@ -194,11 +196,13 @@ build_docs:
 
 .deploy_docs_template:
     stage: docs
-    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env:v4.4-1-v4
+    image: $CI_DOCKER_REGISTRY/esp-idf-doc-env-v5.0:2-3
     tags:
         - docs
     needs:
         - build_docs
+    variables:
+        ESP_DOCS_LATEST_BRANCH_NAME: "main"
     script:
         - source ${CI_PROJECT_DIR}/docs/utils.sh
         - add_doc_server_ssh_keys $DOCS_DEPLOY_PRIVATEKEY $DOCS_DEPLOY_SERVER $DOCS_DEPLOY_SERVER_USER
