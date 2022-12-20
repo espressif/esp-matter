@@ -104,7 +104,7 @@ jobs:
         run: |
           cd images
           ls
-          ../tools/launchpad/generate_launchpad_config.sh ${{ steps.deployment.outputs.page_url }}
+          ../tools/launchpad/generate_launchpad_config.sh
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
