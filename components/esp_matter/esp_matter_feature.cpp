@@ -473,7 +473,7 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
         attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
     } else {
-        ESP_LOGI(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
+        ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
     }
 
     if((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
@@ -482,19 +482,19 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
         attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
     } else {
-        ESP_LOGI(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
+        ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
     }
 
     if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
 	    command::create_go_to_lift_value(cluster);
     } else {
-        ESP_LOGI(TAG, "Lift commands were not created because cluster does not support Lift feature");
+        ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
     }
 
     if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
         command::create_go_to_tilt_value(cluster);
     } else {
-        ESP_LOGI(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
+        ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
     }
 
     return ESP_OK;
