@@ -49,7 +49,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
     access_control::create(endpoint, CLUSTER_FLAG_SERVER);
-    basic::create(endpoint, &(config->basic), CLUSTER_FLAG_SERVER);
+    basic_information::create(endpoint, &(config->basic_information), CLUSTER_FLAG_SERVER);
     general_commissioning::create(endpoint, &(config->general_commissioning), CLUSTER_FLAG_SERVER);
     network_commissioning::create(endpoint, &(config->network_commissioning), CLUSTER_FLAG_SERVER);
     general_diagnostics::create(endpoint, &(config->general_diagnostics), CLUSTER_FLAG_SERVER);

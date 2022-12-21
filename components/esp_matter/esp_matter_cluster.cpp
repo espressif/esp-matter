@@ -20,7 +20,7 @@
 
 #include <app-common/zap-generated/att-storage.h>
 #include <app-common/zap-generated/callback.h>
-#include <app-common/zap-generated/callbacks/PluginCallbacks.h>
+#include <app/PluginApplicationCallbacks.h>
 
 static const char *TAG = "esp_matter_cluster";
 
@@ -172,26 +172,30 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 }
 } /* access_control */
 
-namespace basic {
+namespace basic_information {
+// TODO: Remove this stub function after this PR merged
+// https://github.com/project-chip/connectedhomeip/pull/24162
+void emberAfBasicInformationClusterServerInitCallback(chip::EndpointId endpoint) {}
+
 const function_generic_t function_list[] = {
-    (function_generic_t)emberAfBasicClusterServerInitCallback,
+    (function_generic_t)emberAfBasicInformationClusterServerInitCallback,
 };
 const int function_flags = CLUSTER_FLAG_INIT_FUNCTION;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, Basic::Id, flags);
+    cluster_t *cluster = cluster::create(endpoint, BasicInformation::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
-        set_plugin_server_init_callback(cluster, MatterBasicPluginServerInitCallback);
+        set_plugin_server_init_callback(cluster, MatterBasicInformationPluginServerInitCallback);
         add_function_list(cluster, function_list, function_flags);
     }
     if (flags & CLUSTER_FLAG_CLIENT) {
-        set_plugin_client_init_callback(cluster, MatterBasicPluginClientInitCallback);
+        set_plugin_client_init_callback(cluster, MatterBasicInformationPluginClientInitCallback);
     }
 
     if (flags & CLUSTER_FLAG_SERVER) {
@@ -220,7 +224,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* basic */
+} /* basic_information */
 
 namespace binding {
 const function_generic_t *function_list = NULL;
