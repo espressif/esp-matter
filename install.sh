@@ -4,20 +4,27 @@ set -e
 
 basedir=$(dirname "$0")
 ESP_MATTER_PATH=$(cd "${basedir}"; pwd)
+MATTER_PATH=${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip
 export ESP_MATTER_PATH
 
 echo ""
 echo "Running Matter Setup"
 echo ""
-source ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/bootstrap.sh
+source ${MATTER_PATH}/scripts/bootstrap.sh
 
 echo ""
-echo "Building chip-tool"
+echo "Building host tools"
 echo ""
-${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/scripts/examples/gn_build_example.sh ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool/out/
+gn --root="${MATTER_PATH}" gen ${MATTER_PATH}/out/host
+ninja -C ${MATTER_PATH}/out/host
 echo ""
-echo "Created chip-tool executable at: ${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/examples/chip-tool/out/"
+echo "Host tools built at: ${MATTER_PATH}/out/host"
 echo ""
+
+echo ""
+echo "Installing python dependencies for mfg_tool"
+echo ""
+python3 -m pip install -r ${ESP_MATTER_PATH}/tools/mfg_tool/requirements.txt
 
 echo "All done! You can now run:"
 echo ""
