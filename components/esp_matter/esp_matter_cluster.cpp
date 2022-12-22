@@ -919,7 +919,6 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     /* Commands */
     command::create_identify(cluster);
-    command::create_trigger_effect(cluster);
 
     return cluster;
 }
