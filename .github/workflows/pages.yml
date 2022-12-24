@@ -1,0 +1,119 @@
+# Copyright 2022 Espressif Systems (Shanghai) PTE LTD
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This workflow build examples, store the artifacts and deploy them to github pages.
+# Generates the launchpad configuration file that can be used with the url.
+
+name: Build and Deploy example bins to github pages
+
+on:
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+
+  Build:
+    # Disable the job in forks
+    if: ${{ github.repository_owner == 'espressif' }}
+
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/esp-matter:chip
+    strategy:
+      matrix:
+        build-dir: ['examples/light', 'examples/light_switch']
+        targets: ['esp32', 'esp32c3']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: idf stuff
+        run: |
+          rm -rf connectedhomeip/connectedhomeip
+          ln -s $CHIP_PATH connectedhomeip
+          mkdir -p images
+
+      - name: build application
+        run: |
+          export ESP_MATTER_PATH=$PWD
+          . $IDF_PATH/export.sh
+          . $ESP_MATTER_PATH/export.sh
+          cd ${{matrix.build-dir}}
+          idf.py set-target ${{matrix.targets}} build
+          cd build
+          TARGET_CHIP=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["target"])'`
+          APP_BIN=`cat project_description.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["app_bin"])'`
+          esptool.py --chip $TARGET_CHIP merge_bin -o "$ESP_MATTER_PATH/images/$TARGET_CHIP"_"$APP_BIN" `cat flash_args | tr '\n' '\ '`
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-images
+          path: 'images/'
+
+  deploy:
+    # Disable the job in forks
+    if: ${{ github.repository_owner == 'espressif' }}
+
+    needs: Build
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/esp-matter:chip
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download builds
+        uses: actions/download-artifact@v3
+        with:
+          name: build-images
+          path: images/
+
+      - name: generate launchpad config
+        run: |
+          cd images
+          ls
+          ../tools/launchpad/generate_launchpad_config.sh
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'images/'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

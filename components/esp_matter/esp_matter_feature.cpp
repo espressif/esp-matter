@@ -454,36 +454,47 @@ esp_err_t add(cluster_t *cluster, config_t *config)
     }
     update_feature_map(cluster, get_id());
 
-    uint32_t abs_and_pa_lf_feature_map = get_id() | feature::position_aware_lift::get_id();
-    uint32_t abs_and_pa_tl_feature_map = get_id() | feature::position_aware_tilt::get_id();
+    uint32_t abs_and_pa_lf_and_lf_feature_map = get_id() | feature::position_aware_lift::get_id() | feature::lift::get_id();
+    uint32_t abs_and_pa_tl_and_tl_feature_map = get_id() | feature::position_aware_tilt::get_id() | feature::tilt::get_id();
     uint32_t abs_and_lift_feature_map = get_id() | feature::lift::get_id();
     uint32_t abs_and_tilt_feature_map = get_id() | feature::tilt::get_id();
-    if((get_feature_map_value(cluster) & abs_and_pa_lf_feature_map) == abs_and_pa_lf_feature_map) {
+    if (
+        (get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) != abs_and_pa_lf_and_lf_feature_map
+        && (get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) != abs_and_pa_tl_and_tl_feature_map
+        && (get_feature_map_value(cluster) & abs_and_lift_feature_map) != abs_and_lift_feature_map
+        && (get_feature_map_value(cluster) & abs_and_tilt_feature_map) != abs_and_tilt_feature_map
+    ) {
+        ESP_LOGE(TAG, "Cluster shall support Lift (and optionally Position_Aware_Lift) and/or Tilt (and optionally Position_Aware_Tilt) features");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    if((get_feature_map_value(cluster) & abs_and_pa_lf_and_lf_feature_map) == abs_and_pa_lf_and_lf_feature_map) {
         attribute::create_physical_closed_limit_lift(cluster, config->physical_closed_limit_lift);
         attribute::create_current_position_lift(cluster, config->current_position_lift);
         attribute::create_installed_open_limit_lift(cluster, config->installed_open_limit_lift);
         attribute::create_installed_closed_limit_lift(cluster, config->installed_closed_limit_lift);
     } else {
-        ESP_LOGE(TAG, "Cluster shall support Position_Aware_Lift feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        ESP_LOGW(TAG, "Lift related attributes were not created because cluster does not support Position_Aware_Lift feature");
     }
 
-    if((get_feature_map_value(cluster) & abs_and_pa_tl_feature_map) == abs_and_pa_tl_feature_map) {
+    if((get_feature_map_value(cluster) & abs_and_pa_tl_and_tl_feature_map) == abs_and_pa_tl_and_tl_feature_map) {
         attribute::create_physical_closed_limit_tilt(cluster, config->physical_closed_limit_tilt);
         attribute::create_current_position_tilt(cluster, config->current_position_tilt);
         attribute::create_installed_open_limit_tilt(cluster, config->installed_open_limit_tilt);
-        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_lift);
+        attribute::create_installed_closed_limit_tilt(cluster, config->installed_closed_limit_tilt);
     } else {
-        ESP_LOGE(TAG, "Cluster shall support Position_Aware_Tilt feature");
-        return ESP_ERR_NOT_SUPPORTED;
+        ESP_LOGW(TAG, "Tilt related attributes were not created because cluster does not support Position_Aware_Tilt feature");
     }
 
     if((get_feature_map_value(cluster) & abs_and_lift_feature_map) == abs_and_lift_feature_map) {
 	    command::create_go_to_lift_value(cluster);
+    } else {
+        ESP_LOGW(TAG, "Lift commands were not created because cluster does not support Lift feature");
     }
 
     if((get_feature_map_value(cluster) & abs_and_tilt_feature_map) == abs_and_tilt_feature_map) {
-    	command::create_go_to_tilt_value(cluster);
+        command::create_go_to_tilt_value(cluster);
+    } else {
+        ESP_LOGW(TAG, "Tilt commands were not created because cluster does not support Tilt feature");
     }
 
     return ESP_OK;
@@ -778,6 +789,129 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
 } /* feature */
 } /* thermostat */
+
+namespace switch_cluster {
+namespace feature {
+namespace latching_switch {
+
+uint32_t get_id()
+{
+    // The SwitchFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return (uint32_t)0x01;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) == feature::momentary_switch::get_id())
+    {
+	ESP_LOGE(TAG, "Latching switch is not supported because momentary switch is present");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* latching_switch */
+
+namespace momentary_switch {
+
+uint32_t get_id()
+{
+    // The SwitchFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return (uint32_t)0x02;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if((get_feature_map_value(cluster) & feature::latching_switch::get_id()) == feature::latching_switch::get_id())
+    {
+	ESP_LOGE(TAG, "Momentary switch is not supported because latching switch is present");
+	return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* momentary_switch */
+
+namespace momentary_switch_release {
+
+uint32_t get_id()
+{
+    // The SwitchFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return (uint32_t)0x04;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    if((get_feature_map_value(cluster) & feature::momentary_switch::get_id()) != feature::momentary_switch::get_id())
+    {
+        ESP_LOGE(TAG, "Momentary switch release is not supported because momentary is absent");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* momentary_switch_release */
+
+namespace momentary_switch_long_press {
+
+uint32_t get_id()
+{
+    // The SwitchFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return (uint32_t)0x08;
+}
+
+esp_err_t add(cluster_t *cluster)
+{
+    uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
+    if((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map)
+    {
+        ESP_LOGE(TAG, "Momentary switch long press is not supported because momentary switch and/or momentary switch release is absent");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    return ESP_OK;
+}
+
+} /* momentary_switch_long_press */
+
+namespace momentary_switch_multi_press {
+
+uint32_t get_id()
+{
+    // The SwitchFeature enum class is not added in the upstream code.
+    // Return the code according to the SPEC
+    return (uint32_t)0x10;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    uint32_t momentary_and_momentart_switch_release_feature_map = feature::momentary_switch::get_id() | feature::momentary_switch_release::get_id();
+    if((get_feature_map_value(cluster) & momentary_and_momentart_switch_release_feature_map) != momentary_and_momentart_switch_release_feature_map)
+    {
+        ESP_LOGE(TAG, "Momentary switch multi press is not supported because momentary switch and/or momentary switch releaseis absent");
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+    update_feature_map(cluster, get_id());
+
+    attribute::create_multi_press_max(cluster, config->multi_press_max);
+
+    return ESP_OK;
+}
+
+} /* momentary_switch_multi_press */
+} /* feature */
+} /* switch_cluster */
 
 } /* cluster */
 } /* esp_matter */

@@ -1382,7 +1382,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
             global::attribute::create_cluster_revision(cluster, config->cluster_revision);
             attribute::create_type(cluster, config->type);
             attribute::create_config_status(cluster, config->config_status);
-            attribute::create_operational_status(cluster, config->config_status);
+            attribute::create_operational_status(cluster, config->operational_status);
             attribute::create_end_product_type(cluster, config->end_product_type);
             attribute::create_mode(cluster, config->mode);
         } else {

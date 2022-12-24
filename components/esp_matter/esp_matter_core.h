@@ -217,7 +217,7 @@ uint16_t get_id(endpoint_t *endpoint);
  *
  * @param[in] endpoint Endpoint handle.
  * @param[in] device_type_id Device type ID.
- * @parma[in] device_type_version Device type version.
+ * @param[in] device_type_version Device type version.
  *
  * @return ESP_OK on success.
  * @return error in case of failure.

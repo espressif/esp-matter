@@ -157,3 +157,23 @@ Please note that `mfg_tool.py` only generates manufacturing binary images which 
 ```
 esptool.py -p <serial_port> write_flash <address> path/to/<uuid>-partition.bin
 ```
+
+## Encrypting NVS partition
+
+Below are the steps for encrypting the application and factory partition but before proceeding further please READ THE DOCS FIRST. Documentation References:
+
+- [Flash and NVS encryption](https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/esp32/flash_nvs_encryption.md#flash-and-nvs-encryption)
+
+Provide `-e` option along with other options to generate the encrypted NVS partition binary.
+
+It will generate additional partition binary (`<uuid>-keys-partition.bin`) containing the key for decrypting encrypted partition.
+
+- Flash the partition binary containing factory data, as NVS encryption works differently, please flash is without `--encrypt` option
+```
+esptool.py -p (PORT) write_flash (FACTORY_PARTITION_ADDR) path/to/factory_partition.bin
+```
+
+- Flash the partition binary containing encryption keys, these SHALL be flashed with `--encrypt` option
+```
+esptool.py -p (PORT) write_flash --encrypt (NVS_KEYS_PARTITION_ADDR) path/to/nvs_key_partition.bin
+```

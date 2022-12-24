@@ -372,6 +372,11 @@ def organize_output_files(suffix, args):
         replace_with = os.sep.join([dest_path, '{}-partition.bin'.format(UUIDs[i])])
         os.rename(replace, replace_with)
 
+        if args.encrypt:
+            replace = os.sep.join([OUT_DIR['top'], 'keys', 'keys-{}-{}.bin'.format(suffix, str(i + 1))])
+            replace_with = os.sep.join([dest_path, '{}-keys-partition.bin'.format(UUIDs[i])])
+            os.rename(replace, replace_with)
+
         replace = os.sep.join([OUT_DIR['top'], 'csv', '{}-{}.csv'.format(suffix, str(i + 1))])
         replace_with = os.sep.join([internal_path, 'partition.csv'])
         os.rename(replace, replace_with)
@@ -384,14 +389,20 @@ def organize_output_files(suffix, args):
 
     os.rmdir(os.sep.join([OUT_DIR['top'], 'bin']))
     os.rmdir(os.sep.join([OUT_DIR['top'], 'csv']))
+    if args.encrypt:
+        os.rmdir(os.sep.join([OUT_DIR['top'], 'keys']))
 
 
-def generate_partitions(suffix, size):
+def generate_partitions(suffix, size, encrypt):
     cmd = [
         'python3', TOOLS['mfg_gen'], 'generate',
         OUT_FILE['config_csv'], OUT_FILE['mcsv'],
         suffix, hex(size), '--outdir', OUT_DIR['top']
     ]
+
+    if encrypt:
+        cmd.append('--keygen')
+
     execute_cmd(cmd)
 
 
@@ -431,6 +442,8 @@ def get_args():
                               If --csv and --mcsv are present, the number of lines in the mcsv file is used.')
     g_gen.add_argument('-s', '--size', type=any_base_int, default=0x6000,
                        help='The size of manufacturing partition binaries to generate. Default is 0x6000.')
+    g_gen.add_argument('-e', '--encrypt', action='store_true', required=False,
+                      help='Encrypt the factory parititon NVS binary')
 
     g_commissioning = parser.add_argument_group('Commisioning options')
     g_commissioning.add_argument('--passcode', type=any_base_int,
@@ -576,7 +589,7 @@ def main():
     if args.paa or args.pai:
         setup_root_certs(args)
     write_per_device_unique_data(args)
-    generate_partitions('matter_partition', args.size)
+    generate_partitions('matter_partition', args.size, args.encrypt)
     organize_output_files('matter_partition', args)
 
 

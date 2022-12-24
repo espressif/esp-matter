@@ -59,3 +59,10 @@ GENERATE_RTF    = NO
 ## Skip distracting progress messages
 ##
 QUIET = YES
+
+# If the WARN_IF_UNDOCUMENTED tag is set to YES then doxygen will generate
+# warnings for undocumented members. If EXTRACT_ALL is set to YES then this flag
+# will automatically be disabled.
+# The default value is: YES.
+
+WARN_IF_UNDOCUMENTED   = NO
