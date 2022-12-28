@@ -30,6 +30,7 @@ using chip::ScopedNodeId;
 using chip::Server;
 using chip::Messaging::ExchangeManager;
 using chip::Callback::Callback;
+using chip::BitMask;
 
 static const char *TAG = "esp_matter_client";
 
@@ -262,8 +263,8 @@ esp_err_t send_move(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     LevelControl::Commands::Move::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate.SetNonNull(rate);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -276,8 +277,8 @@ esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_
     LevelControl::Commands::Move::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate.SetNonNull(rate);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
@@ -291,8 +292,8 @@ esp_err_t send_move_to_level(peer_device_t *remote_device, uint16_t remote_endpo
     LevelControl::Commands::MoveToLevel::Type command_data;
     command_data.level = level;
     command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -305,8 +306,8 @@ esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint
     LevelControl::Commands::MoveToLevel::Type command_data;
     command_data.level = level;
     command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
@@ -371,8 +372,8 @@ esp_err_t send_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -386,8 +387,8 @@ esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_
     command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime.SetNonNull(transition_time);
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
@@ -426,8 +427,8 @@ esp_err_t send_stop(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
                     uint8_t option_override)
 {
     LevelControl::Commands::Stop::Type command_data;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
@@ -438,8 +439,8 @@ esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t optio
                     uint8_t option_override)
 {
     LevelControl::Commands::Stop::Type command_data;
-    command_data.optionsMask = option_mask;
-    command_data.optionsOverride = option_override;
+    command_data.optionsMask.SetRaw(option_mask);
+    command_data.optionsOverride.SetRaw(option_override);
 
     chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 

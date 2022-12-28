@@ -173,7 +173,7 @@
 #define EMBER_AF_AUDIO_OUTPUT_CLUSTER_SERVER_ENDPOINT_COUNT (16)    // used in audio output
 #define EMBER_AF_CHANNEL_CLUSTER_SERVER_ENDPOINT_COUNT (16)         // used in channel
 #define EMBER_AF_COLOR_CONTROL_CLUSTER_SERVER_ENDPOINT_COUNT (16)   // used in color control
-#define EMBER_AF_CONTENT_LAUNCH_CLUSTER_SERVER_ENDPOINT_COUNT (16)  // used in content launch
+#define EMBER_AF_CONTENT_LAUNCHER_CLUSTER_SERVER_ENDPOINT_COUNT (16)  // used in content launch
 #define EMBER_AF_IDENTIFY_CLUSTER_SERVER_ENDPOINT_COUNT (16)        // used in identify
 #define EMBER_AF_KEYPAD_INPUT_CLUSTER_SERVER_ENDPOINT_COUNT (16)    // used in keypad input
 #define EMBER_AF_LEVEL_CONTROL_CLUSTER_SERVER_ENDPOINT_COUNT (16)   // used in level control
@@ -181,7 +181,7 @@
 #define EMBER_AF_MEDIA_INPUT_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in media input
 #define EMBER_AF_MEDIA_PLAYBACK_CLUSTER_SERVER_ENDPOINT_COUNT (16)  // used in media playback
 #define EMBER_AF_ON_OFF_CLUSTER_SERVER_ENDPOINT_COUNT (16)          // used in on off
-#define EMBER_AF_OTA_PROVIDER_CLUSTER_SERVER_ENDPOINT_COUNT (16)    // used in ota provider
+#define EMBER_AF_OTA_SOFTWARE_UPDATE_PROVIDER_CLUSTER_SERVER_ENDPOINT_COUNT (16)    // used in ota software update provider
 #define EMBER_AF_TARGET_NAVIGATOR_CLUSTER_SERVER_ENDPOINT_COUNT (16)        // used in target navigator
 #define EMBER_AF_WAKE_ON_LAN_CLUSTER_SERVER_ENDPOINT_COUNT (16)     // used in wake on lan
 #define EMBER_AF_WINDOW_COVERING_CLUSTER_SERVER_ENDPOINT_COUNT (16) // used in window covering
