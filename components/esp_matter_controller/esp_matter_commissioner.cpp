@@ -142,7 +142,7 @@ esp_err_t init(uint16_t commissioner_port)
     MutableByteSpan rcacSpan(rcac.Get(), Controller::kMaxCHIPDERCertLength);
 
     Crypto::P256Keypair ephemeralKey;
-    if (ephemeralKey.Initialize() != CHIP_NO_ERROR) {
+    if (ephemeralKey.Initialize(Crypto::ECPKeyTarget::ECDSA) != CHIP_NO_ERROR) {
         return ESP_FAIL;
     }
 

@@ -127,6 +127,8 @@ static void app_driver_button_multipress_complete(void *arg, void *data)
     chip::app::Clusters::Switch::Attributes::CurrentPosition::Set(switch_endpoint_id, newPosition);
     // MultiPress Complete event takes previousPosition and total_number_of_presses_counted as event data
     switch_cluster::event::send_multi_press_complete(switch_endpoint_id, previousPosition, total_number_of_presses_counted);
+    // Reset current_number_of_presses_counted to initial value
+    current_number_of_presses_counted = 1;
     lock::chip_stack_unlock();
 }
 #endif

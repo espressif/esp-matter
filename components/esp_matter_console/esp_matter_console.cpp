@@ -19,7 +19,7 @@
 
 #include <esp_matter_console.h>
 #include <lib/shell/Engine.h>
-#include <src/platform/ESP32/ESP32Utils.h>
+#include <platform/ESP32/ESP32Utils.h>
 
 namespace esp_matter {
 namespace console {

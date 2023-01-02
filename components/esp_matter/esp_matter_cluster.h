@@ -52,7 +52,7 @@ namespace access_control {
 cluster_t *create(endpoint_t *endpoint, uint8_t flags);
 } /* access_control */
 
-namespace basic {
+namespace basic_information {
 typedef struct config {
     uint16_t cluster_revision;
     char node_label[32];
@@ -60,7 +60,7 @@ typedef struct config {
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-} /* basic */
+} /* basic_information */
 
 namespace binding {
 typedef struct config {

@@ -79,7 +79,7 @@ namespace esp_matter {
 namespace endpoint {
 namespace root_node {
 typedef struct config {
-    cluster::basic::config_t basic;
+    cluster::basic_information::config_t basic_information;
     cluster::general_commissioning::config_t general_commissioning;
     cluster::network_commissioning::config_t network_commissioning;
     cluster::general_diagnostics::config_t general_diagnostics;

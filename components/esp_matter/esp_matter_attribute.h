@@ -60,7 +60,7 @@ attribute_t *create_access_control_entries_per_fabric(cluster_t *cluster, uint16
 } /* attribute */
 } /* access_control */
 
-namespace basic {
+namespace basic_information {
 namespace attribute {
 attribute_t *create_data_model_revision(cluster_t *cluster, uint16_t value);
 attribute_t *create_vendor_name(cluster_t *cluster, char *value, uint16_t length);
@@ -87,7 +87,7 @@ attribute_t *create_local_config_diabled(cluster_t *cluster, bool value);
 attribute_t *create_reachable(cluster_t *cluster, bool value);
 attribute_t *create_unique_id(cluster_t *cluster, char *value, uint16_t length);
 } /* attribute */
-} /* basic */
+} /* basic_information */
 
 namespace binding {
 namespace attribute {

@@ -19,8 +19,8 @@
 
 /** Matter max values (used for remapping attributes) */
 #define MATTER_BRIGHTNESS 254
-#define MATTER_HUE 255
-#define MATTER_SATURATION 255
+#define MATTER_HUE 254
+#define MATTER_SATURATION 254
 #define MATTER_TEMPERATURE_FACTOR 1000000
 
 typedef void *app_driver_handle_t;

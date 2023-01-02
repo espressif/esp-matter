@@ -1779,7 +1779,7 @@ EmberAfStatus emberAfExternalAttributeReadCallback(EndpointId endpoint_id, Clust
     if (attribute_size > max_read_length) {
         ESP_LOGE(TAG, "Insufficient space for reading attribute: required: %d, max: %d", attribute_size,
                  max_read_length);
-        return EMBER_ZCL_STATUS_INSUFFICIENT_SPACE;
+        return EMBER_ZCL_STATUS_RESOURCE_EXHAUSTED;
     }
 
     /* Assign value */
