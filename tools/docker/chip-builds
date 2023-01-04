@@ -7,7 +7,7 @@ ENV CHIP_PATH=/opt/espressif/connectedhomeip
 RUN set -x \
     && git init \
     && git remote add origin https://github.com/project-chip/connectedhomeip.git \
-    && git fetch origin --depth 1 V1.0.0.1 \
+    && git fetch origin --depth 1 v1.0.0.2 \
     && git checkout FETCH_HEAD \
     && : # last line
 
