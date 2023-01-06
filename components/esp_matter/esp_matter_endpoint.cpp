@@ -94,7 +94,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -130,7 +131,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -167,7 +169,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -207,7 +210,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -385,7 +389,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
@@ -420,7 +425,8 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    cluster_t *identify_cluster = identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    identify::command::create_trigger_effect(identify_cluster);
     groups::create(endpoint, &(config->groups), CLUSTER_FLAG_SERVER);
     scenes::create(endpoint, &(config->scenes), CLUSTER_FLAG_SERVER);
     on_off::create(endpoint, &(config->on_off), CLUSTER_FLAG_SERVER, on_off::feature::lighting::get_id());
