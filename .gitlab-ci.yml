@@ -71,10 +71,6 @@ variables:
   - ./install.sh
   - . ./export.sh
 
-.activate_matter_build_env: &activate_matter_build_env
-  - cd ${CI_PROJECT_DIR}
-  - source ./connectedhomeip/connectedhomeip/scripts/activate.sh
-
 .build_matter_examples: &build_matter_examples
     - export MATTER_EXAMPLES_PATH=$ESP_MATTER_PATH/connectedhomeip/connectedhomeip/examples
     - cd $MATTER_EXAMPLES_PATH/all-clusters-app/esp32
@@ -122,8 +118,6 @@ variables:
     - cp sdkconfig.defaults.backup sdkconfig.defaults
 
 .build_examples_idf_v5_0: &build_examples_idf_v5_0
-    # Need to install esptool 4.4 and pyparsing 3.0.9 in matter build env for IDF v5.0
-    - python3 -m pip install esptool==4.4 pyparsing==3.0.9
     - cd $ESP_MATTER_PATH/examples/zap_light
     - idf.py --preview set-target esp32h2
     - idf.py build
@@ -149,15 +143,14 @@ variables:
     - *add_gitlab_ssh_key
     - *get_build_caches
     - *chip_submodule_update
-    - *setup_matter
     - *setup_idf
-    - *activate_matter_build_env
+    - *setup_matter
     - cd ${ESP_MATTER_PATH}
     - mkdir -p ${REPOS_PATH}
     # update caches only when setup succeed
     - *update_build_caches
   variables:
-    IDF_VERSION: "v4.4.2"
+    IDF_VERSION: "v4.4.3"
     REPOS_PATH: "$CI_PROJECT_DIR/repos"
     IDF_CCACHE_ENABLE: 1
 

@@ -45,10 +45,10 @@ esp_matter_export_main() {
         fi
         export ESP_MATTER_PATH="${script_dir}"
         echo "Setting ESP_MATTER_PATH to '${ESP_MATTER_PATH}'"
-     fi
+    fi
 
-     # PATH for gn
-     export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/
+    # PATH for gn
+    export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/.environment/cipd/packages/pigweed/
 
     # PATH for host tools
     export PATH=${PATH}:${ESP_MATTER_PATH}/connectedhomeip/connectedhomeip/out/host

@@ -173,10 +173,6 @@ cluster_t *create(endpoint_t *endpoint, uint8_t flags)
 } /* access_control */
 
 namespace basic_information {
-// TODO: Remove this stub function after this PR merged
-// https://github.com/project-chip/connectedhomeip/pull/24162
-void emberAfBasicInformationClusterServerInitCallback(chip::EndpointId endpoint) {}
-
 const function_generic_t function_list[] = {
     (function_generic_t)emberAfBasicInformationClusterServerInitCallback,
 };
