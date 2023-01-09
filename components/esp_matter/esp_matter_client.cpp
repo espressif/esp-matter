@@ -20,17 +20,17 @@
 #include <zap-generated/CHIPClusters.h>
 
 using namespace chip::app::Clusters;
+using chip::BitMask;
 using chip::DeviceProxy;
 using chip::FabricInfo;
 using chip::kInvalidEndpointId;
 using chip::OperationalDeviceProxy;
 using chip::OperationalSessionSetup;
-using chip::SessionHandle;
 using chip::ScopedNodeId;
 using chip::Server;
-using chip::Messaging::ExchangeManager;
+using chip::SessionHandle;
 using chip::Callback::Callback;
-using chip::BitMask;
+using chip::Messaging::ExchangeManager;
 
 static const char *TAG = "esp_matter_client";
 
@@ -50,7 +50,7 @@ esp_err_t set_command_callback(command_callback_t callback, group_command_callba
     return ESP_OK;
 }
 
-void esp_matter_connection_success_callback(void *context, ExchangeManager & exchangeMgr, SessionHandle & sessionHandle)
+void esp_matter_connection_success_callback(void *context, ExchangeManager &exchangeMgr, SessionHandle &sessionHandle)
 {
     command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     if (!cmd_handle) {
@@ -66,7 +66,7 @@ void esp_matter_connection_success_callback(void *context, ExchangeManager & exc
     chip::Platform::Delete(cmd_handle);
 }
 
-void esp_matter_connection_failure_callback(void *context, const ScopedNodeId & peerId, CHIP_ERROR error)
+void esp_matter_connection_failure_callback(void *context, const ScopedNodeId &peerId, CHIP_ERROR error)
 {
     command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     ESP_LOGI(TAG, "New connection failure");
@@ -87,7 +87,7 @@ esp_err_t connect(uint8_t fabric_index, uint64_t node_id, command_handle_t *cmd_
     }
     success_callback.mContext = static_cast<void *>(context);
     failure_callback.mContext = static_cast<void *>(context);
-    Server * server = &(chip::Server::GetInstance());
+    Server *server = &(chip::Server::GetInstance());
     server->GetCASESessionManager()->FindOrEstablishSession(ScopedNodeId(node_id, fabric_index), &success_callback,
                                                             &failure_callback);
     return ESP_OK;
@@ -107,8 +107,8 @@ esp_err_t group_command_send(uint8_t fabric_index, command_handle_t *cmd_handle)
     return ESP_OK;
 }
 
-static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding, OperationalDeviceProxy *peer_device,
-                                                       void *context)
+static void esp_matter_command_client_binding_callback(const EmberBindingTableEntry &binding,
+                                                       OperationalDeviceProxy *peer_device, void *context)
 {
     command_handle_t *cmd_handle = static_cast<command_handle_t *>(context);
     if (!cmd_handle) {
@@ -179,7 +179,7 @@ void binding_init()
 {
     initialize_binding_manager = true;
 }
-} /* client */
+} // namespace client
 
 namespace cluster {
 using client::peer_device_t;
@@ -201,7 +201,8 @@ esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     OnOff::Commands::On::Type command_data;
 
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
+                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
@@ -209,7 +210,7 @@ esp_err_t send_on(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_on(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::On::Type command_data;
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -219,7 +220,8 @@ esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     OnOff::Commands::Off::Type command_data;
 
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
+                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
@@ -227,7 +229,7 @@ esp_err_t send_off(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_off(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::Off::Type command_data;
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -237,7 +239,8 @@ esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 {
     OnOff::Commands::Toggle::Type command_data;
 
-    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::OnOffCluster cluster(*remote_device->GetExchangeManager(),
+                                           remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
@@ -245,14 +248,14 @@ esp_err_t send_toggle(peer_device_t *remote_device, uint16_t remote_endpoint_id)
 esp_err_t group_send_toggle(uint8_t fabric_index, uint16_t group_id)
 {
     OnOff::Commands::Toggle::Type command_data;
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
-} /* command */
-} /* on_off */
+} // namespace command
+} // namespace on_off
 
 namespace level_control {
 namespace command {
@@ -266,13 +269,14 @@ esp_err_t send_move(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
-                    uint8_t option_mask, uint8_t option_override)
+esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate, uint8_t option_mask,
+                          uint8_t option_override)
 {
     LevelControl::Commands::Move::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
@@ -280,7 +284,7 @@ esp_err_t group_send_move(uint8_t fabric_index, uint16_t group_id, uint8_t move_
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -295,13 +299,14 @@ esp_err_t send_move_to_level(peer_device_t *remote_device, uint16_t remote_endpo
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint8_t level,
-                             uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint8_t level, uint16_t transition_time,
+                                   uint8_t option_mask, uint8_t option_override)
 {
     LevelControl::Commands::MoveToLevel::Type command_data;
     command_data.level = level;
@@ -309,7 +314,7 @@ esp_err_t group_send_move_to_level(uint8_t fabric_index, uint16_t group_id, uint
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -322,19 +327,20 @@ esp_err_t send_move_to_level_with_on_off(peer_device_t *remote_device, uint16_t 
     command_data.level = level;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
 esp_err_t group_send_move_to_level_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t level,
-                                         uint16_t transition_time)
+                                               uint16_t transition_time)
 {
     LevelControl::Commands::MoveToLevelWithOnOff::Type command_data;
     command_data.level = level;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -347,19 +353,19 @@ esp_err_t send_move_with_on_off(peer_device_t *remote_device, uint16_t remote_en
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate.SetNonNull(rate);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode,
-                                uint8_t rate)
+esp_err_t group_send_move_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate)
 {
     LevelControl::Commands::MoveWithOnOff::Type command_data;
     command_data.moveMode = (LevelControl::MoveMode)move_mode;
     command_data.rate.SetNonNull(rate);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -375,13 +381,14 @@ esp_err_t send_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
 esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                    uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+                          uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     LevelControl::Commands::Step::Type command_data;
     command_data.stepMode = (LevelControl::StepMode)step_mode;
@@ -390,7 +397,7 @@ esp_err_t group_send_step(uint8_t fabric_index, uint16_t group_id, uint8_t step_
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -404,20 +411,21 @@ esp_err_t send_step_with_on_off(peer_device_t *remote_device, uint16_t remote_en
     command_data.stepSize = step_size;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_step_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
-                                uint8_t step_size, uint16_t transition_time)
+esp_err_t group_send_step_with_on_off(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
+                                      uint16_t transition_time)
 {
     LevelControl::Commands::StepWithOnOff::Type command_data;
     command_data.stepMode = (LevelControl::StepMode)step_mode;
     command_data.stepSize = step_size;
     command_data.transitionTime.SetNonNull(transition_time);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -430,19 +438,19 @@ esp_err_t send_stop(peer_device_t *remote_device, uint16_t remote_endpoint_id, u
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask,
-                    uint8_t option_override)
+esp_err_t group_send_stop(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask, uint8_t option_override)
 {
     LevelControl::Commands::Stop::Type command_data;
     command_data.optionsMask.SetRaw(option_mask);
     command_data.optionsOverride.SetRaw(option_override);
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -452,7 +460,8 @@ esp_err_t send_stop_with_on_off(peer_device_t *remote_device, uint16_t remote_en
 {
     LevelControl::Commands::Stop::Type command_data;
 
-    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::LevelControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
@@ -461,14 +470,14 @@ esp_err_t group_send_stop_with_on_off(uint8_t fabric_index, uint16_t group_id)
 {
     LevelControl::Commands::Stop::Type command_data;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
-} /* command */
-} /* level_control */
+} // namespace command
+} // namespace level_control
 
 namespace color_control {
 namespace command {
@@ -482,13 +491,14 @@ esp_err_t send_move_hue(peer_device_t *remote_device, uint16_t remote_endpoint_i
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate, uint8_t option_mask,
-                        uint8_t option_override)
+esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
+                              uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveHue::Type command_data;
     command_data.moveMode = (ColorControl::HueMoveMode)move_mode;
@@ -496,7 +506,7 @@ esp_err_t group_send_move_hue(uint8_t fabric_index, uint16_t group_id, uint8_t m
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -511,13 +521,14 @@ esp_err_t send_move_saturation(peer_device_t *remote_device, uint16_t remote_end
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode,
-                               uint8_t rate, uint8_t option_mask, uint8_t option_override)
+esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint8_t rate,
+                                     uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveSaturation::Type command_data;
     command_data.moveMode = (ColorControl::SaturationMoveMode)move_mode;
@@ -525,7 +536,7 @@ esp_err_t group_send_move_saturation(uint8_t fabric_index, uint16_t group_id, ui
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -541,13 +552,14 @@ esp_err_t send_move_to_hue(peer_device_t *remote_device, uint16_t remote_endpoin
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_t hue, uint8_t direction, uint16_t transition_time,
-                            uint8_t option_mask, uint8_t option_override)
+esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_t hue, uint8_t direction,
+                                 uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveToHue::Type command_data;
     command_data.hue = hue;
@@ -556,7 +568,7 @@ esp_err_t group_send_move_to_hue(uint8_t fabric_index, uint16_t group_id, uint8_
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -573,14 +585,15 @@ esp_err_t send_move_to_hue_and_saturation(peer_device_t *remote_device, uint16_t
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
 esp_err_t group_send_move_to_hue_and_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t hue,
-                                          uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
-                                          uint8_t option_override)
+                                                uint8_t saturation, uint16_t transition_time, uint8_t option_mask,
+                                                uint8_t option_override)
 {
     ColorControl::Commands::MoveToHueAndSaturation::Type command_data;
     command_data.hue = hue;
@@ -589,7 +602,7 @@ esp_err_t group_send_move_to_hue_and_saturation(uint8_t fabric_index, uint16_t g
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -604,13 +617,14 @@ esp_err_t send_move_to_saturation(peer_device_t *remote_device, uint16_t remote_
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
 esp_err_t group_send_move_to_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t saturation,
-                                  uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+                                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::MoveToSaturation::Type command_data;
     command_data.saturation = saturation;
@@ -618,7 +632,7 @@ esp_err_t group_send_move_to_saturation(uint8_t fabric_index, uint16_t group_id,
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -634,13 +648,14 @@ esp_err_t send_step_hue(peer_device_t *remote_device, uint16_t remote_endpoint_i
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
 esp_err_t group_send_step_hue(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
-                        uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+                              uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::StepHue::Type command_data;
     command_data.stepMode = (ColorControl::HueStepMode)step_mode;
@@ -649,7 +664,7 @@ esp_err_t group_send_step_hue(uint8_t fabric_index, uint16_t group_id, uint8_t s
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
@@ -666,14 +681,14 @@ esp_err_t send_step_saturation(peer_device_t *remote_device, uint16_t remote_end
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(), remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
     cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
     return ESP_OK;
 }
 
-esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
-                               uint8_t step_size, uint16_t transition_time, uint8_t option_mask,
-                               uint8_t option_override)
+esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode, uint8_t step_size,
+                                     uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
 {
     ColorControl::Commands::StepSaturation::Type command_data;
     command_data.stepMode = (ColorControl::SaturationStepMode)step_mode;
@@ -682,14 +697,273 @@ esp_err_t group_send_step_saturation(uint8_t fabric_index, uint16_t group_id, ui
     command_data.optionsMask = option_mask;
     command_data.optionsOverride = option_override;
 
-    chip::Messaging::ExchangeManager & exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
 
     chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
     return ESP_OK;
 }
 
-} /* command */
-} /* color_control */
+esp_err_t send_move_to_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t color_x,
+                             uint16_t color_y, uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveToColor::Type command_data;
+    command_data.colorX = color_x;
+    command_data.colorY = color_y;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
 
-} /* cluster */
-} /* esp_matter */
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_move_to_color(uint8_t fabric_index, uint16_t group_id, uint16_t color_x, uint16_t color_y,
+                                   uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveToColor::Type command_data;
+    command_data.colorX = color_x;
+    command_data.colorY = color_y;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_move_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, int16_t rate_x, int16_t rate_y,
+                          uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveColor::Type command_data;
+    command_data.rateX = rate_x;
+    command_data.rateY = rate_y;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_move_color(uint8_t fabric_index, uint16_t group_id, int16_t rate_x, int16_t rate_y,
+                                uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveColor::Type command_data;
+    command_data.rateX = rate_x;
+    command_data.rateY = rate_y;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_step_color(peer_device_t *remote_device, uint16_t remote_endpoint_id, int16_t step_x, int16_t step_y,
+                          uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::StepColor::Type command_data;
+    command_data.stepX = step_x;
+    command_data.stepY = step_y;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_step_color(uint8_t fabric_index, uint16_t group_id, int16_t step_x, int16_t step_y,
+                                uint16_t transition_time, uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::StepColor::Type command_data;
+    command_data.stepX = step_x;
+    command_data.stepY = step_y;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_move_to_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id,
+                                         uint16_t color_temperature_mireds, uint16_t transition_time,
+                                         uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveToColorTemperature::Type command_data;
+    command_data.colorTemperature = color_temperature_mireds;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_move_to_color_temperature(uint8_t fabric_index, uint16_t group_id,
+                                               uint16_t color_temperature_mireds, uint16_t transition_time,
+                                               uint8_t option_mask, uint8_t option_override)
+{
+    ColorControl::Commands::MoveToColorTemperature::Type command_data;
+    command_data.colorTemperature = color_temperature_mireds;
+    command_data.transitionTime = transition_time;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_stop_move_step(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t option_mask,
+                              uint8_t option_override)
+{
+    ColorControl::Commands::StopMoveStep::Type command_data;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_stop_move_step(uint8_t fabric_index, uint16_t group_id, uint8_t option_mask,
+                                    uint8_t option_override)
+{
+    ColorControl::Commands::StopMoveStep::Type command_data;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_move_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t move_mode,
+                                      uint16_t rate, uint16_t color_temperature_minimum_mireds,
+                                      uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
+                                      uint8_t option_override)
+{
+    ColorControl::Commands::MoveColorTemperature::Type command_data;
+    command_data.moveMode = static_cast<ColorControl::HueMoveMode>(move_mode);
+    command_data.rate = rate;
+    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
+    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_move_color_temperature(uint8_t fabric_index, uint16_t group_id, uint8_t move_mode, uint16_t rate,
+                                            uint16_t color_temperature_minimum_mireds,
+                                            uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
+                                            uint8_t option_override)
+{
+    ColorControl::Commands::MoveColorTemperature::Type command_data;
+    command_data.moveMode = static_cast<ColorControl::HueMoveMode>(move_mode);
+    command_data.rate = rate;
+    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
+    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+esp_err_t send_step_color_temperature(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint8_t step_mode,
+                                      uint16_t step_size, uint16_t transition_time,
+                                      uint16_t color_temperature_minimum_mireds,
+                                      uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
+                                      uint8_t option_override)
+{
+    ColorControl::Commands::StepColorTemperature::Type command_data;
+    command_data.stepMode = static_cast<ColorControl::HueStepMode>(step_mode);
+    command_data.stepSize = step_size;
+    command_data.transitionTime = transition_time;
+    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
+    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Controller::ColorControlCluster cluster(*remote_device->GetExchangeManager(),
+                                                  remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_step_color_temperature(uint8_t fabric_index, uint16_t group_id, uint8_t step_mode,
+                                            uint16_t step_size, uint16_t transition_time,
+                                            uint16_t color_temperature_minimum_mireds,
+                                            uint16_t color_temperature_maximum_mireds, uint8_t option_mask,
+                                            uint8_t option_override)
+{
+    ColorControl::Commands::StepColorTemperature::Type command_data;
+    command_data.stepMode = static_cast<ColorControl::HueStepMode>(step_mode);
+    command_data.stepSize = step_size;
+    command_data.transitionTime = transition_time;
+    command_data.colorTemperatureMinimumMireds = color_temperature_minimum_mireds;
+    command_data.colorTemperatureMaximumMireds = color_temperature_maximum_mireds;
+    command_data.optionsMask = option_mask;
+    command_data.optionsOverride = option_override;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+
+
+} // namespace command
+} // namespace color_control
+
+namespace identify {
+namespace command {
+esp_err_t send_identify(peer_device_t *remote_device, uint16_t remote_endpoint_id, uint16_t identify_time)
+{
+    Identify::Commands::Identify::Type command_data;
+    command_data.identifyTime = identify_time;
+
+    chip::Controller::IdentifyCluster cluster(*remote_device->GetExchangeManager(),
+                                              remote_device->GetSecureSession().Value(), remote_endpoint_id);
+    cluster.InvokeCommand(command_data, NULL, send_command_success_callback, send_command_failure_callback);
+    return ESP_OK;
+}
+
+esp_err_t group_send_identify(uint8_t fabric_index, uint16_t group_id, uint16_t identify_time)
+{
+    Identify::Commands::Identify::Type command_data;
+    command_data.identifyTime = identify_time;
+
+    chip::Messaging::ExchangeManager &exchange_mgr = chip::Server::GetInstance().GetExchangeManager();
+
+    chip::Controller::InvokeGroupCommandRequest(&exchange_mgr, fabric_index, group_id, command_data);
+    return ESP_OK;
+}
+} // namespace command
+} // namespace identify
+
+} // namespace cluster
+} // namespace esp_matter
