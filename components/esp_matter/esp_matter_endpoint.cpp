@@ -775,6 +775,39 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
 }
 } /* light_sensor */
 
+namespace pressure_sensor {
+uint32_t get_device_type_id()
+{
+    return ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_ID;
+}
+
+uint8_t get_device_type_version()
+{
+    return ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_VERSION;
+}
+
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data)
+{
+    endpoint_t *endpoint = endpoint::create(node, flags, priv_data);
+    return add(endpoint, config);
+}
+
+endpoint_t *add(endpoint_t *endpoint, config_t *config)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "Endpoint cannot be NULL");
+        return NULL;
+    }
+    add_device_type(endpoint, get_device_type_id(), get_device_type_version());
+
+    descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
+    identify::create(endpoint, &(config->identify), CLUSTER_FLAG_SERVER);
+    pressure_measurement::create(endpoint, &(config->pressure_measurement), CLUSTER_FLAG_SERVER);
+
+    return endpoint;
+}
+} /* pressure_sensor */
+
 } /* endpoint */
 
 namespace node {
