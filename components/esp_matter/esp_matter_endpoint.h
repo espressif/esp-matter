@@ -55,6 +55,8 @@
 #define ESP_MATTER_OCCUPANCY_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_ID 0x0015
 #define ESP_MATTER_CONTACT_SENSOR_DEVICE_TYPE_VERSION 1
+#define ESP_MATTER_LIGHT_SENSOR_DEVICE_TYPE_ID 0x0106
+#define ESP_MATTER_LIGHT_SENSOR_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
@@ -339,6 +341,18 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* contact_sensor */
+
+namespace light_sensor {
+typedef struct config {
+    cluster::identify::config_t identify;
+    cluster::illuminance_measurement::config_t illuminance_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /* light_sensor */
 
 } /* endpoint */
 
