@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <credentials/examples/DeviceAttestationCredsExample.h>
+#include <credentials/CHIPCert.h>
 #include <crypto/CHIPCryptoPAL.h>
 #include <platform/ESP32/ESP32Config.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
@@ -76,7 +77,9 @@ public:
         if (err == ESP_OK && dac_cert != NULL && dac_len != 0)
         {
             ESP_FAULT_ASSERT(err == ESP_OK && dac_cert != NULL && dac_len != 0);
-            memcpy(outBuffer.data(), dac_cert, dac_len);
+            VerifyOrReturnError(dac_len <= kMaxDERCertLength, CHIP_ERROR_UNSUPPORTED_CERT_FORMAT, esp_secure_cert_free_ca_cert(dac_cert));
+            VerifyOrReturnError(dac_len <= outBuffer.size(), CHIP_ERROR_BUFFER_TOO_SMALL, esp_secure_cert_free_ca_cert(dac_cert));
+            memcpy(outBuffer.data(), dac_cert, outBuffer.size());
             outBuffer.reduce_size(dac_len);
             esp_secure_cert_free_device_cert(dac_cert);
             return CHIP_NO_ERROR;
@@ -95,7 +98,9 @@ public:
         if (err == ESP_OK && pai_cert != NULL && pai_len != 0)
         {
             ESP_FAULT_ASSERT(err == ESP_OK && pai_cert != NULL && pai_len != 0);
-            memcpy(outBuffer.data(), pai_cert, pai_len);
+            VerifyOrReturnError(pai_len <= kMaxDERCertLength, CHIP_ERROR_UNSUPPORTED_CERT_FORMAT, esp_secure_cert_free_ca_cert(pai_cert));
+            VerifyOrReturnError(pai_len <= outBuffer.size(), CHIP_ERROR_BUFFER_TOO_SMALL, esp_secure_cert_free_ca_cert(pai_cert));
+            memcpy(outBuffer.data(), pai_cert, outBuffer.size());
             outBuffer.reduce_size(pai_len);
             esp_secure_cert_free_ca_cert(pai_cert);
             return CHIP_NO_ERROR;
@@ -123,18 +128,10 @@ public:
 
             CHIP_ERROR chipError = LoadKeypairFromRaw(ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPrivKeyOffset), kDACPrivateKeySize),
                                                     ByteSpan(reinterpret_cast<const uint8_t *>(sc_keypair + kPubKeyOffset), kDACPublicKeySize), keypair);
-            if (chipError != CHIP_NO_ERROR)
-            {
-                esp_secure_cert_free_priv_key(sc_keypair);
-                return chipError;
-            }
+            VerifyOrReturnError(chipError == CHIP_NO_ERROR, chipError, esp_secure_cert_free_priv_key(sc_keypair));
 
             chipError = keypair.ECDSA_sign_msg(messageToSign.data(), messageToSign.size(), signature);
-            if (chipError != CHIP_NO_ERROR)
-            {
-                esp_secure_cert_free_priv_key(sc_keypair);
-                return chipError;
-            }
+            VerifyOrReturnError(chipError == CHIP_NO_ERROR, chipError, esp_secure_cert_free_priv_key(sc_keypair));
 
             esp_secure_cert_free_priv_key(sc_keypair);
             chipError = CopySpanToMutableSpan(ByteSpan{ signature.ConstBytes(), signature.Length() }, outSignBuffer);
