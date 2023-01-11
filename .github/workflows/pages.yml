@@ -39,7 +39,7 @@ concurrency:
 jobs:
   Build:
     # Disable the job in forks
-    if: ${{ github.repository_owner == 'espressif' }}
+    if: ${{ github.repository_owner == 'espressif' && github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
     container:
@@ -48,8 +48,6 @@ jobs:
       matrix:
         build-dir: ['examples/light', 'examples/light_switch']
         targets: ['esp32', 'esp32c3']
-
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - run: mkdir -p images
