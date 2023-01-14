@@ -1,0 +1,5 @@
+# matter idl
+lark==1.1.2
+stringcase==1.2.0
+# jinja2 is removed in IDF v5.0 environment, but it is required for matter building
+jinja2==3.0.1

@@ -22,9 +22,19 @@ echo "Host tools built at: ${MATTER_PATH}/out/host"
 echo ""
 
 echo ""
+echo "Exit Matter environment"
+echo ""
+deactivate
+
+echo ""
 echo "Installing python dependencies for mfg_tool"
 echo ""
 python3 -m pip install -r ${ESP_MATTER_PATH}/tools/mfg_tool/requirements.txt
+
+echo ""
+echo "Installing python dependencies for Matter"
+echo ""
+python3 -m pip install -r ${ESP_MATTER_PATH}/requirements.txt
 
 echo "All done! You can now run:"
 echo ""

@@ -5,7 +5,7 @@ endif()
 
 SET(device_type     esp32h2_devkit_c)
 SET(led_type        ws2812)
-SET(button_type     hollow_button)
+SET(button_type     iot)
 
 SET(extra_components_dirs_append "$ENV{ESP_MATTER_DEVICE_PATH}/../../led_driver"
-                                 "$ENV{ESP_MATTER_DEVICE_PATH}/../../button_driver/button")
+                                 "$ENV{ESP_MATTER_DEVICE_PATH}/../../button_driver/iot_button")

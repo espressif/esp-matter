@@ -128,5 +128,14 @@ esp_err_t add_commands(const command_t *command_set, unsigned count);
  */
 esp_err_t diagnostics_register_commands();
 
+/** Add Wi-Fi Commands
+ *
+ * Adds the default Wi-Fi commands.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t wifi_register_commands();
+
 } // namespace console
 } // namespace esp_matter

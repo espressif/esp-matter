@@ -16,19 +16,17 @@ name: Docker Image CI
 
 on:
   push:
-    # Runs when chip-builds file changes
     branches: [ "main" ]
-    paths:
-      - "tools/docker/chip-builds"
 
   # Can be run manually
   workflow_dispatch:
 
 env:
   # Platforms to build the image for
-  BUILD_PLATFORMS: linux/amd64,linux/arm64
+  # Github runner is running out of space when we are building for multiple architectures in single runner
+  BUILD_PLATFORMS: linux/amd64
   DOCKERHUB_REPO: ${{ github.repository }}
-  TAG_NAME: chip
+  TAG_NAME: latest
 
 jobs:
   build:
@@ -55,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: tools/docker
-          file: tools/docker/chip-builds
+          file: tools/docker/matter-builds
           push: true
           tags: ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_NAME }}
           platforms: ${{ env.BUILD_PLATFORMS }}
