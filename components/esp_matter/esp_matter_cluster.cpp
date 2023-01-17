@@ -1723,5 +1723,43 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* pressure_measurement */
 
+namespace flow_measurement {
+const function_generic_t *function_list = NULL;
+const int function_flags = CLUSTER_FLAG_NONE;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, FlowMeasurement::Id, flags);
+    if (!cluster) {
+	ESP_LOGE(TAG, "Could not create cluster");
+	return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+	set_plugin_server_init_callback(cluster, MatterFlowMeasurementPluginServerInitCallback);
+	add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+	set_plugin_client_init_callback(cluster, MatterFlowMeasurementPluginClientInitCallback);
+	create_default_binding_cluster(endpoint);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+	/* Attributes managed internally */
+	global::attribute::create_feature_map(cluster, 0);
+	/** Attributes not managed internally **/
+	if (config) {
+	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+	    attribute::create_flow_measured_value(cluster, config->flow_measured_value);
+	    attribute::create_flow_min_measured_value(cluster, config->flow_min_measured_value);
+	    attribute::create_flow_max_measured_value(cluster, config->flow_max_measured_value);
+	} else {
+	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+	}
+    }
+
+    return cluster;
+}
+} /* flow_measurement */
+
 } /* cluster */
 } /* esp_matter */
