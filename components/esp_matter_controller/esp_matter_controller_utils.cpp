@@ -44,3 +44,31 @@ int oct_str_to_byte_arr(char *oct_str, uint8_t *byte_array)
     }
     return byte_array_len;
 }
+
+uint64_t string_to_uint64(char *str)
+{
+    if (strlen(str) > 2 && str[0] == '0' && str[1] == 'x') {
+        return strtoull(&str[2], NULL, 16);
+    } else {
+        return strtoull(str, NULL, 10);
+    }
+}
+
+uint32_t string_to_uint32(char *str)
+{
+    if (strlen(str) > 2 && str[0] == '0' && str[1] == 'x') {
+        return strtoul(&str[2], NULL, 16);
+    } else {
+        return strtoul(str, NULL, 10);
+    }
+}
+
+uint16_t string_to_uint16(char *str)
+{
+    return (uint16_t)string_to_uint32(str);
+}
+
+uint8_t string_to_uint8(char *str)
+{
+    return (uint8_t)string_to_uint32(str);
+}
