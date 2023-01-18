@@ -33,6 +33,7 @@
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
+#include <credentials/FabricTable.h>
 #include <platform/CHIPDeviceLayer.h>
 #include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
@@ -82,6 +83,16 @@ chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 chip::DeviceLayer::ESP32DeviceInfoProvider device_info_provider;
 #endif
 
+void PostEvent(uint16_t eventType)
+{
+    chip::DeviceLayer::ChipDeviceEvent event;
+    event.Type = eventType;
+    CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
+    if (error != CHIP_NO_ERROR)
+    {
+        ESP_LOGE(TAG, "Failed to post event for event type:%u, err:%" CHIP_ERROR_FORMAT, eventType, error.Format());
+    }
+}
 
 class AppDelegateImpl : public AppDelegate
 {
@@ -105,21 +116,35 @@ public:
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed);
     }
+};
 
-private:
-    void PostEvent(uint16_t eventType)
+class FabricDelegateImpl : public chip::FabricTable::Delegate
+{
+public:
+    void FabricWillBeRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
     {
-        chip::DeviceLayer::ChipDeviceEvent event;
-        event.Type = eventType;
-        CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
-        if (error != CHIP_NO_ERROR)
-        {
-            ESP_LOGE(TAG, "Failed to post event from AppDelegate, err:%" CHIP_ERROR_FORMAT, error.Format());
-        }
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved);
+    }
+
+    void OnFabricRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricRemoved);
+    }
+
+    void OnFabricCommitted(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricCommitted);
+    }
+
+    void OnFabricUpdated(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricUpdated);
     }
 };
 
 AppDelegateImpl s_app_delegate;
+
+FabricDelegateImpl s_fabric_delegate;
 
 }  // namespace
 
@@ -769,6 +794,11 @@ static void esp_matter_chip_init_task(intptr_t context)
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+    CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
+    if (ret != CHIP_NO_ERROR)
+    {
+        ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
+    }
     chip::Server::GetInstance().Init(initParams);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD

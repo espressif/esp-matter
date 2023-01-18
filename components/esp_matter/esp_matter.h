@@ -120,8 +120,18 @@ enum
     kCommissioningSessionStopped,
     /** Signals that Commissioning window is now opend */
     kCommissioningWindowOpened,
-    /** Signals that Commissioning window is now closed  */
+    /** Signals that Commissioning window is now closed */
     kCommissioningWindowClosed,
+    /** Signals that a fabric is about to be deleted. This allows actions to be taken that need the
+    fabric to still be around before we delete it */
+    kFabricWillBeRemoved,
+    /** Signals that a fabric is deleted */
+    kFabricRemoved,
+    /** Signals that a fabric in Fabric Table is persisted to storage, by CommitPendingFabricData */
+    kFabricCommitted,
+    /** Signals that operational credentials are changed, which may not be persistent.
+    Can be used to affect what is needed for UpdateNOC prior to commit */
+    kFabricUpdated,
 };
 
 } // DeviceEventType
