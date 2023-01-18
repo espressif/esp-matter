@@ -91,14 +91,9 @@ Switch specific console commands:
         matter esp client invoke 0x1 0x5164 0x1 0x6 0x2
         ```
 
-    -   Example: Move To Level 0x50:
+    -   Example: Identify 0x78:
         ```
-        matter esp client invoke 0x1 0x5164 0x1 0x8 0x0 0x50 0x0 0x0 0x0
-        ```
-
-    -   Example: Move To Hue 0x50:
-        ```
-        matter esp client invoke 0x1 0x5164 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        matter esp client invoke 0x1 0x5164 0x1 0x3 0x78
         ```
 
 -   Send command to the specified group on the specified cluster:
@@ -122,14 +117,10 @@ Switch specific console commands:
         matter esp client invoke-group 0x1 0x101 0x6 0x2
 
         ```
-    -   Example: Move To Level 0x50:
+    -   Example: Identify 0x78:
         ```
-        matter esp client invoke-group 0x1 0x101 0x8 0x0 0x50 0x0 0x0 0x0
+        matter esp client invoke-group 0x1 0x101 0x3 0x78
 
-        ```
-    -   Example: Move To Hue 0x50:
-        ```
-        matter esp client invoke-group 0x1 0x101 0x300 0x0 0x50 0x0 0x0 0x0 0x0
         ```
 
 -   Send command to all the bound devices on the specified cluster:
@@ -153,14 +144,9 @@ Switch specific console commands:
         matter esp bound invoke 0x1 0x6 0x2
         ```
 
-    -   Example: Move To Level 0x50:
+    -   Example: Identify 0x78:
         ```
-        matter esp bound invoke 0x1 0x8 0x0 0x50 0x0 0x0 0x0
-        ```
-
-    -   Example: Move To Hue 0x50:
-        ```
-        matter esp bound invoke 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        matter esp bound invoke 0x1 0x3 0x78
         ```
 
 -   Send command to all the bound groups on the specified cluster:
@@ -184,14 +170,9 @@ Switch specific console commands:
         matter esp bound invoke-group 0x1 0x6 0x2
         ```
 
-    -   Example: Move To Level 0x50:
+    -   Example: Identify 0x78:
         ```
-        matter esp bound invoke-group 0x1 0x8 0x0 0x50 0x0 0x0 0x0
-        ```
-
-    -   Example: Move To Hue 0x50:
-        ```
-        matter esp bound invoke-group 0x1 0x300 0x0 0x50 0x0 0x0 0x0 0x0
+        matter esp bound invoke-group 0x1 0x3 0x78
         ```
 
 ## 3. Device Performance

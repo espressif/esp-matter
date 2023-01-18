@@ -15,8 +15,8 @@
 #include <esp_matter_console.h>
 #include <led_driver.h>
 
-#include <app_reset.h>
 #include <app_priv.h>
+#include <app_reset.h>
 
 using chip::kInvalidClusterId;
 static constexpr chip::CommandId kInvalidCommandId = 0xFFFF'FFFF;
@@ -36,9 +36,9 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
         printf("Bound commands:\n"
                "\thelp: Print help\n"
                "\tinvoke: <local_endpoint_id> <cluster_id> <command_id> parameters ... \n"
-               "\t\tExample: matter esp bound invoke 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n"
+               "\t\tExample: matter esp bound invoke 0x0001 0x0003 0x0000 0x78.\n"
                "\tinvoke-group: <local_endpoint_id> <cluster_id> <command_id> parameters ...\n"
-               "\t\tExample: matter esp bound invoke-group 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
+               "\t\tExample: matter esp bound invoke-group 0x0001 0x0003 0x0000 0x78.\n");
     } else if (argc >= 4 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         client::command_handle_t cmd_handle;
         uint16_t local_endpoint_id = strtol((const char *)&argv[1][2], NULL, 16);
@@ -47,16 +47,17 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
         cmd_handle.is_group = false;
 
         if (argc > 4) {
-           console_buffer[0] = argc - 4;
-           for (int i = 0; i < (argc - 4); i++) {
-                if ((argv[4+i][0] != '0') || (argv[4+i][1] != 'x') || (strlen((const char*)&argv[4+i][2]) > 10)) {
+            console_buffer[0] = argc - 4;
+            for (int i = 0; i < (argc - 4); i++) {
+                if ((argv[4 + i][0] != '0') || (argv[4 + i][1] != 'x') ||
+                    (strlen((const char *)&argv[4 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
-                strcpy((console_buffer + 1 + 10*i), &argv[4+i][2]);
-           }
+                strcpy((console_buffer + 1 + 10 * i), &argv[4 + i][2]);
+            }
 
-           cmd_handle.command_data = console_buffer;
+            cmd_handle.command_data = console_buffer;
         }
 
         client::cluster_update(local_endpoint_id, &cmd_handle);
@@ -68,26 +69,24 @@ static esp_err_t app_driver_bound_console_handler(int argc, char **argv)
         cmd_handle.is_group = true;
 
         if (argc > 4) {
-           console_buffer[0] = argc - 4;
-           for (int i = 0; i < (argc - 4); i++) {
-                if ((argv[4+i][0] != '0') || (argv[4+i][1] != 'x') || (strlen((const char*)&argv[4+i][2]) > 10)) {
+            console_buffer[0] = argc - 4;
+            for (int i = 0; i < (argc - 4); i++) {
+                if ((argv[4 + i][0] != '0') || (argv[4 + i][1] != 'x') ||
+                    (strlen((const char *)&argv[4 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
-                strcpy((console_buffer + 1 + 10*i), &argv[4+i][2]);
-           }
+                strcpy((console_buffer + 1 + 10 * i), &argv[4 + i][2]);
+            }
 
-           cmd_handle.command_data = console_buffer;
+            cmd_handle.command_data = console_buffer;
         }
 
         client::cluster_update(local_endpoint_id, &cmd_handle);
-    }
-    else {
+    } else {
         ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
     }
-
-    console_buffer[0] = 0;
 
     return ESP_OK;
 }
@@ -97,10 +96,11 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
     if (argc == 1 && strncmp(argv[0], "help", sizeof("help")) == 0) {
         printf("Client commands:\n"
                "\thelp: Print help\n"
-               "\tinvoke: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id>  parameters ... \n"
-               "\t\tExample: matter esp client invoke 0x0001 0xBC5C01 0x0001 0x0008 0x0000 0x50 0x0 0x1 0x1.\n"
+               "\tinvoke: <fabric_index> <remote_node_id> <remote_endpoint_id> <cluster_id> <command_id> parameters "
+               "... \n"
+               "\t\tExample: matter esp client invoke 0x0001 0xBC5C01 0x0001 0x0003 0x0000 0x78.\n"
                "\tinvoke-group: <fabric_index> <group_id> <cluster_id> <command_id> parameters ... \n"
-               "\t\tExample: matter esp client invoke-group 0x0001 0x257 0x0008 0x0000 0x50 0x0 0x1 0x1.\n");
+               "\t\tExample: matter esp client invoke-group 0x0001 0x257 0x0003 0x0000 0x78.\n");
     } else if (argc >= 6 && strncmp(argv[0], "invoke", sizeof("invoke")) == 0) {
         client::command_handle_t cmd_handle;
         uint8_t fabric_index = strtol((const char *)&argv[1][2], NULL, 16);
@@ -111,16 +111,17 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         cmd_handle.is_group = false;
 
         if (argc > 6) {
-           console_buffer[0] = argc - 6;
-           for (int i = 0; i < (argc - 6); i++) {
-                if ((argv[6+i][0] != '0') || (argv[6+i][1] != 'x') || (strlen((const char*)&argv[6+i][2]) > 10)) {
+            console_buffer[0] = argc - 6;
+            for (int i = 0; i < (argc - 6); i++) {
+                if ((argv[6 + i][0] != '0') || (argv[6 + i][1] != 'x') ||
+                    (strlen((const char *)&argv[6 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
-                strcpy((console_buffer + 1 + 10*i), &argv[6+i][2]);
-           }
+                strcpy((console_buffer + 1 + 10 * i), &argv[6 + i][2]);
+            }
 
-           cmd_handle.command_data = console_buffer;
+            cmd_handle.command_data = console_buffer;
         }
 
         client::connect(fabric_index, node_id, &cmd_handle);
@@ -133,25 +134,24 @@ static esp_err_t app_driver_client_console_handler(int argc, char **argv)
         cmd_handle.is_group = true;
 
         if (argc > 5) {
-           console_buffer[0] = argc - 5;
-           for (int i = 0; i < (argc - 5); i++) {
-                if ((argv[5+i][0] != '0') || (argv[5+i][1] != 'x') || (strlen((const char*)&argv[5+i][2]) > 10)) {
+            console_buffer[0] = argc - 5;
+            for (int i = 0; i < (argc - 5); i++) {
+                if ((argv[5 + i][0] != '0') || (argv[5 + i][1] != 'x') ||
+                    (strlen((const char *)&argv[5 + i][2]) > 10)) {
                     ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
                     return ESP_ERR_INVALID_ARG;
                 }
-                strcpy((console_buffer + 1 + 10*i), &argv[5+i][2]);
-           }
+                strcpy((console_buffer + 1 + 10 * i), &argv[5 + i][2]);
+            }
 
-           cmd_handle.command_data = console_buffer;
+            cmd_handle.command_data = console_buffer;
         }
 
         client::group_command_send(fabric_index, &cmd_handle);
-    }else {
+    } else {
         ESP_LOGE(TAG, "Incorrect arguments. Check help for more details.");
         return ESP_ERR_INVALID_ARG;
     }
-
-    console_buffer[0] = 0;
 
     return ESP_OK;
 }
@@ -181,385 +181,76 @@ static void app_driver_register_commands()
 #endif // CONFIG_ENABLE_CHIP_SHELL
 
 void app_driver_client_command_callback(client::peer_device_t *peer_device, client::command_handle_t *cmd_handle,
-                                         void *priv_data)
+                                        void *priv_data)
 {
+    // on_off light switch should support on_off cluster and identify cluster commands sending.
     if (cmd_handle->cluster_id == OnOff::Id) {
-        switch(cmd_handle->command_id) {
-            case OnOff::Commands::Off::Id:
-            {
-                on_off::command::send_off(peer_device, cmd_handle->endpoint_id);
-                break;
-            };
-            case OnOff::Commands::On::Id:
-            {
-                on_off::command::send_on(peer_device, cmd_handle->endpoint_id);
-                break;
-            };
-            case OnOff::Commands::Toggle::Id:
-            {
-                on_off::command::send_toggle(peer_device, cmd_handle->endpoint_id);
-                break;
-            };
-            default:
-                break;
+        switch (cmd_handle->command_id) {
+        case OnOff::Commands::Off::Id: {
+            on_off::command::send_off(peer_device, cmd_handle->endpoint_id);
+            break;
+        };
+        case OnOff::Commands::On::Id: {
+            on_off::command::send_on(peer_device, cmd_handle->endpoint_id);
+            break;
+        };
+        case OnOff::Commands::Toggle::Id: {
+            on_off::command::send_toggle(peer_device, cmd_handle->endpoint_id);
+            break;
+        };
+        default:
+            break;
         }
-    } else if (cmd_handle->cluster_id == LevelControl::Id) {
-        switch(cmd_handle->command_id) {
-            case LevelControl::Commands::Move::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_move(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveToLevel::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_move_to_level(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::Step::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_step(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::Stop::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_stop(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_move_with_on_off(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveToLevelWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_move_to_level_with_on_off(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::StepWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 3) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::send_step_with_on_off(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::StopWithOnOff::Id:
-            {
-                level_control::command::send_stop_with_on_off(peer_device, cmd_handle->endpoint_id);
-                break;
-            };
-            default:
-                break;
+    } else if (cmd_handle->cluster_id == Identify::Id) {
+        if (cmd_handle->command_id == Identify::Commands::Identify::Id) {
+            if (((char *)cmd_handle->command_data)[0] != 1) {
+                ESP_LOGE(TAG, "Number of parameters error");
+                return;
+            }
+            identify::command::send_identify(peer_device, cmd_handle->endpoint_id,
+                                             strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16));
+        } else {
+            ESP_LOGE(TAG, "Unsupported command");
         }
-    } else if (cmd_handle->cluster_id == ColorControl::Id) {
-        switch(cmd_handle->command_id) {
-            case ColorControl::Commands::MoveHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_move_hue(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_move_to_hue(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::StepHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_step_hue(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_move_saturation(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_move_to_saturation(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::StepSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_step_saturation(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToHueAndSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::send_move_to_hue_and_saturation(peer_device, cmd_handle->endpoint_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            default:
-                ESP_LOGE(TAG, "Unsupported command");
-                break;
-        }
+    } else {
+        ESP_LOGE(TAG, "Unsupported cluster");
     }
 }
 
-void app_driver_client_group_command_callback(uint8_t fabric_index, client::command_handle_t *cmd_handle, void *priv_data)
+void app_driver_client_group_command_callback(uint8_t fabric_index, client::command_handle_t *cmd_handle,
+                                              void *priv_data)
 {
+    // on_off light switch should support on_off cluster and identify cluster commands sending.
     if (cmd_handle->cluster_id == OnOff::Id) {
-        switch(cmd_handle->command_id) {
-            case OnOff::Commands::Off::Id:
-            {
-                on_off::command::group_send_off(fabric_index, cmd_handle->group_id);
-                break;
-            };
-            case OnOff::Commands::On::Id:
-            {
-                on_off::command::group_send_on(fabric_index, cmd_handle->group_id);
-                break;
-            };
-            case OnOff::Commands::Toggle::Id:
-            {
-                on_off::command::group_send_toggle(fabric_index, cmd_handle->group_id);
-                break;
-            };
-            default:
-                break;
+        switch (cmd_handle->command_id) {
+        case OnOff::Commands::Off::Id: {
+            on_off::command::group_send_off(fabric_index, cmd_handle->group_id);
+            break;
         }
-    } else if (cmd_handle->cluster_id == LevelControl::Id) {
-        switch(cmd_handle->command_id) {
-            case LevelControl::Commands::Move::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_move(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveToLevel::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_move_to_level(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::Step::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_step(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::Stop::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_stop(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_move_with_on_off(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::MoveToLevelWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 2) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_move_to_level_with_on_off(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::StepWithOnOff::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 3) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                level_control::command::group_send_step_with_on_off(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16));
-                break;
-            };
-            case LevelControl::Commands::StopWithOnOff::Id:
-            {
-                level_control::command::group_send_stop_with_on_off(fabric_index, cmd_handle->group_id);
-                break;
-            };
-            default:
-                break;
+        case OnOff::Commands::On::Id: {
+            on_off::command::group_send_on(fabric_index, cmd_handle->group_id);
+            break;
         }
-    } else if (cmd_handle->cluster_id == ColorControl::Id) {
-        switch(cmd_handle->command_id) {
-            case ColorControl::Commands::MoveHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_move_hue(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_move_to_hue(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::StepHue::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_step_hue(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_move_saturation(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 4) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_move_to_saturation(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::StepSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_step_saturation(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            case ColorControl::Commands::MoveToHueAndSaturation::Id:
-            {
-                if (((char*)cmd_handle->command_data)[0] != 5) {
-                    ESP_LOGE(TAG, "Number of parameters error");
-                    return;
-                }
-                color_control::command::group_send_move_to_hue_and_saturation(fabric_index, cmd_handle->group_id, strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 11, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 21, NULL, 16),
-                        strtol((const char *)(cmd_handle->command_data) + 31, NULL, 16), strtol((const char *)(cmd_handle->command_data) + 41, NULL, 16));
-                break;
-            };
-            default:
-                ESP_LOGE(TAG, "Unsupported command");
-                break;
+        case OnOff::Commands::Toggle::Id: {
+            on_off::command::group_send_toggle(fabric_index, cmd_handle->group_id);
+            break;
         }
+        default:
+            break;
+        }
+    } else if (cmd_handle->cluster_id == Identify::Id) {
+        if (cmd_handle->command_id == Identify::Commands::Identify::Id) {
+            if (((char *)cmd_handle->command_data)[0] != 1) {
+                ESP_LOGE(TAG, "Number of parameters error");
+                return;
+            }
+            identify::command::group_send_identify(fabric_index, cmd_handle->group_id,
+                                                   strtol((const char *)(cmd_handle->command_data) + 1, NULL, 16));
+        } else {
+            ESP_LOGE(TAG, "Unsupported command");
+        }
+    } else {
+        ESP_LOGE(TAG, "Unsupported cluster");
     }
 }
 
