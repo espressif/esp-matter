@@ -328,4 +328,9 @@ def get_chip_manualcode(chip_tool, vid, pid, flow, discriminator, passcode):
     #   For standard commissioning flow it is 11 digits
     #   For User-intent and custom commissioning flow it is 21 digits
     manual_code_len = LONG_MANUALCODE_LEN if flow else SHORT_MANUALCODE_LEN
-    return data.decode('utf-8').split('Manual Code: ')[1][:manual_code_len]
+    ret = data.decode('utf-8').split('Manual Code: ')[1][:manual_code_len]
+    # For 11-digits manual code, use the format 'XXXX-XXX-XXXX'
+    # TODO: change the format of 21-digits maunal code
+    if manual_code_len == SHORT_MANUALCODE_LEN:
+        ret = ret[:4] + '-' + ret[4:7] + '-' + ret[7:]
+    return ret

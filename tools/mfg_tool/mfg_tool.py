@@ -31,6 +31,7 @@ import pyqrcode
 
 from chip_nvs import *
 from utils import *
+from datetime import datetime
 
 if not os.getenv('IDF_PATH'):
     logging.error("IDF_PATH environment variable is not set")
@@ -344,7 +345,7 @@ def write_per_device_unique_data(args):
                 chip_factory_update('dac-pub-key', os.path.abspath(dacs[2]))
                 chip_factory_update('pai-cert', os.path.abspath(PAI['cert_der']))
 
-            chip_factory_update('cert-dclrn', os.path.abspath(args.cert_dclrn))
+            chip_factory_update('cert-dclrn', os.path.relpath(args.cert_dclrn))
 
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
@@ -392,6 +393,27 @@ def organize_output_files(suffix, args):
     if args.encrypt:
         os.rmdir(os.sep.join([OUT_DIR['top'], 'keys']))
 
+def generate_summary(args):
+    master_csv = os.sep.join([OUT_DIR['stage'], 'master.csv'])
+    summary_csv = os.sep.join([OUT_DIR['top'], 'summary-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))])
+
+    summary_csv_data = ''
+    with open(master_csv, 'r') as mcsvf:
+        summary_lines = mcsvf.read().splitlines()
+        summary_csv_data += summary_lines[0] + ',pincode,qrcode,manualcode\n'
+        with open(OUT_FILE['pin_disc_csv'], 'r') as pdcsvf:
+            pin_disc_dict = csv.DictReader(pdcsvf)
+            for row in pin_disc_dict:
+                pincode = row['PIN Code']
+                discriminator = row['Discriminator']
+                qrcode = get_chip_qrcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
+                                         args.commissioning_flow, discriminator, pincode, args.discovery_mode)
+                manualcode = get_chip_manualcode(TOOLS['chip-tool'], args.vendor_id, args.product_id,
+                                                 args.commissioning_flow, discriminator, pincode)
+                summary_csv_data += summary_lines[1 + int(row['Index'])] + ',' + pincode + ',' + qrcode + ',' + manualcode + '\n'
+
+    with open(summary_csv, 'w') as scsvf:
+        scsvf.write(summary_csv_data)
 
 def generate_partitions(suffix, size, encrypt):
     cmd = [
@@ -591,6 +613,7 @@ def main():
     write_per_device_unique_data(args)
     generate_partitions('matter_partition', args.size, args.encrypt)
     organize_output_files('matter_partition', args)
+    generate_summary(args)
 
 
 if __name__ == "__main__":
