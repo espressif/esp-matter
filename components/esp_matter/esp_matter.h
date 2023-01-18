@@ -122,6 +122,10 @@ enum
     kCommissioningWindowOpened,
     /** Signals that Commissioning window is now closed  */
     kCommissioningWindowClosed,
+    kFabricWillBeRemoved,
+    kFabricRemoved,
+    kFabricCommitted,
+    kFabricUpdated,
 };
 
 } // DeviceEventType

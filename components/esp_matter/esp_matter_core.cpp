@@ -41,6 +41,8 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 #include <esp_matter_dac_provider.h>
+#include <credentials/FabricTable.h>
+#include <app/server/CommissioningWindowManager.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -63,7 +65,6 @@ using chip::DeviceLayer::ThreadStackMgr;
 #define ESP_MATTER_NVS_PART_NAME CONFIG_ESP_MATTER_NVS_PART_NAME
 #define ESP_MATTER_MAX_DEVICE_TYPE_COUNT CONFIG_ESP_MATTER_MAX_DEVICE_TYPE_COUNT
 #define ESP_MATTER_NVS_NODE_NAMESPACE "node"
-
 static const char *TAG = "esp_matter_core";
 static bool esp_matter_started = false;
 
@@ -73,6 +74,18 @@ namespace {
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+constexpr auto k_timeout_seconds = 300;
+void PostEvent(uint16_t eventType)
+{
+    chip::DeviceLayer::ChipDeviceEvent event;
+    event.Type = eventType;
+    CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
+    if (error != CHIP_NO_ERROR)
+    {
+        ESP_LOGI(TAG, "For event Type", eventType);
+        ESP_LOGE(TAG, "Failed to post event, err:%" CHIP_ERROR_FORMAT, error.Format());
+    }
+}
 
 class AppDelegateImpl : public AppDelegate
 {
@@ -96,21 +109,45 @@ public:
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed);
     }
+};
 
-private:
-    void PostEvent(uint16_t eventType)
+class FabricDelegateImpl : public chip::FabricTable::Delegate
+{
+public:
+    void FabricWillBeRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
     {
-        chip::DeviceLayer::ChipDeviceEvent event;
-        event.Type = eventType;
-        CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
-        if (error != CHIP_NO_ERROR)
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved);
+    }
+
+    void OnFabricRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
+    {
+        if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0)
         {
-            ESP_LOGE(TAG, "Failed to post event from AppDelegate, err:%" CHIP_ERROR_FORMAT, error.Format());
+            chip::CommissioningWindowManager & commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
+            constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
+            CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds);
+            if (err != CHIP_NO_ERROR)
+            {
+                ESP_LOGE(TAG, "Failed to open Commissioning Window, err:%" CHIP_ERROR_FORMAT, err.Format());
+            }
         }
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricRemoved);
+    }
+
+    void OnFabricCommitted(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricCommitted);
+    }
+
+    void OnFabricUpdated(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricUpdated);
     }
 };
 
 AppDelegateImpl s_app_delegate;
+
+FabricDelegateImpl s_fabric_delegate;
 
 }  // namespace
 
@@ -760,8 +797,8 @@ static void esp_matter_chip_init_task(intptr_t context)
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+    CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
     chip::Server::GetInstance().Init(initParams);
-
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     // If Thread is Provisioned, publish the dns service
     if (chip::DeviceLayer::ConnectivityMgr().IsThreadProvisioned() &&
