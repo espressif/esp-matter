@@ -18,7 +18,6 @@
 #include <app/clusters/switch-server/switch-server.h>
 #include <platform/DeviceControlServer.h>
 
-static const char *TAG = "esp_matter_event";
 
 using chip::DeviceLayer::DeviceControlServer;
 using chip::EndpointId;
