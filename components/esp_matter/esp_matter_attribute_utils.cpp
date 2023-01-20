@@ -1273,7 +1273,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u64)) {
                 Traits::SetNull(*(uint64_t *)value);
             } else {
-                Traits::WorkingToStorage(val->val.i8, *(uint64_t *)value);
+                Traits::WorkingToStorage(val->val.u64, *(uint64_t *)value);
             }
         }
         break;
@@ -1345,7 +1345,7 @@ esp_err_t get_data_from_attr_val(esp_matter_attr_val_t *val, EmberAfAttributeTyp
             if ((val->type & ESP_MATTER_VAL_NULLANLE_BASE) && Traits::IsNullValue(val->val.u32)) {
                 Traits::SetNull(*(uint32_t *)value);
             } else {
-                Traits::WorkingToStorage(val->val.i8, *(uint32_t *)value);
+                Traits::WorkingToStorage(val->val.u32, *(uint32_t *)value);
             }
         }
         break;

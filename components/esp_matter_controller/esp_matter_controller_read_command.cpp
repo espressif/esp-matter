@@ -139,12 +139,12 @@ void read_command::OnEventData(const chip::app::EventHeader &event_header, chip:
 
 void read_command::OnError(CHIP_ERROR error)
 {
-    ChipLogError(chipTool, "Read Error: %s", chip::ErrorStr(error));
+    ESP_LOGE(TAG, "Read Error: %s", chip::ErrorStr(error));
 }
 
 void read_command::OnDeallocatePaths(chip::app::ReadPrepareParams &&aReadPrepareParams)
 {
-    // Intentionally eempty because the AttributePathParamsList or EventPathParamsList will be deleted with the
+    // Intentionally empty because the AttributePathParamsList or EventPathParamsList will be deleted with the
     // read_command.
 }
 
