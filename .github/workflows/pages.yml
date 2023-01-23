@@ -15,11 +15,11 @@
 # This workflow build examples, store the artifacts and deploy them to github pages.
 # Generates the launchpad configuration file that can be used with the url.
 
-name: Build and Deploy example bins to github pages
+name: Build Examples
 
 on:
   workflow_run:
-    workflows: ["Docker Image CI"]
+    workflows: ["Build Docker"]
     types: [completed]
 
   # Allows you to run this workflow manually from the Actions tab

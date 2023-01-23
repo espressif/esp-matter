@@ -54,7 +54,7 @@ For using VSCode for developement, please check `Developing in WSL <https://code
       git clone --recursive https://github.com/espressif/esp-idf.git
       cd esp-idf; git checkout v4.4.2; git submodule update --init --recursive;
       ./install.sh
-      . ./export.sh
+      source ./export.sh
       cd ..
 
 .. only:: esp32h2
@@ -64,7 +64,7 @@ For using VSCode for developement, please check `Developing in WSL <https://code
       git clone --recursive https://github.com/espressif/esp-idf.git
       cd esp-idf; git checkout 20949d444f; git submodule update --init --recursive;
       ./install.sh
-      . ./export.sh
+      source ./export.sh
       cd ..
 
 Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
@@ -107,8 +107,8 @@ This should be done each time a new terminal is opened
 
 ::
 
-   cd esp-idf; . ./export.sh; cd ..
-   cd esp-matter; . ./export.sh; cd ..
+   cd esp-idf; source ./export.sh; cd ..
+   cd esp-matter; source ./export.sh; cd ..
 
 Enable Ccache for faster IDF builds.
 
@@ -196,6 +196,8 @@ Choose IDF target.
 There are a few implementations of Matter commissioner present in the `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/src/controller#implementations>`__ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
+
+Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation>`__ in order to use the application.
 
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
