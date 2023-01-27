@@ -16,6 +16,7 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 #include <nvs.h>
+#if CONFIG_BT_ENABLED
 #include <esp_bt.h>
 #if CONFIG_BT_NIMBLE_ENABLED
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -24,6 +25,7 @@
 #include <host/ble_hs.h>
 #include <nimble/nimble_port.h>
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
+#endif /* CONFIG_BT_ENABLED */
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -824,6 +826,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
 #endif
 
+#if CONFIG_BT_ENABLED
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     {
@@ -853,7 +856,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
     }
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
-
+#endif /* CONFIG_BT_ENABLED */
     default:
         break;
     }
