@@ -563,7 +563,7 @@ endpoint_t *add(endpoint_t *endpoint, config_t *config)
     add_device_type(endpoint, get_device_type_id(), get_device_type_version());
 
     descriptor::create(endpoint, CLUSTER_FLAG_SERVER);
-    bridged_device_basic::create(endpoint, &(config->bridged_device_basic), CLUSTER_FLAG_SERVER);
+    bridged_device_basic_information::create(endpoint, &(config->bridged_device_basic_information), CLUSTER_FLAG_SERVER);
 
     return endpoint;
 }

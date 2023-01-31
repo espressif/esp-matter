@@ -1,4 +1,4 @@
-set(PRIV_REQUIRES_LIST device esp_matter route_hook app_bridge)
+set(PRIV_REQUIRES_LIST device esp_matter app_bridge)
 
 idf_component_register(SRC_DIRS          "."
                       PRIV_INCLUDE_DIRS  "."

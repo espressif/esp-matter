@@ -276,7 +276,7 @@ namespace attribute {
 
 attribute_t *create_default_ota_providers(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOtaProviders::Id,
+    return esp_matter::attribute::create(cluster, OtaSoftwareUpdateRequestor::Attributes::DefaultOTAProviders::Id,
                                          ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
                                          esp_matter_array(value, length, count));
 }
@@ -638,13 +638,13 @@ attribute_t *create_mesh_local_prefix(cluster_t *cluster, uint8_t *value, uint16
 
 attribute_t *create_neighbor_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NeighborTableList::Id,
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::NeighborTable::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
 attribute_t *create_route_table(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
 {
-    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RouteTableList::Id,
+    return esp_matter::attribute::create(cluster, ThreadNetworkDiagnostics::Attributes::RouteTable::Id,
                                          ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
 }
 
@@ -706,19 +706,19 @@ attribute_t *create_active_network_faults(cluster_t *cluster, uint8_t *value, ui
 } /* attribute */
 } /* diagnostics_network_thread */
 
-namespace bridged_device_basic {
+namespace bridged_device_basic_information {
 namespace attribute {
 
-attribute_t *create_bridged_device_basic_node_label(cluster_t *cluster, char *value, uint16_t length)
+attribute_t *create_node_label(cluster_t *cluster, char *value, uint16_t length)
 {
-    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::NodeLabel::Id,
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::NodeLabel::Id,
                                          ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
                                          esp_matter_char_str(value, length));
 }
 
 attribute_t *create_reachable(cluster_t *cluster, bool value)
 {
-    return esp_matter::attribute::create(cluster, BridgedDeviceBasic::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, BridgedDeviceBasicInformation::Attributes::Reachable::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_bool(value));
 }
 

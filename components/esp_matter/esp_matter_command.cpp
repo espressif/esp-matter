@@ -401,10 +401,10 @@ static esp_err_t esp_matter_command_callback_notify_update_applied(const Concret
 static esp_err_t esp_matter_command_callback_announce_ota_provider(const ConcreteCommandPath &command_path,
                                                                    TLVReader &tlv_data, void *opaque_ptr)
 {
-    chip::app::Clusters::OtaSoftwareUpdateRequestor::Commands::AnnounceOtaProvider::DecodableType command_data;
+    chip::app::Clusters::OtaSoftwareUpdateRequestor::Commands::AnnounceOTAProvider::DecodableType command_data;
     CHIP_ERROR error = Decode(tlv_data, command_data);
     if (error == CHIP_NO_ERROR) {
-        emberAfOtaSoftwareUpdateRequestorClusterAnnounceOtaProviderCallback((CommandHandler *)opaque_ptr, command_path,
+        emberAfOtaSoftwareUpdateRequestorClusterAnnounceOTAProviderCallback((CommandHandler *)opaque_ptr, command_path,
                                                                             command_data);
     }
     return ESP_OK;
@@ -1672,7 +1672,7 @@ namespace command {
 
 command_t *create_announce_ota_provider(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, OtaSoftwareUpdateRequestor::Commands::AnnounceOtaProvider::Id,
+    return esp_matter::command::create(cluster, OtaSoftwareUpdateRequestor::Commands::AnnounceOTAProvider::Id,
                                        COMMAND_FLAG_ACCEPTED, esp_matter_command_callback_announce_ota_provider);
 }
 
