@@ -1355,7 +1355,7 @@ const function_generic_t function_list[] = {
 };
 const int function_flags = CLUSTER_FLAG_ATTRIBUTE_CHANGED_FUNCTION;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
 {
     cluster_t *cluster = cluster::create(endpoint, WindowCovering::Id, flags);
     if (!cluster) {
@@ -1393,6 +1393,11 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
     command::create_up_or_open(cluster);
     command::create_down_or_close(cluster);
     command::create_stop_motion(cluster);
+
+    /* Features */
+    if (features & feature::lift::get_id()) {
+        feature::lift::add(cluster, &(config->lift));
+    }
 
     return cluster;
 }

@@ -373,17 +373,17 @@ attribute_t *create_number_of_actuations_tilt(cluster_t *cluster, uint16_t value
 attribute_t *create_config_status(cluster_t *cluster, uint8_t value);
 attribute_t *create_current_position_lift_percentage(cluster_t *cluster, nullable<uint8_t> value);
 attribute_t *create_current_position_tilt_percentage(cluster_t *cluster, nullable<uint8_t> value);
-attribute_t *create_operational_status(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_operational_status(cluster_t *cluster, uint8_t value);
 attribute_t *create_target_position_lift_percent_100ths(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_target_position_tilt_percent_100ths(cluster_t *cluster, nullable<uint16_t> value);
-attribute_t *create_end_product_type(cluster_t *cluster, uint8_t value);
+attribute_t *create_end_product_type(cluster_t *cluster, const uint8_t value);
 attribute_t *create_current_position_lift_percent_100ths(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_current_position_tilt_percent_100ths(cluster_t *cluster, nullable<uint16_t> value);
 attribute_t *create_installed_open_limit_lift(cluster_t *cluster, uint16_t value);
 attribute_t *create_installed_closed_limit_lift(cluster_t *cluster, uint16_t value);
 attribute_t *create_installed_open_limit_tilt(cluster_t *cluster, uint16_t value);
 attribute_t *create_installed_closed_limit_tilt(cluster_t *cluster, uint16_t value);
-attribute_t *create_mode(cluster_t *cluster, uint16_t value);
+attribute_t *create_mode(cluster_t *cluster, uint8_t value);
 attribute_t *create_safety_status(cluster_t *cluster, uint16_t value);
 } /* attribute */
 } /* window_covering */

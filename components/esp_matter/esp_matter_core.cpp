@@ -1304,7 +1304,7 @@ esp_err_t store_val_in_nvs(attribute_t *attribute)
     if (err != ESP_OK) {
         return err;
     }
-    ESP_LOGD(TAG, "strore attribute in nvs: endpoint_id-0x%x, cluster_id-0x%x, attribute_id-0x%x",
+    ESP_LOGD(TAG, "Store attribute in nvs: endpoint_id-0x%x, cluster_id-0x%x, attribute_id-0x%x",
              endpoint_id, cluster_id, attribute_id);
     if (current_attribute->val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||

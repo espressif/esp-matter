@@ -320,31 +320,15 @@ namespace window_covering {
 typedef struct config {
     uint16_t cluster_revision;
     uint8_t type;
-    uint16_t physical_closed_limit_lift;
-    uint16_t physical_closed_limit_tilt;
-    nullable<uint16_t> current_position_lift;
-    nullable<uint16_t> current_position_tilt;
-    uint16_t number_of_actuations_lift;
-    uint16_t number_of_actuations_tilt;
     uint8_t config_status;
-    nullable<uint8_t> current_position_lift_percentage;
-    nullable<uint8_t> current_position_tilt_percentage;
-    nullable<uint8_t> operational_status;
-    nullable<uint16_t> target_position_lift_percent_100ths;
-    nullable<uint16_t> target_position_tilt_percent_100ths;
-    uint8_t end_product_type;
-    nullable<uint16_t> current_position_lift_percent_100ths;
-    nullable<uint16_t> current_position_tilt_percent_100ths;
-    uint16_t installed_open_limit_lift;
-    uint16_t installed_closed_limit_lift;
-    uint16_t installed_open_limit_tilt;
-    uint16_t installed_closed_limit_tilt;
-    uint16_t mode;
-    uint16_t safety_status;
-    config() : cluster_revision(5), type(0), operational_status(0), end_product_type(0), mode(0) {}
+    uint8_t operational_status;
+    const uint8_t end_product_type;
+    uint8_t mode;
+    feature::lift::config_t lift;
+    config() : cluster_revision(5), type(0), config_status(0), operational_status(0), end_product_type(0), mode(0) {}
 } config_t;
 
-cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features);
 } /* window_covering */
 
 namespace switch_cluster {

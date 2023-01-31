@@ -1537,10 +1537,10 @@ attribute_t *create_current_position_tilt_percentage(cluster_t *cluster, nullabl
                                          esp_matter_nullable_uint8(value));
 }
 
-attribute_t *create_operational_status(cluster_t *cluster, nullable<uint8_t> value)
+attribute_t *create_operational_status(cluster_t *cluster, uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::OperationalStatus::Id,
-                                         ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint8(value));
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_bitmap8(value));
 }
 
 attribute_t *create_target_position_lift_percent_100ths(cluster_t *cluster, nullable<uint16_t> value)
@@ -1555,7 +1555,7 @@ attribute_t *create_target_position_tilt_percent_100ths(cluster_t *cluster, null
                                          ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
 }
 
-attribute_t *create_end_product_type(cluster_t *cluster, uint8_t value)
+attribute_t *create_end_product_type(cluster_t *cluster, const uint8_t value)
 {
     return esp_matter::attribute::create(cluster, WindowCovering::Attributes::EndProductType::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_enum8(value));
@@ -1599,10 +1599,10 @@ attribute_t *create_installed_closed_limit_tilt(cluster_t *cluster, uint16_t val
                                          ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_uint16(value));
 }
 
-attribute_t *create_mode(cluster_t *cluster, uint16_t value)
+attribute_t *create_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Mode::Id, ATTRIBUTE_FLAG_NONVOLATILE,
-                                         esp_matter_uint16(value));
+    return esp_matter::attribute::create(cluster, WindowCovering::Attributes::Mode::Id, ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_WRITABLE,
+                                         esp_matter_bitmap8(value));
 }
 
 attribute_t *create_safety_status(cluster_t *cluster, uint16_t value)

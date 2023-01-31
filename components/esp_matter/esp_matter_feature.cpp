@@ -381,6 +381,12 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 
     attribute::create_number_of_actuations_lift(cluster, config->number_of_actuations_lift);
 
+	uint8_t set_second_bit = 1 << 2;
+	esp_matter::attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
+	esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+	esp_matter::attribute::get_val(attribute, &val);
+	val.val.u8 = val.val.u8 | set_second_bit;
+	esp_matter::attribute::set_val(attribute, &val);
     return ESP_OK;
 }
 
@@ -430,6 +436,14 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_current_position_lift_percent_100ths(cluster, config->current_position_lift_percent_100ths);
 
         command::create_go_to_lift_percentage(cluster);
+
+		// We should update config_status attribute as position_aware_lift feature is added
+		uint8_t set_third_bit = 1 << 3;
+		attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
+		esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+		esp_matter::attribute::get_val(attribute, &val);
+		val.val.u8 = val.val.u8 | set_third_bit;
+		esp_matter::attribute::set_val(attribute, &val);
     } else {
         ESP_LOGE(TAG, "Cluster shall support Lift feature");
         return ESP_ERR_NOT_SUPPORTED;
@@ -524,6 +538,14 @@ esp_err_t add(cluster_t *cluster, config_t *config)
         attribute::create_current_position_tilt_percent_100ths(cluster, config->current_position_tilt_percent_100ths);
 
         command::create_go_to_tilt_percentage(cluster);
+
+		// We should update config_status attribute as position_aware_tilt feature is added
+		uint8_t set_fourth_bit = 1 << 4;
+		attribute_t *attribute = esp_matter::attribute::get(cluster, WindowCovering::Attributes::ConfigStatus::Id);
+		esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+		esp_matter::attribute::get_val(attribute, &val);
+		val.val.u8 = val.val.u8 | set_fourth_bit;
+		esp_matter::attribute::set_val(attribute, &val);
     } else {
         ESP_LOGE(TAG, "Cluster shall support Tilt feature");
         return ESP_ERR_NOT_SUPPORTED;
