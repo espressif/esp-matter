@@ -44,7 +44,6 @@
 #include <esp_matter_openthread.h>
 #endif
 #include <esp_matter_ota.h>
-#include <esp_route_hook.h>
 #include <esp_matter_dac_provider.h>
 
 using chip::CommandId;
@@ -816,7 +815,7 @@ static void esp_matter_chip_init_task(intptr_t context)
     // Record start up event in basic information cluster.
     PlatformMgr().HandleServerStarted();
     // Record boot reason evnet in general diagnostics cluster.
-    chip::app::Clusters::GeneralDiagnostics::BootReasonType bootReason;
+    chip::app::Clusters::GeneralDiagnostics::BootReasonEnum bootReason;
     if (GetDiagnosticDataProvider().GetBootReason(bootReason) == CHIP_NO_ERROR) {
         chip::app::Clusters::GeneralDiagnosticsServer::Instance().OnDeviceReboot(bootReason);
     }
@@ -839,7 +838,6 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned ||
                 event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV4_Assigned) {
             chip::app::DnssdServer::Instance().StartServer();
-            esp_route_hook_init(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"));
         }
 #endif
         if (event->InterfaceIpAddressChanged.Type == chip::DeviceLayer::InterfaceIpChangeType::kIpV6_Assigned) {

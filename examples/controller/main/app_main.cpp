@@ -15,7 +15,6 @@
 #include <esp_matter_console.h>
 #include <esp_matter_controller_console.h>
 #include <esp_matter_ota.h>
-#include <esp_route_hook.h>
 
 #include <app_reset.h>
 

@@ -768,13 +768,13 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* time_synchronization */
 
-namespace bridged_device_basic {
+namespace bridged_device_basic_information {
 const function_generic_t *function_list = NULL;
 const int function_flags = CLUSTER_FLAG_NONE;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 {
-    cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasic::Id, flags);
+    cluster_t *cluster = cluster::create(endpoint, BridgedDeviceBasicInformation::Id, flags);
     if (!cluster) {
         ESP_LOGE(TAG, "Could not create cluster");
         return NULL;
@@ -800,7 +800,7 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 
     return cluster;
 }
-} /* bridged_device_basic */
+} /* bridged_device_basic_information */
 
 namespace user_label {
 const function_generic_t *function_list = NULL;
