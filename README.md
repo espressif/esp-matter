@@ -28,7 +28,7 @@ git clone --recursive https://github.com/espressif/esp-matter.git
 
 ## Documentation
 
-Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/main/) for the latest version of the documentation.
+Refer the [Programming Guide](https://docs.espressif.com/projects/esp-matter/en/latest/) for the latest version of the documentation.
 
 
 ## Matter Specifications
@@ -39,4 +39,3 @@ Download the Matter 1.0 specifications from [CSA's official site](https://csa-io
 <a href="https://espressif.github.io/esp-launchpad/?flashConfigURL=https://espressif.github.io/esp-matter/launchpad.toml">
     <img alt="Try it with ESP Launchpad" src="https://espressif.github.io/esp-launchpad/assets/try_with_launchpad.png" width="250" height="70">
 </a>
-                                
