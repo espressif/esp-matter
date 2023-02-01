@@ -1219,7 +1219,7 @@ attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value)
 
 attribute_t *create_percent_current(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentSetting::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentCurrent::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
