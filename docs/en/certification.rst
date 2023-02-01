@@ -162,7 +162,7 @@ Here are the menuconfig options related to the usage of factory partition binary
 
   When selecting ``Attestation - Factory``, the app will use the PAI certificate, DAC, DAC private key, and CD in the factory partition binary.
 
-  When selecting ``Attestation - Secure Cert``, the app will use the PAI certificate, DAC, DAC private key, and CD in the secure cert partition. This option is for the `Pre-Provisioned Modules <https://docs.espressif.com/projects/esp-matter/en/main/esp32/production.html#pre-provisioned-modules>`__. And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules. Please contact your Espressif contact person for more information.
+  When selecting ``Attestation - Secure Cert``, the app will use the PAI certificate, DAC, DAC private key, and CD in the secure cert partition. This option is for the `Pre-Provisioned Modules <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/production.html#pre-provisioned-modules>`__. And the original vendor ID and product ID should be added to the CD file for the Pre-Provisioned Modules. Please contact your Espressif contact person for more information.
 
 3.3 Matter OTA Image Generation
 -------------------------------

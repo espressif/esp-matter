@@ -764,7 +764,7 @@ This section introduces the Matter controller example. Now this example supports
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
