@@ -19,8 +19,6 @@
 #define LED_CHANNEL 7 /* LEDC_CHANNEL_7 */
 #define BUTTON_GPIO_PIN 39 /* Left button on M5Stack */
 
-static const char *TAG = "device";
-
 led_driver_config_t led_driver_get_config()
 {
     led_driver_config_t config = {

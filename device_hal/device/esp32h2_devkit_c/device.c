@@ -19,8 +19,6 @@
 #define LED_CHANNEL 0 /* RMT_CHANNEL_0 */
 #define BUTTON_GPIO_PIN GPIO_NUM_9
 
-static const char *TAG = "device";
-
 led_driver_config_t led_driver_get_config()
 {
     led_driver_config_t config = {
