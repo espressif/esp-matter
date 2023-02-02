@@ -5,7 +5,7 @@ This example creates an On/Off Light Switch device using the data model.
 It creates the On/Off client and other devices can be bound to the
 switch and then controlled from the switch.
 
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html) for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup
 

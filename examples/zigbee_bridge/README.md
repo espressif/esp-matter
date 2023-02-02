@@ -5,7 +5,7 @@ This example demonstrates a Matter-Zigbee Bridge that bridges Zigbee devices to 
 The Matter Bridge device is composed of two parts: The RCP running on
 ESP32-H2 and the bridge app running on ESP32.
 
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html) for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup
 

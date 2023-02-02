@@ -3,7 +3,7 @@
 This example creates a Matter Controller using the ESP Matter data model.
 
 
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html) for more information about building and flashing the firmware.
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup
 
@@ -11,7 +11,7 @@ No additional setup is required.
 
 ## 2. Controller Example
 
-See the [docs](https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html#controller-example) for more information
+See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#controller-example) for more information
 about pairing and controling an end-device using this example
 
 ## A2 Appendix FAQs
