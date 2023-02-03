@@ -54,7 +54,6 @@ For using VSCode for developement, please check `Developing in WSL <https://code
       git clone --recursive https://github.com/espressif/esp-idf.git
       cd esp-idf; git checkout v4.4.3; git submodule update --init --recursive;
       ./install.sh
-      source ./export.sh
       cd ..
 
 .. only:: esp32h2
@@ -64,13 +63,16 @@ For using VSCode for developement, please check `Developing in WSL <https://code
       git clone --recursive https://github.com/espressif/esp-idf.git
       cd esp-idf; git checkout 20949d444f; git submodule update --init --recursive;
       ./install.sh
-      source ./export.sh
       cd ..
 
 Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
 so if you want to do a shallow clone use the following command:
 
 ::
+
+   cd esp-idf
+   source ./export.sh
+   cd ..
 
    git clone --depth 1 https://github.com/espressif/esp-matter.git
    cd esp-matter
@@ -82,6 +84,10 @@ so if you want to do a shallow clone use the following command:
 To clone the esp-matter repository with all the submodules, use the following command:
 
 ::
+
+   cd esp-idf
+   source ./export.sh
+   cd ..
 
    git clone --recursive https://github.com/espressif/esp-matter.git
    cd esp-matter

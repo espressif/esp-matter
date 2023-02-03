@@ -38,7 +38,6 @@ using chip::Inet::IPAddress;
 using chip::Transport::PeerAddress;
 using esp_matter::controller::command_data_t;
 
-const static char *TAG = "esp_matter_controller";
 namespace esp_matter {
 
 namespace console {
