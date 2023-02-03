@@ -17,7 +17,7 @@
 
 #define LED_GPIO_PIN GPIO_NUM_8
 #define LED_CHANNEL 0 /* RMT_CHANNEL_0 */
-#define BUTTON_GPIO_PIN GPIO_NUM_9
+#define BUTTON_GPIO_PIN GPIO_NUM_4
 
 static const char *TAG = "device";
 
