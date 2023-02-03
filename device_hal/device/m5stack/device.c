@@ -17,7 +17,7 @@
 
 #define LED_GPIO_PIN 32 /* PIN_NUM_BCKL for M5Stack TFT */
 #define LED_CHANNEL 7 /* LEDC_CHANNEL_7 */
-#define BUTTON_GPIO_PIN 39 /* Left button on M5Stack */
+#define BUTTON_GPIO_PIN 4 /* Left button on M5Stack */
 
 static const char *TAG = "device";
 

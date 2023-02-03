@@ -20,6 +20,7 @@
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
 
+
 using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
@@ -97,31 +98,34 @@ extern "C" void app_main()
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
-
-    color_temperature_light::config_t light_config;
+   
+    // color_temperature_light::config_t light_config;
+    // light_config.on_off.on_off = DEFAULT_POWER;
+    // light_config.on_off.lighting.start_up_on_off = nullptr;
+    // light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
+    // light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
+    // light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
+    // light_config.color_control.enhanced_color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
+    // light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
+    // endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    on_off_light::config_t  light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
-    light_config.on_off.lighting.start_up_on_off = nullptr;
-    light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-    light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
-    light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
-    light_config.color_control.enhanced_color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
-    light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
-    endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
-
+    endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    endpoint_t *endpoint1 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
     }
 
     light_endpoint_id = endpoint::get_id(endpoint);
-    ESP_LOGI(TAG, "Light created with endpoint_id %d", light_endpoint_id);
+    ESP_LOGI(TAG, "Light created with endpoint_id %d - %d", light_endpoint_id,endpoint::get_id(endpoint1));
 
     /* Add additional features to the node */
-    cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
-    cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
-    hue_saturation_config.current_hue = DEFAULT_HUE;
-    hue_saturation_config.current_saturation = DEFAULT_SATURATION;
-    cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
+    // cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
+    // cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
+    // hue_saturation_config.current_hue = DEFAULT_HUE;
+    // hue_saturation_config.current_saturation = DEFAULT_SATURATION;
+    // cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);
@@ -131,6 +135,7 @@ extern "C" void app_main()
 
     /* Starting driver with default values */
     app_driver_light_set_defaults(light_endpoint_id);
+    app_driver_light_set_defaults(light_endpoint_id + 1);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
