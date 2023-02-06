@@ -38,7 +38,7 @@ CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=n
 
 # Enable External Platform
 CONFIG_CHIP_ENABLE_EXTERNAL_PLATFORM=y
-CONFIG_CHIP_EXTERNAL_PLATFORM_DIR="../../../../examples/blemesh_bridge/platform/ESP32_custom"
+CONFIG_CHIP_EXTERNAL_PLATFORM_DIR="../../../../examples/common/blemesh_platform/platform/ESP32_custom"
 
 # Enable lwIP route hooks
 CONFIG_LWIP_HOOK_IP6_ROUTE_DEFAULT=y
