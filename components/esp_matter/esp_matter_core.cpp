@@ -992,6 +992,17 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     attribute->endpoint_id = current_cluster->endpoint_id;
     attribute->flags = flags;
     attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
+
+    // After reboot, string and array are treated as Invalid. So need to store val.type and size of attribute value.
+    attribute->val.type = val.type;
+    if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        attribute->val.val.a.s = val.val.a.s;
+        attribute->val.val.a.n = val.val.a.n;
+        attribute->val.val.a.t = val.val.a.t;
+    }
+
     if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
         esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
@@ -1111,6 +1122,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         /* Free old buf */
         if (current_attribute->val.val.a.b) {
             free(current_attribute->val.val.a.b);
+            current_attribute->val.val.a.b = NULL;
         }
         if (val->val.a.s > 0) {
             /* Alloc new buf */
@@ -1121,13 +1133,17 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
             }
             /* Copy to new buf and assign */
             memcpy(new_buf, val->val.a.b, val->val.a.s);
-            val->val.a.b = new_buf;
+            current_attribute->val.val.a.b = new_buf;
+            current_attribute->val.val.a.s = val->val.a.s;
+            current_attribute->val.val.a.n = val->val.a.n;
+            current_attribute->val.val.a.t = val->val.a.t;
         } else {
             ESP_LOGD(TAG, "Set val called with string with size 0");
-            val->val.a.b = NULL;
         }
+    } else {
+        memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
     }
-    memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
+
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         store_val_in_nvs(attribute);
     }
