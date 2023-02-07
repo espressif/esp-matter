@@ -34,7 +34,9 @@
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
 #include <platform/CHIPDeviceLayer.h>
+#include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
+#include <platform/ESP32/ESP32DeviceInfoProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -75,6 +77,11 @@ namespace {
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
+
+#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
+chip::DeviceLayer::ESP32DeviceInfoProvider device_info_provider;
+#endif
+
 
 class AppDelegateImpl : public AppDelegate
 {
@@ -757,7 +764,7 @@ esp_err_t chip_stack_unlock()
 
 static void esp_matter_chip_init_task(intptr_t context)
 {
-    xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
+    TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
 
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
@@ -878,6 +885,9 @@ static esp_err_t chip_init(event_callback_t callback)
 #if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
     SetDeviceInstanceInfoProvider(&factory_data_provider);
 #endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
+    SetDeviceInfoProvider(&device_info_provider);
+#endif // CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 
     SetDeviceAttestationCredentialsProvider(get_dac_provider());
