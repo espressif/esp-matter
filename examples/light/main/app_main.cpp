@@ -17,6 +17,8 @@
 #include <app_priv.h>
 #include <app_reset.h>
 
+#include <app/server/CommissioningWindowManager.h>
+#include <app/server/Server.h>
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
 
@@ -24,6 +26,8 @@ using namespace esp_matter;
 using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
+
+constexpr auto k_timeout_seconds = 300;
 
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
@@ -56,6 +60,36 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         ESP_LOGI(TAG, "Commissioning window closed");
         break;
 
+    case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
+       {
+            ESP_LOGI(TAG, "Fabric removed successfully");
+            if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0)
+            {
+                chip::CommissioningWindowManager & commissionMgr = chip::Server::GetInstance().GetCommissioningWindowManager();
+                constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
+                if (!commissionMgr.IsCommissioningWindowOpen())
+                {
+                    CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds);
+                    if (err != CHIP_NO_ERROR)
+                    {
+                        ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
+                    }
+                }
+            }
+        break;
+        }
+
+    case chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved:
+        ESP_LOGI(TAG, "Fabric will be removed");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kFabricUpdated:
+        ESP_LOGI(TAG, "Fabric is updated");
+        break;
+
+    case chip::DeviceLayer::DeviceEventType::kFabricCommitted:
+        ESP_LOGI(TAG, "Fabric is committed");
+        break;
     default:
         break;
     }
