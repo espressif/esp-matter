@@ -756,7 +756,7 @@ esp_err_t chip_stack_unlock()
 
 static void esp_matter_chip_init_task(intptr_t context)
 {
-    xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
+    TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
 
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
