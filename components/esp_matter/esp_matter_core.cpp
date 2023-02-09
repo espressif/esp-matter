@@ -824,12 +824,10 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
-        if (event->ThreadConnectivityChange.Result == chip::DeviceLayer::ConnectivityChange::kConnectivity_Established) {
-            esp_matter_ota_requestor_start();
-            /* Initialize binding manager */
-            client::binding_manager_init();
-        }
+    case chip::DeviceLayer::DeviceEventType::kDnssdPlatformInitialized:
+        esp_matter_ota_requestor_start();
+        /* Initialize binding manager */
+        client::binding_manager_init();
         break;
 #endif
 
