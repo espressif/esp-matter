@@ -25,7 +25,8 @@ extern uint16_t light_endpoint_id;
 
 #define GPIO_OUTPUT_IO_0    GPIO_NUM_23
 #define GPIO_OUTPUT_IO_1    GPIO_NUM_19
-#define GPIO_OUTPUT_PIN_SEL  ((1ULL<<GPIO_OUTPUT_IO_0) | (1ULL<<GPIO_OUTPUT_IO_1))
+#define GPIO_OUTPUT_IO_2    GPIO_NUM_22
+#define GPIO_OUTPUT_PIN_SEL  ((1ULL<<GPIO_OUTPUT_IO_0) | (1ULL<<GPIO_OUTPUT_IO_1) | (1ULL<<GPIO_OUTPUT_IO_2))
 
 /* Do any conversions/remapping for the actual value here */
 static esp_err_t app_driver_light_set_power(led_driver_handle_t handle, esp_matter_attr_val_t *val)
@@ -91,6 +92,23 @@ static void app_driver_button2_toggle_cb(void *arg, void *data)
     val.val.b = !val.val.b;
     attribute::update(endpoint_id, cluster_id, attribute_id, &val);
 }
+static void app_driver_button3_toggle_cb(void *arg, void *data)
+{
+    ESP_LOGI(TAG, "Toggle button3 pressed");
+    uint16_t endpoint_id = light_endpoint_id +2;
+    uint32_t cluster_id = OnOff::Id;
+    uint32_t attribute_id = OnOff::Attributes::OnOff::Id;
+
+    node_t *node = node::get();
+    endpoint_t *endpoint = endpoint::get(node, endpoint_id);
+    cluster_t *cluster = cluster::get(endpoint, cluster_id);
+    attribute_t *attribute = attribute::get(cluster, attribute_id);
+
+    esp_matter_attr_val_t val = esp_matter_invalid(NULL);
+    attribute::get_val(attribute, &val);
+    val.val.b = !val.val.b;
+    attribute::update(endpoint_id, cluster_id, attribute_id, &val);
+}
 
 esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_t endpoint_id, uint32_t cluster_id,
                                       uint32_t attribute_id, esp_matter_attr_val_t *val)
@@ -114,6 +132,16 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
             if (attribute_id == OnOff::Attributes::OnOff::Id) 
             {
                 gpio_set_level(GPIO_OUTPUT_IO_1, val->val.b);
+            }
+        }
+    }
+        if(endpoint_id == light_endpoint_id + 2)
+    {
+        if(cluster_id == OnOff::Id)
+        {
+            if (attribute_id == OnOff::Attributes::OnOff::Id) 
+            {
+                gpio_set_level(GPIO_OUTPUT_IO_2, val->val.b);
             }
         }
     }
@@ -225,14 +253,24 @@ app_driver_handle_t app_driver_button_init()
     button_config_t config_bt2 = {
         .type = BUTTON_TYPE_GPIO,
         .gpio_button_config = {
+            .gpio_num = GPIO_NUM_0,
+            .active_level = 0,
+        }
+    };
+
+    button_config_t config_bt3 = {
+        .type = BUTTON_TYPE_GPIO,
+        .gpio_button_config = {
             .gpio_num = GPIO_NUM_15,
             .active_level = 0,
         }
     };
     button_handle_t handle1 = iot_button_create(&config_bt1);
     button_handle_t handle2 = iot_button_create(&config_bt2);
+    button_handle_t handle3 = iot_button_create(&config_bt3);
 
     iot_button_register_cb(handle1, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
     iot_button_register_cb(handle2, BUTTON_PRESS_DOWN, app_driver_button2_toggle_cb, NULL);
+    iot_button_register_cb(handle3, BUTTON_PRESS_DOWN, app_driver_button3_toggle_cb, NULL);
     return (app_driver_handle_t)handle1;
 }

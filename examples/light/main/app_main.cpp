@@ -112,6 +112,7 @@ extern "C" void app_main()
     light_config.on_off.on_off = DEFAULT_POWER;
     endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
     endpoint_t *endpoint1 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    endpoint_t *endpoint2 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
