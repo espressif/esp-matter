@@ -7,5 +7,5 @@ phy_init,   data, phy,     ,         0x1000,
 ota_0,      app,  ota_0,          ,  0x1D0000,
 ota_1,      app,  ota_1,          ,  0x1D0000,
 fctry,      data, nvs,            ,  0x6000,
-zb_storage, data, fat,            ,  0x20000
-zb_fct,     data, fat,            ,  1K,
+#zb_storage, data, fat,            ,  0x20000
+#zb_fct,     data, fat,            ,  1K,
