@@ -98,6 +98,10 @@ static_library("ESP32_custom") {
     "bluedroid/BLEManagerImpl.cpp",
     "nimble/BLEManagerImpl.cpp",
     "ConnectivityManagerImpl_WiFi.cpp",
+    "route_hook/ESP32RouteHook.c",
+    "route_hook/ESP32RouteHook.h",
+    "route_hook/ESP32RouteTable.c",
+    "route_hook/ESP32RouteTable.h",
   ]
 
   deps = [
