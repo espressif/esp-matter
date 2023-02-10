@@ -61,7 +61,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
         break;
 
     case chip::DeviceLayer::DeviceEventType::kFabricRemoved:
-       {
+        {
             ESP_LOGI(TAG, "Fabric removed successfully");
             if (chip::Server::GetInstance().GetFabricTable().FabricCount() == 0)
             {
@@ -69,7 +69,11 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
                 constexpr auto kTimeoutSeconds = chip::System::Clock::Seconds16(k_timeout_seconds);
                 if (!commissionMgr.IsCommissioningWindowOpen())
                 {
-                    CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds);
+                    /* After removing last fabric, this example does not remove the Wi-Fi credentials
+                     * and still has IP connectivity so, only advertising on DNS-SD.
+                     */
+                    CHIP_ERROR err = commissionMgr.OpenBasicCommissioningWindow(kTimeoutSeconds,
+                                                    chip::CommissioningWindowAdvertisement::kDnssdOnly);
                     if (err != CHIP_NO_ERROR)
                     {
                         ESP_LOGE(TAG, "Failed to open commissioning window, err:%" CHIP_ERROR_FORMAT, err.Format());
