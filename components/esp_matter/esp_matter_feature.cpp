@@ -913,5 +913,39 @@ esp_err_t add(cluster_t *cluster, config_t *config)
 } /* feature */
 } /* switch_cluster */
 
+namespace time_format_localization {
+namespace feature {
+
+namespace calendar_format {
+
+uint32_t get_id()
+{
+    // enum class for CalendarFormat is not present in the upstream code.
+    // Return the code according to the SPEC
+    return 0x01;
+}
+
+esp_err_t add(cluster_t *cluster, config_t *config)
+{
+    if (!cluster) {
+        ESP_LOGE(TAG, "Cluster cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    update_feature_map(cluster, get_id());
+
+    /* Attributes not managed internally */
+    attribute::create_active_calendar_type(cluster, config->active_calendar_type);
+
+    /* Attributes managed internally */
+    attribute::create_supported_calendar_types(cluster, NULL, 0, 0);
+
+    return ESP_OK;
+}
+
+} /* calendar_format */
+
+} /* feature */
+} /* time_format_localization */
+
 } /* cluster */
 } /* esp_matter */

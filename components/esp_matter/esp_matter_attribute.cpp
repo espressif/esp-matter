@@ -1219,7 +1219,7 @@ attribute_t *create_percent_setting(cluster_t *cluster, nullable<uint8_t> value)
 
 attribute_t *create_percent_current(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentSetting::Id, ATTRIBUTE_FLAG_NONE,
+    return esp_matter::attribute::create(cluster, FanControl::Attributes::PercentCurrent::Id, ATTRIBUTE_FLAG_NONE,
                                          esp_matter_uint8(value));
 }
 
@@ -1697,6 +1697,51 @@ attribute_t *state_value(cluster_t *cluster, bool value)
 
 } /* attribute */
 } /* boolean_state */
+
+namespace localization_configuration {
+namespace attribute {
+
+attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length)
+{
+    return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::ActiveLocale::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE,
+                                         esp_matter_char_str(value, length));
+}
+
+attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, LocalizationConfiguration::Attributes::SupportedLocales::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* localization_configuration */
+
+namespace time_format_localization {
+namespace attribute {
+
+attribute_t *create_hour_format(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, TimeFormatLocalization::Attributes::HourFormat::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_active_calendar_type(cluster_t *cluster, nullable<uint8_t> value)
+{
+    return esp_matter::attribute::create(cluster, TimeFormatLocalization::Attributes::ActiveCalendarType::Id,
+                                         ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE | ATTRIBUTE_FLAG_NULLABLE,
+                                         esp_matter_nullable_enum8(value));
+}
+
+attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count)
+{
+    return esp_matter::attribute::create(cluster, TimeFormatLocalization::Attributes::SupportedCalendarTypes::Id,
+                                         ATTRIBUTE_FLAG_NONE, esp_matter_array(value, length, count));
+}
+
+} /* attribute */
+} /* time_format_localization */
 
 } /* cluster */
 } /* esp_matter */

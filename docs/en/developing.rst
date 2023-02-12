@@ -23,7 +23,7 @@ Additionally, we also support developing on Windows Host using WSL.
 
 The Prerequisites for ESP-IDF and Matter:
 
-- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
+- Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.3/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
 - Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
@@ -52,9 +52,8 @@ For using VSCode for developement, please check `Developing in WSL <https://code
    ::
 
       git clone --recursive https://github.com/espressif/esp-idf.git
-      cd esp-idf; git checkout v4.4.2; git submodule update --init --recursive;
+      cd esp-idf; git checkout v4.4.3; git submodule update --init --recursive;
       ./install.sh
-      . ./export.sh
       cd ..
 
 .. only:: esp32h2
@@ -64,13 +63,16 @@ For using VSCode for developement, please check `Developing in WSL <https://code
       git clone --recursive https://github.com/espressif/esp-idf.git
       cd esp-idf; git checkout 20949d444f; git submodule update --init --recursive;
       ./install.sh
-      . ./export.sh
       cd ..
 
 Cloning the esp-matter repository takes a while due to a lot of submodules in the upstream connectedhomeip,
 so if you want to do a shallow clone use the following command:
 
 ::
+
+   cd esp-idf
+   source ./export.sh
+   cd ..
 
    git clone --depth 1 https://github.com/espressif/esp-matter.git
    cd esp-matter
@@ -82,6 +84,10 @@ so if you want to do a shallow clone use the following command:
 To clone the esp-matter repository with all the submodules, use the following command:
 
 ::
+
+   cd esp-idf
+   source ./export.sh
+   cd ..
 
    git clone --recursive https://github.com/espressif/esp-matter.git
    cd esp-matter
@@ -107,8 +113,8 @@ This should be done each time a new terminal is opened
 
 ::
 
-   cd esp-idf; . ./export.sh; cd ..
-   cd esp-matter; . ./export.sh; cd ..
+   cd esp-idf; source ./export.sh; cd ..
+   cd esp-matter; source ./export.sh; cd ..
 
 Enable Ccache for faster IDF builds.
 
@@ -196,6 +202,8 @@ Choose IDF target.
 There are a few implementations of Matter commissioner present in the `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/src/controller#implementations>`__ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
+
+Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation>`__ in order to use the application.
 
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -762,7 +770,7 @@ This section introduces the Matter controller example. Now this example supports
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/main/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^

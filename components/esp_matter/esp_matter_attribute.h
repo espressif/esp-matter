@@ -418,5 +418,20 @@ attribute_t *state_value(cluster_t *cluster, bool value);
 } /* attribute */
 } /* boolean_state */
 
+namespace localization_configuration {
+namespace attribute {
+attribute_t *create_active_locale(cluster_t *cluster, char *value, uint16_t length);
+attribute_t *create_supported_locales(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* localization_configuration */
+
+namespace time_format_localization {
+namespace attribute {
+attribute_t *create_hour_format(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_active_calendar_type(cluster_t *cluster, nullable<uint8_t> value);
+attribute_t *create_supported_calendar_types(cluster_t *cluster, uint8_t *value, uint16_t length, uint16_t count);
+} /* attribute */
+} /* time_format_localization */
+
 } /* cluster */
 } /* esp_matter */

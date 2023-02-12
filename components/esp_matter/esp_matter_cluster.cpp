@@ -1555,5 +1555,98 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* boolean_state */
 
+namespace localization_configuration {
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfLocalizationConfigurationClusterServerInitCallback,
+    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, LocalizationConfiguration::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterLocalizationConfigurationPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterLocalizationConfigurationPluginClientInitCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        if (config) {
+            /* Attributes not managed internally */
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+            attribute::create_active_locale(cluster, config->active_locale, sizeof(config->active_locale));
+
+            /* Attributes managed internally */
+            attribute::create_supported_locales(cluster, NULL, 0, 0);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+
+    return cluster;
+}
+
+} /* localization_configuration_cluster */
+
+namespace time_format_localization {
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfTimeFormatLocalizationClusterServerInitCallback,
+    (function_generic_t)MatterLocalizationConfigurationClusterServerPreAttributeChangedCallback
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags, uint32_t features)
+{
+    cluster_t *cluster = cluster::create(endpoint, TimeFormatLocalization::Id, flags);
+    if (!cluster) {
+        ESP_LOGE(TAG, "Could not create cluster");
+        return NULL;
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        set_plugin_server_init_callback(cluster, MatterTimeFormatLocalizationPluginServerInitCallback);
+        add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+        set_plugin_client_init_callback(cluster, MatterTimeFormatLocalizationPluginClientInitCallback);
+    }
+
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes not managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+
+        if (config) {
+            /* Attributes not managed internally */
+            global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+
+            /* Attributes managed internally */
+            attribute::create_hour_format(cluster, config->hour_format);
+        } else {
+            ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+
+    /* Features */
+    if (features & feature::calendar_format::get_id()) {
+        feature::calendar_format::add(cluster, &(config->calendar_format));
+    }
+
+    return cluster;
+}
+
+} /* time_format_localization */
+
 } /* cluster */
 } /* esp_matter */

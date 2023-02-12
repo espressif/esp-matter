@@ -33,7 +33,7 @@
  * Example: To convert the temperature mireds into temperature kelvin and vice-versa where the relation between them
  * is: Mireds = 1,000,000/Kelvin.
  */
-#define REMAP_TO_RANGE_INVERSE(value, factor) (factor / value)
+#define REMAP_TO_RANGE_INVERSE(value, factor) (factor / (value ? value : 1))
 
 /* Nullable base for nullable attribute */
 #define ESP_MATTER_VAL_NULLANLE_BASE 0x80

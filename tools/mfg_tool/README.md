@@ -35,6 +35,23 @@ Above commands will generate spake2p and chip-cert at `esp-matter/connectedhomei
 export PATH="$PATH:path/to/esp-matter/connectedhomeip/connectedhomeip/out/host"
 ```
 
+## Configure your app
+Open the project configuration menu using - 
+```
+cd <your_app>
+idf.py menuconfig
+```
+In the configuration menu, set the following additional configuration to use custom factory partition and different values for Data and Device Info Providers.
+
+1. Enable **`ESP32 Factory Data Provider`** [Component config → CHIP Device Layer → Commissioning options → Use ESP32 Factory Data Provider]
+   > Enable config option [`CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L645) to use ESP32 specific implementation of CommissionableDataProvider and DeviceAttestationCredentialsProvider.
+2. Enable **`ESP32 Device Instance Info Provider`** [Component config → CHIP Device Layer → Commissioning options → Use ESP32 Device Instance Info Provider]
+   > Enable config option [`ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L655) to get device instance info from factory partition.
+3. Enable **`Attestation - Factory`** [ Component config → ESP Matter → DAC Provider options → Attestation - Factory]
+   > Enable config option `CONFIG_FACTORY_PARTITION_DAC_PROVIDER` to use DAC certificates from the factory partition during Attestation.
+4. Set **`chip-factory namespace partition label`** [Component config → CHIP Device Layer → Matter Manufacturing Options → chip-factory namespace partition label]
+   > Set config option [`CHIP_FACTORY_NAMESPACE_PARTITION_LABEL`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L856) to choose the label of the partition to store key-values in the "chip-factory" namespace. The dafault chosen partition label is `nvs`.
+
 ### mfg_gen.py
 `mfg_gen.py` is present at path `$IDF_PATH/tools/mass_mfg/mfg_gen.py`
 
@@ -151,12 +168,22 @@ Output binary contains all the chip specific key/value and key/values specified 
 ## Flashing the manufacturing binary
 Please note that `mfg_tool.py` only generates manufacturing binary images which need to be flashed onto device using `esptool.py`.
 
-`esptool.py` is present at path `$IDF_PATH/components/esptool_py/esptool/esptool.py`
 
 * Flashing a binary image to the device
 ```
 esptool.py -p <serial_port> write_flash <address> path/to/<uuid>-partition.bin
 ```
+
+* NOTE: First flash your app firmware and then followed by the custom partition binary on the device. Please flash the manufacturing binary at the corresponding address of the configured factory partition set by [`CHIP_FACTORY_NAMESPACE_PARTITION_LABEL`](https://github.com/project-chip/connectedhomeip/blob/master/config/esp32/components/chip/Kconfig#L856) which by default is `nvs`.
+
+## Commissioning the device
+You can commission the device by using either - 
+1. The QR code for Matter commissioners is generated at `out/<vid_pid>/<uuid>/<uuid>-qrcode.png`. If QR code is not visible, paste the below link into the browser replacing `<qr_code>` with the **QR code string** (eg. `MT:Y.K9042C00KA0648G00` - this is also the default test QR code) and scan the QR code.
+```
+https://project-chip.github.io/connectedhomeip/qrcode.html?data=<qr_code>
+```
+
+2. Refer the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#commissioning-and-control) for other methods using onboarding payload found at `out/<vid_pid>/<uuid>/<uuid>-onb_codes.csv`. This contains the `QR Code String, Manual Pairing Code, Passcode and Discriminator`.
 
 ## Encrypting NVS partition
 

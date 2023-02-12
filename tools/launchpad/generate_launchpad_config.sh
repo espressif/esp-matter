@@ -77,8 +77,8 @@ do
 
     # Write the esp-matter phone app links
     # TODO: Update the phone app links when they are available on android play store and apple app store
+    echo "ios_app_url = \"https://apps.apple.com/in/app/espressif-matter/id1604739172\"" >> $OUT_FILE
     echo "android_app_url = \"\"" >> $OUT_FILE
-    echo "ios_app_url = \"\"" >> $OUT_FILE
     echo "" >> $OUT_FILE
 
     unset CHIPSETS IMAGES

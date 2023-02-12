@@ -16,6 +16,7 @@
 #include <esp_matter.h>
 #include <esp_matter_core.h>
 #include <nvs.h>
+#if CONFIG_BT_ENABLED
 #include <esp_bt.h>
 #if CONFIG_BT_NIMBLE_ENABLED
 #if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -24,6 +25,7 @@
 #include <host/ble_hs.h>
 #include <nimble/nimble_port.h>
 #endif /* CONFIG_BT_NIMBLE_ENABLED */
+#endif /* CONFIG_BT_ENABLED */
 
 #include <app/clusters/network-commissioning/network-commissioning.h>
 #include <app/clusters/general-diagnostics-server/general-diagnostics-server.h>
@@ -31,8 +33,11 @@
 #include <app/server/Server.h>
 #include <app/util/attribute-storage.h>
 #include <credentials/DeviceAttestationCredsProvider.h>
+#include <credentials/FabricTable.h>
 #include <platform/CHIPDeviceLayer.h>
+#include <platform/DeviceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
+#include <platform/ESP32/ESP32DeviceInfoProvider.h>
 #include <platform/ESP32/ESP32FactoryDataProvider.h>
 #include <platform/ESP32/NetworkCommissioningDriver.h>
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -74,6 +79,21 @@ namespace {
 chip::DeviceLayer::ESP32FactoryDataProvider factory_data_provider;
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 
+#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
+chip::DeviceLayer::ESP32DeviceInfoProvider device_info_provider;
+#endif
+
+void PostEvent(uint16_t eventType)
+{
+    chip::DeviceLayer::ChipDeviceEvent event;
+    event.Type = eventType;
+    CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
+    if (error != CHIP_NO_ERROR)
+    {
+        ESP_LOGE(TAG, "Failed to post event for event type:%u, err:%" CHIP_ERROR_FORMAT, eventType, error.Format());
+    }
+}
+
 class AppDelegateImpl : public AppDelegate
 {
 public:
@@ -96,21 +116,35 @@ public:
     {
         PostEvent(chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed);
     }
+};
 
-private:
-    void PostEvent(uint16_t eventType)
+class FabricDelegateImpl : public chip::FabricTable::Delegate
+{
+public:
+    void FabricWillBeRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
     {
-        chip::DeviceLayer::ChipDeviceEvent event;
-        event.Type = eventType;
-        CHIP_ERROR error = chip::DeviceLayer::PlatformMgr().PostEvent(&event);
-        if (error != CHIP_NO_ERROR)
-        {
-            ESP_LOGE(TAG, "Failed to post event from AppDelegate, err:%" CHIP_ERROR_FORMAT, error.Format());
-        }
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricWillBeRemoved);
+    }
+
+    void OnFabricRemoved(const chip::FabricTable & fabricTable,chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricRemoved);
+    }
+
+    void OnFabricCommitted(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricCommitted);
+    }
+
+    void OnFabricUpdated(const chip::FabricTable & fabricTable, chip::FabricIndex fabricIndex)
+    {
+        PostEvent(chip::DeviceLayer::DeviceEventType::kFabricUpdated);
     }
 };
 
 AppDelegateImpl s_app_delegate;
+
+FabricDelegateImpl s_fabric_delegate;
 
 }  // namespace
 
@@ -755,11 +789,16 @@ esp_err_t chip_stack_unlock()
 
 static void esp_matter_chip_init_task(intptr_t context)
 {
-    xTaskHandle task_to_notify = reinterpret_cast<xTaskHandle>(context);
+    TaskHandle_t task_to_notify = reinterpret_cast<TaskHandle_t>(context);
 
     static chip::CommonCaseDeviceServerInitParams initParams;
     initParams.InitializeStaticResourcesBeforeServerInit();
     initParams.appDelegate = &s_app_delegate;
+    CHIP_ERROR ret = chip::Server::GetInstance().GetFabricTable().AddFabricDelegate(&s_fabric_delegate);
+    if (ret != CHIP_NO_ERROR)
+    {
+        ESP_LOGE(TAG, "Failed to add fabric delegate, err:%" CHIP_ERROR_FORMAT, ret.Format());
+    }
     chip::Server::GetInstance().Init(initParams);
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
@@ -815,15 +854,14 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
 
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
-    case chip::DeviceLayer::DeviceEventType::kThreadConnectivityChange:
-        if (event->ThreadConnectivityChange.Result == chip::DeviceLayer::ConnectivityChange::kConnectivity_Established) {
-            esp_matter_ota_requestor_start();
-            /* Initialize binding manager */
-            client::binding_manager_init();
-        }
+    case chip::DeviceLayer::DeviceEventType::kDnssdPlatformInitialized:
+        esp_matter_ota_requestor_start();
+        /* Initialize binding manager */
+        client::binding_manager_init();
         break;
 #endif
 
+#if CONFIG_BT_ENABLED
 #if CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
     {
@@ -853,7 +891,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
         break;
     }
 #endif /* CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING */
-
+#endif /* CONFIG_BT_ENABLED */
     default:
         break;
     }
@@ -875,6 +913,9 @@ static esp_err_t chip_init(event_callback_t callback)
 #if CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
     SetDeviceInstanceInfoProvider(&factory_data_provider);
 #endif // CONFIG_ENABLE_ESP32_DEVICE_INSTANCE_INFO_PROVIDER
+#if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
+    SetDeviceInfoProvider(&device_info_provider);
+#endif // CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 
     SetDeviceAttestationCredentialsProvider(get_dac_provider());
@@ -989,6 +1030,17 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     attribute->endpoint_id = current_cluster->endpoint_id;
     attribute->flags = flags;
     attribute->flags |= ATTRIBUTE_FLAG_EXTERNAL_STORAGE;
+
+    // After reboot, string and array are treated as Invalid. So need to store val.type and size of attribute value.
+    attribute->val.type = val.type;
+    if (val.type == ESP_MATTER_VAL_TYPE_CHAR_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_OCTET_STRING ||
+        val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
+        attribute->val.val.a.s = val.val.a.s;
+        attribute->val.val.a.n = val.val.a.n;
+        attribute->val.val.a.t = val.val.a.t;
+    }
+
     if (attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         esp_matter_attr_val_t val_nvs = esp_matter_invalid(NULL);
         esp_err_t err = get_val_from_nvs((attribute_t *)attribute, &val_nvs);
@@ -1108,6 +1160,7 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         /* Free old buf */
         if (current_attribute->val.val.a.b) {
             free(current_attribute->val.val.a.b);
+            current_attribute->val.val.a.b = NULL;
         }
         if (val->val.a.s > 0) {
             /* Alloc new buf */
@@ -1118,13 +1171,17 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
             }
             /* Copy to new buf and assign */
             memcpy(new_buf, val->val.a.b, val->val.a.s);
-            val->val.a.b = new_buf;
+            current_attribute->val.val.a.b = new_buf;
+            current_attribute->val.val.a.s = val->val.a.s;
+            current_attribute->val.val.a.n = val->val.a.n;
+            current_attribute->val.val.a.t = val->val.a.t;
         } else {
             ESP_LOGD(TAG, "Set val called with string with size 0");
-            val->val.a.b = NULL;
         }
+    } else {
+        memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
     }
-    memcpy((void *)&current_attribute->val, (void *)val, sizeof(esp_matter_attr_val_t));
+
     if (current_attribute->flags & ATTRIBUTE_FLAG_NONVOLATILE) {
         store_val_in_nvs(attribute);
     }

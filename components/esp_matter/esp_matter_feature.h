@@ -404,5 +404,23 @@ esp_err_t add(cluster_t *cluster, config_t *config);
 } /* feature */
 } /* switch_cluster */
 
+namespace time_format_localization {
+namespace feature {
+
+namespace calendar_format {
+
+typedef struct config {
+    nullable<uint8_t> active_calendar_type;
+    config() : active_calendar_type(0) {}
+} config_t;
+
+uint32_t get_id();
+esp_err_t add(cluster_t *cluster, config_t *config);
+
+} /* calendar_format */
+
+} /* feature */
+} /* time_format_localization */
+
 } /* cluster */
 } /* esp_matter */

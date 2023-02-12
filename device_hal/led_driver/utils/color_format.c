@@ -15,44 +15,57 @@
 
 void hsv_to_rgb(HS_color_t HS, uint8_t brightness, RGB_color_t *RGB)
 {
-    uint16_t sector = HS.hue / 60;
-    uint16_t rgb_max = brightness;
-    uint16_t rgb_min = rgb_max * (100 - HS.saturation) / 100;
-    uint16_t offset = HS.hue % 60;
-    uint16_t rgb_adj = (rgb_max - rgb_min) * offset / 60;
+    uint16_t hue = HS.hue % 360;
+    uint16_t hi = (hue / 60) % 6;
+    uint16_t F = 100 * hue / 60 - 100 * hi;
+    uint16_t P = brightness * (100 - HS.saturation) / 100;
+    uint16_t Q = brightness * (10000 - F * HS.saturation) / 10000;
+    uint16_t T = brightness * (10000 - HS.saturation * (100 - F)) / 10000;
 
-    switch (sector) {
+    switch (hi) {
     case 0:
-        RGB->red = rgb_max;
-        RGB->green = rgb_min + rgb_adj;
-        RGB->blue = rgb_min;
+        RGB->red = brightness;
+        RGB->green = T;
+        RGB->blue = P;
         break;
+
     case 1:
-        RGB->red = rgb_max - rgb_adj;
-        RGB->green = rgb_max;
-        RGB->blue = rgb_min;
+        RGB->red = Q;
+        RGB->green = brightness;
+        RGB->blue = P;
         break;
+
     case 2:
-        RGB->red = rgb_min;
-        RGB->green = rgb_max;
-        RGB->blue = rgb_min + rgb_adj;
+        RGB->red = P;
+        RGB->green = brightness;
+        RGB->blue = T;
         break;
+
     case 3:
-        RGB->red = rgb_min;
-        RGB->green = rgb_max - rgb_adj;
-        RGB->blue = rgb_max;
+        RGB->red = P;
+        RGB->green = Q;
+        RGB->blue = brightness;
         break;
+
     case 4:
-        RGB->red = rgb_min + rgb_adj;
-        RGB->green = rgb_min;
-        RGB->blue = rgb_max;
+        RGB->red = T;
+        RGB->green = P;
+        RGB->blue = brightness;
         break;
+
+    case 5:
+        RGB->red = brightness;
+        RGB->green = P;
+        RGB->blue = Q;
+        break;
+
     default:
-        RGB->red = rgb_max;
-        RGB->green = rgb_min;
-        RGB->blue = rgb_max - rgb_adj;
         break;
     }
+
+    RGB->red = RGB->red * 255 / 100;
+    RGB->green = RGB->green * 255 / 100;
+    RGB->blue = RGB->blue * 255 / 100;
 }
 
 // A Table from color temperature to hue and saturation.
