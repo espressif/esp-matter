@@ -41,7 +41,7 @@ Bluetooth/BLE does not work on by device:
 -  In this case, the following can be done:
 
    -  Run the device console command:
-      ``matter wifi connect <ssid> <password>``.
+      ``matter esp wifi connect <ssid> <password>``.
    -  Run the chip-tool command for commissioning over ip:
       ``chip-tool pairing onnetwork 0x7283 20202021``.
 

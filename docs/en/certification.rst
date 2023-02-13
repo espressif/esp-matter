@@ -10,7 +10,7 @@ You need to `become a member <https://csa-iot.org/become-member/>`__ of CSA and 
 
 Test Harness on RaspberryPi is used for Matter Certification Test. You can fetch the TH RaspberryPi image from `here <https://groups.csa-iot.org/wg/matter-csg/document/27406>`__ and install the image to a micro SD card with the `Raspberry Pi Imager <https://www.raspberrypi.com/software/>`__.
 
-Test cases can be verifed with TH by 4 methods including UI-Automated, UI-SemiAutomated, UI-Manual, and Verification Steps Document. A website UI is used for the first three methods. you can follow the instruction in `TH User Guide <https://groups.csa-iot.org/wg/matter-csg/document/24838>`__ to use the website UI. For the last method, you should use the chip-tool in path ``~/apps`` of the TH and execute the commands in the `Verification Steps Document <https://groups.csa-iot.org/wg/matter-csg/document/26925>`__ step by step.
+Test cases can be verified with TH by 4 methods including UI-Automated, UI-SemiAutomated, UI-Manual, and Verification Steps Document. A website UI is used for the first three methods. You can follow the instructions in `TH User Guide <https://groups.csa-iot.org/wg/matter-csg/document/24838>`__ to use the website UI. For the last method, you should use the chip-tool in path ``~/apps`` of the TH and execute the commands in the `Verification Steps Document <https://groups.csa-iot.org/wg/matter-csg/document/26925>`__ step by step.
 
 3.2 Matter Factory Partition Binary
 -----------------------------------
@@ -22,7 +22,7 @@ Matter factory partition binary files contains the commissionable information (d
 
 A Certification Declaration (CD) is a cryptographic document that allows a Matter device to assert its protocol compliance. It can be generated with following steps. We need to generate the CD which matches the vendor id and product id in DAC and the ones in basic information cluster.
 
-A test CD signed by the test CD signing keys in `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/credentials/test/certification-declaration>`__ SDK repository is required for Matter Certification Test, so the ``certification_type`` of it is 1 (provisional). The CD in official products passing the Matter Certification Test is issued by CSA and the ``certification_type`` is 2 (official).
+A test CD signed by the test CD signing keys in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/credentials/test/certification-declaration>`__ SDK repository is required for Matter Certification Test, so the ``certification_type`` of it is 1 (provisional). The CD in official products passing the Matter Certification Test is issued by CSA and the ``certification_type`` is 2 (official).
 
 - Generate the Test CD file
 
@@ -46,9 +46,9 @@ Note3: If the product uses the DACs and PAI certifications provided by a trusted
 3.2.2 Certificates and Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, upload it to `TestNet <https://testnet.iotledger.io/>`__ following the instruction in `DCL Primer <https://groups.csa-iot.org/wg/matter-tsg/document/24705>`__, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
+For Matter Certification Test, vendors should generate their own test Product Attestation Authority (PAA) certificate, Product Attestation Intermediate (PAI) certificate, and Device Attestation Certificate (DAC), but not use the default test PAA certificate in `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/credentials/test/attestation>`__ SDK repository. So you need to generate a PAA certificate, upload it to `TestNet <https://testnet.iotledger.io/>`__ following the instruction in `DCL Primer <https://groups.csa-iot.org/wg/matter-tsg/document/24705>`__, and use it to sign and attest PAI certificates which will be used to sign and attest the DACs. The PAI certificate, DAC, and DAC's private key should be stored in the product you submit to test.
 
-Here are the steps to generate the certificates and keys using `chip-cert <https://github.com/project-chip/connectedhomeip/tree/master/src/tools/chip-cert/README.md>`__ and :project_file:`mfg_tool<tools/mfg_tool/README.md>`.
+Here are the steps to generate the certificates and keys using `chip-cert <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert/README.md>`__ and :project_file:`mfg_tool<tools/mfg_tool/README.md>`.
 
 3.2.2.1 Generating PAA Certificate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -86,7 +86,7 @@ After getting the PAA certificate and key, the factory partition binary files wi
                   -cd /path/to/CD_file -v 0x131B --vendor_name Espressif -p 0x1234 \
                   --product-name Test-light --hw-ver 1 --hw-ver-str v1.0
 
-Note: For more information about the arguements, you can use ``./mfg_tool.py --help``
+Note: For more information about the arguments, you can use ``./mfg_tool.py --help``
 
 The option ``-n`` (count) is the number of generated binaries. In the above command, mfg_tool will generate PAI certificate and key and then use them to generate ``count`` different DACs and keys. It will use the generated certificates and keys to generate ``count`` factory partition binaries with different DACs, discriminators, and setup pincodes. Flash the factory binary to the device's NVS partition. Then the device will send the vendor's PAI certificate and DAC to the commissioner during commissioning.
 
@@ -158,7 +158,7 @@ Here are the menuconfig options related to the usage of factory partition binary
 
 - ``DAC Provider options`` in ``→ Component config → ESP Matter``
 
-  When selecting ``Attestation - Test``, the app will use the hardcode PAI certificate, DAC, DAC private key, and CD.
+  When selecting ``Attestation - Test``, the app will use the hardcoded PAI certificate, DAC, DAC private key, and CD.
 
   When selecting ``Attestation - Factory``, the app will use the PAI certificate, DAC, DAC private key, and CD in the factory partition binary.
 
@@ -174,7 +174,7 @@ Here are two ways to generate the OTA image.
 3.3.1 Using menuconfig option
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Enable ``Generate Matter OTA image`` in ``→ Component config → CHIP Device Layer → Matter OTA Image``, set ``Device Vendor Id`` and ``Device Product Id`` in ``→ Component config → CHIP Device Layer → Device Identification Options``, and edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the project's CMakelists. Build the example and the ota image will be generated in the build path with the app binary file.
+Enable ``Generate Matter OTA image`` in ``→ Component config → CHIP Device Layer → Matter OTA Image``, set ``Device Vendor Id`` and ``Device Product Id`` in ``→ Component config → CHIP Device Layer → Device Identification Options``, and edit the ``PROJECT_VER`` and the ``PROJECT_VER_NUMBER`` in the project's CMakelists. Build the example and the OTA image will be generated in the build path with the app binary file.
 
 Note: The ``PROJECT_VER_NUMBER`` should always be incremental. It should be higher than the version number of firmware to be updated.
 
@@ -331,7 +331,7 @@ Here are some issues that you might meet in Matter Certification Test and quick 
 
   Step 17 might return Timeout for the examples before `commit 85abe2c <https://github.com/espressif/esp-matter/tree/85abe2cdd457f6f1d198af0ff1ee339ccd3c9bfb>`__. You can update the esp-matter or cherry-pick `commit d7cd5aa <https://github.com/project-chip/connectedhomeip/commit/d7cd5aac3fb8a3021d1a792034f78e9fc8e46845>`__ to the connectedhomeip repository.
 
-  All the NetworkCommissioning commands are fail-safe required. If the commands fail with a ``FAILSAFE_REQUIRED`` status code. you need to send ``arm-fail-safe`` command and then send the NetworkCommissioning commands.
+  All the NetworkCommissioning commands are fail-safe required. If the commands fail with a ``FAILSAFE_REQUIRED`` status code. You need to send ``arm-fail-safe`` command and then send the NetworkCommissioning commands.
 
 - ``TC-SU-2.7``
 

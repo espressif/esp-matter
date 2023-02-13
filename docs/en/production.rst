@@ -66,7 +66,7 @@ the manufacturing partition, the rest of the components like the bootloader, fir
 are common across all your devices. You can refer the Manufacturing section below for creating
 a large number of manufacturing partition images.
 
-Your manufacturing line needs to ensure that these unique manufacturing parition images are
+Your manufacturing line needs to ensure that these unique manufacturing partition images are
 correctly written to each device and the appropriate QR code images associated with each device.
 You may also opt for Espressif's pre-provisioning service that pre-provisions these unique
 images before shipping the modules and provides a manifest (CSV file) along with QR code images
