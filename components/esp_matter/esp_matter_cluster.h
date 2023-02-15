@@ -448,7 +448,26 @@ typedef struct config {
 } config_t;
 
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
-}
+} /* flow_measurement */
+
+namespace pump_configuration_and_control {
+typedef struct config {
+    uint16_t cluster_revision;
+    // Pump Information Attributes
+    const nullable<int16_t> max_pressure;
+    const nullable<uint16_t> max_speed;
+    const nullable<uint16_t> max_flow;
+    // Pump Dynamic Information Attributes
+    uint8_t effective_operation_mode;
+    uint8_t effective_control_mode;
+    nullable<int16_t> capacity;
+    // Pump Settings Attributes
+    uint8_t operation_mode;
+    config() : cluster_revision(3), max_pressure(), max_speed(), max_flow(), effective_operation_mode(0), effective_control_mode(0), capacity(), operation_mode(0) {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+} /* pump_configuration_and_control */
 
 } /* cluster */
 } /* esp_matter */

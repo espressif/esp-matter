@@ -1761,5 +1761,51 @@ cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
 }
 } /* flow_measurement */
 
+namespace pump_configuration_and_control {
+const function_generic_t function_list[] = {
+    (function_generic_t)emberAfPumpConfigurationAndControlClusterServerInitCallback,
+    (function_generic_t)MatterPumpConfigurationAndControlClusterServerPreAttributeChangedCallback,
+};
+const int function_flags = CLUSTER_FLAG_INIT_FUNCTION | CLUSTER_FLAG_PRE_ATTRIBUTE_CHANGED_FUNCTION;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags)
+{
+    cluster_t *cluster = cluster::create(endpoint, PumpConfigurationAndControl::Id, flags);
+    if (!cluster) {
+    	ESP_LOGE(TAG, "Could not create cluster");
+    	return NULL;
+    }
+    if (flags & CLUSTER_FLAG_SERVER) {
+    	set_plugin_server_init_callback(cluster, MatterPumpConfigurationAndControlPluginServerInitCallback);
+    	add_function_list(cluster, function_list, function_flags);
+    }
+    if (flags & CLUSTER_FLAG_CLIENT) {
+    	set_plugin_client_init_callback(cluster, MatterPumpConfigurationAndControlPluginClientInitCallback);
+    	create_default_binding_cluster(endpoint);
+    }
+    
+    if (flags & CLUSTER_FLAG_SERVER) {
+        /* Attributes managed internally */
+        global::attribute::create_feature_map(cluster, 0);
+    
+        /** Attributes not managed internally **/
+        if (config) {
+    	    global::attribute::create_cluster_revision(cluster, config->cluster_revision);
+    	    attribute::create_max_pressure(cluster, config->max_pressure);
+    	    attribute::create_max_speed(cluster, config->max_speed);
+    	    attribute::create_max_flow(cluster, config->max_flow);
+    	    attribute::create_effective_operation_mode(cluster, config->effective_operation_mode);
+    	    attribute::create_effective_control_mode(cluster, config->effective_control_mode);
+    	    attribute::create_capacity(cluster, config->capacity);
+    	    attribute::create_operation_mode(cluster, config->operation_mode);
+        } else {
+    	    ESP_LOGE(TAG, "Config is NULL. Cannot add some attributes.");
+        }
+    }
+    
+    return cluster;
+}
+} /* pump_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

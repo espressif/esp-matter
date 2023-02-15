@@ -466,5 +466,33 @@ attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t 
 } /* attribute */
 } /* flow_measurement */
 
+namespace pump_configuration_and_control {
+namespace attribute {
+attribute_t *create_max_pressure(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_speed(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_flow(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_const_pressure(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_const_pressure(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_min_comp_pressure(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_comp_pressure(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_min_const_speed(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_const_speed(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_const_flow(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_max_const_flow(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_min_const_temp(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_max_const_temp(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pump_status(cluster_t *cluster, uint16_t value);
+attribute_t *create_effective_operation_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_effective_control_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_capacity(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_speed(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_lifetime_energy_consumed(cluster_t *cluster, nullable<uint32_t> value);
+attribute_t *create_operation_mode(cluster_t *cluster, uint8_t value);
+attribute_t *create_control_mode(cluster_t *cluster, uint8_t value);
+} /* attribute */
+} /* pump_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */

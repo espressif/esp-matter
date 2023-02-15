@@ -1898,5 +1898,125 @@ attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t 
 } /* attribute */
 } /* flow_measurement */
 
+namespace pump_configuration_and_control {
+namespace attribute {
+
+attribute_t *create_max_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_const_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_min_comp_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinCompPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_comp_pressure(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxCompPressure::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_min_const_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_const_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstSpeed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_max_const_flow(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstFlow::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_min_const_temp(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MinConstTemp::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_max_const_temp(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::MaxConstTemp::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pump_status(cluster_t *cluster, uint16_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::PumpStatus::Id, ATTRIBUTE_FLAG_NONE, esp_matter_bitmap16(value));
+}
+
+attribute_t *create_effective_operation_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveOperationMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_effective_control_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveControlMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+}
+
+attribute_t *create_capacity(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Capacity::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_speed(cluster_t *cluster, nullable<uint16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Speed::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint16(value));
+}
+
+attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeRunningHours::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::Power::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_lifetime_energy_consumed(cluster_t *cluster, nullable<uint32_t> value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeEnergyConsumed::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+}
+
+attribute_t *create_operation_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::OperationMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+
+attribute_t *create_control_mode(cluster_t *cluster, uint8_t value)
+{
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::ControlMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+}
+} /* attribute */
+} /* pump_configuration_and_control */
+
 } /* cluster */
 } /* esp_matter */
