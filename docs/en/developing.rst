@@ -24,7 +24,7 @@ Additionally, we also support developing on Windows Host using WSL.
 The Prerequisites for ESP-IDF and Matter:
 
 - Please see `Prerequisites <https://docs.espressif.com/projects/esp-idf/en/v4.4.3/esp32/get-started/index.html#step-1-install-prerequisites>`__ for ESP IDF.
-- Please get the `Prerequisites <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
+- Please get the `Prerequisites <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/BUILDING.md#prerequisites>`__ for Matter.
 
 
 
@@ -41,7 +41,7 @@ Development on Windows is supported using Windows Subsystem for Linux (WSL). Ple
   and `WSL <https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/WSL.md#usbipd>`__ (usbipd-win `WSL Support <https://github.com/dorssel/usbipd-win/wiki/WSL-support>`__).
 - Here onwards process for setting esp-matter and building examples is same as other hosts.
 
-For using VSCode for developement, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
+For using VSCode for development, please check `Developing in WSL <https://code.visualstudio.com/docs/remote/wsl>`__.
 
 
 2.1.2 Getting the Repositories
@@ -199,11 +199,11 @@ Choose IDF target.
 2.2 Commissioning and Control
 -----------------------------
 
-There are a few implementations of Matter commissioner present in the `connectedhomeip <https://github.com/project-chip/connectedhomeip/tree/master/src/controller#implementations>`__ repository.
+There are a few implementations of Matter commissioners present in the `connectedhomeip <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/controller#implementations>`__ repository.
 
 CHIP Tool is an example implementation of Matter commissioner and used for development purposes.
 
-Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/project-chip/connectedhomeip/blob/master/docs/guides/darwin.md#profile-installation>`__ in order to use the application.
+Espressif also has an iOS application, `Espressif-Matter <https://apps.apple.com/in/app/espressif-matter/id1604739172>`__, to commission and control the Matter devices. Please follow `profile installation instructions <https://github.com/espressif/connectedhomeip/blob/v1.0.0.2/docs/guides/darwin.md#profile-installation>`__ in order to use the application. Also, make sure to enable Developer Mode on the iOS.
 
 2.2.1 Test Setup (CHIP Tool)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -352,7 +352,7 @@ Use the cluster commands to control the attributes.
 
 chip-tool when used in interactive mode uses CASE resumption as against establishing CASE for cluster control commands. This results into shorter execution times, thereby improving the overall experience.
 
-For more details on chip-tool usage, check https://github.com/project-chip/connectedhomeip/tree/master/examples/chip-tool
+For more details on chip-tool usage, check https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/examples/chip-tool
 
 2.3 Device console
 ------------------
@@ -770,7 +770,7 @@ This section introduces the Matter controller example. Now this example supports
 
 2.4.5.1 Starting with device console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-After you flash the controller example to the device. you can use `device console<https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>` to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
+After you flash the controller example to the device, you can use `device console <https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html#device-console>`__ to commission and send commands to the end-device. All of the controller commands start with *matter esp controller*.
 
 2.4.5.2 Pairing commands
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -872,7 +872,7 @@ Build the firmware with below configuration options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you do not have an certification declaration file then you can generate the test CD with the help of below mentioned steps.
-We need to generate the new CD because it SHALL match the VID PID in DAC and the ones reported by basic cluster.
+We need to generate the new CD because it SHALL match the VID, PID in DAC and the ones reported by basic cluster.
 
 - Build the host tools if not done already
 
@@ -883,7 +883,7 @@ We need to generate the new CD because it SHALL match the VID PID in DAC and the
     ninja -C build
 
 Generate the Test CD, please make sure to change the ``-V`` (vendor_id) and ``-p`` (product-id) options based on the ones that are being used.
-For more into about the arguments, please check `here <https://github.com/project-chip/connectedhomeip/tree/master/src/tools/chip-cert#gen-cd>`__.
+For more info about the arguments, please check `here <https://github.com/espressif/connectedhomeip/tree/v1.0.0.2/src/tools/chip-cert#gen-cd>`__.
 
 ::
 
