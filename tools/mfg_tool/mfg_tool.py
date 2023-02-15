@@ -37,8 +37,6 @@ if not os.getenv('IDF_PATH'):
     logging.error("IDF_PATH environment variable is not set")
     sys.exit(1)
 
-# TODO: Handle count > 100 case. spake2p gen-verifier doesn't support count > 100
-
 TOOLS = {
     'spake2p': None,
     'chip-cert': None,
