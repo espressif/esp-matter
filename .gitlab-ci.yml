@@ -224,6 +224,11 @@ build_esp_matter_examples_non_pytest_idf_v5_1:
         IDF_VERSION: "ea5e0ff298e6257b31d8e0c81435e6d3937f04c7"
   script:
     - *build_external_platform_example
+
+    # mfg_test_app needs an secure boot signing key, generating one here
+    - cd ${ESP_MATTER_PATH}/examples/mfg_test_app
+    - openssl genrsa -out secure_boot_signing_key.pem 3072
+
     - cd ${ESP_MATTER_PATH}
     - rm  ./examples/*/dependencies.lock
     - pip install -r tools/ci/requirements-build.txt
