@@ -1804,5 +1804,69 @@ attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<u
 } /* attribute */
 } /* illuminance_measurement */
 
+namespace pressure_measurement {
+namespace attribute {
+
+attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_min_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+	return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxMeasuredValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Tolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_pressure_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_min_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MinScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16_t> value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::MaxScaledValue::Id, ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_int16(value));
+}
+
+attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max)
+{
+    attribute_t *attribute = esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::ScaledTolerance::Id, ATTRIBUTE_FLAG_NONE, esp_matter_uint16(value));
+    if (!attribute) {
+	ESP_LOGE(TAG, "Could not create attribute");
+	return NULL;
+    }
+    esp_matter::attribute::add_bounds(attribute, esp_matter_uint16(min), esp_matter_uint16(max));
+    return attribute;
+}
+
+attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value)
+{
+    return esp_matter::attribute::create(cluster, PressureMeasurement::Attributes::Scale::Id, ATTRIBUTE_FLAG_NONE, esp_matter_int8(value));
+}
+
+} /* attribute */
+} /* pressure_measurement */
+
+
 } /* cluster */
 } /* esp_matter */

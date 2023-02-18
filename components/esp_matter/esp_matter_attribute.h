@@ -443,5 +443,19 @@ attribute_t *create_illuminance_light_sensor_type(cluster_t *cluster, nullable<u
 } /* attribute */
 } /* illuminance_measurement */
 
+namespace pressure_measurement {
+namespace attribute {
+attribute_t *create_pressure_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_min_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_max_measured_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_pressure_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_min_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_max_scaled_value(cluster_t *cluster, nullable<int16_t> value);
+attribute_t *create_pressure_scaled_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value);
+} /* attribute */
+} /* pressure_measurement */
+
 } /* cluster */
 } /* esp_matter */
