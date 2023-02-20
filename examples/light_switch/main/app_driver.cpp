@@ -277,8 +277,8 @@ app_driver_handle_t app_driver_switch_init()
     /* Other initializations */
 #if CONFIG_ENABLE_CHIP_SHELL
     app_driver_register_commands();
-    client::set_command_callback(app_driver_client_command_callback, app_driver_client_group_command_callback, NULL);
 #endif // CONFIG_ENABLE_CHIP_SHELL
+    client::set_command_callback(app_driver_client_command_callback, app_driver_client_group_command_callback, NULL);
 
     return (app_driver_handle_t)handle;
 }
