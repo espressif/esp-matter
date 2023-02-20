@@ -457,5 +457,14 @@ attribute_t *create_pressure_scale(cluster_t *cluster, int8_t value);
 } /* attribute */
 } /* pressure_measurement */
 
+namespace flow_measurement {
+namespace attribute {
+attribute_t *create_flow_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_flow_min_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_flow_max_measured_value(cluster_t *cluster, nullable<uint16_t> value);
+attribute_t *create_flow_tolerance(cluster_t *cluster, uint16_t value, uint16_t min, uint16_t max);
+} /* attribute */
+} /* flow_measurement */
+
 } /* cluster */
 } /* esp_matter */

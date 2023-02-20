@@ -59,6 +59,8 @@
 #define ESP_MATTER_LIGHT_SENSOR_DEVICE_TYPE_VERSION 2
 #define ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_ID 0x0305
 #define ESP_MATTER_PRESSURE_SENSOR_DEVICE_TYPE_VERSION 2
+#define ESP_MATTER_FLOW_SENSOR_DEVICE_TYPE_ID 0x0306
+#define ESP_MATTER_FLOW_SENSOR_DEVICE_TYPE_VERSION 2
 
 #define ESP_MATTER_FAN_DEVICE_TYPE_ID 0x002B
 #define ESP_MATTER_FAN_DEVICE_TYPE_VERSION 1
@@ -367,6 +369,18 @@ uint8_t get_device_type_version();
 endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
 endpoint_t *add(endpoint_t *endpoint, config_t *config);
 } /* pressure_sensor */
+
+namespace flow_sensor {
+typedef struct config {
+    cluster::identify::config_t identify;
+    cluster::flow_measurement::config_t flow_measurement;
+} config_t;
+
+uint32_t get_device_type_id();
+uint8_t get_device_type_version();
+endpoint_t *create(node_t *node, config_t *config, uint8_t flags, void *priv_data);
+endpoint_t *add(endpoint_t *endpoint, config_t *config);
+} /* flow_sensor */
 
 } /* endpoint */
 
