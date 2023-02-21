@@ -29,6 +29,11 @@
 #include <platform/DeviceInstanceInfoProvider.h>
 #include <platform/DiagnosticDataProvider.h>
 
+#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+#include <platform/internal/BLEManager.h>
+#include <platform/ESP32/BLEManagerImpl.h>
+#endif
+
 using namespace chip;
 using namespace chip::Credentials;
 using namespace chip::DeviceLayer;
@@ -92,6 +97,16 @@ namespace esp_matter {
 namespace commissioner {
 esp_err_t init(uint16_t commissioner_port)
 {
+#if CONFIG_ENABLE_ESP32_BLE_CONTROLLER
+   CHIP_ERROR err = chip::DeviceLayer::Internal::BLEMgr().Init();
+   err = chip::DeviceLayer::Internal::BLEMgrImpl().ConfigureBle(0, true);
+
+   if (err != CHIP_NO_ERROR) {
+         ChipLogError(DeviceLayer, "BLEManager initialization failed: %s", ErrorStr(err));
+         return ESP_FAIL;
+   }
+#endif
+
     Controller::FactoryInitParams factoryParams;
     Controller::SetupParams setupParams;
 
