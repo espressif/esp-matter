@@ -20,7 +20,6 @@
 #include <app-common/zap-generated/callback.h>
 #include <app/InteractionModelEngine.h>
 #include <app/util/af.h>
-#include <app/util/ember-compatibility-functions.h>
 
 using namespace chip::app::Clusters;
 using chip::app::CommandHandler;
@@ -56,8 +55,8 @@ void DispatchSingleClusterCommandCommon(const ConcreteCommandPath &command_path,
     }
     int flags = get_flags(command);
     if (flags & COMMAND_FLAG_CUSTOM) {
-        EmberAfStatus status = (err == ESP_OK) ? EMBER_ZCL_STATUS_SUCCESS : EMBER_ZCL_STATUS_FAILURE;
-        emberAfSendImmediateDefaultResponse(status);
+        CommandHandler *command_handler = (CommandHandler *)opaque_ptr;
+        command_handler->AddStatus(command_path, (err == ESP_OK) ? (chip::Protocols::InteractionModel::Status::Success) : (chip::Protocols::InteractionModel::Status::Failure));
     }
 }
 
@@ -70,11 +69,7 @@ namespace app {
 void DispatchSingleClusterCommand(const ConcreteCommandPath &command_path, TLVReader &tlv_data,
                                   CommandHandler *command_obj)
 {
-    Compatibility::SetupEmberAfCommandHandler(command_obj, command_path);
-
     esp_matter::command::DispatchSingleClusterCommandCommon(command_path, tlv_data, command_obj);
-
-    Compatibility::ResetEmberAfObjects();
 }
 
 } /* namespace app */
@@ -1377,7 +1372,7 @@ namespace command {
 
 command_t *create_test_event_trigger(cluster_t *cluster)
 {
-    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED, 
+    return esp_matter::command::create(cluster, GeneralDiagnostics::Commands::TestEventTrigger::Id, COMMAND_FLAG_ACCEPTED,
                                         esp_matter_command_callback_test_event_trigger);
 }
 

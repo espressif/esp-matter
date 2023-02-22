@@ -1645,7 +1645,7 @@ esp_err_t get_val_raw(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attrib
         return ESP_FAIL;
     }
 
-    EmberAfStatus status = emberAfReadServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
+    EmberAfStatus status = emberAfReadAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_size);
     if (status != EMBER_ZCL_STATUS_SUCCESS) {
         ESP_LOGE(TAG, "Error getting raw value from matter: 0x%x", status);
         if (lock_status == lock::SUCCESS) {
@@ -1687,7 +1687,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     /* Update matter */
     EmberAfStatus status = EMBER_ZCL_STATUS_SUCCESS;
     if (emberAfContainsServer(endpoint_id, cluster_id)) {
-        status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
+        status = emberAfWriteAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
             ESP_LOGE(TAG, "Error updating attribute to matter: 0x%X", status);
             free(value);

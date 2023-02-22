@@ -13,6 +13,7 @@
 #include <device.h>
 #include <esp_matter.h>
 #include <led_driver.h>
+#include <app_reset.h>
 
 #include <app_priv.h>
 
@@ -159,5 +160,6 @@ app_driver_handle_t app_driver_button_init()
     button_config_t config = button_driver_get_config();
     button_handle_t handle = iot_button_create(&config);
     iot_button_register_cb(handle, BUTTON_PRESS_DOWN, app_driver_button_toggle_cb, NULL);
+    app_reset_button_register(handle);
     return (app_driver_handle_t)handle;
 }
