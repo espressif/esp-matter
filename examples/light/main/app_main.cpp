@@ -16,6 +16,7 @@
 
 #include <app_priv.h>
 #include <app_reset.h>
+#include <app_dqsmart.h>
 
 static const char *TAG = "app_main";
 uint16_t light_endpoint_id = 0;
@@ -26,6 +27,8 @@ using namespace esp_matter::attribute;
 using namespace esp_matter::endpoint;
 using namespace chip::app::Clusters;
 
+
+
 static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 {
     switch (event->Type) {
@@ -35,6 +38,7 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningComplete:
         ESP_LOGI(TAG, "Commissioning complete");
+        DQSLED::stop_timer_led_status();
         break;
 
     case chip::DeviceLayer::DeviceEventType::kFailSafeTimerExpired:
@@ -43,6 +47,8 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStarted:
         ESP_LOGI(TAG, "Commissioning session started");
+        DQSLED::stop_timer_led_status();
+        DQSLED::start_timer_led_status(50000);
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningSessionStopped:
@@ -51,12 +57,31 @@ static void app_event_cb(const ChipDeviceEvent *event, intptr_t arg)
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowOpened:
         ESP_LOGI(TAG, "Commissioning window opened");
+        DQSLED::start_timer_led_status(500000);
         break;
 
     case chip::DeviceLayer::DeviceEventType::kCommissioningWindowClosed:
         ESP_LOGI(TAG, "Commissioning window closed");
+    case chip::DeviceLayer::DeviceEventType::kESPSystemEvent:
+    {
+        if (event->Platform.ESPSystemEvent.Base == WIFI_EVENT)
+        {
+            // switch (event->Platform.ESPSystemEvent.Id)
+            // {
+            //     case WIFI_EVENT_STA_DISCONNECTED:
+            //         ESP_LOGI(TAG, "WIFI_EVENT_STA_DISCONNECTED");
+            //         DQSLED::stop_timer_led_status();
+            //         DQSLED::start_timer_led_status(100000);
+            //         break;
+            //     case WIFI_EVENT_STA_CONNECTED:
+            //         ESP_LOGI(TAG, "WIFI_EVENT_STA_CONNECTED");
+            //         DQSLED::stop_timer_led_status();
+            //         break;
+            // }
+        }
+    
         break;
-
+    }    
     default:
         break;
     }
@@ -95,38 +120,28 @@ extern "C" void app_main()
     app_driver_handle_t button_handle = app_driver_button_init();
     app_reset_button_register(button_handle);
 
+    /*Call control led status*/
+    DQSLED::create_timer_led_status(light_handle);
     /* Create a Matter node and add the mandatory Root Node device type on endpoint 0 */
     node::config_t node_config;
     node_t *node = node::create(&node_config, app_attribute_update_cb, app_identification_cb);
-   
-    // color_temperature_light::config_t light_config;
-    // light_config.on_off.on_off = DEFAULT_POWER;
-    // light_config.on_off.lighting.start_up_on_off = nullptr;
-    // light_config.level_control.current_level = DEFAULT_BRIGHTNESS;
-    // light_config.level_control.lighting.start_up_current_level = DEFAULT_BRIGHTNESS;
-    // light_config.color_control.color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
-    // light_config.color_control.enhanced_color_mode = EMBER_ZCL_COLOR_MODE_COLOR_TEMPERATURE;
-    // light_config.color_control.color_temperature.startup_color_temperature_mireds = nullptr;
-    // endpoint_t *endpoint = color_temperature_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    DQSLED::set_led_status_off();
     on_off_light::config_t  light_config;
     light_config.on_off.on_off = DEFAULT_POWER;
+#if THREE_BUTTON           
     endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
     endpoint_t *endpoint1 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
     endpoint_t *endpoint2 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+#else
+    endpoint_t *endpoint = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+    endpoint_t *endpoint1 = on_off_light::create(node, &light_config, ENDPOINT_FLAG_NONE, light_handle);
+#endif
     /* These node and endpoint handles can be used to create/add other endpoints and clusters. */
     if (!node || !endpoint) {
         ESP_LOGE(TAG, "Matter node creation failed");
     }
 
     light_endpoint_id = endpoint::get_id(endpoint);
-    ESP_LOGI(TAG, "Light created with endpoint_id %d - %d", light_endpoint_id,endpoint::get_id(endpoint1));
-
-    /* Add additional features to the node */
-    // cluster_t *cluster = cluster::get(endpoint, ColorControl::Id);
-    // cluster::color_control::feature::hue_saturation::config_t hue_saturation_config;
-    // hue_saturation_config.current_hue = DEFAULT_HUE;
-    // hue_saturation_config.current_saturation = DEFAULT_SATURATION;
-    // cluster::color_control::feature::hue_saturation::add(cluster, &hue_saturation_config);
 
     /* Matter start */
     err = esp_matter::start(app_event_cb);

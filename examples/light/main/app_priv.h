@@ -10,7 +10,7 @@
 
 #include <esp_err.h>
 #include <esp_matter.h>
-
+#include <led_driver.h>
 /** Standard max values (used for remapping attributes) */
 #define STANDARD_BRIGHTNESS 100
 #define STANDARD_HUE 360
@@ -28,6 +28,9 @@
 #define DEFAULT_BRIGHTNESS 64
 #define DEFAULT_HUE 128
 #define DEFAULT_SATURATION 254
+
+
+#define THREE_BUTTON     false
 
 typedef void *app_driver_handle_t;
 
@@ -75,3 +78,11 @@ esp_err_t app_driver_attribute_update(app_driver_handle_t driver_handle, uint16_
  * @return error in case of failure.
  */
 esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id);
+
+
+esp_err_t app_driver_light_set_defaults(uint16_t endpoint_id);
+
+
+esp_err_t app_driver_set_level_led_status(uint32_t level);
+
+
