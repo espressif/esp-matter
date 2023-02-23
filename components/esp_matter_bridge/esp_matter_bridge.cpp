@@ -162,7 +162,7 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
         return ESP_ERR_INVALID_ARG;
     }
     ESP_LOGI(TAG, "Cluster plugin init for the new added endpoint");
-    cluster_t *cluster = get_first(endpoint);
+    cluster_t *cluster = cluster::get_first(endpoint);
     while (cluster) {
         /* Plugin server init callback */
         cluster::plugin_server_init_callback_t plugin_server_init_callback =
@@ -175,7 +175,7 @@ static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
         if (plugin_client_init_callback) {
             plugin_client_init_callback();
         }
-        cluster = get_next(cluster);
+        cluster = cluster::get_next(cluster);
     }
     return ESP_OK;
 }
