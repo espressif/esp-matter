@@ -1973,12 +1973,12 @@ attribute_t *create_pump_status(cluster_t *cluster, uint16_t value)
 
 attribute_t *create_effective_operation_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveOperationMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveOperationMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
 }
 
 attribute_t *create_effective_control_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveControlMode::Id, ATTRIBUTE_FLAG_NONE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::EffectiveControlMode::Id, ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
 }
 
 attribute_t *create_capacity(cluster_t *cluster, nullable<int16_t> value)
@@ -1993,7 +1993,7 @@ attribute_t *create_speed(cluster_t *cluster, nullable<uint16_t> value)
 
 attribute_t *create_lifetime_running_hours(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeRunningHours::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeRunningHours::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value)
@@ -2003,17 +2003,17 @@ attribute_t *create_pump_power(cluster_t *cluster, nullable<uint32_t> value)
 
 attribute_t *create_lifetime_energy_consumed(cluster_t *cluster, nullable<uint32_t> value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeEnergyConsumed::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE, esp_matter_nullable_uint32(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::LifetimeEnergyConsumed::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NULLABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_nullable_uint32(value));
 }
 
 attribute_t *create_operation_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::OperationMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::OperationMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
 }
 
 attribute_t *create_control_mode(cluster_t *cluster, uint8_t value)
 {
-    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::ControlMode::Id, ATTRIBUTE_FLAG_WRITABLE, esp_matter_enum8(value));
+    return esp_matter::attribute::create(cluster, PumpConfigurationAndControl::Attributes::ControlMode::Id, ATTRIBUTE_FLAG_WRITABLE | ATTRIBUTE_FLAG_NONVOLATILE, esp_matter_enum8(value));
 }
 } /* attribute */
 } /* pump_configuration_and_control */
