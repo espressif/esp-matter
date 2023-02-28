@@ -897,7 +897,7 @@ static void device_callback_internal(const ChipDeviceEvent * event, intptr_t arg
     }
 }
 
-static esp_err_t chip_init(event_callback_t callback)
+static esp_err_t chip_init(event_callback_t callback, intptr_t callback_arg)
 {
     if (chip::Platform::MemoryInit() != CHIP_NO_ERROR) {
         ESP_LOGE(TAG, "Failed to initialize CHIP memory pool");
@@ -929,7 +929,7 @@ static esp_err_t chip_init(event_callback_t callback)
     }
     PlatformMgr().AddEventHandler(device_callback_internal, static_cast<intptr_t>(NULL));
     if(callback) {
-       PlatformMgr().AddEventHandler(callback, static_cast<intptr_t>(NULL));
+       PlatformMgr().AddEventHandler(callback, callback_arg);
     }
 #if CHIP_DEVICE_CONFIG_ENABLE_THREAD
     if (ThreadStackMgr().InitThreadStack() != CHIP_NO_ERROR) {
@@ -949,7 +949,7 @@ static esp_err_t chip_init(event_callback_t callback)
     return ESP_OK;
 }
 
-esp_err_t start(event_callback_t callback)
+esp_err_t start(event_callback_t callback, intptr_t callback_arg)
 {
     if (esp_matter_started) {
         ESP_LOGE(TAG, "esp_matter has started");
@@ -957,7 +957,7 @@ esp_err_t start(event_callback_t callback)
     }
     esp_matter_ota_requestor_init();
 
-    esp_err_t err = chip_init(callback);
+    esp_err_t err = chip_init(callback, callback_arg);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error initializing matter");
         return err;
