@@ -2,12 +2,33 @@
 
 This example creates a Generic Switch device using the ESP
 Matter data model.
+This example aims to demonstrate the use of Fixed Label Cluster which provides a feature for the device to tag an endpoint with zero or more read-only labels using nvs api.
+
+Note:
+    In order to retrieve the label-list from the fixed-label cluster the two options:
+    ``CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER`` and ``CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER`` have been set through sdkcofig.defaults.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
 ## 1. Additional Environment Setup
 
-No additional setup is required.
+The steps below should be followed in order to access the fixed-labels.
+-   If monitoring the device using ``idf.py monitor``,press `` Ctrl + ]`` to stop the process.
+-   The following command must be executed to flash the mfg partition:
+```
+esptool.py -p [port-name] write_flash 0x10000 mfg_binaries/20202020_3841.bin
+```
+-   Execute the command ``idf.py monitor``
+-   Commission the device with ``discriminator: 20202020``and `` passcode: 3841``
+-   Command:
+```
+chip-tool pairing ble-wifi 0x7283 [ssid] [password] 20202020 3841
+```
+-   To read the fixed-labels, use chip-tool.
+-   Command :
+```
+chip-tool fixedlabels read label-list 0x7283 1
+```
 
 ## 2. Post Commissioning Setup
 
