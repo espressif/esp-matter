@@ -343,8 +343,6 @@ def write_per_device_unique_data(args):
                 chip_factory_update('dac-pub-key', os.path.abspath(dacs[2]))
                 chip_factory_update('pai-cert', os.path.abspath(PAI['cert_der']))
 
-            chip_factory_update('cert-dclrn', os.path.relpath(args.cert_dclrn))
-
             # If serial number is not passed, then generate one
             if (args.serial_num is None):
                 chip_factory_update('serial-num', binascii.b2a_hex(os.urandom(SERIAL_NUMBER_LEN)).decode('utf-8'))
@@ -478,55 +476,55 @@ def get_args():
                                           0:WiFi-SoftAP, 1:BLE, 2:On-network. Default is BLE.', choices=[0, 1, 2])
 
     g_dac = parser.add_argument_group('Device attestation credential options')
-    g_dac.add_argument('-cn', '--cn-prefix', type=str, default='ESP32',
+    g_dac.add_argument('-cn', '--cn-prefix', default='ESP32',
                        help='The common name prefix of the subject of the generated certificate.')
     g_dac.add_argument('-lt', '--lifetime', default=4294967295, type=any_base_int,
                        help='Lifetime of the generated certificate. Default is 4294967295 if not specified, \
                               this indicate that certificate does not have well defined expiration date.')
-    g_dac.add_argument('-vf', '--valid-from', type=str,
+    g_dac.add_argument('-vf', '--valid-from',
                        help='The start date for the certificate validity period in format <YYYY>-<MM>-<DD> [ <HH>:<MM>:<SS> ]. \
                               Default is current date.')
     # If DAC is present then PAI key is not required, so it is marked as not required here
     # but, if DAC is not present then PAI key is required and that case is validated in validate_args()
-    g_dac.add_argument('-c', '--cert', type=str, required=False, help='The input certificate file in PEM format.')
-    g_dac.add_argument('-k', '--key', type=str, required=False, help='The input key file in PEM format.')
-    g_dac.add_argument('-cd', '--cert-dclrn', type=str, required=True, help='The certificate declaration file in DER format.')
-    g_dac.add_argument('--dac-cert', type=str, help='The input DAC certificate file in PEM format.')
-    g_dac.add_argument('--dac-key', type=str, help='The input DAC private key file in PEM format.')
+    g_dac.add_argument('-c', '--cert', help='The input certificate file in PEM format.')
+    g_dac.add_argument('-k', '--key', help='The input key file in PEM format.')
+    g_dac.add_argument('-cd', '--cert-dclrn', help='The certificate declaration file in DER format.')
+    g_dac.add_argument('--dac-cert', help='The input DAC certificate file in PEM format.')
+    g_dac.add_argument('--dac-key', help='The input DAC private key file in PEM format.')
     input_cert_group = g_dac.add_mutually_exclusive_group(required=False)
     input_cert_group.add_argument('--paa', action='store_true', help='Use input certificate as PAA certificate.')
     input_cert_group.add_argument('--pai', action='store_true', help='Use input certificate as PAI certificate.')
 
     g_dev_inst_info = parser.add_argument_group('Device instance information options')
-    g_dev_inst_info.add_argument('-v', '--vendor-id', type=any_base_int, required=False, help='Vendor id')
-    g_dev_inst_info.add_argument('--vendor-name', type=str, required=False, help='Vendor name')
-    g_dev_inst_info.add_argument('-p', '--product-id', type=any_base_int, required=False, help='Product id')
-    g_dev_inst_info.add_argument('--product-name', type=str, required=False, help='Product name')
-    g_dev_inst_info.add_argument('--hw-ver', type=any_base_int, required=False, help='Hardware version')
-    g_dev_inst_info.add_argument('--hw-ver-str', type=str, required=False, help='Hardware version string')
-    g_dev_inst_info.add_argument('--mfg-date', type=str, required=False, help='Manufacturing date in format YYYY-MM-DD')
-    g_dev_inst_info.add_argument('--serial-num', type=str, required=False, help='Serial number')
+    g_dev_inst_info.add_argument('-v', '--vendor-id', type=any_base_int, help='Vendor id')
+    g_dev_inst_info.add_argument('--vendor-name', help='Vendor name')
+    g_dev_inst_info.add_argument('-p', '--product-id', type=any_base_int, help='Product id')
+    g_dev_inst_info.add_argument('--product-name', help='Product name')
+    g_dev_inst_info.add_argument('--hw-ver', type=any_base_int, help='Hardware version')
+    g_dev_inst_info.add_argument('--hw-ver-str', help='Hardware version string')
+    g_dev_inst_info.add_argument('--mfg-date', help='Manufacturing date in format YYYY-MM-DD')
+    g_dev_inst_info.add_argument('--serial-num', help='Serial number')
     g_dev_inst_info.add_argument('--enable-rotating-device-id', action='store_true', help='Enable Rotating device id in the generated binaries')
-    g_dev_inst_info.add_argument('--rd-id-uid', type=str, required=False,
+    g_dev_inst_info.add_argument('--rd-id-uid',
                         help='128-bit unique identifier for generating rotating device identifier, provide 32-byte hex string, e.g. "1234567890abcdef1234567890abcdef"')
 
     g_dev_inst = parser.add_argument_group('Device instance options')
-    g_dev_inst.add_argument('--calendar-types', type=str, nargs='+', required=False,
+    g_dev_inst.add_argument('--calendar-types', nargs='+',
                             help='List of supported calendar types. Supported Calendar Types: Buddhist, Chinese, Coptic, \
                                 Ethiopian, Gregorian, Hebrew, Indian, Islamic, Japanese, Korean, Persian, Taiwanese')
-    g_dev_inst.add_argument('--locales', type=str, nargs='+', required=False,
+    g_dev_inst.add_argument('--locales', nargs='+',
                             help='List of supported locales, Language Tag as defined by BCP47, eg. en-US en-GB')
-    g_dev_inst.add_argument('--fixed-labels', type=str, nargs='+', required=False,
+    g_dev_inst.add_argument('--fixed-labels', nargs='+',
                             help='List of fixed labels, eg: "0/orientation/up" "1/orientation/down" "2/orientation/down"')
 
     g_basic = parser.add_argument_group('Few more Basic clusters options')
-    g_basic.add_argument('--product-label', type=str, required=False, help='Product label')
-    g_basic.add_argument('--product-url', type=str, required=False, help='Product URL')
+    g_basic.add_argument('--product-label', help='Product label')
+    g_basic.add_argument('--product-url', help='Product URL')
 
     g_extra_info = parser.add_argument_group('Extra information options using csv files')
-    g_extra_info.add_argument('--csv', type=str, help='CSV file containing the partition schema for extra options. \
+    g_extra_info.add_argument('--csv', help='CSV file containing the partition schema for extra options. \
             [REF: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/mass_mfg.html#csv-configuration-file]')
-    g_extra_info.add_argument('--mcsv', type=str, help='Master CSV file containig optional/extra values specified by the user. \
+    g_extra_info.add_argument('--mcsv', help='Master CSV file containig optional/extra values specified by the user. \
             [REF: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/mass_mfg.html#master-value-csv-file]')
 
     return parser.parse_args()
@@ -560,6 +558,10 @@ def add_optional_KVs(args):
         chip_factory_append('dac-key', 'file', 'binary', None)
         chip_factory_append('dac-pub-key', 'file', 'binary', None)
         chip_factory_append('pai-cert', 'file', 'binary', None)
+
+    # Add certificate declaration
+    if args.cert_dclrn:
+        chip_factory_append('cert-dclrn','file','binary', os.path.relpath(args.cert_dclrn))
 
     # Add the Keys in csv files
     if args.csv is not None:

@@ -107,6 +107,9 @@ extern "C" void app_main()
     switch_endpoint_id = endpoint::get_id(endpoint);
     ESP_LOGI(TAG, "Generic Switch created with endpoint_id %d", switch_endpoint_id);
 
+    cluster::fixed_label::config_t fl_config;
+    cluster_t *fl_cluster = cluster::fixed_label::create(endpoint, &fl_config, CLUSTER_FLAG_SERVER);
+
     /* Add additional features to the node */
     cluster_t *cluster = cluster::get(endpoint, Switch::Id);
 #if CONFIG_GENERIC_SWITCH_TYPE_LATCHING
@@ -121,6 +124,22 @@ extern "C" void app_main()
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Matter start failed: %d", err);
     }
+
+    nvs_handle_t handle;
+    nvs_open_from_partition(CONFIG_CHIP_FACTORY_NAMESPACE_PARTITION_LABEL, "chip-factory", NVS_READWRITE, &handle);
+
+    int32_t out_value = 0;
+    if (nvs_get_i32(handle, "fl-sz/1", &out_value) == ESP_ERR_NVS_NOT_FOUND)
+    {
+       nvs_set_i32(handle, "fl-sz/1", 2);
+       nvs_set_str(handle, "fl-k/1/0", "myEP1LBL1");
+       nvs_set_str(handle, "fl-v/1/0", "valEP1LBL1");
+       nvs_set_str(handle, "fl-k/1/1", "myEP1LBL2");
+       nvs_set_str(handle, "fl-v/1/1", "valEP1LBL2");
+    }
+
+    nvs_commit(handle);
+    nvs_close(handle);
 
 #if CONFIG_ENABLE_CHIP_SHELL
     esp_matter::console::diagnostics_register_commands();
