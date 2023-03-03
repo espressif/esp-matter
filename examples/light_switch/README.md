@@ -30,13 +30,13 @@ For the commands below:
 Update the light's acl attribute to add the entry of remote device
 (switch) in the access control list:
 ```
-accesscontrol write acl '[{"fabricIndex": 1, "privilege": 5, "authMode": 2, "subjects": [ 112233, 29315 ], "targets": null}]' 0x5164 0x0
+accesscontrol write acl '[{"privilege": 5, "authMode": 2, "subjects": [ 112233, 29315 ], "targets": null}]' 0x5164 0x0
 ```
 
 Update the switch's binding attribute to add the entry of remote device
 (light) in the binding table:
 ```
-    binding write binding '[{"fabricIndex": 1, "node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
+    binding write binding '[{"node":20836, "endpoint":1, "cluster":6}]' 0x7283 0x1
 ```
 
 ### 2.2 Bind a group to switch
@@ -63,7 +63,7 @@ This command will write the acl attributes of the nodes and add the endpoint 1 o
 
 Update the switch's binding attribute to add the entry of group in the binding table:
 ```
-    binding write binding '[{"fabricIndex": 1, "group": 257}]' 0x7283 0x1
+    binding write binding '[{"group": 257}]' 0x7283 0x1
 ```
 
 ### 2.3 Device console

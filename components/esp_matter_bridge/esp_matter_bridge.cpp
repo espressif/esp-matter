@@ -155,6 +155,31 @@ esp_err_t erase_bridged_device_info(uint16_t endpoint_id)
     return err;
 }
 
+static esp_err_t plugin_init_callback_endpoint(endpoint_t *endpoint)
+{
+    if (!endpoint) {
+        ESP_LOGE(TAG, "endpoint cannot be NULL");
+        return ESP_ERR_INVALID_ARG;
+    }
+    ESP_LOGI(TAG, "Cluster plugin init for the new added endpoint");
+    cluster_t *cluster = cluster::get_first(endpoint);
+    while (cluster) {
+        /* Plugin server init callback */
+        cluster::plugin_server_init_callback_t plugin_server_init_callback =
+            cluster::get_plugin_server_init_callback(cluster);
+        if (plugin_server_init_callback) {
+            plugin_server_init_callback();
+        }
+        cluster::plugin_client_init_callback_t plugin_client_init_callback =
+            cluster::get_plugin_client_init_callback(cluster);
+        if (plugin_client_init_callback) {
+            plugin_client_init_callback();
+        }
+        cluster = cluster::get_next(cluster);
+    }
+    return ESP_OK;
+}
+
 esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id)
 {
     if (!bridged_device) {
@@ -188,7 +213,7 @@ esp_err_t set_device_type(device_t *bridged_device, uint32_t device_type_id)
         return ESP_ERR_INVALID_ARG;
     }
     }
-    return bridged_device->endpoint ? ESP_OK : ESP_FAIL;
+    return plugin_init_callback_endpoint(bridged_device->endpoint);
 }
 
 static bool parent_endpoint_is_valid(node_t *node, uint16_t parent_endpoint_id)

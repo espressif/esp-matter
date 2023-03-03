@@ -438,5 +438,17 @@ typedef struct config {
 cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
 } /* pressure_measurement */
 
+namespace flow_measurement {
+typedef struct config {
+    uint16_t cluster_revision;
+    nullable<uint16_t> flow_measured_value;
+    nullable<uint16_t> flow_min_measured_value;
+    nullable<uint16_t> flow_max_measured_value;
+    config() : cluster_revision(3), flow_measured_value(), flow_min_measured_value(), flow_max_measured_value() {}
+} config_t;
+
+cluster_t *create(endpoint_t *endpoint, config_t *config, uint8_t flags);
+}
+
 } /* cluster */
 } /* esp_matter */
