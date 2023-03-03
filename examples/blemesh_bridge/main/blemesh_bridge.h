@@ -18,6 +18,7 @@ extern "C" {
 #include <esp_log.h>
 
 #include <esp_matter_attribute_utils.h>
+#include <app_bridged_device.h>
 
 /**
  * @brief
@@ -30,7 +31,7 @@ extern "C" {
  * @return esp_err_t
  */
 esp_err_t blemesh_bridge_attribute_update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_id,
-                                          esp_matter_attr_val_t *val);
+                                          esp_matter_attr_val_t *val, app_bridged_device_t *bridged_device);
 
 #ifdef __cplusplus
 }
