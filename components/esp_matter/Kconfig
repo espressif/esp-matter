@@ -2,6 +2,7 @@ menu "ESP Matter"
 
     config ESP_MATTER_MAX_DEVICE_TYPE_COUNT
         int "Maximum device types per endpoint"
+        range 1 255
         default 16
         help
             The maximum device type count supported per endpoint.
@@ -35,5 +36,33 @@ menu "ESP Matter"
                 An implementation which reads attestation information from the esp_secure_cert partition
 
     endchoice
+
+    config ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT
+        int "Maximum dynamic endpoints"
+        range 1 255
+        default 16
+        help
+            The maximum dynamic endpoints supported.
+
+    config ESP_MATTER_SCENES_TABLE_SIZE
+        int "Scenes table size"
+        range 1 255
+        default 3
+        help
+            Size of the scenes table.
+
+    config ESP_MATTER_BINDING_TABLE_SIZE
+        int "Binding table size"
+        range 1 255
+        default 10
+        help
+            Size of the binding table.
+
+    config ESP_MATTER_UNICAST_MESSAGE_COUNT
+        int "Unicast message count"
+        range 1 255
+        default 10
+        help
+            APS unicast message count.
 
 endmenu
