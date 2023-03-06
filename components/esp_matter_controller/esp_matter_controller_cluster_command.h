@@ -16,6 +16,7 @@
 
 #include <controller/CommissioneeDeviceProxy.h>
 #include <esp_matter.h>
+#include <esp_matter_mem.h>
 
 namespace esp_matter {
 namespace controller {
@@ -49,7 +50,7 @@ public:
     ~cluster_command()
     {
         if (m_command_data) {
-            free(m_command_data);
+            esp_matter_mem_free(m_command_data);
         }
     }
 

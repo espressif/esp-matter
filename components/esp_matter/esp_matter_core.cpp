@@ -46,6 +46,7 @@
 #include <esp_matter_ota.h>
 #include <esp_route_hook.h>
 #include <esp_matter_dac_provider.h>
+#include <esp_matter_mem.h>
 
 using chip::CommandId;
 using chip::DataVersion;
@@ -298,19 +299,19 @@ static esp_err_t free_default_value(attribute_t *attribute)
     if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
         if (current_attribute->default_value_size > 2) {
             if (current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue) {
-                free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
+                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->defaultValue.ptrToDefaultValue);
             }
             if (current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue) {
-                free((void *)current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue);
+                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->minValue.ptrToDefaultValue);
             }
             if (current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue) {
-                free((void *)current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
+                esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue->maxValue.ptrToDefaultValue);
             }
         }
-        free((void *)current_attribute->default_value.ptrToMinMaxValue);
+        esp_matter_mem_free((void *)current_attribute->default_value.ptrToMinMaxValue);
     } else if (current_attribute->default_value_size > 2) {
         if (current_attribute->default_value.ptrToDefaultValue) {
-            free((void *)current_attribute->default_value.ptrToDefaultValue);
+            esp_matter_mem_free((void *)current_attribute->default_value.ptrToDefaultValue);
         }
     }
     return ESP_OK;
@@ -321,7 +322,7 @@ static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_
                                                                 uint16_t attribute_size)
 {
     EmberAfDefaultAttributeValue default_value = (uint16_t)0;
-    uint8_t *value = (uint8_t *)calloc(1, attribute_size);
+    uint8_t *value = (uint8_t *)esp_matter_mem_calloc(1, attribute_size);
     if (!value) {
         ESP_LOGE(TAG, "Could not allocate value buffer for default value");
         return default_value;
@@ -341,7 +342,7 @@ static EmberAfDefaultAttributeValue get_default_value_from_data(esp_matter_attr_
             int_value = (uint16_t)*value;
         }
         default_value = int_value;
-        free(value);
+        esp_matter_mem_free(value);
     }
     return default_value;
 }
@@ -362,7 +363,7 @@ static esp_err_t set_default_value_from_current_val(attribute_t *attribute)
 
     /* Get and set value */
     if (current_attribute->flags & ATTRIBUTE_FLAG_MIN_MAX) {
-        EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)calloc(1,
+        EmberAfAttributeMinMaxValue *temp_value = (EmberAfAttributeMinMaxValue *)esp_matter_mem_calloc(1,
                                                                                 sizeof(EmberAfAttributeMinMaxValue));
         if (!temp_value) {
             ESP_LOGE(TAG, "Could not allocate ptrToMinMaxValue for default value");
@@ -457,31 +458,31 @@ static esp_err_t disable(endpoint_t *endpoint)
     int cluster_count = endpoint_type->clusterCount;
     for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
         /* Free attributes */
-        free((void *)endpoint_type->cluster[cluster_index].attributes);
+        esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].attributes);
         /* Free commands */
         if (endpoint_type->cluster[cluster_index].acceptedCommandList) {
-            free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
+            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].acceptedCommandList);
         }
         if (endpoint_type->cluster[cluster_index].generatedCommandList) {
-            free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
+            esp_matter_mem_free((void *)endpoint_type->cluster[cluster_index].generatedCommandList);
         }
     }
-    free((void *)endpoint_type->cluster);
+    esp_matter_mem_free((void *)endpoint_type->cluster);
 
     /* Free data versions */
     if (current_endpoint->data_versions_ptr) {
-        free(current_endpoint->data_versions_ptr);
+        esp_matter_mem_free(current_endpoint->data_versions_ptr);
         current_endpoint->data_versions_ptr = NULL;
     }
 
     /* Free device types */
     if (current_endpoint->device_types_ptr) {
-        free(current_endpoint->device_types_ptr);
+        esp_matter_mem_free(current_endpoint->device_types_ptr);
         current_endpoint->device_types_ptr = NULL;
     }
 
     /* Free endpoint type */
-    free(endpoint_type);
+    esp_matter_mem_free(endpoint_type);
     current_endpoint->endpoint_type = NULL;
 
     /* Clear endpoint persistent data in nvs flash */
@@ -497,7 +498,7 @@ esp_err_t enable(endpoint_t *endpoint)
     _endpoint_t *current_endpoint = (_endpoint_t *)endpoint;
 
     /* Endpoint Type */
-    EmberAfEndpointType *endpoint_type = (EmberAfEndpointType *)calloc(1, sizeof(EmberAfEndpointType));
+    EmberAfEndpointType *endpoint_type = (EmberAfEndpointType *)esp_matter_mem_calloc(1, sizeof(EmberAfEndpointType));
     if (!endpoint_type) {
         ESP_LOGE(TAG, "Couldn't allocate endpoint_type");
         /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
@@ -506,10 +507,10 @@ esp_err_t enable(endpoint_t *endpoint)
     current_endpoint->endpoint_type = endpoint_type;
 
     /* Device types */
-    EmberAfDeviceType *device_types_ptr = (EmberAfDeviceType *)calloc(current_endpoint->device_type_count, sizeof(EmberAfDeviceType));
+    EmberAfDeviceType *device_types_ptr = (EmberAfDeviceType *)esp_matter_mem_calloc(current_endpoint->device_type_count, sizeof(EmberAfDeviceType));
     if (!device_types_ptr) {
         ESP_LOGE(TAG, "Couldn't allocate device_types");
-        free(endpoint_type);
+        esp_matter_mem_free(endpoint_type);
         current_endpoint->endpoint_type = NULL;
         /* goto cleanup is not used here to avoid 'crosses initialization' of device_types below */
         return ESP_ERR_NO_MEM;
@@ -526,11 +527,11 @@ esp_err_t enable(endpoint_t *endpoint)
     int cluster_count = cluster::get_count(cluster);
     int cluster_index = 0;
 
-    DataVersion *data_versions_ptr = (DataVersion *)calloc(1, cluster_count * sizeof(DataVersion));
+    DataVersion *data_versions_ptr = (DataVersion *)esp_matter_mem_calloc(1, cluster_count * sizeof(DataVersion));
     if (!data_versions_ptr) {
         ESP_LOGE(TAG, "Couldn't allocate data_versions");
-        free(data_versions_ptr);
-        free(endpoint_type);
+        esp_matter_mem_free(data_versions_ptr);
+        esp_matter_mem_free(endpoint_type);
         current_endpoint->data_versions_ptr = NULL;
         current_endpoint->endpoint_type = NULL;
         /* goto cleanup is not used here to avoid 'crosses initialization' of data_versions below */
@@ -557,7 +558,7 @@ esp_err_t enable(endpoint_t *endpoint)
     int command_flag = COMMAND_FLAG_NONE;
     int endpoint_index = 0;
 
-    matter_clusters = (EmberAfCluster *)calloc(1, cluster_count * sizeof(EmberAfCluster));
+    matter_clusters = (EmberAfCluster *)esp_matter_mem_calloc(1, cluster_count * sizeof(EmberAfCluster));
     if (!matter_clusters) {
         ESP_LOGE(TAG, "Couldn't allocate matter_clusters");
         err = ESP_ERR_NO_MEM;
@@ -569,7 +570,7 @@ esp_err_t enable(endpoint_t *endpoint)
         attribute = cluster->attribute_list;
         attribute_count = attribute::get_count(attribute);
         attribute_index = 0;
-        matter_attributes = (EmberAfAttributeMetadata *)calloc(1, attribute_count * sizeof(EmberAfAttributeMetadata));
+        matter_attributes = (EmberAfAttributeMetadata *)esp_matter_mem_calloc(1, attribute_count * sizeof(EmberAfAttributeMetadata));
         if (!matter_attributes) {
             if (attribute_count != 0) {
                 ESP_LOGE(TAG, "Couldn't allocate matter_attributes");
@@ -604,7 +605,7 @@ esp_err_t enable(endpoint_t *endpoint)
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
-            accepted_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            accepted_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
             if (!accepted_command_ids) {
                 ESP_LOGE(TAG, "Couldn't allocate accepted_command_ids");
                 err = ESP_ERR_NO_MEM;
@@ -626,7 +627,7 @@ esp_err_t enable(endpoint_t *endpoint)
         command_count = command::get_count(command, command_flag);
         if (command_count > 0) {
             command_index = 0;
-            generated_command_ids = (CommandId *)calloc(1, (command_count + 1) * sizeof(CommandId));
+            generated_command_ids = (CommandId *)esp_matter_mem_calloc(1, (command_count + 1) * sizeof(CommandId));
             if (!generated_command_ids) {
                 ESP_LOGE(TAG, "Couldn't allocate generated_command_ids");
                 err = ESP_ERR_NO_MEM;
@@ -695,40 +696,40 @@ esp_err_t enable(endpoint_t *endpoint)
 
 cleanup:
     if (generated_command_ids) {
-        free(generated_command_ids);
+        esp_matter_mem_free(generated_command_ids);
     }
     if (accepted_command_ids) {
-        free(accepted_command_ids);
+        esp_matter_mem_free(accepted_command_ids);
     }
     if (matter_attributes) {
-        free(matter_attributes);
+        esp_matter_mem_free(matter_attributes);
     }
     if (matter_clusters) {
         for (int cluster_index = 0; cluster_index < cluster_count; cluster_index++) {
             /* Free attributes */
             if (matter_clusters[cluster_index].attributes) {
-                free((void *)matter_clusters[cluster_index].attributes);
+                esp_matter_mem_free((void *)matter_clusters[cluster_index].attributes);
             }
             /* Free commands */
             if (matter_clusters[cluster_index].acceptedCommandList) {
-                free((void *)matter_clusters[cluster_index].acceptedCommandList);
+                esp_matter_mem_free((void *)matter_clusters[cluster_index].acceptedCommandList);
             }
             if (matter_clusters[cluster_index].generatedCommandList) {
-                free((void *)matter_clusters[cluster_index].generatedCommandList);
+                esp_matter_mem_free((void *)matter_clusters[cluster_index].generatedCommandList);
             }
         }
-        free(matter_clusters);
+        esp_matter_mem_free(matter_clusters);
     }
     if (data_versions_ptr) {
-        free(data_versions_ptr);
+        esp_matter_mem_free(data_versions_ptr);
         current_endpoint->data_versions_ptr = NULL;
     }
     if (device_types_ptr) {
-        free(device_types_ptr);
+        esp_matter_mem_free(device_types_ptr);
         current_endpoint->device_types_ptr = NULL;
     }
     if (endpoint_type) {
-        free(endpoint_type);
+        esp_matter_mem_free(endpoint_type);
         current_endpoint->endpoint_type = NULL;
     }
     return err;
@@ -1020,7 +1021,7 @@ attribute_t *create(cluster_t *cluster, uint32_t attribute_id, uint8_t flags, es
     }
 
     /* Allocate */
-    _attribute_t *attribute = (_attribute_t *)calloc(1, sizeof(_attribute_t));
+    _attribute_t *attribute = (_attribute_t *)esp_matter_mem_calloc(1, sizeof(_attribute_t));
     if (!attribute) {
         ESP_LOGE(TAG, "Couldn't allocate _attribute_t");
         return NULL;
@@ -1089,17 +1090,17 @@ static esp_err_t destroy(attribute_t *attribute)
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free buf */
         if (current_attribute->val.val.a.b) {
-            free(current_attribute->val.val.a.b);
+            esp_matter_mem_free(current_attribute->val.val.a.b);
         }
     }
 
     /* Free bounds */
     if (current_attribute->bounds) {
-        free(current_attribute->bounds);
+        esp_matter_mem_free(current_attribute->bounds);
     }
 
     /* Free */
-    free(current_attribute);
+    esp_matter_mem_free(current_attribute);
     return ESP_OK;
 }
 
@@ -1161,12 +1162,12 @@ esp_err_t set_val(attribute_t *attribute, esp_matter_attr_val_t *val)
         val->type == ESP_MATTER_VAL_TYPE_ARRAY) {
         /* Free old buf */
         if (current_attribute->val.val.a.b) {
-            free(current_attribute->val.val.a.b);
+            esp_matter_mem_free(current_attribute->val.val.a.b);
             current_attribute->val.val.a.b = NULL;
         }
         if (val->val.a.s > 0) {
             /* Alloc new buf */
-            uint8_t *new_buf = (uint8_t *)calloc(1, val->val.a.s);
+            uint8_t *new_buf = (uint8_t *)esp_matter_mem_calloc(1, val->val.a.s);
             if (!new_buf) {
                 ESP_LOGE(TAG, "Could not allocate new buffer");
                 return ESP_ERR_NO_MEM;
@@ -1226,7 +1227,7 @@ esp_err_t add_bounds(attribute_t *attribute, esp_matter_attr_val_t min, esp_matt
     free_default_value(attribute);
 
     /* Allocate and set */
-    current_attribute->bounds = (esp_matter_attr_bounds_t *)calloc(1, sizeof(esp_matter_attr_bounds_t));
+    current_attribute->bounds = (esp_matter_attr_bounds_t *)esp_matter_mem_calloc(1, sizeof(esp_matter_attr_bounds_t));
     if (!current_attribute->bounds) {
         ESP_LOGE(TAG, "Could not allocate bounds");
         return ESP_ERR_NO_MEM;
@@ -1353,7 +1354,7 @@ esp_err_t get_val_from_nvs(attribute_t *attribute, esp_matter_attr_val_t *val)
         current_attribute->val.type == ESP_MATTER_VAL_TYPE_ARRAY) {
         size_t len = 0;
         if ((err = nvs_get_blob(handle, attribute_key, NULL, &len)) == ESP_OK) {
-            uint8_t *buffer = (uint8_t *)calloc(1, len);
+            uint8_t *buffer = (uint8_t *)esp_matter_mem_calloc(1, len);
             if (!buffer) {
                 err = ESP_ERR_NO_MEM;
             } else {
@@ -1392,7 +1393,7 @@ command_t *create(cluster_t *cluster, uint32_t command_id, uint8_t flags, callba
     }
 
     /* Allocate */
-    _command_t *command = (_command_t *)calloc(1, sizeof(_command_t));
+    _command_t *command = (_command_t *)esp_matter_mem_calloc(1, sizeof(_command_t));
     if (!command) {
         ESP_LOGE(TAG, "Couldn't allocate _command_t");
         return NULL;
@@ -1428,7 +1429,7 @@ static esp_err_t destroy(command_t *command)
     _command_t *current_command = (_command_t *)command;
 
     /* Free */
-    free(current_command);
+    esp_matter_mem_free(current_command);
     return ESP_OK;
 }
 
@@ -1540,7 +1541,7 @@ cluster_t *create(endpoint_t *endpoint, uint32_t cluster_id, uint8_t flags)
     }
 
     /* Allocate */
-    _cluster_t *cluster = (_cluster_t *)calloc(1, sizeof(_cluster_t));
+    _cluster_t *cluster = (_cluster_t *)esp_matter_mem_calloc(1, sizeof(_cluster_t));
     if (!cluster) {
         ESP_LOGE(TAG, "Couldn't allocate _cluster_t");
         return NULL;
@@ -1592,7 +1593,7 @@ static esp_err_t destroy(cluster_t *cluster)
     }
 
     /* Free */
-    free(current_cluster);
+    esp_matter_mem_free(current_cluster);
     return ESP_OK;
 }
 
@@ -1711,7 +1712,7 @@ endpoint_t *create(node_t *node, uint8_t flags, void *priv_data)
     _node_t *current_node = (_node_t *)node;
 
     /* Allocate */
-    _endpoint_t *endpoint = (_endpoint_t *)calloc(1, sizeof(_endpoint_t));
+    _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
     if (!endpoint) {
         ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
         return NULL;
@@ -1771,7 +1772,7 @@ endpoint_t *resume(node_t *node, uint8_t flags, uint16_t endpoint_id, void *priv
      }
 
      /* Allocate */
-     _endpoint_t *endpoint = (_endpoint_t *)calloc(1, sizeof(_endpoint_t));
+     _endpoint_t *endpoint = (_endpoint_t *)esp_matter_mem_calloc(1, sizeof(_endpoint_t));
      if (!endpoint) {
          ESP_LOGE(TAG, "Couldn't allocate _endpoint_t");
          return NULL;
@@ -1839,7 +1840,7 @@ esp_err_t destroy(node_t *node, endpoint_t *endpoint)
     }
 
     /* Free */
-    free(current_endpoint);
+    esp_matter_mem_free(current_endpoint);
     return ESP_OK;
 }
 
@@ -1975,7 +1976,7 @@ node_t *create_raw()
         ESP_LOGE(TAG, "Node already exists");
         return (node_t *)node;
     }
-    node = (_node_t *)calloc(1, sizeof(_node_t));
+    node = (_node_t *)esp_matter_mem_calloc(1, sizeof(_node_t));
     if (!node) {
         ESP_LOGE(TAG, "Couldn't allocate _node_t");
         return NULL;

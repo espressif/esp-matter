@@ -17,6 +17,7 @@
 #include <esp_matter_attribute_utils.h>
 #include <esp_matter_console.h>
 #include <esp_matter_core.h>
+#include <esp_matter_mem.h>
 #include <string.h>
 
 #include <app/util/attribute-storage.h>
@@ -1674,7 +1675,7 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
     get_data_from_attr_val(val, &attribute_type, &attribute_size, NULL);
 
     /* Get value */
-    uint8_t *value = (uint8_t *)calloc(1, attribute_size);
+    uint8_t *value = (uint8_t *)esp_matter_mem_calloc(1, attribute_size);
     if (!value) {
         ESP_LOGE(TAG, "Could not allocate value buffer");
         if (lock_status == lock::SUCCESS) {
@@ -1690,14 +1691,14 @@ esp_err_t update(uint16_t endpoint_id, uint32_t cluster_id, uint32_t attribute_i
         status = emberAfWriteServerAttribute(endpoint_id, cluster_id, attribute_id, value, attribute_type);
         if (status != EMBER_ZCL_STATUS_SUCCESS) {
             ESP_LOGE(TAG, "Error updating attribute to matter: 0x%X", status);
-            free(value);
+            esp_matter_mem_free(value);
             if (lock_status == lock::SUCCESS) {
                 lock::chip_stack_unlock();
             }
             return ESP_FAIL;
         }
     }
-    free(value);
+    esp_matter_mem_free(value);
     if (lock_status == lock::SUCCESS) {
         lock::chip_stack_unlock();
     }
